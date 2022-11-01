@@ -2,12 +2,14 @@ package com.tap.db.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "cities")
 public class City implements Serializable {
-	private static final long serialVersionUID = -2627665010959048525L;
+	@Serial
+	private static final long serialVersionUID = 1702511742862236504L;
 	private Integer id;
 
 	private Country country;
@@ -17,14 +19,14 @@ public class City implements Serializable {
 	private String postCode;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", columnDefinition = "SMALLINT UNSIGNED not null")
 	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public City setId(Integer id) {
 		this.id = id;
+		return this;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -33,8 +35,9 @@ public class City implements Serializable {
 		return country;
 	}
 
-	public void setCountry(Country country) {
+	public City setCountry(Country country) {
 		this.country = country;
+		return this;
 	}
 
 	@Column(name = "name", nullable = false, length = 64)
@@ -42,8 +45,9 @@ public class City implements Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
+	public City setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	@Column(name = "post_code", nullable = false, length = 16)
@@ -51,8 +55,9 @@ public class City implements Serializable {
 		return postCode;
 	}
 
-	public void setPostCode(String postCode) {
+	public City setPostCode(String postCode) {
 		this.postCode = postCode;
+		return this;
 	}
 
 }

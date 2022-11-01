@@ -2,31 +2,55 @@ package com.tap.db.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "addresses")
 public class Address implements Serializable {
-	private static final long serialVersionUID = -4214246386418010257L;
+	@Serial
+	private static final long serialVersionUID = -4881507497497308324L;
 	private Long id;
 
-	private City city;
+	private String street;
 
-	private String address;
+	private String number;
+
+	private City city;
 
 	private Float longitude;
 
 	private Float latitude;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", columnDefinition = "INT UNSIGNED not null")
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public Address setId(Long id) {
 		this.id = id;
+		return this;
+	}
+
+	@Column(name = "street", nullable = false, length = 128)
+	public String getStreet() {
+		return street;
+	}
+
+	public Address setStreet(String street) {
+		this.street = street;
+		return this;
+	}
+
+	@Column(name = "number", nullable = false, length = 16)
+	public String getNumber() {
+		return number;
+	}
+
+	public Address setNumber(String number) {
+		this.number = number;
+		return this;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -35,17 +59,9 @@ public class Address implements Serializable {
 		return city;
 	}
 
-	public void setCity(City city) {
+	public Address setCity(City city) {
 		this.city = city;
-	}
-
-	@Column(name = "address", nullable = false, length = 64)
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
+		return this;
 	}
 
 	@Column(name = "longitude")
@@ -53,8 +69,9 @@ public class Address implements Serializable {
 		return longitude;
 	}
 
-	public void setLongitude(Float longitude) {
+	public Address setLongitude(Float longitude) {
 		this.longitude = longitude;
+		return this;
 	}
 
 	@Column(name = "latitude")
@@ -62,8 +79,9 @@ public class Address implements Serializable {
 		return latitude;
 	}
 
-	public void setLatitude(Float latitude) {
+	public Address setLatitude(Float latitude) {
 		this.latitude = latitude;
+		return this;
 	}
 
 }

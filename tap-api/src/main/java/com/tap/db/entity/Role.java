@@ -9,23 +9,23 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "company_types")
-public class CompanyType implements Serializable {
+@Table(name = "roles")
+public class Role implements Serializable {
 	@Serial
-	private static final long serialVersionUID = 2926093987806435037L;
-	private Integer id;
+	private static final long serialVersionUID = -4998208052401026693L;
+	private Short id;
 
 	private String name;
 
 	private Byte active;
 
 	@Id
-	@Column(name = "id", columnDefinition = "SMALLINT UNSIGNED not null")
-	public Integer getId() {
+	@Column(name = "id", columnDefinition = "TINYINT UNSIGNED not null")
+	public Short getId() {
 		return id;
 	}
 
-	public CompanyType setId(Integer id) {
+	public Role setId(Short id) {
 		this.id = id;
 		return this;
 	}
@@ -35,7 +35,7 @@ public class CompanyType implements Serializable {
 		return name;
 	}
 
-	public CompanyType setName(String name) {
+	public Role setName(String name) {
 		this.name = name;
 		return this;
 	}
@@ -45,7 +45,7 @@ public class CompanyType implements Serializable {
 		return active;
 	}
 
-	public CompanyType setActive(Byte active) {
+	public Role setActive(Byte active) {
 		this.active = active;
 		return this;
 	}

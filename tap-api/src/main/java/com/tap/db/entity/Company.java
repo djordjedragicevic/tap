@@ -2,16 +2,20 @@ package com.tap.db.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "companies")
 public class Company implements Serializable {
-	private static final long serialVersionUID = -219379721256924057L;
+	@Serial
+	private static final long serialVersionUID = 5074070342066930656L;
 	private Long id;
 
 	private String name;
+
+	private String typeName;
 
 	private CompanyType companyType;
 
@@ -32,14 +36,14 @@ public class Company implements Serializable {
 	private Byte active;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", columnDefinition = "INT UNSIGNED not null")
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public Company setId(Long id) {
 		this.id = id;
+		return this;
 	}
 
 	@Column(name = "name", nullable = false, length = 64)
@@ -47,8 +51,19 @@ public class Company implements Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
+	public Company setName(String name) {
 		this.name = name;
+		return this;
+	}
+
+	@Column(name = "type_name", length = 128)
+	public String getTypeName() {
+		return typeName;
+	}
+
+	public Company setTypeName(String typeName) {
+		this.typeName = typeName;
+		return this;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -57,8 +72,9 @@ public class Company implements Serializable {
 		return companyType;
 	}
 
-	public void setCompanyType(CompanyType companyType) {
+	public Company setCompanyType(CompanyType companyType) {
 		this.companyType = companyType;
+		return this;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -67,8 +83,9 @@ public class Company implements Serializable {
 		return address;
 	}
 
-	public void setAddress(Address address) {
+	public Company setAddress(Address address) {
 		this.address = address;
+		return this;
 	}
 
 	@Column(name = "description", length = 512)
@@ -76,8 +93,9 @@ public class Company implements Serializable {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public Company setDescription(String description) {
 		this.description = description;
+		return this;
 	}
 
 	@Column(name = "phone", length = 16)
@@ -85,8 +103,9 @@ public class Company implements Serializable {
 		return phone;
 	}
 
-	public void setPhone(String phone) {
+	public Company setPhone(String phone) {
 		this.phone = phone;
+		return this;
 	}
 
 	@Column(name = "ein", nullable = false, length = 32)
@@ -94,8 +113,9 @@ public class Company implements Serializable {
 		return ein;
 	}
 
-	public void setEin(String ein) {
+	public Company setEin(String ein) {
 		this.ein = ein;
+		return this;
 	}
 
 	@Column(name = "approved", nullable = false)
@@ -103,8 +123,9 @@ public class Company implements Serializable {
 		return approved;
 	}
 
-	public void setApproved(Byte approved) {
+	public Company setApproved(Byte approved) {
 		this.approved = approved;
+		return this;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -113,8 +134,9 @@ public class Company implements Serializable {
 		return approvedBy;
 	}
 
-	public void setApprovedBy(User approvedBy) {
+	public Company setApprovedBy(User approvedBy) {
 		this.approvedBy = approvedBy;
+		return this;
 	}
 
 	@Column(name = "approved_date", nullable = false)
@@ -122,8 +144,9 @@ public class Company implements Serializable {
 		return approvedDate;
 	}
 
-	public void setApprovedDate(LocalDateTime approvedDate) {
+	public Company setApprovedDate(LocalDateTime approvedDate) {
 		this.approvedDate = approvedDate;
+		return this;
 	}
 
 	@Column(name = "active", nullable = false)
@@ -131,8 +154,9 @@ public class Company implements Serializable {
 		return active;
 	}
 
-	public void setActive(Byte active) {
+	public Company setActive(Byte active) {
 		this.active = active;
+		return this;
 	}
 
 }

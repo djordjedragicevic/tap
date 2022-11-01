@@ -1,13 +1,18 @@
 package com.tap.db.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "countries")
 public class Country implements Serializable {
-	private static final long serialVersionUID = 8426157373867709364L;
+	@Serial
+	private static final long serialVersionUID = 7574237729822733853L;
 	private Integer id;
 
 	private String name;
@@ -23,14 +28,14 @@ public class Country implements Serializable {
 	private Byte active;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", columnDefinition = "SMALLINT UNSIGNED not null")
 	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public Country setId(Integer id) {
 		this.id = id;
+		return this;
 	}
 
 	@Column(name = "name", nullable = false, length = 64)
@@ -38,8 +43,9 @@ public class Country implements Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
+	public Country setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	@Column(name = "code", nullable = false, length = 2)
@@ -47,8 +53,9 @@ public class Country implements Serializable {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public Country setCode(String code) {
 		this.code = code;
+		return this;
 	}
 
 	@Column(name = "phone", nullable = false)
@@ -56,8 +63,9 @@ public class Country implements Serializable {
 		return phone;
 	}
 
-	public void setPhone(Integer phone) {
+	public Country setPhone(Integer phone) {
 		this.phone = phone;
+		return this;
 	}
 
 	@Column(name = "currency", nullable = false, length = 4)
@@ -65,8 +73,9 @@ public class Country implements Serializable {
 		return currency;
 	}
 
-	public void setCurrency(String currency) {
+	public Country setCurrency(String currency) {
 		this.currency = currency;
+		return this;
 	}
 
 	@Column(name = "currency_symbol", nullable = false, length = 16)
@@ -74,8 +83,9 @@ public class Country implements Serializable {
 		return currencySymbol;
 	}
 
-	public void setCurrencySymbol(String currencySymbol) {
+	public Country setCurrencySymbol(String currencySymbol) {
 		this.currencySymbol = currencySymbol;
+		return this;
 	}
 
 	@Column(name = "active", nullable = false)
@@ -83,8 +93,9 @@ public class Country implements Serializable {
 		return active;
 	}
 
-	public void setActive(Byte active) {
+	public Country setActive(Byte active) {
 		this.active = active;
+		return this;
 	}
 
 }
