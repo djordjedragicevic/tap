@@ -1,9 +1,9 @@
 /**
- * @author Djordje Dragicevic <djordje.dragicevic@yahoo.com> 
+ * @author Djordje Dragicevic <djordje.dragicevic@yahoo.com>
  */
-import React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { USER_APPINTMENTS_SCREEN } from "../navigators/routes";
+import React from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import { USER_APPINTMENTS_SCREEN } from '../navigators/routes';
 
 const HomeScreen = ({ navigation }) => {
 	return (
@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
 		justifyContent: 'center',
-		alignItems: 'center'
-	}
-})
+		alignItems: 'center',
+	},
+});
 
 export default HomeScreen;
