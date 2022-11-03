@@ -35,8 +35,7 @@ const createStyle = (theme) => {
 		screen: {
 			flex: 1,
 			justifyContent: 'center',
-			alignItems: 'center',
-			backgroundColor: theme.colors.backgroundPrimary
+			alignItems: 'center'
 		},
 	});
 }

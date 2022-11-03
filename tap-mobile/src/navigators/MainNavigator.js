@@ -11,7 +11,9 @@ const Stack = createStackNavigator();
 
 const MainNavigator = () => {
 	return (
-		<Stack.Navigator screenOptions={{ ...TransitionPresets.SlideFromRightIOS }}>
+		<Stack.Navigator screenOptions={{
+			//...TransitionPresets.SlideFromRightIOS
+		}}>
 			<Stack.Screen name={HOME_SCREEM} component={HomeScreen} />
 			<Stack.Screen
 				name={USER_APPINTMENTS_SCREEN}

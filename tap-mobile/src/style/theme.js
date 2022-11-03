@@ -9,9 +9,9 @@ export const Theme = {
 		id: THEME.LIGHT,
 		colors: {
 			primary: '#e60073',
-			backgroundPrimary: '#f2f2f2',
-			backgroundSecondary: '#ffffff',
-			textPrimary: '#000000',
+			background: '#f2f2f2',
+			backgroundElement: '#fff',
+			textPrimary: '#1c1c1e',
 			textSecondary: '#004d66'
 		}
 	},
@@ -20,9 +20,9 @@ export const Theme = {
 		id: THEME.DARK,
 		colors: {
 			primary: '#e60073',
-			backgroundPrimary: '#004d66',
-			backgroundSecondary: '#00000',
-			textPrimary: '#ffffff',
+			background: '#000',
+			backgroundElement: '#004d66',
+			textPrimary: '#e5e5e7',
 			textSecondary: '#f2f2f2'
 		}
 	}
