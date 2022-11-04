@@ -9,12 +9,17 @@ import 'react-native-gesture-handler';
 import { GlobalContextProvider } from './src/store/GlobalContext';
 import { ThemeContextProvider } from './src/store/ThemeContext';
 import { Theme } from './src/style/theme';
+import { I18nContextProvider } from './src/store/I18nContext';
+import { languages } from './src/common/i18n';
+import { DEFAULT_LANGUAGE } from './src/common/config';
 
 const Root = () => {
 	return (
 		<GlobalContextProvider>
 			<ThemeContextProvider initialTheme={Theme.Light}>
-				<App />
+				<I18nContextProvider language={languages[DEFAULT_LANGUAGE]}>
+					<App />
+				</I18nContextProvider>
 			</ThemeContextProvider>
 		</GlobalContextProvider>
 	)

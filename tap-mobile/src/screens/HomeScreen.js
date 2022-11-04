@@ -1,21 +1,32 @@
 /**
  * @author Djordje Dragicevic <djordje.dragicevic@yahoo.com>
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import { languages } from '../common/i18n';
 import { USER_APPINTMENTS_SCREEN } from '../navigators/routes';
+import I18nContext, { useTranslation } from '../store/I18nContext';
 import { useTheme, useThemedStyle } from '../store/ThemeContext';
 import { THEME, Theme } from '../style/theme';
 
 const HomeScreen = ({ navigation }) => {
 	const { theme, setTheme } = useTheme();
 	const styles = useThemedStyle(createStyle);
+	const t = useTranslation();
+	const { lng, setLanguage } = useContext(I18nContext);
 
 	return (
 		<View style={styles.screen}>
-			<Text style={styles.text}>HOME SCREEN</Text>
+			<Text style={styles.text}>{t('Test translation')}</Text>
 			<Button
-				title="Go to Details"
+				title="Switch languages"
+				onPress={() => {
+					setLanguage(lng.code === 'en_US' ? languages['sr_SP'] : languages['en_US'])
+				}}
+			/>
+
+			<Button
+				title={t("Go to Details")}
 				onPress={() => navigation.navigate(USER_APPINTMENTS_SCREEN)}
 			/>
 			<Text style={styles.text}>{theme.id}</Text>
@@ -34,7 +45,7 @@ const createStyle = (theme) => {
 		},
 		screen: {
 			flex: 1,
-			justifyContent: 'center',
+			justifyContent: 'space-around',
 			alignItems: 'center'
 		},
 	});
