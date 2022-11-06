@@ -4,6 +4,11 @@ export const THEME = {
 	DARK: 'Dark'
 };
 
+const values = {
+	screenContentPH: 10,
+	borderRadius: 10
+}
+
 export const Theme = {
 	Light: {
 		id: THEME.LIGHT,
@@ -13,7 +18,8 @@ export const Theme = {
 			backgroundElement: '#fff',
 			textPrimary: '#1c1c1e',
 			textSecondary: '#004d66'
-		}
+		},
+		values: values
 	},
 
 	Dark: {
@@ -24,6 +30,7 @@ export const Theme = {
 			backgroundElement: '#004d66',
 			textPrimary: '#e5e5e7',
 			textSecondary: '#f2f2f2'
-		}
+		},
+		values: values
 	}
 };

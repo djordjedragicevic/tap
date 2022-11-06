@@ -1,11 +1,10 @@
 import React from 'react';
-import {
-	createStackNavigator,
-	TransitionPresets,
-} from '@react-navigation/stack';
-import HomeScreen from '../screens/HomeScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+import CompaniesScreen from '../screens/CompaniesScreen';
 import AppointmentsScreen from '../screens/user/AppointmentsScreen';
-import { HOME_SCREEM, USER_APPINTMENTS_SCREEN } from './routes';
+import { COMPANIES_SCREEN, COMPANY_SCREEN, USER_APPINTMENTS_SCREEN } from './routes';
+import Try from '../screens/Try';
+import CompanyScreen from '../screens/CompnayScreen';
 
 const Stack = createStackNavigator();
 
@@ -14,11 +13,19 @@ const MainNavigator = () => {
 		<Stack.Navigator screenOptions={{
 			//...TransitionPresets.SlideFromRightIOS
 		}}>
-			<Stack.Screen name={HOME_SCREEM} component={HomeScreen} />
+			<Stack.Screen
+				name={COMPANIES_SCREEN}
+				component={CompaniesScreen}
+			/>
+			<Stack.Screen
+				name={COMPANY_SCREEN}
+				component={CompanyScreen}
+			/>
 			<Stack.Screen
 				name={USER_APPINTMENTS_SCREEN}
 				component={AppointmentsScreen}
 			/>
+			<Stack.Screen name={"try"} component={Try} />
 		</Stack.Navigator>
 	);
 };

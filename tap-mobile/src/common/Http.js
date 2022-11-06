@@ -11,11 +11,15 @@ export class Http {
 				body: data ? JSON.stringify(data) : undefined,
 			})
 				.then((resp) => resp.json())
-				.then(resolve)
+				.then((resolve))
 				.catch((err) => {
 					console.log('NETWORK ERR', err);
 					reject(err);
 				});
 		});
+	}
+
+	static get(url) {
+		return this.send(url);
 	}
 }
