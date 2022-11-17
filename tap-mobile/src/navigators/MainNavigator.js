@@ -1,10 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import CompaniesScreen from '../screens/CompaniesScreen';
 import AppointmentsScreen from '../screens/user/AppointmentsScreen';
-import { COMPANIES_SCREEN, COMPANY_SCREEN, USER_APPINTMENTS_SCREEN } from './routes';
+import { COMPANY_LIST_SCREEN, USER_APPINTMENTS_SCREEN } from './routes';
 import Try from '../screens/Try';
-import CompanyScreen from '../screens/CompnayScreen';
+import CompanyListScreen from '../screens/CompanyListScreen';
 
 const Stack = createStackNavigator();
 
@@ -13,19 +12,15 @@ const MainNavigator = () => {
 		<Stack.Navigator screenOptions={{
 			//...TransitionPresets.SlideFromRightIOS
 		}}>
+			<Stack.Screen name={"try"} component={Try} />
 			<Stack.Screen
-				name={COMPANIES_SCREEN}
-				component={CompaniesScreen}
-			/>
-			<Stack.Screen
-				name={COMPANY_SCREEN}
-				component={CompanyScreen}
+				name={COMPANY_LIST_SCREEN}
+				component={CompanyListScreen}
 			/>
 			<Stack.Screen
 				name={USER_APPINTMENTS_SCREEN}
 				component={AppointmentsScreen}
 			/>
-			<Stack.Screen name={"try"} component={Try} />
 		</Stack.Navigator>
 	);
 };
