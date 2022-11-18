@@ -2,6 +2,7 @@ import { API_URL } from './config';
 
 export class Http {
 	static send(url, method = 'GET', data = null) {
+		console.log(method, ': ', API_URL.concat(url));
 		return new Promise((resolve, reject) => {
 			fetch(API_URL.concat(url), {
 				method,

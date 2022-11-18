@@ -4,7 +4,7 @@ import { languages } from "../common/i18n";
 import Screen from "../components/Screen";
 import I18nContext, { useTranslation } from "../store/I18nContext";
 import ThemeContext, { useThemedStyle } from "../store/ThemeContext";
-import { THEME } from "../style/theme";
+import { THEME } from "../style/themes";
 
 const Try = () => {
 

@@ -1,20 +1,11 @@
-import React, { useEffect, useMemo } from 'react';
-import { Http } from './common/Http';
+import React, { useMemo } from 'react';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import MainNavigator from './navigators/MainNavigator';
-import { THEME } from './style/theme';
+import { THEME } from './style/themes';
 import { useTheme } from './store/ThemeContext';
 import { StatusBar } from 'react-native';
+import DrawerNavigator from './navigators/DrawerNavigator';
 
 const App = () => {
-
-	// useEffect(() => {
-	// 	console.log('GET DATA');
-
-	// 	Http.send('/company').then((resp) => {
-	// 		console.log(resp);
-	// 	});
-	// }, []);
 
 	const { theme } = useTheme();
 	const navTheme = useMemo(() => {
@@ -40,7 +31,7 @@ const App = () => {
 				backgroundColor={theme.colors.backgroundElement}
 			/>
 			<NavigationContainer theme={navTheme}>
-				<MainNavigator />
+				<DrawerNavigator />
 			</NavigationContainer>
 		</>
 	);

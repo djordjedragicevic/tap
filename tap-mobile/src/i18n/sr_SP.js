@@ -1,4 +1,5 @@
 const sr_SP = {
+	'Appointments': 'Termini',
 	"Test translation": "Testiranje prevoda",
 	"Language": "Jezik"
 };
