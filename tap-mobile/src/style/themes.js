@@ -6,7 +6,7 @@ export const THEME = {
 
 export const values = {
 	mainPaddingHorizontal: 10,
-	borderRadius: 8,
+	borderRadius: 6,
 	borderWidth: 0.8
 }
 
@@ -23,7 +23,7 @@ export const Theme = {
 		},
 		values: values
 	},
-	
+
 	Dark: {
 		id: THEME.DARK,
 		colors: {
@@ -36,19 +36,5 @@ export const Theme = {
 			borderColor: '#595959'
 		},
 		values: values
-	}
-};
-
-export const ThemeInterface = {
-	colors: {
-		primary: 'primary',
-		background: 'background',
-		backgroundElement: 'backgroundElement',
-		textPrimary: 'textPrimary',
-		textSecondary: 'textSecondary'
-	},
-	values: {
-		screenContentPaddingHorizontal: 'screenContentPaddingHorizontal',
-		borderRadius: 'borderRadius'
 	}
 };

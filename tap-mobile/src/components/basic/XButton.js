@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { useThemedStyle } from "../../store/ThemeContext";
 import XText from "./XText";
 
@@ -15,12 +15,14 @@ const XButton = ({ title, onPress }) => {
 const createStyle = (theme) => StyleSheet.create({
 	button: {
 		height: 30,
+		paddingHorizontal: 10,
 		backgroundColor: theme.colors.primary,
 		borderRadius: theme.values.borderRadius,
 		alignItems: 'center',
 		justifyContent: 'center'
 	},
 	text: {
+		textTransform: 'uppercase'
 	}
 });
 

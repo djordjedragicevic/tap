@@ -15,7 +15,7 @@ const XText = ({ primary, secondary, style, children }) => {
 	}, [styles, primary, secondary, style]);
 
 	return (
-		<Text style={composedStyle}> {children}</Text>
+		<Text style={composedStyle}>{children}</Text>
 	);
 };
 

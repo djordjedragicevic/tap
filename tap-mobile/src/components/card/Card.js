@@ -1,12 +1,12 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useThemedStyle } from "../../store/ThemeContext";
 import XMask from "../basic/XMask";
 import HairDryer from "../images/HairDryer";
 
-const Card = ({ children, disabled }) => {
+const Card = ({ children, disabled, onPress }) => {
 	const styles = useThemedStyle(createStyle);
 	return (
-		<View style={styles.container}>
+		<TouchableOpacity style={styles.container} onPress={onPress}>
 			<XMask enabled={disabled} />
 			<View style={{ flexDirection: 'row' }}>
 				<View>
@@ -14,18 +14,19 @@ const Card = ({ children, disabled }) => {
 						<HairDryer color={styles.image.color} width={80} height={80} />
 					</View>
 				</View>
-				<View style={{ flex: 1, justifyContent: 'space-evenly', marginLeft: 8}}>
+				<View style={{ flex: 1, justifyContent: 'space-evenly', marginLeft: 8 }}>
 					{children}
 				</View>
 			</View>
 			<View>
 			</View>
-		</View >
+		</TouchableOpacity>
 	);
 };
 
 Card.defaultProps = {
-	disabled: false
+	disabled: false,
+	onPress: () => { }
 };
 
 const createStyle = (theme) => StyleSheet.create({

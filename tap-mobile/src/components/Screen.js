@@ -1,19 +1,30 @@
+import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Screen = (props) => {
+const Screen = ({ style, center, children }) => {
+	const dynStyle = useMemo(() => {
+		const dS = {};
+		if (center) {
+			dS.alignItems = 'center';
+			dS.justifyContent = 'center';
+		}
+		return dS;
+	}, [center]);
+
 	return (
-		<SafeAreaView style={[style.screen, props.style]}>
-			{props.children}
+		<SafeAreaView style={[styles.screen, style, dynStyle]}>
+			{children}
 		</SafeAreaView>
 	);
 };
 
 Screen.defaultProps = {
-	style: {}
+	style: {},
+	center: false
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
 	screen: {
 		flex: 1
 	}
