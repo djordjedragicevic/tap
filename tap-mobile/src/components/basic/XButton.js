@@ -22,7 +22,8 @@ const createStyle = (theme) => StyleSheet.create({
 		justifyContent: 'center'
 	},
 	text: {
-		textTransform: 'uppercase'
+		textTransform: 'uppercase',
+		color: theme.colors.textLight
 	}
 });
 

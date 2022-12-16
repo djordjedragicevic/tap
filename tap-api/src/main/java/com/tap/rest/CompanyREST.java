@@ -5,6 +5,7 @@ import com.tap.db.dao.CompanyDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
@@ -17,9 +18,17 @@ public class CompanyREST {
 	private CompanyDAO companyDAO;
 
 	@GET
-	@Path("")
+	@Path("list")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Map<String, Object> getCompanies() {
-		 return TAPResponse.wrap(companyDAO.getCompaniesBasic());
+		return TAPResponse.wrap(companyDAO.getCompaniesBasic());
 	}
+
+	@GET
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Map<String, Object> getCompanyInfo(@PathParam("id") Long id) {
+		return TAPResponse.wrap(companyDAO.getCompany(id));
+	}
+
 }

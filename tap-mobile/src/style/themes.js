@@ -14,25 +14,26 @@ export const Theme = {
 	Light: {
 		id: THEME.LIGHT,
 		colors: {
-			primary: '#e60073',
+			primary: '#66b3ff',
 			background: '#f2f2f2',
 			backgroundElement: '#fff',
 			textPrimary: '#404040',
 			textSecondary: '#8c8c8c',
+			textLight: '#f2f2f3',
 			borderColor: '#a6a6a6'
 		},
 		values: values
 	},
-
+	
 	Dark: {
 		id: THEME.DARK,
 		colors: {
 			primary: '#007acc',
 			background: '#000',
-			//backgroundElement: '#004d66',
 			backgroundElement: '#333333',
 			textPrimary: '#f2f2f3',
 			textSecondary: '#d7d7da',
+			textLight: '#f2f2f3',
 			borderColor: '#595959'
 		},
 		values: values

@@ -16,7 +16,7 @@ import { DEFAULT_LANGUAGE } from './src/common/config';
 const Root = () => {
 	return (
 		<GlobalContextProvider>
-			<ThemeContextProvider initialTheme={Theme.Dark}>
+			<ThemeContextProvider initialTheme={Theme.Light}>
 				<I18nContextProvider language={languages[DEFAULT_LANGUAGE]}>
 					<App />
 				</I18nContextProvider>

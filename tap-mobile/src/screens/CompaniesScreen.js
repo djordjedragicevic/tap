@@ -7,18 +7,29 @@ import Card from "../components/card/Card";
 import Screen from "../components/Screen";
 import { APPOINTMENTS_SCREEN, COMPANY_SCREEN } from "../navigators/routes";
 import { useTranslation } from "../store/I18nContext";
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { HeaderBackButton } from '@react-navigation/elements';
 
 const CompaniesScreen = ({ navigation }) => {
 	const [companies, setCompanies] = useState([]);
 	const t = useTranslation();
 	useEffect(() => {
 		let process = true;
-		Http.get('/company')
+		Http.get('/company/list')
 			.then(res => {
 				if (process)
 					setCompanies(res.data);
 			});
 		return () => process = false;
+	}, []);
+
+	useEffect(() => {
+		navigation.setOptions({
+			headerLeft: () => <HeaderBackButton onPress={() => navigation.openDrawer()} backImage={({ tintColor }) => {
+				
+				return <Icon name="menu" color={tintColor} size={24}/>
+			}} />
+		})
 	}, []);
 
 	const renderCompany = ({ item }) => {

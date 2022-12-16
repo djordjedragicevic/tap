@@ -11,7 +11,7 @@ const Drawer = createDrawerNavigator();
 const DrawerNavigator = () => {
 	const t = useTranslation();
 	return (
-		<Drawer.Navigator>
+		<Drawer.Navigator screenOptions={{ headerShown: false }}>
 			<Drawer.Screen name={DRAWER_APPOINTMENTS} component={AppointmentsStackNavigator} options={{ title: t('Appointments') }} />
 			<Drawer.Screen name={'TRY'} component={Try} />
 		</Drawer.Navigator>

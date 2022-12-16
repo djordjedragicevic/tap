@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 
 const AppointmentsStackNavigator = () => {
 	return (
-		<Stack.Navigator screenOptions={{ headerShown: false }}>
+		<Stack.Navigator screenOptions={{ headerShown: true }}>
 			<Stack.Screen name={COMPANIES_SCREEN} component={CompaniesScreen} options={{ title: 'Companies' }} />
 			<Stack.Screen name={COMPANY_SCREEN} component={CompanyScreen} options={{ title: 'Company' }} />
 			<Stack.Screen name={APPOINTMENTS_SCREEN} component={AppointmentsScreen} options={{ title: 'Appintments' }} />

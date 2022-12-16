@@ -15,9 +15,9 @@ const Try = () => {
 	const t = useTranslation();
 
 	return (
-		<Screen style={themedStyle.screen}>
+		<Screen style={themedStyle.screen} center>
 			<Text style={themedStyle.text}>Try Screen</Text>
-			<Button title="Switch thene" onPress={() => themeContext.setTheme(themeContext.theme.id === THEME.DARK ? THEME.LIGHT : THEME.DARK)} />
+			<Button title="Switch theme" onPress={() => themeContext.setTheme(themeContext.theme.id === THEME.DARK ? THEME.LIGHT : THEME.DARK)} />
 			<Button title="Transation" onPress={() => i18nContext.setLanguage(i18nContext.lng.code === languages.en_US.code ? languages.sr_SP : languages.en_US)} />
 			<Text style={[themedStyle.text, { alignSelf: "center", fontSize: 20 }]}>{t('Language')}</Text>
 		</Screen>
