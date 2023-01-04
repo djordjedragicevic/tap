@@ -22,9 +22,8 @@ const Try = ({ navigation }) => {
 		});
 	}, []);
 
-
 	return (
-		<Screen style={themedStyle.screen} center>
+		<Screen style={themedStyle.screen}>
 			<Text style={themedStyle.text}>Try Screen</Text>
 			<Button title="Switch theme" onPress={() => themeContext.setTheme(themeContext.theme.id === THEME.DARK ? THEME.LIGHT : THEME.DARK)} />
 			<Button title="Transation" onPress={() => i18nContext.setLanguage(i18nContext.lng.code === languages.en_US.code ? languages.sr_SP : languages.en_US)} />
@@ -35,7 +34,8 @@ const Try = ({ navigation }) => {
 
 const createStyle = (theme) => StyleSheet.create({
 	screen: {
-		backgroundColor: theme.colors.backgroundColor
+		backgroundColor: theme.colors.backgroundColor,
+		justifyContent: 'space-around'
 	},
 	text: {
 		color: theme.colors.textPrimary

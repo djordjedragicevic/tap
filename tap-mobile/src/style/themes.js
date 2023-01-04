@@ -6,7 +6,7 @@ export const THEME = {
 };
 
 export const values = {
-	mainPaddingHorizontal: 10,
+	mainPaddingHorizontal: 8,
 	borderRadius: 6,
 	borderWidth: 0.8
 }

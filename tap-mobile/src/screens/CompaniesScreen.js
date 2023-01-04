@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { Http } from "../common/Http";
 import XButton from "../components/basic/XButton";
 import XText from "../components/basic/XText";
 import Card from "../components/card/Card";
 import Screen from "../components/Screen";
-import { APPOINTMENTS_SCREEN, COMPANY_SCREEN } from "../navigators/routes";
+import { COMPANY_SCREEN } from "../navigators/routes";
 import { useTranslation } from "../store/I18nContext";
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { HeaderBackButton } from '@react-navigation/elements';
 import HeaderDrawerButton from "../components/HeaderDrawerButton";
+import XCard from "../components/basic/XCard";
+import { values } from "../style/themes";
 
 const CompaniesScreen = ({ navigation }) => {
 	const [companies, setCompanies] = useState([]);
@@ -27,42 +27,35 @@ const CompaniesScreen = ({ navigation }) => {
 
 	useEffect(() => {
 		navigation.setOptions({
-			headerLeft: () => <HeaderDrawerButton navigation={navigation}/>
+			headerLeft: () => <HeaderDrawerButton navigation={navigation} />
 		});
 	}, []);
 
-	const renderCompany = ({ item }) => {
+	const renderCompany = useCallback(({ item }) => {
 		return (
-			<Card onPress={() => navigation.navigate(COMPANY_SCREEN, { id: item.id })} style={styles.card} contentStyle={styles.cardContent}>
+			<XCard onPress={() => navigation.navigate(COMPANY_SCREEN, { id: item.id })} style={styles.card}>
 				<XText style={styles.titleType}>{item.typeName}</XText>
 				<XText style={styles.title}>{item.name}</XText>
-				{/* <XText>{item.addressStreet + ' ' + item.addressNumber}</XText> */}
-				{/* <XButton title={t('Appointments').toUpperCase()} onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { id: item.id })} /> */}
-			</Card >
-		);
-	};
+			</XCard>
 
-	const keyExtractor = (item) => item.id;
+		);
+	}, []);
 
 	return (
-		<Screen style={styles.container}>
+		<Screen flat>
 			<FlatList
 				data={companies}
 				renderItem={renderCompany}
-				keyExtractor={keyExtractor}
 			/>
 		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingVertical: 4
-	},
 	card: {
-		height: 160
-	},
-	cardContent: {
+		height: 160,
+		marginHorizontal: values.mainPaddingHorizontal,
+		marginTop: 6,
 		alignItems: 'center',
 		justifyContent: 'space-evenly',
 		flex: 1
@@ -71,7 +64,8 @@ const styles = StyleSheet.create({
 		fontSize: 22
 	},
 	title: {
-		fontSize: 26
+		fontSize: 26,
+		fontWeight: '500'
 	}
 });
 

@@ -7,7 +7,6 @@ import {
 	DrawerContentScrollView,
 	DrawerItemList,
 	createDrawerNavigator,
-	DrawerItem
 } from '@react-navigation/drawer';
 import { View } from "react-native";
 import XText from "../components/basic/XText";
