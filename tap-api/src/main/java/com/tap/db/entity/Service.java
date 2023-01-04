@@ -18,7 +18,7 @@ public class Service implements Serializable {
 
 	private Company company;
 
-	private LocalTime duration;
+	private Short duration;
 
 	private BigDecimal price;
 
@@ -57,11 +57,11 @@ public class Service implements Serializable {
 	}
 
 	@Column(name = "duration", nullable = false)
-	public LocalTime getDuration() {
+	public Short getDuration() {
 		return duration;
 	}
 
-	public Service setDuration(LocalTime duration) {
+	public Service setDuration(Short duration) {
 		this.duration = duration;
 		return this;
 	}

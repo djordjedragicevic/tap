@@ -59,7 +59,7 @@ public class CompanyDAO {
 				new Service()
 						.setId(r.get(0, Long.class))
 						.setName(r.get(1, String.class))
-						.setDuration(r.get(2, LocalTime.class))
+						.setDuration(r.get(2, Short.class))
 						.setPrice(r.get(3, BigDecimal.class))
 		));
 
