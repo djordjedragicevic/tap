@@ -11,7 +11,10 @@ export class Http {
 				},
 				body: data ? JSON.stringify(data) : undefined,
 			})
-				.then((resp) => resp.json())
+				.then((resp) => {
+					//console.log("RESP", resp);
+					return resp.json()
+				})
 				.then((resolve))
 				.catch((err) => {
 					console.log('NETWORK ERR', err);

@@ -1,21 +1,26 @@
 package com.tap.db.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "services")
 public class Service implements Serializable {
 	@Serial
-	private static final long serialVersionUID = -4746133049154204597L;
+	private static final long serialVersionUID = -3616470685412465576L;
 	private Long id;
 
 	private String name;
+
+	private Company company;
+
+	private LocalTime duration;
+
+	private BigDecimal price;
 
 	private Byte active;
 
@@ -30,13 +35,44 @@ public class Service implements Serializable {
 		return this;
 	}
 
-	@Column(name = "name", nullable = false, length = 64)
+	@JoinColumn(name = "name", nullable = false)
 	public String getName() {
 		return name;
 	}
 
 	public Service setName(String name) {
 		this.name = name;
+		return this;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "company_id", nullable = false)
+	public Company getCompany() {
+		return company;
+	}
+
+	public Service setCompany(Company company) {
+		this.company = company;
+		return this;
+	}
+
+	@Column(name = "duration", nullable = false)
+	public LocalTime getDuration() {
+		return duration;
+	}
+
+	public Service setDuration(LocalTime duration) {
+		this.duration = duration;
+		return this;
+	}
+
+	@Column(name = "price", precision = 10, scale = 2)
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public Service setPrice(BigDecimal price) {
+		this.price = price;
 		return this;
 	}
 

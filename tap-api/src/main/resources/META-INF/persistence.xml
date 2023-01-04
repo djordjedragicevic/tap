@@ -31,17 +31,17 @@
 		<class>com.tap.db.entity.Company</class>
 		<class>com.tap.db.entity.CompanyEmployee</class>
 		<class>com.tap.db.entity.CompanyHour</class>
-		<class>com.tap.db.entity.CompanyService</class>
+		<class>com.tap.db.entity.Service</class>
 		<class>com.tap.db.entity.CompanyType</class>
 		<class>com.tap.db.entity.Country</class>
 		<class>com.tap.db.entity.EmployeeHour</class>
 		<class>com.tap.db.entity.Role</class>
-		<class>com.tap.db.entity.Service</class>
 		<class>com.tap.db.entity.User</class>
 		<class>com.tap.db.entity.UsersRole</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
 			<property name="hibernate.show_sql" value="true"/>
+			<property name="eclipselink.weaving" value="false"/>
 		</properties>
 	</persistence-unit>
 </persistence>

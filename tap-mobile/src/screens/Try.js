@@ -1,18 +1,27 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Button, StyleSheet, Text } from "react-native";
 import { languages } from "../common/i18n";
+import HeaderDrawerButton from "../components/HeaderDrawerButton";
 import Screen from "../components/Screen";
 import I18nContext, { useTranslation } from "../store/I18nContext";
 import ThemeContext, { useThemedStyle } from "../store/ThemeContext";
 import { THEME } from "../style/themes";
 
-const Try = () => {
+
+const Try = ({ navigation }) => {
 
 	const themedStyle = useThemedStyle(createStyle);
 	const themeContext = useContext(ThemeContext);
 
 	const i18nContext = useContext(I18nContext);
 	const t = useTranslation();
+
+	useEffect(() => {
+		navigation.setOptions({
+			headerLeft: () => <HeaderDrawerButton navigation={navigation} />
+		});
+	}, []);
+
 
 	return (
 		<Screen style={themedStyle.screen} center>

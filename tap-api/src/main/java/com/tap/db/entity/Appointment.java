@@ -17,7 +17,7 @@ public class Appointment implements Serializable {
 
 	private User user;
 
-	private CompanyService companyService;
+	private Service service;
 
 	private LocalDateTime createTime;
 
@@ -59,13 +59,13 @@ public class Appointment implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "company_service_id", nullable = false)
-	public CompanyService getCompanyService() {
-		return companyService;
+	@JoinColumn(name = "service_id", nullable = false)
+	public Service getService() {
+		return service;
 	}
 
-	public Appointment setCompanyService(CompanyService companyService) {
-		this.companyService = companyService;
+	public Appointment setService(Service service) {
+		this.service = service;
 		return this;
 	}
 

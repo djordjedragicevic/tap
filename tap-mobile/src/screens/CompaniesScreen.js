@@ -9,6 +9,7 @@ import { APPOINTMENTS_SCREEN, COMPANY_SCREEN } from "../navigators/routes";
 import { useTranslation } from "../store/I18nContext";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { HeaderBackButton } from '@react-navigation/elements';
+import HeaderDrawerButton from "../components/HeaderDrawerButton";
 
 const CompaniesScreen = ({ navigation }) => {
 	const [companies, setCompanies] = useState([]);
@@ -23,23 +24,21 @@ const CompaniesScreen = ({ navigation }) => {
 		return () => process = false;
 	}, []);
 
+
 	useEffect(() => {
 		navigation.setOptions({
-			headerLeft: () => <HeaderBackButton onPress={() => navigation.openDrawer()} backImage={({ tintColor }) => {
-				
-				return <Icon name="menu" color={tintColor} size={24}/>
-			}} />
-		})
+			headerLeft: () => <HeaderDrawerButton navigation={navigation}/>
+		});
 	}, []);
 
 	const renderCompany = ({ item }) => {
 		return (
-			<Card onPress={() => navigation.navigate(COMPANY_SCREEN, { id: item.id })}>
-				<XText>{item.typeName}</XText>
-				<XText>{item.name}</XText>
-				<XText>{item.addressStreet + ' ' + item.addressNumber}</XText>
-				<XButton title={t('Appointments').toUpperCase()} onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { id: item.id })} />
-			</Card>
+			<Card onPress={() => navigation.navigate(COMPANY_SCREEN, { id: item.id })} style={styles.card} contentStyle={styles.cardContent}>
+				<XText style={styles.titleType}>{item.typeName}</XText>
+				<XText style={styles.title}>{item.name}</XText>
+				{/* <XText>{item.addressStreet + ' ' + item.addressNumber}</XText> */}
+				{/* <XButton title={t('Appointments').toUpperCase()} onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { id: item.id })} /> */}
+			</Card >
 		);
 	};
 
@@ -59,6 +58,20 @@ const CompaniesScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		paddingVertical: 4
+	},
+	card: {
+		height: 160
+	},
+	cardContent: {
+		alignItems: 'center',
+		justifyContent: 'space-evenly',
+		flex: 1
+	},
+	titleType: {
+		fontSize: 22
+	},
+	title: {
+		fontSize: 26
 	}
 });
 

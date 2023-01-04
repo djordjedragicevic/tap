@@ -1,3 +1,4 @@
+import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 
 export const THEME = {
 	LIGHT: 'Light',
@@ -15,8 +16,8 @@ export const Theme = {
 		id: THEME.LIGHT,
 		colors: {
 			primary: '#66b3ff',
-			background: '#f2f2f2',
-			backgroundElement: '#fff',
+			background: DefaultTheme.colors.background,
+			backgroundElement: DefaultTheme.colors.card,
 			textPrimary: '#404040',
 			textSecondary: '#8c8c8c',
 			textLight: '#f2f2f3',
@@ -29,8 +30,8 @@ export const Theme = {
 		id: THEME.DARK,
 		colors: {
 			primary: '#007acc',
-			background: '#000',
-			backgroundElement: '#333333',
+			background: DarkTheme.colors.background,
+			backgroundElement: DarkTheme.colors.card,
 			textPrimary: '#f2f2f3',
 			textSecondary: '#d7d7da',
 			textLight: '#f2f2f3',

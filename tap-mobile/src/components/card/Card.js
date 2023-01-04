@@ -3,41 +3,51 @@ import { useThemedStyle } from "../../store/ThemeContext";
 import XMask from "../basic/XMask";
 import HairDryer from "../images/HairDryer";
 
-const Card = ({ children, disabled, onPress }) => {
+const Card = ({ children, disabled, onPress, image, style, contentStyle }) => {
 	const styles = useThemedStyle(createStyle);
 	return (
-		<TouchableOpacity style={styles.container} onPress={onPress}>
+		<TouchableOpacity style={[styles.card, style]} onPress={onPress} disabled={disabled}>
 			<XMask enabled={disabled} />
-			<View style={{ flexDirection: 'row' }}>
-				<View>
-					<View style={{ backgroundColor: '#4d4d4d', padding: 15, borderRadius: 10 }}>
-						<HairDryer color={styles.image.color} width={80} height={80} />
+			<View style={[styles.container]}>
+				{
+					!!image &&
+					<View>
+						<View>
+							{image}
+						</View>
 					</View>
-				</View>
-				<View style={{ flex: 1, justifyContent: 'space-evenly', marginLeft: 8 }}>
+				}
+				<View style={[contentStyle]}>
 					{children}
 				</View>
 			</View>
 			<View>
 			</View>
-		</TouchableOpacity>
+		</TouchableOpacity >
 	);
 };
 
 Card.defaultProps = {
 	disabled: false,
-	onPress: () => { }
+	onPress: function () { },
+	image: null
 };
 
 const createStyle = (theme) => StyleSheet.create({
-	container: {
-		height: 160,
+	card: {
+		//height: 160,
 		padding: 8,
 		elevation: 1,
 		marginHorizontal: theme.values.mainPaddingHorizontal,
 		marginVertical: 4,
 		borderRadius: theme.values.borderRadius,
 		backgroundColor: theme.colors.backgroundElement
+	},
+	container: {
+		flexDirection: 'row',
+		flex: 1,
+		//justifyContent: 'space-evenly', 
+		//marginLeft: 8
 	},
 	image: {
 		color: theme.colors.primary

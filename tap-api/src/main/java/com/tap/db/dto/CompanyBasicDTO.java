@@ -1,6 +1,9 @@
 package com.tap.db.dto;
 
+import com.tap.db.entity.Service;
+
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class CompanyBasicDTO implements Serializable {
@@ -11,6 +14,7 @@ public class CompanyBasicDTO implements Serializable {
 	private final String addressNumber;
 	private final Float addressLongitude;
 	private final Float addressLatitude;
+	private List<Service> services;
 
 	public CompanyBasicDTO(Long id, String name, String typeName, String addressStreet, String addressNumber, Float addressLongitude, Float addressLatitude) {
 		this.id = id;
@@ -48,6 +52,13 @@ public class CompanyBasicDTO implements Serializable {
 
 	public Float getAddressLatitude() {
 		return addressLatitude;
+	}
+
+	public void setServices(List<Service> services) {
+		this.services = services;
+	}
+	public List<Service> getServices () {
+		return this.services;
 	}
 
 	@Override
