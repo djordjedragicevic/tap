@@ -45,12 +45,13 @@ public class CompanyDAO {
 
 	public List<Service> getCompanyServices(Long companyId) {
 		String query = """
-				SELECT s.id, s.name, s.duration, s.price FROM Service s
-				WHERE s.company = 1
+				SELECT s.id, s.name, s.duration, s.price, c.id FROM Service s
+				JOIN s.company c
+				WHERE c.id = :companyId
 				""";
 
 		TypedQuery<Tuple> q = em.createQuery(query, Tuple.class);
-		//q.setParameter(0, companyId);
+		q.setParameter("companyId", companyId);
 
 		List<Tuple> resDb = q.getResultList();
 		List<Service> res = new ArrayList<>();

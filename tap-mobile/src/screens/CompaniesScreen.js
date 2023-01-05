@@ -1,19 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { Http } from "../common/Http";
-import XButton from "../components/basic/XButton";
 import XText from "../components/basic/XText";
-import Card from "../components/card/Card";
 import Screen from "../components/Screen";
 import { COMPANY_SCREEN } from "../navigators/routes";
-import { useTranslation } from "../store/I18nContext";
 import HeaderDrawerButton from "../components/HeaderDrawerButton";
 import XCard from "../components/basic/XCard";
 import { values } from "../style/themes";
 
 const CompaniesScreen = ({ navigation }) => {
 	const [companies, setCompanies] = useState([]);
-	const t = useTranslation();
+
 	useEffect(() => {
 		let process = true;
 		Http.get('/company/list')
@@ -33,7 +30,7 @@ const CompaniesScreen = ({ navigation }) => {
 
 	const renderCompany = useCallback(({ item }) => {
 		return (
-			<XCard onPress={() => navigation.navigate(COMPANY_SCREEN, { id: item.id })} style={styles.card}>
+			<XCard onPress={() => navigation.navigate(COMPANY_SCREEN, { id: item.id, companyName: item.name, companyTypeName: item.typeName })} style={styles.card}>
 				<XText style={styles.titleType}>{item.typeName}</XText>
 				<XText style={styles.title}>{item.name}</XText>
 			</XCard>

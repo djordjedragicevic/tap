@@ -20,6 +20,7 @@ export const Theme = {
 			backgroundElement: DefaultTheme.colors.card,
 			textPrimary: '#404040',
 			textSecondary: '#8c8c8c',
+			textTertiary: '#cccccc',
 			textLight: '#f2f2f3',
 			borderColor: '#a6a6a6'
 		},
@@ -33,7 +34,8 @@ export const Theme = {
 			background: DarkTheme.colors.background,
 			backgroundElement: DarkTheme.colors.card,
 			textPrimary: '#f2f2f3',
-			textSecondary: '#d7d7da',
+			textSecondary: '#e4e4e7',
+			textTertiary: '#d7d7da',
 			textLight: '#f2f2f3',
 			borderColor: '#595959'
 		},

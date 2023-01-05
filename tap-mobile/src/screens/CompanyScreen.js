@@ -6,54 +6,82 @@ import { APPOINTMENTS_SCREEN } from "../navigators/routes";
 import { useCallback, useEffect, useState } from "react";
 import { Http } from "../common/Http";
 import XCard from "../components/basic/XCard";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
-import { values } from "../style/themes";
-import { useThemedStyle } from "../store/ThemeContext";
+import { FlatList, StyleSheet, View } from "react-native";
+import { convert } from "../common/currency";
+import ListSeparator from "../components/list/ListSeparator";
+import { emptyFn } from '../common/utils';
+import ListItemBasic from "../components/list/ListItemBasic";
 
-const Services = ({ services }) => {
+const Services = ({ services, onItemPress, selectedItems }) => {
 
-	const styles = useThemedStyle(createServicesStyle);
+	const onPressHandler = useCallback((idx) => onItemPress(services[idx]));
 
-	const renderItem = useCallback(({ item }) => {
+	const renderItem = ({ item, index }) => {
 		return (
-			<TouchableOpacity style={{ height: 50, flexDirection: 'row', alignItems: 'center' }}>
-				<>
-					<View style={styles.checkbox} />
-					<XText>{item.name}</XText>
-					<XText> {item.duration.split(':')[1] + '(min)'}</XText>
-					<View style={{ flex: 1 }} />
-					<XText> {item.price} KM</XText>
-				</>
-			</TouchableOpacity>
+			<ListItemBasic idx={index} selected={!!selectedItems.find(s => s.id === item.id)} onPress={onPressHandler}>
+				<XText>{item.name}</XText>
+				<XText> {item.duration + '(min)'}</XText>
+				<View style={{ flex: 1 }} />
+				<XText> {convert(item.price)}</XText>
+			</ListItemBasic>
 		)
-	}, []);
+	};
 
-	return <FlatList
-		data={services || []}
-		renderItem={renderItem}
-	/>
+	if (!Array.isArray(services))
+		return;
 
+	return (
+		<FlatList
+			data={services}
+			renderItem={renderItem}
+			ItemSeparatorComponent={ListSeparator}
+		/>
+	)
 };
 
-const createServicesStyle = (theme) => StyleSheet.create({
-	checkbox: {
-		width: 20,
-		height: 20,
-		marginHorizontal: 5,
-		borderRadius: 50,
-		borderWidth: theme.values.borderWidth,
-		borderColor: theme.colors.borderColor
-	}
-})
+Services.defaultProps = {
+	onItemPress: emptyFn,
+	selectedItems: []
+};
+
+const getDurationSum = (items) => {
+	let d = 0;
+	items.forEach(i => d += i.duration);
+	return d;
+};
 
 const CompanyScreen = ({ navigation, route }) => {
-	const [company, setCompany] = useState({
-		name: ''
-	});
+	const [company, setCompany] = useState({});
+
+	const [selectedServices, setSelectedServices] = useState([]);
 
 	const t = useTranslation();
 
+	const onServicePress = (service) => {
+		setSelectedServices(old => {
+			const newS = [...old];
+			const exist = newS.findIndex(s => s.id === service.id);
+			if (exist > -1)
+				newS.splice(exist, 1);
+			else
+				newS.push(service);
+			return newS;
+		})
+	};
+
 	useEffect(() => {
+		
+		navigation.setOptions({
+			headerTitle: () => {
+				return (
+					<>
+						<XText style={{ fontSize: 16, fontWeight: '600' }}>{route.params?.companyName}</XText>
+						<XText style={{ fontSize: 12 }} secondary>{route.params?.companyTypeName}</XText>
+					</>
+				)
+			}
+		});
+
 		let finish = true;
 		Http.get("/company/" + route.params.id)
 			.then(res => {
@@ -64,17 +92,33 @@ const CompanyScreen = ({ navigation, route }) => {
 		return () => finish = false;
 	}, []);
 
+	useEffect(() => {
+		if (company.name) {
+		}
+	}, [company]);
+
 	return (
 		<Screen>
-			<XCard>
+			{/* <XCard>
 				<XText style={{ fontWeight: '600' }}>{company.name}</XText>
 				<XText>{company.typeName}</XText>
+			</XCard> */}
+
+			<XCard style={staticStyles.cardServices}>
+				<Services services={company.services} selectedItems={selectedServices} onItemPress={onServicePress} />
 			</XCard>
-			<Services services={company.services} />
-			<XText>CompanyScreen id: {route.params.id}</XText>
-			<XButton title={t('Appointments')} onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { id: route.params.id })} />
+
+			<XButton title={t('Appointments')} onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { companyId: route.params.id, durationSum: getDurationSum(selectedServices) })} />
 		</Screen>
 	);
 };
+
+
+const staticStyles = StyleSheet.create({
+	cardServices: {
+		marginTop: 8
+	}
+})
+
 
 export default CompanyScreen;
