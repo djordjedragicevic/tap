@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CompanyWorkInfoDTO {
 	private Long id;
-	private List<CompanyWorkDay> workDays;
+	private List<CompanyWorkDayDTO> workDays;
 	private List<EmployeeDTO> employees;
 
 	public CompanyWorkInfoDTO() {
@@ -19,11 +19,11 @@ public class CompanyWorkInfoDTO {
 		return this;
 	}
 
-	public List<CompanyWorkDay> getWorkDays() {
+	public List<CompanyWorkDayDTO> getWorkDays() {
 		return workDays;
 	}
 
-	public CompanyWorkInfoDTO setWorkDays(List<CompanyWorkDay> workDays) {
+	public CompanyWorkInfoDTO setWorkDays(List<CompanyWorkDayDTO> workDays) {
 		this.workDays = workDays;
 		return this;
 	}

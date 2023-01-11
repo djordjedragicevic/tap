@@ -3,6 +3,7 @@ package com.tap.rest;
 import com.tap.TAPResponse;
 import com.tap.db.dao.AppointmentsDAO;
 import com.tap.db.dao.CompanyDAO;
+import com.tap.db.entity.EmployeeWorkDay;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Path("appointments")
@@ -24,8 +26,6 @@ public class AppointmentsREST {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getAppointments(@QueryParam("companyId") Long companyId, @QueryParam("duration") Long duration) {
 		return companyDAO.getWorkInfo(companyId);
-
-
 	}
 
 }

@@ -7,8 +7,8 @@ import java.io.Serializable;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "company_hours")
-public class CompanyHour implements Serializable {
+@Table(name = "company_work_days")
+public class CompanyWorkDay implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 4525256279221062756L;
 	private Long id;
@@ -29,7 +29,7 @@ public class CompanyHour implements Serializable {
 		return id;
 	}
 
-	public CompanyHour setId(Long id) {
+	public CompanyWorkDay setId(Long id) {
 		this.id = id;
 		return this;
 	}
@@ -40,7 +40,7 @@ public class CompanyHour implements Serializable {
 		return company;
 	}
 
-	public CompanyHour setCompany(Company company) {
+	public CompanyWorkDay setCompany(Company company) {
 		this.company = company;
 		return this;
 	}
@@ -50,7 +50,7 @@ public class CompanyHour implements Serializable {
 		return day;
 	}
 
-	public CompanyHour setDay(Byte day) {
+	public CompanyWorkDay setDay(Byte day) {
 		this.day = day;
 		return this;
 	}
@@ -60,7 +60,7 @@ public class CompanyHour implements Serializable {
 		return open;
 	}
 
-	public CompanyHour setOpen(LocalTime open) {
+	public CompanyWorkDay setOpen(LocalTime open) {
 		this.open = open;
 		return this;
 	}
@@ -70,7 +70,7 @@ public class CompanyHour implements Serializable {
 		return close;
 	}
 
-	public CompanyHour setClose(LocalTime close) {
+	public CompanyWorkDay setClose(LocalTime close) {
 		this.close = close;
 		return this;
 	}
@@ -80,7 +80,7 @@ public class CompanyHour implements Serializable {
 		return active;
 	}
 
-	public CompanyHour setActive(Byte active) {
+	public CompanyWorkDay setActive(Byte active) {
 		this.active = active;
 		return this;
 	}

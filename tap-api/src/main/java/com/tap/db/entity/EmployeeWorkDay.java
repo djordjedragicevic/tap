@@ -7,13 +7,13 @@ import java.io.Serializable;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "employee_hours")
-public class EmployeeHour implements Serializable {
+@Table(name = "employee_work_days")
+public class EmployeeWorkDay implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 4070193684653704436L;
 	private Long id;
 
-	private CompanyEmployee companyEmployee;
+	private Employee employee;
 
 	private Byte day;
 
@@ -31,19 +31,19 @@ public class EmployeeHour implements Serializable {
 		return id;
 	}
 
-	public EmployeeHour setId(Long id) {
+	public EmployeeWorkDay setId(Long id) {
 		this.id = id;
 		return this;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "company_employee_id", nullable = false)
-	public CompanyEmployee getCompanyEmployee() {
-		return companyEmployee;
+	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "employee_id", nullable = false)
+	public Employee getEmployee() {
+		return employee;
 	}
 
-	public EmployeeHour setCompanyEmployee(CompanyEmployee companyEmployee) {
-		this.companyEmployee = companyEmployee;
+	public EmployeeWorkDay setEmployee(Employee employee) {
+		this.employee = employee;
 		return this;
 	}
 
@@ -52,7 +52,7 @@ public class EmployeeHour implements Serializable {
 		return day;
 	}
 
-	public EmployeeHour setDay(Byte day) {
+	public EmployeeWorkDay setDay(Byte day) {
 		this.day = day;
 		return this;
 	}
@@ -62,7 +62,7 @@ public class EmployeeHour implements Serializable {
 		return start;
 	}
 
-	public EmployeeHour setStart(LocalTime start) {
+	public EmployeeWorkDay setStart(LocalTime start) {
 		this.start = start;
 		return this;
 	}
@@ -72,7 +72,7 @@ public class EmployeeHour implements Serializable {
 		return end;
 	}
 
-	public EmployeeHour setEnd(LocalTime end) {
+	public EmployeeWorkDay setEnd(LocalTime end) {
 		this.end = end;
 		return this;
 	}
@@ -82,7 +82,7 @@ public class EmployeeHour implements Serializable {
 		return breakStart;
 	}
 
-	public EmployeeHour setBreakStart(LocalTime breakStart) {
+	public EmployeeWorkDay setBreakStart(LocalTime breakStart) {
 		this.breakStart = breakStart;
 		return this;
 	}
@@ -92,7 +92,7 @@ public class EmployeeHour implements Serializable {
 		return breakEnd;
 	}
 
-	public EmployeeHour setBreakEnd(LocalTime breakEnd) {
+	public EmployeeWorkDay setBreakEnd(LocalTime breakEnd) {
 		this.breakEnd = breakEnd;
 		return this;
 	}

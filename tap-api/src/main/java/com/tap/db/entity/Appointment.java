@@ -11,13 +11,14 @@ import java.time.LocalDateTime;
 public class Appointment implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 8047777733962317152L;
+
 	private Long id;
 
-	private CompanyEmployee companyEmployee;
+	private Service service;
 
 	private User user;
 
-	private Service service;
+	private Employee employee;
 
 	private LocalDateTime createTime;
 
@@ -39,13 +40,13 @@ public class Appointment implements Serializable {
 	}
 
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "company_employee_id", nullable = false)
-	public CompanyEmployee getCompanyEmployee() {
-		return companyEmployee;
+	@JoinColumn(name = "service_id", nullable = false)
+	public Service getService() {
+		return service;
 	}
 
-	public Appointment setCompanyEmployee(CompanyEmployee companyEmployee) {
-		this.companyEmployee = companyEmployee;
+	public Appointment setService(Service service) {
+		this.service = service;
 		return this;
 	}
 
@@ -61,13 +62,13 @@ public class Appointment implements Serializable {
 	}
 
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "service_id", nullable = false)
-	public Service getService() {
-		return service;
+	@JoinColumn(name = "employee_id", nullable = false)
+	public Employee getEmployee() {
+		return employee;
 	}
 
-	public Appointment setService(Service service) {
-		this.service = service;
+	public Appointment setEmployee(Employee employee) {
+		this.employee = employee;
 		return this;
 	}
 
@@ -96,7 +97,7 @@ public class Appointment implements Serializable {
 		return endTime;
 	}
 
-	public Appointment setEmdTime(LocalDateTime endTime) {
+	public Appointment setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
 		return this;
 	}

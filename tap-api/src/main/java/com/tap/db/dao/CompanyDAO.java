@@ -66,27 +66,27 @@ public class CompanyDAO {
 	}
 
 
-	public Object getWorkInfo(Long companyId) {
+	public CompanyWorkInfoDTO getWorkInfo(Long companyId) {
 
 		String qWorkDays = """
-				SELECT new com.tap.db.dto.CompanyWorkDay(cH.day, cH.open, cH.close) FROM CompanyHour cH
-				WHERE cH.active = 1
-				AND cH.company.active = 1
-				AND cH.company.approved = 1
-				AND cH.company.id = :companyId
+				SELECT new com.tap.db.dto.CompanyWorkDayDTO(cWD.day, cWD.open, cWD.close) FROM CompanyWorkDay cWD
+				WHERE cWD.active = 1
+				AND cWD.company.active = 1
+				AND cWD.company.approved = 1
+				AND cWD.company.id = :companyId
 				""";
 
-		List<CompanyWorkDay> companyWorkDays = em.createQuery(qWorkDays, CompanyWorkDay.class)
+		List<CompanyWorkDayDTO> companyWorkDayDTOS = em.createQuery(qWorkDays, CompanyWorkDayDTO.class)
 				.setParameter("companyId", companyId)
 				.getResultList();
 
-		if (!companyWorkDays.isEmpty()) {
+		if (!companyWorkDayDTOS.isEmpty()) {
 
 			String qEmployeeWorkDays = """
-					SELECT cE.employee.id, cE.employee.firstName, cE.employee.lastName, eH.day, eH.start, eH.end, eH.breakStart, eH.breakEnd FROM CompanyEmployee cE
-					INNER JOIN EmployeeHour eH ON eH.companyEmployee.id = cE.id
-					WHERE cE.active = 1
-					AND cE.company.id = :companyId
+					SELECT e.user.id, e.user.firstName, e.user.lastName, eWD.day, eWD.start, eWD.end, eWD.breakStart, eWD.breakEnd FROM Employee e
+					INNER JOIN EmployeeWorkDay eWD ON eWD.employee.id = e.user.id
+					WHERE e.active = 1
+					AND e.company.id = :companyId
 					""";
 
 			List<Tuple> employeeTuples = em.createQuery(qEmployeeWorkDays, Tuple.class)
@@ -118,10 +118,14 @@ public class CompanyDAO {
 
 			return new CompanyWorkInfoDTO()
 					.setId(companyId)
-					.setWorkDays(companyWorkDays)
+					.setWorkDays(companyWorkDayDTOS)
 					.setEmployees(employeeWorkDays);
 		}
 
 		return null;
+	}
+
+	public List<com.tap.db.entity.EmployeeWorkDay> getEmployeeWorkDays(Long companyId) {
+		return em.createQuery("SELECT eWD FROM EmployeeWorkDay eWD WHERE eWD.employee.company.id = 1", com.tap.db.entity.EmployeeWorkDay.class).getResultList();
 	}
 }

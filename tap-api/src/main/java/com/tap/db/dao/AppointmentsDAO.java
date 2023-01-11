@@ -21,10 +21,10 @@ public class AppointmentsDAO {
 
 	public List<Appointment> getAppointments(Long companyId, Long duration) {
 		String query = """
-				SELECT new com.tap.db.dto.AppointmentDTO(a.id, s.id, cE.id, u.id, a.createTime, a.startTime, a.endTime)
+				SELECT new com.tap.db.dto.AppointmentDTO(a.id, s.id, e.id, u.id, a.createTime, a.startTime, a.endTime)
 				FROM Appointment a
 				JOIN a.service s
-				JOIN a.companyEmployee cE
+				JOIN a.employee e
 				JOIN a.user u
 				""";
 

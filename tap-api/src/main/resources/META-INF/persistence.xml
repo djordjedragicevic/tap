@@ -29,12 +29,12 @@
 		<class>com.tap.db.entity.Appointment</class>
 		<class>com.tap.db.entity.City</class>
 		<class>com.tap.db.entity.Company</class>
-		<class>com.tap.db.entity.CompanyEmployee</class>
-		<class>com.tap.db.entity.CompanyHour</class>
+		<class>com.tap.db.entity.Employee</class>
+		<class>com.tap.db.entity.CompanyWorkDay</class>
 		<class>com.tap.db.entity.Service</class>
 		<class>com.tap.db.entity.CompanyType</class>
 		<class>com.tap.db.entity.Country</class>
-		<class>com.tap.db.entity.EmployeeHour</class>
+		<class>com.tap.db.entity.EmployeeWorkDay</class>
 		<class>com.tap.db.entity.Role</class>
 		<class>com.tap.db.entity.User</class>
 		<class>com.tap.db.entity.UsersRole</class>
