@@ -23,7 +23,8 @@ export class Http {
 		});
 	}
 
-	static get(url) {
-		return this.send(url);
+	static get(url, qParams) {
+		let _url = qParams ? url + '?' + new URLSearchParams(qParams) : url;
+		return this.send(_url);
 	}
 }

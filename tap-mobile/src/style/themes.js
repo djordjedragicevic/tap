@@ -8,7 +8,8 @@ export const THEME = {
 export const values = {
 	mainPaddingHorizontal: 8,
 	borderRadius: 6,
-	borderWidth: 0.8
+	borderWidth: 0.8,
+	disabledOpacity: 0.7
 }
 
 export const Theme = {

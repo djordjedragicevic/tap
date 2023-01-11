@@ -70,7 +70,7 @@ const CompanyScreen = ({ navigation, route }) => {
 	};
 
 	useEffect(() => {
-		
+
 		navigation.setOptions({
 			headerTitle: () => {
 				return (
@@ -92,11 +92,6 @@ const CompanyScreen = ({ navigation, route }) => {
 		return () => finish = false;
 	}, []);
 
-	useEffect(() => {
-		if (company.name) {
-		}
-	}, [company]);
-
 	return (
 		<Screen>
 			{/* <XCard>
@@ -108,7 +103,12 @@ const CompanyScreen = ({ navigation, route }) => {
 				<Services services={company.services} selectedItems={selectedServices} onItemPress={onServicePress} />
 			</XCard>
 
-			<XButton title={t('Appointments')} onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { companyId: route.params.id, durationSum: getDurationSum(selectedServices) })} />
+			<XButton
+				style={{marginTop: 10}}
+				disabled={!selectedServices || selectedServices?.length === 0}
+				title={t('Appointments')}
+				onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { companyId: route.params.id, durationSum: getDurationSum(selectedServices) })}
+			/>
 		</Screen>
 	);
 };
@@ -116,7 +116,7 @@ const CompanyScreen = ({ navigation, route }) => {
 
 const staticStyles = StyleSheet.create({
 	cardServices: {
-		marginTop: 8
+
 	}
 })
 
