@@ -17,9 +17,13 @@ public class CompanyWorkDay implements Serializable {
 
 	private Byte day;
 
-	private LocalTime open;
+	private LocalTime start;
 
-	private LocalTime close;
+	private LocalTime end;
+
+	private LocalTime breakStart;
+
+	private LocalTime breakEnd;
 
 	private Byte active;
 
@@ -55,31 +59,50 @@ public class CompanyWorkDay implements Serializable {
 		return this;
 	}
 
-	@Column(name = "open")
-	public LocalTime getOpen() {
-		return open;
+	@Column(name = "start")
+	public LocalTime getStart() {
+		return start;
 	}
 
-	public CompanyWorkDay setOpen(LocalTime open) {
-		this.open = open;
+	public CompanyWorkDay setStart(LocalTime start) {
+		this.start = start;
 		return this;
 	}
 
-	@Column(name = "close")
-	public LocalTime getClose() {
-		return close;
+	@Column(name = "end")
+	public LocalTime getEnd() {
+		return end;
 	}
 
-	public CompanyWorkDay setClose(LocalTime close) {
-		this.close = close;
+	public CompanyWorkDay setEnd(LocalTime end) {
+		this.end = end;
 		return this;
 	}
 
-	@Column(name = "active", nullable = false)
+	@Column(name = "break_start")
+	public LocalTime getBreakStart() {
+		return breakStart;
+	}
+
+	public CompanyWorkDay setBreakStart(LocalTime breakStart) {
+		this.breakStart = breakStart;
+		return this;
+	}
+
+	@Column(name = "break_end")
+	public LocalTime getBreakEnd() {
+		return breakEnd;
+	}
+
+	public CompanyWorkDay setBreakEnd(LocalTime breakEnd) {
+		this.breakEnd = breakEnd;
+		return this;
+	}
+
+	@Column(name = "active")
 	public Byte getActive() {
 		return active;
 	}
-
 	public CompanyWorkDay setActive(Byte active) {
 		this.active = active;
 		return this;

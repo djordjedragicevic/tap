@@ -20,6 +20,8 @@ public class Appointment implements Serializable {
 
 	private Employee employee;
 
+	private User createdBy;
+
 	private LocalDateTime createTime;
 
 	private LocalDateTime startTime;
@@ -39,7 +41,7 @@ public class Appointment implements Serializable {
 		return this;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "service_id", nullable = false)
 	public Service getService() {
 		return service;
@@ -50,7 +52,7 @@ public class Appointment implements Serializable {
 		return this;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_id", nullable = false)
 	public User getUser() {
 		return user;
@@ -61,7 +63,18 @@ public class Appointment implements Serializable {
 		return this;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "created_by_id", nullable = false)
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public Appointment setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+		return this;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "employee_id", nullable = false)
 	public Employee getEmployee() {
 		return employee;

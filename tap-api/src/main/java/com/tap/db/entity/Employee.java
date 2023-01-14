@@ -29,7 +29,7 @@ public class Employee implements Serializable {
 		return this;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "employee_id", nullable = false)
 	public User getUser() {
 		return user;

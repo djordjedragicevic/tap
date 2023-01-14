@@ -22,7 +22,7 @@ public class Service implements Serializable {
 
 	private BigDecimal price;
 
-	private Byte active;
+//	private Byte active;
 
 	@Id
 	@Column(name = "id", columnDefinition = "INT UNSIGNED not null")
@@ -76,14 +76,14 @@ public class Service implements Serializable {
 		return this;
 	}
 
-	@Column(name = "active", nullable = false)
-	public Byte getActive() {
-		return active;
-	}
-
-	public Service setActive(Byte active) {
-		this.active = active;
-		return this;
-	}
+//	@Column(name = "active", nullable = false)
+//	public Byte getActive() {
+//		return active;
+//	}
+//
+//	public Service setActive(Byte active) {
+//		this.active = active;
+//		return this;
+//	}
 
 }

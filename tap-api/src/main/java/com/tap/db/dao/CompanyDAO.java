@@ -69,7 +69,7 @@ public class CompanyDAO {
 	public CompanyWorkInfoDTO getWorkInfo(Long companyId) {
 
 		String qWorkDays = """
-				SELECT new com.tap.db.dto.CompanyWorkDayDTO(cWD.day, cWD.open, cWD.close) FROM CompanyWorkDay cWD
+				SELECT new com.tap.db.dto.CompanyWorkDayDTO(cWD.day, cWD.start, cWD.end) FROM CompanyWorkDay cWD
 				WHERE cWD.active = 1
 				AND cWD.company.active = 1
 				AND cWD.company.approved = 1

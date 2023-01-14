@@ -1,4 +1,4 @@
-package com.tap.rest;
+package com.tap.services;
 
 import com.tap.TAPResponse;
 import com.tap.db.dao.CompanyDAO;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Path("company")
-public class CompanyREST {
+public class CompanyService {
 
 	@Inject
 	private CompanyDAO companyDAO;

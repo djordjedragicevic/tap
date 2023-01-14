@@ -1,5 +1,6 @@
 package com.tap.db.dao;
 
+import com.tap.db.dto.AppointmentDTO;
 import com.tap.db.dto.CompanyBasicDTO;
 import com.tap.db.entity.Appointment;
 import com.tap.db.entity.Service;
@@ -10,6 +11,8 @@ import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,16 +22,8 @@ public class AppointmentsDAO {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
 
-	public List<Appointment> getAppointments(Long companyId, Long duration) {
-		String query = """
-				SELECT new com.tap.db.dto.AppointmentDTO(a.id, s.id, e.id, u.id, a.createTime, a.startTime, a.endTime)
-				FROM Appointment a
-				JOIN a.service s
-				JOIN a.employee e
-				JOIN a.user u
-				""";
-
-		return em.createQuery(query, Appointment.class).getResultList();
+	public List<Appointment> getAppointments(Long companyId, LocalDate date) {
+		return em.createQuery("SELECT a FROM Appointment a", Appointment.class).getResultList();
 	}
 
 	public List<Service> getCompanyServices(Long companyId) {

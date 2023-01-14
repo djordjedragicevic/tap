@@ -25,6 +25,8 @@ public class EmployeeWorkDay implements Serializable {
 
 	private LocalTime breakEnd;
 
+	private Byte active;
+
 	@Id
 	@Column(name = "id", columnDefinition = "INT UNSIGNED not null")
 	public Long getId() {
@@ -94,6 +96,15 @@ public class EmployeeWorkDay implements Serializable {
 
 	public EmployeeWorkDay setBreakEnd(LocalTime breakEnd) {
 		this.breakEnd = breakEnd;
+		return this;
+	}
+
+	@Column(name = "active")
+	public Byte getActive() {
+		return active;
+	}
+	public EmployeeWorkDay setActive(Byte active) {
+		this.active = active;
 		return this;
 	}
 
