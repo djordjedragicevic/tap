@@ -1,6 +1,7 @@
 package com.tap.db.dao;
 
-import com.tap.db.dto.*;
+import com.tap.db.dto.CompanyBasicDTO;
+import com.tap.db.entity.EmployeeWorkDay;
 import com.tap.db.entity.Service;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ public class CompanyDAO {
 
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
+
 
 	public List<CompanyBasicDTO> getCompaniesBasic() {
 		String query = """
@@ -66,66 +68,78 @@ public class CompanyDAO {
 	}
 
 
-	public CompanyWorkInfoDTO getWorkInfo(Long companyId) {
+//	public CompanyWorkInfoDTO getWorkInfo(Long companyId) {
+//
+//		String qWorkDays = """
+//				SELECT new com.tap.db.dto.CompanyWorkDayDTO(cWD.day, cWD.start, cWD.end) FROM CompanyWorkDay cWD
+//				WHERE cWD.active = 1
+//				AND cWD.company.active = 1
+//				AND cWD.company.approved = 1
+//				AND cWD.company.id = :companyId
+//				""";
+//
+//		List<CompanyWorkDayDTO> companyWorkDayDTOS = em.createQuery(qWorkDays, CompanyWorkDayDTO.class)
+//				.setParameter("companyId", companyId)
+//				.getResultList();
+//
+//		if (!companyWorkDayDTOS.isEmpty()) {
+//
+//			String qEmployeeWorkDays = """
+//					SELECT e.user.id, e.user.firstName, e.user.lastName, eWD.day, eWD.start, eWD.end, eWD.breakStart, eWD.breakEnd FROM Employee e
+//					INNER JOIN EmployeeWorkDay eWD ON eWD.employee.id = e.user.id
+//					WHERE e.active = 1
+//					AND e.company.id = :companyId
+//					""";
+//
+//			List<Tuple> employeeTuples = em.createQuery(qEmployeeWorkDays, Tuple.class)
+//					.setParameter("companyId", companyId)
+//					.getResultList();
+//
+//			List<EmployeeDTO> employeeWorkDays = new ArrayList<>();
+//
+//			employeeTuples.forEach(t -> {
+//				EmployeeDTO cE = employeeWorkDays.stream().filter(c -> c.getId().longValue() == t.get(0, Long.class).longValue())
+//						.findFirst()
+//						.orElseGet(() -> {
+//							employeeWorkDays.add(new EmployeeDTO(
+//									t.get(0, Long.class),
+//									t.get(1, String.class),
+//									t.get(2, String.class)));
+//
+//							return employeeWorkDays.get(employeeWorkDays.size() - 1);
+//						});
+//
+//				cE.getWorkingHours().add(new EmployeeWorkDay(
+//						t.get(3, Byte.class),
+//						t.get(4, LocalTime.class),
+//						t.get(5, LocalTime.class),
+//						t.get(6, LocalTime.class),
+//						t.get(7, LocalTime.class))
+//				);
+//			});
+//
+//			return new CompanyWorkInfoDTO()
+//					.setId(companyId)
+//					.setWorkDays(companyWorkDayDTOS)
+//					.setEmployees(employeeWorkDays);
+//		}
+//
+//		return null;
+//	}
 
-		String qWorkDays = """
-				SELECT new com.tap.db.dto.CompanyWorkDayDTO(cWD.day, cWD.start, cWD.end) FROM CompanyWorkDay cWD
-				WHERE cWD.active = 1
-				AND cWD.company.active = 1
-				AND cWD.company.approved = 1
-				AND cWD.company.id = :companyId
+	public List<EmployeeWorkDay> getEmployeesWorkDayInfo(long companyId, int d) {
+		String q = """
+				SELECT eWD FROM EmployeeWorkDay eWD
+				WHERE eWD.employee.company.id = :cId
+				AND eWD.employee.company.active = 1
+				AND eWD.employee.company.approved = 1
+				AND eWD.active = 1
+				AND eWD.day = :d
+				AND eWD.employee.active = 1
 				""";
-
-		List<CompanyWorkDayDTO> companyWorkDayDTOS = em.createQuery(qWorkDays, CompanyWorkDayDTO.class)
-				.setParameter("companyId", companyId)
+		return em.createQuery(q, EmployeeWorkDay.class)
+				.setParameter("cId", companyId)
+				.setParameter("d", d)
 				.getResultList();
-
-		if (!companyWorkDayDTOS.isEmpty()) {
-
-			String qEmployeeWorkDays = """
-					SELECT e.user.id, e.user.firstName, e.user.lastName, eWD.day, eWD.start, eWD.end, eWD.breakStart, eWD.breakEnd FROM Employee e
-					INNER JOIN EmployeeWorkDay eWD ON eWD.employee.id = e.user.id
-					WHERE e.active = 1
-					AND e.company.id = :companyId
-					""";
-
-			List<Tuple> employeeTuples = em.createQuery(qEmployeeWorkDays, Tuple.class)
-					.setParameter("companyId", companyId)
-					.getResultList();
-
-			List<EmployeeDTO> employeeWorkDays = new ArrayList<>();
-
-			employeeTuples.forEach(t -> {
-				EmployeeDTO cE = employeeWorkDays.stream().filter(c -> c.getId().longValue() == t.get(0, Long.class).longValue())
-						.findFirst()
-						.orElseGet(() -> {
-							employeeWorkDays.add(new EmployeeDTO(
-									t.get(0, Long.class),
-									t.get(1, String.class),
-									t.get(2, String.class)));
-
-							return employeeWorkDays.get(employeeWorkDays.size() - 1);
-						});
-
-				cE.getWorkingHours().add(new EmployeeWorkDay(
-						t.get(3, Byte.class),
-						t.get(4, LocalTime.class),
-						t.get(5, LocalTime.class),
-						t.get(6, LocalTime.class),
-						t.get(7, LocalTime.class))
-				);
-			});
-
-			return new CompanyWorkInfoDTO()
-					.setId(companyId)
-					.setWorkDays(companyWorkDayDTOS)
-					.setEmployees(employeeWorkDays);
-		}
-
-		return null;
-	}
-
-	public List<com.tap.db.entity.EmployeeWorkDay> getEmployeeWorkDays(Long companyId) {
-		return em.createQuery("SELECT eWD FROM EmployeeWorkDay eWD WHERE eWD.employee.company.id = 1", com.tap.db.entity.EmployeeWorkDay.class).getResultList();
 	}
 }

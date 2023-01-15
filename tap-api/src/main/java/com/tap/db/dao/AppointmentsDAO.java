@@ -23,7 +23,27 @@ public class AppointmentsDAO {
 	private EntityManager em;
 
 	public List<Appointment> getAppointments(Long companyId, LocalDate date) {
-		return em.createQuery("SELECT a FROM Appointment a", Appointment.class).getResultList();
+		LocalDateTime start = date.atStartOfDay();
+		String q = """
+				SELECT a FROM Appointment a, CompanyWorkDay cWD
+				WHERE cWD.company.id = :companyId
+				AND cWD.active = 1
+				AND cWD.day = :day
+				
+				AND a.company.id = :cId
+				AND a.company.active = 1
+				AND a.startTime BETWEEN :start AND :end
+				""";
+
+		TypedQuery<Appointment> tQ = em.createQuery(q, Appointment.class)
+				.setParameter("day", start.getDayOfWeek().getValue())
+				.setParameter("companyId", companyId)
+				.setParameter("cId", companyId)
+				.setParameter("start", start)
+				.setParameter("end", start.plusDays(1));
+
+
+		return tQ.getResultList();
 	}
 
 	public List<Service> getCompanyServices(Long companyId) {

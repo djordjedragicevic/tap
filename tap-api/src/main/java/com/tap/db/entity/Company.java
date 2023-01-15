@@ -33,7 +33,7 @@ public class Company implements Serializable {
 
 	private LocalDateTime approvedDate;
 
-//	private Byte active;
+	private Byte active;
 
 	@Id
 	@Column(name = "id", columnDefinition = "INT UNSIGNED not null")
@@ -150,14 +150,14 @@ public class Company implements Serializable {
 		return this;
 	}
 
-//	@Column(name = "active", nullable = false)
-//	public Byte getActive() {
-//		return active;
-//	}
-//
-//	public Company setActive(Byte active) {
-//		this.active = active;
-//		return this;
-//	}
+	@Column(name = "active", nullable = false)
+	public Byte getActive() {
+		return active;
+	}
+
+	public Company setActive(Byte active) {
+		this.active = active;
+		return this;
+	}
 
 }
