@@ -2,3 +2,4 @@ tap-api/target/
 tap-api/.idea
 tap-api/.jpb
 tap-api/.mvn
+tap-api/ObjectStore/ShadowNoFileLockStore/defaultStore/Recovery/TransactionStatusManager/

@@ -1,13 +1,15 @@
 package com.tap.db.dao;
 
 import com.tap.db.dto.CompanyBasicDTO;
+import com.tap.db.dto.CompanyWorkDayDTO;
+import com.tap.db.dto.UserDTO;
+import com.tap.db.dto.EmployeeWorkDayDTO;
 import com.tap.db.entity.EmployeeWorkDay;
 import com.tap.db.entity.Service;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,39 @@ public class CompanyDAO {
 
 		return q.getSingleResult();
 	}
+
+	public List<EmployeeWorkDayDTO> getEmployeesWorkInfoAtDay(long companyId, int day) {
+
+		String q = """
+				SELECT new com.tap.db.dto.EmployeeWorkDayDTO (eWD.id, u.id, u.firstName, u.lastName, u.username, eWD.day, eWD.start, eWD.end, eWD.breakStart, eWD.breakEnd) 
+				FROM EmployeeWorkDay eWD JOIN eWD.employee e JOIN e.user u
+				WHERE eWD.employee.company.id = :companyId
+				AND e.active = 1
+				AND eWD.active = 1
+				AND eWD.day = :day
+				""";
+
+		return em.createQuery(q, EmployeeWorkDayDTO.class)
+				.setParameter("companyId", companyId)
+				.setParameter("day", day)
+				.getResultList();
+
+	}
+
+	public CompanyWorkDayDTO getCompanyWorkInfoAtDay(long companyId, int day) {
+		String q = """
+				SELECT new com.tap.db.dto.CompanyWorkDayDTO(cWD.company.id, cWD.day, cWD.start, cWD.end, cWD.breakStart, cWD.breakEnd) FROM CompanyWorkDay cWD
+				WHERE cWD.active = 1
+				AND cWD.day = :day
+				AND cWD.company.id = :companyId
+				""";
+
+		return em.createQuery(q, CompanyWorkDayDTO.class)
+				.setParameter("companyId", companyId)
+				.setParameter("day", day)
+				.getSingleResult();
+	}
+
 
 	public List<Service> getCompanyServices(Long companyId) {
 		String query = """
@@ -86,7 +121,7 @@ public class CompanyDAO {
 //
 //			String qEmployeeWorkDays = """
 //					SELECT e.user.id, e.user.firstName, e.user.lastName, eWD.day, eWD.start, eWD.end, eWD.breakStart, eWD.breakEnd FROM Employee e
-//					INNER JOIN EmployeeWorkDay eWD ON eWD.employee.id = e.user.id
+//					INNER JOIN EmployeeWorkDayDTO eWD ON eWD.employee.id = e.user.id
 //					WHERE e.active = 1
 //					AND e.company.id = :companyId
 //					""";
@@ -95,13 +130,13 @@ public class CompanyDAO {
 //					.setParameter("companyId", companyId)
 //					.getResultList();
 //
-//			List<EmployeeDTO> employeeWorkDays = new ArrayList<>();
+//			List<UserDTO> employeeWorkDays = new ArrayList<>();
 //
 //			employeeTuples.forEach(t -> {
-//				EmployeeDTO cE = employeeWorkDays.stream().filter(c -> c.getId().longValue() == t.get(0, Long.class).longValue())
+//				UserDTO cE = employeeWorkDays.stream().filter(c -> c.getId().longValue() == t.get(0, Long.class).longValue())
 //						.findFirst()
 //						.orElseGet(() -> {
-//							employeeWorkDays.add(new EmployeeDTO(
+//							employeeWorkDays.add(new UserDTO(
 //									t.get(0, Long.class),
 //									t.get(1, String.class),
 //									t.get(2, String.class)));
@@ -109,7 +144,7 @@ public class CompanyDAO {
 //							return employeeWorkDays.get(employeeWorkDays.size() - 1);
 //						});
 //
-//				cE.getWorkingHours().add(new EmployeeWorkDay(
+//				cE.getWorkingHours().add(new EmployeeWorkDayDTO(
 //						t.get(3, Byte.class),
 //						t.get(4, LocalTime.class),
 //						t.get(5, LocalTime.class),

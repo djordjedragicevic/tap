@@ -1,8 +1,5 @@
-package com.tap.db.dao;
+package com.tap.appointments;
 
-import com.tap.db.dto.AppointmentDTO;
-import com.tap.db.dto.CompanyBasicDTO;
-import com.tap.db.entity.Appointment;
 import com.tap.db.entity.Service;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
@@ -22,25 +19,20 @@ public class AppointmentsDAO {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
 
-	public List<Appointment> getAppointments(Long companyId, LocalDate date) {
+	public List<AppointmentDTO> getAppointments(Long companyId, LocalDate date) {
 		LocalDateTime start = date.atStartOfDay();
 		String q = """
-				SELECT a FROM Appointment a, CompanyWorkDay cWD
-				WHERE cWD.company.id = :companyId
-				AND cWD.active = 1
-				AND cWD.day = :day
-				
-				AND a.company.id = :cId
+				SELECT new com.tap.appointments.AppointmentDTO(a.id, a.employee.id, a.user.id, a.createdBy.id,a .service.id, a.company.id, a.createTime, a.startTime,a.endTime, a.comment) FROM Appointment a
+				WHERE a.company.id = :companyId
 				AND a.company.active = 1
+				AND a.company.approved = 1
 				AND a.startTime BETWEEN :start AND :end
 				""";
 
-		TypedQuery<Appointment> tQ = em.createQuery(q, Appointment.class)
-				.setParameter("day", start.getDayOfWeek().getValue())
+		TypedQuery<AppointmentDTO> tQ = em.createQuery(q, AppointmentDTO.class)
 				.setParameter("companyId", companyId)
-				.setParameter("cId", companyId)
 				.setParameter("start", start)
-				.setParameter("end", start.plusDays(1));
+				.setParameter("end", start.plusHours(24));
 
 
 		return tQ.getResultList();
