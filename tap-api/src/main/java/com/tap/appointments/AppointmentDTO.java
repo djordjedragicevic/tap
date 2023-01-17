@@ -12,4 +12,19 @@ public record AppointmentDTO(Long id,
 							 LocalDateTime startTime,
 							 LocalDateTime endTime,
 							 String comment) {
+	@Override
+	public String toString() {
+		return "AppointmentDTO{" +
+			   "id=" + id +
+			   ", employeeId=" + employeeId +
+			   ", userId=" + userId +
+			   ", createdById=" + createdById +
+			   ", serviceId=" + serviceId +
+			   ", companyId=" + companyId +
+			   ", createTime=" + createTime +
+			   ", startTime=" + startTime +
+			   ", endTime=" + endTime +
+			   ", comment='" + comment + '\'' +
+			   '}';
+	}
 }

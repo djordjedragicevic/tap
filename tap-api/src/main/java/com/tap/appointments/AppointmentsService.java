@@ -38,27 +38,21 @@ public class AppointmentsService {
 
 		CompanyWorkDayDTO c = companyDAO.getCompanyWorkInfoAtDay(companyId, day);
 		List<AppointmentDTO> apps = appointmentsDAO.getAppointments(companyId, date);
-
-		List<Map<String, Object>> periods = new ArrayList<>();
-
-		//Sort appointments by employee
-		Map<Long, List<AppointmentDTO>> appsByEmployee = new HashMap<>();
-		apps.forEach(a -> appsByEmployee.computeIfAbsent(a.employeeId(), k -> new ArrayList<>()).add(a));
-
 		List<EmployeeWorkDayDTO> eWD = companyDAO.getEmployeesWorkInfoAtDay(companyId, day);
+		List<Map<String, Object>> periods = new ArrayList<>();
 
 		//Arrange appointments by user
 		for (EmployeeWorkDayDTO e : eWD) {
 
-			List<AppointmentDTO> userApps = apps.stream().filter(a -> a.userId() == e.id()).toList();
+			List<AppointmentDTO> userApps = apps.stream().filter(a -> a.employeeId() == e.userId()).toList();
 
 			//Create BUSY TimePeriods
 			List<TimePeriod> timePeriods = new ArrayList<>(userApps.stream().map(a -> new TimePeriod(a.startTime(), a.endTime(), TimePeriod.BUSY, TimePeriod.BUSY_STANDARD)).toList());
 
 			if (e.breakEnd().isAfter(e.breakStart()))
 				timePeriods.add(new TimePeriod(LocalDateTime.of(date, e.breakStart()), LocalDateTime.of(date, e.breakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
-			else if (c.breakStart() != null && c.breakEnd() != null && c.breakEnd().isAfter(c.breakStart()))
-				timePeriods.add(new TimePeriod(LocalDateTime.of(date, c.breakStart()), LocalDateTime.of(date, c.breakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
+			else if (c.getBreakStart() != null && c.getBreakEnd() != null && c.getBreakEnd().isAfter(c.getBreakStart()))
+				timePeriods.add(new TimePeriod(LocalDateTime.of(date, c.getBreakStart()), LocalDateTime.of(date, c.getBreakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
 
 			timePeriods.sort(Comparator.comparing(TimePeriod::start));
 
@@ -67,12 +61,12 @@ public class AppointmentsService {
 
 			//Create TimeDots from TimePeriods
 			List<TimeDot> timeDots = new ArrayList<>();
-			timeDots.add(new TimeDot(c.start().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_OPEN));
+			timeDots.add(new TimeDot(c.getStart().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_OPEN));
 			timePeriods.forEach(tP -> {
 				timeDots.add(new TimeDot(tP.start().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_CLOSE));
 				timeDots.add(new TimeDot(tP.end().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_OPEN));
 			});
-			timeDots.add(new TimeDot(c.end().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_CLOSE));
+			timeDots.add(new TimeDot(c.getEnd().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_CLOSE));
 
 			int tmpFPStart = -1;
 			int closedDotCounter = 0;
@@ -99,6 +93,15 @@ public class AppointmentsService {
 		}
 
 		return Map.of("company", c, "periods", periods);
+	}
+
+	@GET
+	@Path("/free-appointments")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Object getFreeAppointments(){
+		Map<String, Object> resp = null;
+
+		return resp;
 	}
 
 }

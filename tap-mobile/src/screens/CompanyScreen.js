@@ -86,7 +86,7 @@ const CompanyScreen = ({ navigation, route }) => {
 		Http.get("/company/" + route.params.id)
 			.then(res => {
 				if (finish)
-					setCompany(res.data);
+					setCompany(res);
 			});
 
 		return () => finish = false;

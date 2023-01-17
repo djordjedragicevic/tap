@@ -1,9 +1,6 @@
 package com.tap.db.dao;
 
-import com.tap.db.dto.CompanyBasicDTO;
-import com.tap.db.dto.CompanyWorkDayDTO;
-import com.tap.db.dto.UserDTO;
-import com.tap.db.dto.EmployeeWorkDayDTO;
+import com.tap.db.dto.*;
 import com.tap.db.entity.EmployeeWorkDay;
 import com.tap.db.entity.Service;
 import jakarta.enterprise.context.RequestScoped;
@@ -12,6 +9,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RequestScoped
 public class CompanyDAO {
@@ -78,28 +76,15 @@ public class CompanyDAO {
 	}
 
 
-	public List<Service> getCompanyServices(Long companyId) {
+	public List<ServiceDTO> getCompanyServices(Long companyId) {
 		String query = """
-				SELECT s.id, s.name, s.duration, s.price, c.id FROM Service s
-				JOIN s.company c
-				WHERE c.id = :companyId
+				SELECT new com.tap.db.dto.ServiceDTO(s.id, s.name, s.duration, s.price) FROM Service s
+				WHERE s.company.id = :companyId
 				""";
 
-		TypedQuery<Tuple> q = em.createQuery(query, Tuple.class);
-		q.setParameter("companyId", companyId);
-
-		List<Tuple> resDb = q.getResultList();
-		List<Service> res = new ArrayList<>();
-
-		resDb.forEach(r -> res.add(
-				new Service()
-						.setId(r.get(0, Long.class))
-						.setName(r.get(1, String.class))
-						.setDuration(r.get(2, Short.class))
-						.setPrice(r.get(3, BigDecimal.class))
-		));
-
-		return res;
+		return em.createQuery(query, ServiceDTO.class)
+				.setParameter("companyId", companyId).
+				getResultList();
 	}
 
 
