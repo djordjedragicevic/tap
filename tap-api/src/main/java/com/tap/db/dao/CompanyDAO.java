@@ -80,11 +80,28 @@ public class CompanyDAO {
 		String query = """
 				SELECT new com.tap.db.dto.ServiceDTO(s.id, s.name, s.duration, s.price) FROM Service s
 				WHERE s.company.id = :companyId
+				AND s.company.id = 1
+				AND s.active = 1
 				""";
 
 		return em.createQuery(query, ServiceDTO.class)
 				.setParameter("companyId", companyId).
 				getResultList();
+	}
+
+	public List<Integer> getServiceDurations(Long companyId, List<Long> ids) {
+		String query = """
+				SELECT s.duration FROM Service s
+				WHERE s.company.id = :companyId
+				AND s.company.id = 1
+				AND s.active = 1
+				AND s.id IN :ids
+				""";
+
+		return em.createQuery(query, Integer.class)
+				.setParameter("companyId", companyId)
+				.setParameter("ids", ids)
+				.getResultList();
 	}
 
 

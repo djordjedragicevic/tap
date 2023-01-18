@@ -8,8 +8,11 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -26,20 +29,22 @@ public class AppointmentsService {
 	@GET
 	@Path("calendar")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Object getAppointments(
+	public AppointmentsResp getAppointments(
 			@QueryParam("cId") long companyId,
-			@QueryParam("y") int y,
-			@QueryParam("m") int m,
-			@QueryParam("d") int d
+			@QueryParam("from") String from,
+			int duration
 	) {
 
-		LocalDate date = LocalDate.of(y, m, d);
-		int day = date.getDayOfWeek().getValue();
+		LocalDateTime dTFrom = LocalDateTime.parse(from, DateTimeFormatter.ISO_DATE_TIME);
+		LocalDateTime dTTo = LocalDate.from(dTFrom).atTime(LocalTime.MAX);
+		LocalDate dFrom = LocalDate.from(dTFrom);
+		LocalDateTime startOfDay = dFrom.atStartOfDay();
+		int day = dTFrom.getDayOfWeek().getValue();
 
 		CompanyWorkDayDTO c = companyDAO.getCompanyWorkInfoAtDay(companyId, day);
-		List<AppointmentDTO> apps = appointmentsDAO.getAppointments(companyId, date);
+		List<AppointmentDTO> apps = appointmentsDAO.getAppointments(companyId, dTFrom, dTTo);
 		List<EmployeeWorkDayDTO> eWD = companyDAO.getEmployeesWorkInfoAtDay(companyId, day);
-		List<Map<String, Object>> periods = new ArrayList<>();
+		List<AppointmentsResp.EmployeePeriod> periods = new ArrayList<>();
 
 		//Arrange appointments by user
 		for (EmployeeWorkDayDTO e : eWD) {
@@ -47,17 +52,14 @@ public class AppointmentsService {
 			List<AppointmentDTO> userApps = apps.stream().filter(a -> a.employeeId() == e.userId()).toList();
 
 			//Create BUSY TimePeriods
-			List<TimePeriod> timePeriods = new ArrayList<>(userApps.stream().map(a -> new TimePeriod(a.startTime(), a.endTime(), TimePeriod.BUSY, TimePeriod.BUSY_STANDARD)).toList());
+			List<TimePeriod> timePeriods = new ArrayList<>(userApps.stream().map(a -> new TimePeriod(a.startTime(), a.endTime(), TimePeriod.BUSY, TimePeriod.BUSY_APPOINTMENT)).toList());
 
 			if (e.breakEnd().isAfter(e.breakStart()))
-				timePeriods.add(new TimePeriod(LocalDateTime.of(date, e.breakStart()), LocalDateTime.of(date, e.breakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
+				timePeriods.add(new TimePeriod(LocalDateTime.of(dFrom, e.breakStart()), LocalDateTime.of(dFrom, e.breakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
 			else if (c.getBreakStart() != null && c.getBreakEnd() != null && c.getBreakEnd().isAfter(c.getBreakStart()))
-				timePeriods.add(new TimePeriod(LocalDateTime.of(date, c.getBreakStart()), LocalDateTime.of(date, c.getBreakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
+				timePeriods.add(new TimePeriod(LocalDateTime.of(dFrom, c.getBreakStart()), LocalDateTime.of(dFrom, c.getBreakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
 
 			timePeriods.sort(Comparator.comparing(TimePeriod::start));
-
-			System.out.println("--------------------------");
-			timePeriods.forEach(System.out::println);
 
 			//Create TimeDots from TimePeriods
 			List<TimeDot> timeDots = new ArrayList<>();
@@ -79,27 +81,69 @@ public class AppointmentsService {
 					if (closedDotCounter == 0)
 						tmpFPStart = tD.timeInDay();
 				} else if (tD.type() == TimeDot.FREE_CLOSE) {
-					if (closedDotCounter == 0 && tmpFPStart < tD.timeInDay())
-						timePeriods.add(new TimePeriod(
-								date.atStartOfDay().plus(tmpFPStart, ChronoUnit.MINUTES),
-								date.atStartOfDay().plus(tD.timeInDay(), ChronoUnit.MINUTES),
-								TimePeriod.FREE));
+					if (closedDotCounter == 0 && tmpFPStart < tD.timeInDay()) {
+						if (duration > 0) {
+							int freeMinutes = tD.timeInDay() - tmpFPStart;
+							int freeApps = freeMinutes / duration;
+							for (int i = 0; i < freeApps; i++) {
+								timePeriods.add(
+										new TimePeriod(
+												startOfDay.plus(tmpFPStart + ((long) duration * i), ChronoUnit.MINUTES),
+												startOfDay.plus(tmpFPStart + ((long) duration * i) + duration, ChronoUnit.MINUTES),
+												TimePeriod.FREE,
+												TimePeriod.FREE_APPOINTMENT
+										));
+							}
+							if (freeMinutes % duration > 0) {
+								int restOfFree = freeMinutes - (freeApps * duration);
+								timePeriods.add(new TimePeriod(
+										startOfDay.plus(tmpFPStart + ((long) duration * freeApps), ChronoUnit.MINUTES),
+										startOfDay.plus(tmpFPStart + ((long) duration * freeApps) + restOfFree, ChronoUnit.MINUTES),
+										TimePeriod.FREE,
+										TimePeriod.FREE_PERIOD
+								));
+							}
+
+						} else {
+							timePeriods.add(new TimePeriod(
+									startOfDay.plus(tmpFPStart, ChronoUnit.MINUTES),
+									startOfDay.plus(tD.timeInDay(), ChronoUnit.MINUTES),
+									TimePeriod.FREE,
+									TimePeriod.FREE_PERIOD));
+						}
+					}
 					closedDotCounter++;
 				}
 			}
 			timePeriods.sort(Comparator.comparing(TimePeriod::start));
 
-			periods.add(Map.of("employee", e, "periods", timePeriods));
+			periods.add(new AppointmentsResp.EmployeePeriod(e, timePeriods));
 		}
 
-		return Map.of("company", c, "periods", periods);
+		return new AppointmentsResp(c, periods);
 	}
 
 	@GET
 	@Path("/free-appointments")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Object getFreeAppointments(){
-		Map<String, Object> resp = null;
+	public Object getFreeAppointments(
+			@QueryParam("services") String services,
+			@QueryParam("cId") long cId,
+			@QueryParam("from") String from,
+			@QueryParam("to") String to
+	) {
+
+		List<Map<String, Object>> resp = new ArrayList<>();
+
+		List<Long> serviceIds = Arrays.stream(services.split("_")).map(Long::valueOf).toList();
+		List<Integer> serviceDurations = companyDAO.getServiceDurations(cId, serviceIds);
+		if (!serviceDurations.isEmpty()) {
+			int duration = serviceDurations.stream().reduce(Integer::sum).orElse(0);
+			if (duration > 0) {
+				LocalDateTime dTFrom = LocalDateTime.parse(from, DateTimeFormatter.ISO_DATE_TIME);
+				return getAppointments(cId, dTFrom.format(DateTimeFormatter.ISO_DATE_TIME), duration);
+			}
+		}
 
 		return resp;
 	}

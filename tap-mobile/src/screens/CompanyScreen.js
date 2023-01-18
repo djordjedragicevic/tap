@@ -2,7 +2,7 @@ import Screen from "../components/Screen";
 import XText from "../components/basic/XText";
 import XButton from "../components/basic/XButton";
 import { useTranslation } from "../store/I18nContext";
-import { APPOINTMENTS_SCREEN } from "../navigators/routes";
+import { APPOINTMENTS_SCREEN, CALENDAR_SCREEN } from "../navigators/routes";
 import { useCallback, useEffect, useState } from "react";
 import { Http } from "../common/Http";
 import XCard from "../components/basic/XCard";
@@ -104,10 +104,10 @@ const CompanyScreen = ({ navigation, route }) => {
 			</XCard>
 
 			<XButton
-				style={{marginTop: 10}}
+				style={{ marginTop: 10 }}
 				disabled={!selectedServices || selectedServices?.length === 0}
 				title={t('Appointments')}
-				onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { companyId: route.params.id, durationSum: getDurationSum(selectedServices) })}
+				onPress={() => navigation.navigate(CALENDAR_SCREEN, { companyId: route.params.id, services: selectedServices.map(s => s.id).join('_') })}
 			/>
 		</Screen>
 	);

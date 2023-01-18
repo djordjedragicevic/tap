@@ -10,7 +10,6 @@ export const calculateHeightDate = (startDate, endDate, coef = 1) => {
 };
 
 export const calculateHeightTime = (startTime, endTime, coef = 1) => {
-	console.log((getTimeMOD(endTime) - getTimeMOD(startTime)) * coef);
 	return (getTimeMOD(endTime) - getTimeMOD(startTime)) * coef;
 };
 
