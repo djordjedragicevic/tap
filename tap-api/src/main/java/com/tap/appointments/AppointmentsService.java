@@ -49,24 +49,24 @@ public class AppointmentsService {
 		//Arrange appointments by user
 		for (EmployeeWorkDayDTO e : eWD) {
 
-			List<AppointmentDTO> userApps = apps.stream().filter(a -> a.employeeId() == e.userId()).toList();
+			List<AppointmentDTO> userApps = apps.stream().filter(a -> a.employeeId() == e.getUserId()).toList();
 
 			//Create BUSY TimePeriods
 			List<TimePeriod> timePeriods = new ArrayList<>(userApps.stream().map(a -> new TimePeriod(a.startTime(), a.endTime(), TimePeriod.BUSY, TimePeriod.BUSY_APPOINTMENT)).toList());
 
-			if (e.breakEnd().isAfter(e.breakStart()))
-				timePeriods.add(new TimePeriod(LocalDateTime.of(dFrom, e.breakStart()), LocalDateTime.of(dFrom, e.breakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
+			if (e.getBreakEnd().isAfter(e.getBreakStart()))
+				timePeriods.add(new TimePeriod(LocalDateTime.of(dFrom, e.getBreakStart()), LocalDateTime.of(dFrom, e.getBreakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
 			else if (c.getBreakStart() != null && c.getBreakEnd() != null && c.getBreakEnd().isAfter(c.getBreakStart()))
 				timePeriods.add(new TimePeriod(LocalDateTime.of(dFrom, c.getBreakStart()), LocalDateTime.of(dFrom, c.getBreakEnd()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK));
 
-			timePeriods.sort(Comparator.comparing(TimePeriod::start));
+			timePeriods.sort(Comparator.comparing(TimePeriod::getStart));
 
 			//Create TimeDots from TimePeriods
 			List<TimeDot> timeDots = new ArrayList<>();
 			timeDots.add(new TimeDot(c.getStart().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_OPEN));
 			timePeriods.forEach(tP -> {
-				timeDots.add(new TimeDot(tP.start().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_CLOSE));
-				timeDots.add(new TimeDot(tP.end().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_OPEN));
+				timeDots.add(new TimeDot(tP.getStart().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_CLOSE));
+				timeDots.add(new TimeDot(tP.getEnd().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_OPEN));
 			});
 			timeDots.add(new TimeDot(c.getEnd().get(ChronoField.MINUTE_OF_DAY), TimeDot.FREE_CLOSE));
 
@@ -115,7 +115,7 @@ public class AppointmentsService {
 					closedDotCounter++;
 				}
 			}
-			timePeriods.sort(Comparator.comparing(TimePeriod::start));
+			timePeriods.sort(Comparator.comparing(TimePeriod::getStart));
 
 			periods.add(new AppointmentsResp.EmployeePeriod(e, timePeriods));
 		}

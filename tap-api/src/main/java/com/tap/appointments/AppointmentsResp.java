@@ -5,8 +5,8 @@ import com.tap.db.dto.EmployeeWorkDayDTO;
 
 import java.util.List;
 
-public record AppointmentsResp(CompanyWorkDayDTO company, List<EmployeePeriod> employeePeriods) {
-	public record EmployeePeriod(EmployeeWorkDayDTO employeeWorkDayDTO, List<TimePeriod> timePeriods) {
+public record AppointmentsResp(CompanyWorkDayDTO getCompany, List<EmployeePeriod> getEmployeePeriods) {
+	public record EmployeePeriod(EmployeeWorkDayDTO getEmployeeWorkDayDTO, List<TimePeriod> getTimePeriods) {
 	}
 
 }

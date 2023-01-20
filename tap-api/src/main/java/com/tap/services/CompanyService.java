@@ -23,8 +23,9 @@ public class CompanyService {
 	@GET
 	@Path("list")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Map<String, Object> getCompanies() {
-		return TAPResponse.wrap(companyDAO.getCompaniesBasic());
+	public Object getCompanies() {
+		companyDAO.getCompaniesBasic().forEach(System.out::print);
+		return companyDAO.getCompaniesBasic();
 	}
 
 	@GET

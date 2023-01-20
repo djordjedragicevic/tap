@@ -1,30 +1,9 @@
+FROM icr.io/appcafe/open-liberty:kernel-slim-java17-openj9-ubi
 
-# 1st stage, build the app
-FROM maven:3.8.4-openjdk-17-slim as build
+COPY --chown=1001:0 /src/main/liberty/config /config
 
-WORKDIR /helidon
+RUN features.sh
 
-# Create a first layer to cache the "Maven World" in the local repository.
-# Incremental docker builds will always resume after that, unless you update
-# the pom
-ADD pom.xml .
-RUN mvn package -Dmaven.test.skip -Declipselink.weave.skip
+COPY --chown=1001:0 target/*.war /config/apps
 
-# Do the Maven build!
-# Incremental docker builds will resume here when you change sources
-ADD src src
-RUN mvn package -DskipTests
-
-RUN echo "done!"
-
-# 2nd stage, build the runtime image
-FROM openjdk:17-jdk-slim
-WORKDIR /helidon
-
-# Copy the binary built in the 1st stage
-COPY --from=build /helidon/target/tap-api.jar ./
-COPY --from=build /helidon/target/libs ./libs
-
-CMD ["java", "-jar", "tap-api.jar"]
-
-EXPOSE 8080
+RUN configure.sh
