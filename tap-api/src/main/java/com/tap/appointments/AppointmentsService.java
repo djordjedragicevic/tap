@@ -124,7 +124,7 @@ public class AppointmentsService {
 	}
 
 	@GET
-	@Path("/free-appointments")
+	@Path("/free/appointments")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getFreeAppointments(
 			@QueryParam("services") String services,
@@ -146,6 +146,16 @@ public class AppointmentsService {
 		}
 
 		return resp;
+	}
+
+	@POST
+	@Path("/free/book")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Object bookFreeAppointment(Object services) {
+		System.out.println("AJDE" + services);
+
+		return Map.of("DE", 1);
 	}
 
 }

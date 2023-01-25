@@ -16,7 +16,7 @@ const CompaniesScreen = ({ navigation }) => {
 		Http.get('/company/list')
 			.then(res => {
 				if (process)
-					setCompanies(res.data);
+					setCompanies(res);
 			});
 		return () => process = false;
 	}, []);

@@ -23,7 +23,13 @@ export const Theme = {
 			textSecondary: '#8c8c8c',
 			textTertiary: '#cccccc',
 			textLight: '#f2f2f3',
-			borderColor: '#a6a6a6'
+			borderColor: '#a6a6a6',
+		},
+		periodColors: {
+			'FREE_APPOINTMENT': 'blue',
+			'FREE_PERIOD': 'green',
+			'BUSY_APPOINTMENT': 'red',
+			'BUSY_BREAK': 'yellow'
 		},
 		values: values
 	},
@@ -39,6 +45,12 @@ export const Theme = {
 			textTertiary: '#d7d7da',
 			textLight: '#f2f2f3',
 			borderColor: '#595959'
+		},
+		periodColors: {
+			'FREE_APPOINTMENT': 'blue',
+			'FREE_PERIOD': 'green',
+			'BUSY_APPOINTMENT': 'red',
+			'BUSY_BREAK': 'yellow'
 		},
 		values: values
 	}

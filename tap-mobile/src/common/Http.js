@@ -2,18 +2,17 @@ import { API_URL } from './config';
 
 export class Http {
 	static send(url, method = 'GET', data = null) {
-		console.log(method, ': ', API_URL.concat(url));
+		console.log(method, ': ', API_URL.concat(url), data);
 		return new Promise((resolve, reject) => {
 			fetch(API_URL.concat(url), {
 				method,
 				headers: {
-					'Content-Type': 'application/json',
+					'Content-Type': method === 'POST' ? 'application/x-www-form-urlencoded' : 'application/json',
 				},
-				body: data ? JSON.stringify(data) : undefined,
+				body: data
 			})
 				.then((resp) => {
-					//console.log("RESP", resp);
-					return resp.json()
+					return resp ? resp.json() : Promise.resolve()
 				})
 				.then((resolve))
 				.catch((err) => {
@@ -25,6 +24,10 @@ export class Http {
 
 	static get(url, qParams) {
 		let _url = qParams ? url + '?' + new URLSearchParams(qParams) : url;
-		return this.send(_url);
+		return Http.send(_url);
+	}
+
+	static post(url, data) {
+		return Http.send(url, 'POST', data)
 	}
 }
