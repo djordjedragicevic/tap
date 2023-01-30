@@ -16,8 +16,6 @@ public class Appointment implements Serializable {
 
 	private Service service;
 
-	private Company company;
-
 	private User user;
 
 	private Employee employee;
@@ -33,6 +31,7 @@ public class Appointment implements Serializable {
 	private String comment;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
 	public Long getId() {
 		return id;
@@ -51,17 +50,6 @@ public class Appointment implements Serializable {
 
 	public Appointment setService(Service service) {
 		this.service = service;
-		return this;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "company_id", nullable = false)
-	public Company getCompany() {
-		return company;
-	}
-
-	public Appointment setCompany(Company company) {
-		this.company = company;
 		return this;
 	}
 

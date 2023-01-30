@@ -1,11 +1,17 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { StyleSheet, TouchableOpacity, } from "react-native";
-import { calculateHeightDate, emptyFn } from "../../common/utils";
+import { calculateHeightDate, emptyFn, getUserDisplayName } from "../../common/utils";
+import I18nContext from "../../store/I18nContext";
 import { useThemedStyle } from "../../store/ThemeContext";
 import XText from "../basic/XText";
 
+const formatTime = (dtString, loc) => {
+	return new Date(dtString).toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' });
+};
+
 const TimePeriod = ({ item, sizeCoef, onPress, children }) => {
 	const styles = useThemedStyle(createStyle, item.subType);
+	const { lng } = useContext(I18nContext);
 
 	const dynStyles = useMemo(() => {
 		return {
@@ -17,7 +23,8 @@ const TimePeriod = ({ item, sizeCoef, onPress, children }) => {
 
 	return (
 		<TouchableOpacity style={[styles.item, dynStyles]} onPress={onPressHandler}>
-			<XText light>{item.type + '   ' + item.subType} </XText>
+			<XText light>{getUserDisplayName(item)} </XText>
+			<XText light>{formatTime(item.start, lng.code) + ' - ' + formatTime(item.end, lng.code)} </XText>
 			{children}
 		</TouchableOpacity >
 	);

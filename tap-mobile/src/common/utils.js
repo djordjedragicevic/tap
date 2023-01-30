@@ -19,3 +19,7 @@ export const calcucateTopDate = (startDate, offset = 0, coef = 1) => {
 export const calcucateTopTime = (startTime, offset = 0, coef = 1) => {
 	return (getTimeMOD(startTime) - offset) * coef;
 };
+
+export const getUserDisplayName = (user) => {
+	return user.username || ((user.firstName || '') + (user.lastName || ''));
+};

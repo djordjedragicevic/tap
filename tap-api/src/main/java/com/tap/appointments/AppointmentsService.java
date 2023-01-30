@@ -18,8 +18,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Path("appointments")
-@RequestScoped
-@Transactional
 public class AppointmentsService {
 	@Inject
 	private AppointmentsDAO appointmentsDAO;
@@ -45,7 +43,7 @@ public class AppointmentsService {
 		List<AppointmentDTO> apps = appointmentsDAO.getAppointments(companyId, dTFrom, dTTo);
 		List<EmployeeWorkDayDTO> eWD = companyDAO.getEmployeesWorkInfoAtDay(companyId, day);
 		List<AppointmentsResp.EmployeePeriod> periods = new ArrayList<>();
-
+		apps.forEach(System.out::println);
 		//Arrange appointments by user
 		for (EmployeeWorkDayDTO e : eWD) {
 
@@ -124,7 +122,7 @@ public class AppointmentsService {
 	}
 
 	@GET
-	@Path("/free/appointments")
+	@Path("/free")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getFreeAppointments(
 			@QueryParam("services") String services,
@@ -141,7 +139,7 @@ public class AppointmentsService {
 			int duration = serviceDurations.stream().reduce(Integer::sum).orElse(0);
 			if (duration > 0) {
 				LocalDateTime dTFrom = LocalDateTime.parse(from, DateTimeFormatter.ISO_DATE_TIME);
-				return getAppointments(cId, dTFrom.format(DateTimeFormatter.ISO_DATE_TIME), duration);
+				return getAppointments(cId, from, duration);
 			}
 		}
 
@@ -149,13 +147,19 @@ public class AppointmentsService {
 	}
 
 	@POST
-	@Path("/free/book")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Object bookFreeAppointment(Object services) {
-		System.out.println("AJDE" + services);
-
-		return Map.of("DE", 1);
+	@Path("/book")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Transactional
+	public Object bookFreeAppointment(
+			@FormParam("services") String services,
+			@FormParam("uId") long uId,
+			@FormParam("eId") long eId,
+			@FormParam("start") String start,
+			@FormParam("end") String end
+	) {
+		List<Long> srvcs = Arrays.stream(services.split("_")).map(Long::valueOf).toList();
+		appointmentsDAO.bookAppointment(srvcs, uId, eId, LocalDateTime.parse(start), LocalDateTime.parse(end));
+		return true;
 	}
 
 }

@@ -7,7 +7,7 @@ export class Http {
 			fetch(API_URL.concat(url), {
 				method,
 				headers: {
-					'Content-Type': method === 'POST' ? 'application/x-www-form-urlencoded' : 'application/json',
+					'Content-Type': method === 'POST' ? 'application/x-www-form-urlencoded;charset=UTF-8' : 'application/json',
 				},
 				body: data
 			})
@@ -28,6 +28,6 @@ export class Http {
 	}
 
 	static post(url, data) {
-		return Http.send(url, 'POST', data)
+		return Http.send(url, 'POST', Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&'))
 	}
 }

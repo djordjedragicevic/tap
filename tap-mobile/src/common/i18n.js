@@ -4,12 +4,12 @@ import sr from '../i18n/sr_SP';
 
 export const languages = {
 	en_US: {
-		code: 'en_US',
+		code: 'en-US',
 		name: 'English',
 		strings: en
 	},
 	sr_SP: {
-		code: 'sr_SP',
+		code: 'sr-SP',
 		name: 'Serbian',
 		strings: sr
 	}
