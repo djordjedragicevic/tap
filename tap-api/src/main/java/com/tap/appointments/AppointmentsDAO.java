@@ -63,22 +63,6 @@ public class AppointmentsDAO {
 		return res;
 	}
 
-	public Object getFreeAppointments(long cId, int services, LocalDateTime from, LocalDateTime to) {
-		String query = """
-				SELECT a FROM Appointments
-				WHERE a.service.company.id = :cId AND a.service.company.active = 1 AND a.service.company.approved = 1
-				AND a.startTime BETWEEN :from AND :to
-				""";
-
-		List apps = em.createQuery(query)
-				.setParameter("cId", cId)
-				.setParameter("from", from)
-				.setParameter("to", to)
-				.getResultList();
-
-		return null;
-	}
-
 	public void bookAppointment(List<Long> sIds, long uId, long eId, LocalDateTime start, LocalDateTime end) {
 		if (em != null) {
 			User u = em.find(User.class, uId);
@@ -96,7 +80,6 @@ public class AppointmentsDAO {
 				em.persist(a);
 			}
 		}
-		System.out.println(em == null);
 	}
 
 }

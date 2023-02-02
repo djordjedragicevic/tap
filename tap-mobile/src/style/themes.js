@@ -12,6 +12,7 @@ export const values = {
 	disabledOpacity: 0.7
 }
 
+
 export const Theme = {
 	Light: {
 		id: THEME.LIGHT,
@@ -29,7 +30,7 @@ export const Theme = {
 			'FREE_APPOINTMENT': 'blue',
 			'FREE_PERIOD': 'green',
 			'BUSY_APPOINTMENT': 'red',
-			'BUSY_BREAK': 'yellow'
+			'BUSY_BREAK': 'orange'
 		},
 		values: values
 	},
@@ -50,7 +51,7 @@ export const Theme = {
 			'FREE_APPOINTMENT': 'blue',
 			'FREE_PERIOD': 'green',
 			'BUSY_APPOINTMENT': 'red',
-			'BUSY_BREAK': 'yellow'
+			'BUSY_BREAK': 'orange'
 		},
 		values: values
 	}

@@ -13,10 +13,10 @@ export const calculateHeightTime = (startTime, endTime, coef = 1) => {
 	return (getTimeMOD(endTime) - getTimeMOD(startTime)) * coef;
 };
 
-export const calcucateTopDate = (startDate, offset = 0, coef = 1) => {
-	return calcucateTopTime(startDate.split('T')[1], offset, coef);
+export const calculateTopDate = (startDate, offset = 0, coef = 1) => {
+	return calculateTopTime(startDate.split('T')[1], offset, coef);
 };
-export const calcucateTopTime = (startTime, offset = 0, coef = 1) => {
+export const calculateTopTime = (startTime, offset = 0, coef = 1) => {
 	return (getTimeMOD(startTime) - offset) * coef;
 };
 

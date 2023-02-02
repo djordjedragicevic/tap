@@ -80,7 +80,7 @@ public class CompanyDAO {
 		String query = """
 				SELECT new com.tap.db.dto.ServiceDTO(s.id, s.name, s.duration, s.price) FROM Service s
 				WHERE s.company.id = :companyId
-				AND s.company.id = 1
+				AND s.company.approved = 1
 				AND s.active = 1
 				""";
 
@@ -93,7 +93,7 @@ public class CompanyDAO {
 		String query = """
 				SELECT s.duration FROM Service s
 				WHERE s.company.id = :companyId
-				AND s.company.id = 1
+				AND s.company.approved = 1
 				AND s.active = 1
 				AND s.id IN :ids
 				""";
