@@ -12,19 +12,15 @@ public class EmployeeWorkDay implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 4070193684653704436L;
 	private Long id;
-
 	private Employee employee;
-
-	private Byte day;
-
-	private LocalTime start;
-
-	private LocalTime end;
-
-	private LocalTime breakStart;
-
-	private LocalTime breakEnd;
-
+	private Byte startDay;
+	private LocalTime startTime;
+	private Byte startBreakDay;
+	private LocalTime startBreakTime;
+	private Byte endBreakDay;
+	private LocalTime endBreakTime;
+	private Byte endDay;
+	private LocalTime endTime;
 	private Byte active;
 
 	@Id
@@ -49,63 +45,84 @@ public class EmployeeWorkDay implements Serializable {
 		return this;
 	}
 
-	@Column(name = "day", nullable = false)
-	public Byte getDay() {
-		return day;
+	public Byte getStartDay() {
+		return startDay;
 	}
 
-	public EmployeeWorkDay setDay(Byte day) {
-		this.day = day;
+	public EmployeeWorkDay setStartDay(Byte startDay) {
+		this.startDay = startDay;
 		return this;
 	}
 
-	@Column(name = "start")
-	public LocalTime getStart() {
-		return start;
+	public LocalTime getStartTime() {
+		return startTime;
 	}
 
-	public EmployeeWorkDay setStart(LocalTime start) {
-		this.start = start;
+	public EmployeeWorkDay setStartTime(LocalTime startTime) {
+		this.startTime = startTime;
 		return this;
 	}
 
-	@Column(name = "end")
-	public LocalTime getEnd() {
-		return end;
+	public Byte getStartBreakDay() {
+		return startBreakDay;
 	}
 
-	public EmployeeWorkDay setEnd(LocalTime end) {
-		this.end = end;
+	public EmployeeWorkDay setStartBreakDay(Byte startBreakDay) {
+		this.startBreakDay = startBreakDay;
 		return this;
 	}
 
-	@Column(name = "break_start")
-	public LocalTime getBreakStart() {
-		return breakStart;
+	public LocalTime getStartBreakTime() {
+		return startBreakTime;
 	}
 
-	public EmployeeWorkDay setBreakStart(LocalTime breakStart) {
-		this.breakStart = breakStart;
+	public EmployeeWorkDay setStartBreakTime(LocalTime startBreakTime) {
+		this.startBreakTime = startBreakTime;
 		return this;
 	}
 
-	@Column(name = "break_end")
-	public LocalTime getBreakEnd() {
-		return breakEnd;
+	public Byte getEndBreakDay() {
+		return endBreakDay;
 	}
 
-	public EmployeeWorkDay setBreakEnd(LocalTime breakEnd) {
-		this.breakEnd = breakEnd;
+	public EmployeeWorkDay setEndBreakDay(Byte endBreakDay) {
+		this.endBreakDay = endBreakDay;
 		return this;
 	}
 
-	@Column(name = "active")
+	public LocalTime getEndBreakTime() {
+		return endBreakTime;
+	}
+
+	public EmployeeWorkDay setEndBreakTime(LocalTime endBreakTime) {
+		this.endBreakTime = endBreakTime;
+		return this;
+	}
+
+	public Byte getEndDay() {
+		return endDay;
+	}
+
+	public EmployeeWorkDay setEndDay(Byte endDay) {
+		this.endDay = endDay;
+		return this;
+	}
+
+	public LocalTime getEndTime() {
+		return endTime;
+	}
+
+	public EmployeeWorkDay setEndTime(LocalTime endTime) {
+		this.endTime = endTime;
+		return this;
+	}
+
 	public Byte getActive() {
 		return active;
 	}
+
 	public EmployeeWorkDay setActive(Byte active) {
 		this.active = active;
 		return this;
 	}
-
 }

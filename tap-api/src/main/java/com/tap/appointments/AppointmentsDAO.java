@@ -52,13 +52,13 @@ public class AppointmentsDAO {
 		List<Tuple> resDb = q.getResultList();
 		List<Service> res = new ArrayList<>();
 
-		resDb.forEach(r -> res.add(
-				new Service()
-						.setId(r.get(0, Long.class))
-						.setName(r.get(1, String.class))
-						.setDuration(r.get(2, Integer.class))
-						.setPrice(r.get(3, BigDecimal.class))
-		));
+//		resDb.forEach(r -> res.add(
+//				new Service()
+//						.setId(r.get(0, Long.class))
+//						.setName(r.get(1, String.class))
+//						.setDuration(r.get(2, Integer.class))
+//						.setPrice(r.get(3, BigDecimal.class))
+//		));
 
 		return res;
 	}

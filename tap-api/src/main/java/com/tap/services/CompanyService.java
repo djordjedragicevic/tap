@@ -24,7 +24,6 @@ public class CompanyService {
 	@Path("list")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getCompanies() {
-		companyDAO.getCompaniesBasic().forEach(System.out::print);
 		return companyDAO.getCompaniesBasic();
 	}
 

@@ -4,28 +4,22 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "services")
 public class Service implements Serializable {
 	@Serial
 	private static final long serialVersionUID = -3616470685412465576L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	private String name;
-
-	private Company company;
-
-	private Integer duration;
-
-	private BigDecimal price;
-
+	private String description;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "company_type_id")
+	private CompanyType companyType;
 	private Byte active;
 
-	@Id
-	@Column(name = "id", columnDefinition = "INT UNSIGNED not null")
 	public Long getId() {
 		return id;
 	}
@@ -35,7 +29,6 @@ public class Service implements Serializable {
 		return this;
 	}
 
-	@JoinColumn(name = "name", nullable = false)
 	public String getName() {
 		return name;
 	}
@@ -45,38 +38,24 @@ public class Service implements Serializable {
 		return this;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "company_id", nullable = false)
-	public Company getCompany() {
-		return company;
+	public String getDescription() {
+		return description;
 	}
 
-	public Service setCompany(Company company) {
-		this.company = company;
+	public Service setDescription(String description) {
+		this.description = description;
 		return this;
 	}
 
-	@Column(name = "duration", nullable = false)
-	public Integer getDuration() {
-		return duration;
+	public CompanyType getCompanyType() {
+		return companyType;
 	}
 
-	public Service setDuration(Integer duration) {
-		this.duration = duration;
+	public Service setCompanyType(CompanyType companyType) {
+		this.companyType = companyType;
 		return this;
 	}
 
-	@Column(name = "price", precision = 10, scale = 2)
-	public BigDecimal getPrice() {
-		return price;
-	}
-
-	public Service setPrice(BigDecimal price) {
-		this.price = price;
-		return this;
-	}
-
-	@Column(name = "active", nullable = false)
 	public Byte getActive() {
 		return active;
 	}
@@ -85,5 +64,4 @@ public class Service implements Serializable {
 		this.active = active;
 		return this;
 	}
-
 }

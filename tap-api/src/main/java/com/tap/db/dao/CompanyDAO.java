@@ -18,7 +18,7 @@ public class CompanyDAO {
 	private EntityManager em;
 
 
-	public List<CompanyBasicDTO> getCompaniesBasic() {
+	public List<Object> getCompaniesBasic() {
 		String query = """
 				SELECT new com.tap.db.dto.CompanyBasicDTO(c.id, c.name, c.typeName, a.street, a.number, a.longitude, a.latitude)
 				FROM Company c JOIN c.address a
@@ -26,7 +26,7 @@ public class CompanyDAO {
 				AND c.approved = 1
 				""";
 
-		return em.createQuery(query, CompanyBasicDTO.class).getResultList();
+		return em.createQuery(query, Object.class).getResultList();
 	}
 
 	public CompanyBasicDTO getCompany(Long id) {
@@ -78,7 +78,8 @@ public class CompanyDAO {
 
 	public List<ServiceDTO> getCompanyServices(Long companyId) {
 		String query = """
-				SELECT new com.tap.db.dto.ServiceDTO(s.id, s.name, s.duration, s.price) FROM Service s
+				SELECT new com.tap.db.dto.ServiceDTO(s.id, ser.name, s.duration, s.price) FROM CompanyService s
+				JOIN s.service ser
 				WHERE s.company.id = :companyId
 				AND s.company.approved = 1
 				AND s.active = 1

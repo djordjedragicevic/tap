@@ -108,7 +108,7 @@ const CompanyScreen = ({ navigation, route }) => {
 				style={{ marginTop: 10 }}
 				disabled={!selectedServices || selectedServices?.length === 0}
 				title={t('Appointments')}
-				onPress={() => navigation.navigate(CALENDAR_SCREEN, { companyId: route.params.id, services: selectedServices.map(s => s.id).join('_') })}
+				onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { companyId: route.params.id, services: selectedServices.map(s => s.id).join('_') })}
 			/>
 		</Screen>
 	);
