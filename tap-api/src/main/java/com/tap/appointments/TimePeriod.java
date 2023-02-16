@@ -9,4 +9,5 @@ public record TimePeriod(LocalDateTime getStart, LocalDateTime getEnd, String ge
 	public static final String FREE_PERIOD = "FREE_PERIOD";
 	public static final String BUSY_APPOINTMENT = "BUSY_APPOINTMENT";
 	public static final String BUSY_BREAK = "BUSY_BREAK";
+	public static final String FREE_WORK_HOURS = "FREE_WORK_HOURS";
 }

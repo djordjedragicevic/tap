@@ -13,21 +13,12 @@ public class Appointment implements Serializable {
 	private static final long serialVersionUID = 8047777733962317152L;
 
 	private Long id;
-
-	private Service service;
-
 	private User user;
-
-	private Employee employee;
-
+	private EmployeeService employeeService;
 	private User createdBy;
-
-	private LocalDateTime createTime;
-
-	private LocalDateTime startTime;
-
-	private LocalDateTime endTime;
-
+	private LocalDateTime createIn;
+	private LocalDateTime start;
+	private LocalDateTime end;
 	private String comment;
 
 	@Id
@@ -43,13 +34,13 @@ public class Appointment implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "service_id", nullable = false)
-	public Service getService() {
-		return service;
+	@JoinColumn(name = "employee_service_id", nullable = false)
+	public EmployeeService getEmployeeService() {
+		return employeeService;
 	}
 
-	public Appointment setService(Service service) {
-		this.service = service;
+	public Appointment setEmployeeService(EmployeeService employeeService) {
+		this.employeeService = employeeService;
 		return this;
 	}
 
@@ -75,44 +66,33 @@ public class Appointment implements Serializable {
 		return this;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "employee_id", nullable = false)
-	public Employee getEmployee() {
-		return employee;
+	@Column(name = "create_in", nullable = false)
+	public LocalDateTime getCreateIn() {
+		return createIn;
 	}
 
-	public Appointment setEmployee(Employee employee) {
-		this.employee = employee;
+	public Appointment setCreateIn(LocalDateTime createIn) {
+		this.createIn = createIn;
 		return this;
 	}
 
-	@Column(name = "create_time", nullable = false)
-	public LocalDateTime getCreateTime() {
-		return createTime;
+	@Column(name = "start", nullable = false)
+	public LocalDateTime getStart() {
+		return start;
 	}
 
-	public Appointment setCreateTime(LocalDateTime createTime) {
-		this.createTime = createTime;
+	public Appointment setStart(LocalDateTime start) {
+		this.start = start;
 		return this;
 	}
 
-	@Column(name = "start_time", nullable = false)
-	public LocalDateTime getStartTime() {
-		return startTime;
+	@Column(name = "end", nullable = false)
+	public LocalDateTime getEnd() {
+		return end;
 	}
 
-	public Appointment setStartTime(LocalDateTime startTime) {
-		this.startTime = startTime;
-		return this;
-	}
-
-	@Column(name = "end_time", nullable = false)
-	public LocalDateTime getEndTime() {
-		return endTime;
-	}
-
-	public Appointment setEndTime(LocalDateTime endTime) {
-		this.endTime = endTime;
+	public Appointment setEnd(LocalDateTime end) {
+		this.end = end;
 		return this;
 	}
 

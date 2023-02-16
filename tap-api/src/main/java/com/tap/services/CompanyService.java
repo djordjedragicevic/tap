@@ -1,7 +1,6 @@
 package com.tap.services;
 
-import com.tap.TAPResponse;
-import com.tap.db.dao.CompanyDAO;
+import com.tap.company.CompanyDAO;
 import com.tap.db.dto.CompanyBasicDTO;
 import com.tap.db.dto.ServiceDTO;
 import jakarta.inject.Inject;

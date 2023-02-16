@@ -30,7 +30,7 @@ public class Employee implements Serializable {
 	}
 
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "employee_id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	public User getUser() {
 		return user;
 	}

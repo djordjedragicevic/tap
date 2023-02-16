@@ -13,11 +13,14 @@ public class EmployeeService implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
-	private Integer id;
+	private Long id;
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "service_id", nullable = false)
-	private Service service;
+	@JoinColumn(name = "company_service_id", nullable = false)
+	private CompanyService companyService;
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "employee_id", nullable = false)
 	private Employee employee;
+
+	private Byte active;
+
 }

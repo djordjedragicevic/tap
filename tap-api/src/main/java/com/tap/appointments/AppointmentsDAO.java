@@ -1,5 +1,6 @@
 package com.tap.appointments;
 
+import com.tap.db.dto.AppointmentDTO;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
@@ -7,11 +8,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 
-import java.math.BigDecimal;
-import java.sql.Struct;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,20 +19,36 @@ public class AppointmentsDAO {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
 
-	public List<AppointmentDTO> getAppointments(Long companyId, LocalDateTime from, LocalDateTime to) {
-		String q = """
-				SELECT new com.tap.appointments.AppointmentDTO(a.id, a.employee.id, a.user.id, a.createdBy.id, a.service.id, a.employee.company.id, a.createTime, a.startTime,a.endTime, a.comment) FROM Appointment a
-				WHERE a.employee.company.id = :companyId
-				AND a.employee.company.active = 1
-				AND a.employee.company.approved = 1
-				AND a.startTime BETWEEN :start AND :end
-				""";
-		System.out.println(from + "  " + to);
-		TypedQuery<AppointmentDTO> tQ = em.createQuery(q, AppointmentDTO.class)
-				.setParameter("companyId", companyId)
-				.setParameter("start", from)
+	public List<AppointmentDTO> getAppointments(LocalDateTime from, LocalDateTime to, List<Long> empIds) {
+		StringBuilder q = new StringBuilder("""
+				SELECT new com.tap.db.dto.AppointmentDTO(
+				a.id,
+				a.user.id,
+				a.employeeService.id,
+				a.employeeService.employee.id,
+				cs.service.id,
+				a.createdBy.id,
+				a.createIn,
+				a.start,
+				a.end,
+				a.comment)
+				FROM Appointment a
+				INNER JOIN CompanyService cs ON cs.id = a.employeeService.companyService.id
+				WHERE ((a.start BETWEEN :start AND :end) OR (a.end BETWEEN :start AND :end))
+				AND a.employeeService.active = 1
+				""");
+
+		boolean eIdsDefined = empIds != null && !empIds.isEmpty();
+
+		if (eIdsDefined)
+			q.append("AND a.employeeService.employee.id IN :empIds");
+
+		TypedQuery<AppointmentDTO> tQ = em.createQuery(q.toString(), AppointmentDTO.class)
+				.setParameter("start", from.minus(12, ChronoUnit.MONTHS))
 				.setParameter("end", to);
 
+		if (eIdsDefined)
+			tQ.setParameter("empIds", empIds);
 
 		return tQ.getResultList();
 	}
@@ -64,22 +78,22 @@ public class AppointmentsDAO {
 	}
 
 	public void bookAppointment(List<Long> sIds, long uId, long eId, LocalDateTime start, LocalDateTime end) {
-		if (em != null) {
-			User u = em.find(User.class, uId);
-			Employee e = em.find(Employee.class, eId);
-			for (Long sId : sIds) {
-				Service s = em.find(Service.class, sId);
-				Appointment a = new Appointment()
-						.setService(s)
-						.setUser(u)
-						.setEmployee(e)
-						.setCreatedBy(u)
-						.setCreateTime(LocalDateTime.now())
-						.setStartTime(start)
-						.setEndTime(end);
-				em.persist(a);
-			}
-		}
+//		if (em != null) {
+//			User u = em.find(User.class, uId);
+//			Employee e = em.find(Employee.class, eId);
+//			for (Long sId : sIds) {
+//				Service s = em.find(Service.class, sId);
+//				Appointment a = new Appointment()
+//						.setService(s)
+//						.setUser(u)
+//						.setEmployee(e)
+//						.setCreatedBy(u)
+//						.setCreateIn(LocalDateTime.now())
+//						.setStart(start)
+//						.setEnd(end);
+//				em.persist(a);
+//			}
+//		}
 	}
 
 }
