@@ -1,7 +1,21 @@
 const en_US = {
 	'Appointments': 'Appointments',
 	'Test translation': "Test translation on English",
-	"Language": "Language"
+	"Language": "Language",
+
+	"January": "January",
+	"February": "February",
+	"March": "March",
+	"April": "April",
+	"May": "May",
+	"June": "June",
+	"July": "July",
+	"August": "August",
+	"September": "September",
+	"October": "October",
+	"November": "November",
+	"December": "December"
+
 };
 
 export default en_US;

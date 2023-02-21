@@ -85,7 +85,6 @@ const CompanyScreen = ({ navigation, route }) => {
 		let finish = true;
 		Http.get("/company/" + route.params.id)
 			.then(res => {
-				console.log(res);
 				if (finish)
 					setCompany(res);
 			});
@@ -100,6 +99,9 @@ const CompanyScreen = ({ navigation, route }) => {
 				<XText>{company.typeName}</XText>
 			</XCard> */}
 
+
+			<XButton title={'Calendar'} onPress={() => navigation.navigate(CALENDAR_SCREEN, { companyId: route.params.id })} />
+
 			<XCard style={staticStyles.cardServices}>
 				<Services services={company.services} selectedItems={selectedServices} onItemPress={onServicePress} />
 			</XCard>
@@ -108,7 +110,7 @@ const CompanyScreen = ({ navigation, route }) => {
 				style={{ marginTop: 10 }}
 				disabled={!selectedServices || selectedServices?.length === 0}
 				title={t('Appointments')}
-				onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { companyId: route.params.id, services: selectedServices.map(s => s.id).join('_') })}
+				onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { companyId: route.params.id, services: selectedServices.map(s => s.id).join(',') })}
 			/>
 		</Screen>
 	);

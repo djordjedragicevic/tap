@@ -9,15 +9,14 @@ const formatTime = (dtString, loc) => {
 	return new Date(dtString).toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' });
 };
 
-const TimePeriod = ({ item, sizeCoef, offset, onPress, children }) => {
-	console.log(offset);
+const TimePeriod = ({ item, sizeCoef, offset, from, onPress, children }) => {
 	const styles = useThemedStyle(createStyle, item.subType);
 	const { lng } = useContext(I18nContext);
 
 	const dynStyles = useMemo(() => {
 		return {
 			height: calculateHeightDate(item.start, item.end, sizeCoef),
-			top: calculateTopDate(item.start, offset, sizeCoef)
+			top: calculateTopDate(item.start, offset, sizeCoef, from)
 		}
 	}, [item.start, item.end, sizeCoef])
 

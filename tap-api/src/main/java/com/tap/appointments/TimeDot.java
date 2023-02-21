@@ -1,14 +1,17 @@
 package com.tap.appointments;
 
-public record TimeDot(int timeInDay, byte type){
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+public class TimeDot {
 	public static final byte FREE_OPEN = 1;
 	public static final byte FREE_CLOSE = 2;
 
-	@Override
-	public String toString() {
-		return "TimeDot{" +
-			   "timeInDay=" + timeInDay +
-			   ", type=" + type +
-			   '}';
-	}
+	private LocalDateTime dateTime;
+	private byte type;
+	private TimePeriod timePeriod;
 }

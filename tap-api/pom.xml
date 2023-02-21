@@ -30,6 +30,12 @@
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.26</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -41,22 +47,22 @@
                     <artifactId>maven-war-plugin</artifactId>
                     <version>3.3.2</version>
                 </plugin>
-                <plugin>
-                    <groupId>io.openliberty.tools</groupId>
-                    <artifactId>liberty-maven-plugin</artifactId>
-                    <version>3.7.1</version>
-                </plugin>
+<!--                <plugin>-->
+<!--                    <groupId>io.openliberty.tools</groupId>-->
+<!--                    <artifactId>liberty-maven-plugin</artifactId>-->
+<!--                    <version>3.7.1</version>-->
+<!--                </plugin>-->
             </plugins>
         </pluginManagement>
         <plugins>
+<!--            <plugin>-->
+<!--                <groupId>io.openliberty.tools</groupId>-->
+<!--                <artifactId>liberty-maven-plugin</artifactId>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>io.openliberty.tools</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>io.openliberty.tools</groupId>
-                <artifactId>liberty-maven-plugin</artifactId>
-                <version>3.6.1</version>
+<!--                <version>3.6.1</version>-->
                 <configuration>
                     <copyDependencies>
                         <dependencyGroup>

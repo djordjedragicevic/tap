@@ -18,7 +18,7 @@ export const Theme = {
 		id: THEME.LIGHT,
 		colors: {
 			primary: '#66b3ff',
-			background: DefaultTheme.colors.background,
+			background: '#f0f0f5',
 			backgroundElement: DefaultTheme.colors.card,
 			textPrimary: '#404040',
 			textSecondary: '#8c8c8c',
@@ -27,7 +27,7 @@ export const Theme = {
 			borderColor: '#a6a6a6',
 		},
 		periodColors: {
-			'FREE_APPOINTMENT': 'blue',
+			'FREE_APPOINTMENT': '#3399ff',
 			'FREE_PERIOD': 'green',
 			'BUSY_APPOINTMENT': 'red',
 			'BUSY_BREAK': 'orange'
@@ -48,7 +48,7 @@ export const Theme = {
 			borderColor: '#595959'
 		},
 		periodColors: {
-			'FREE_APPOINTMENT': 'blue',
+			'FREE_APPOINTMENT': '#46b7d7',
 			'FREE_PERIOD': 'green',
 			'BUSY_APPOINTMENT': 'red',
 			'BUSY_BREAK': 'orange'

@@ -1,8 +1,6 @@
 package com.tap.company;
 
 import com.tap.db.dto.*;
-import com.tap.db.entity.Service;
-import com.tap.db.entity.User;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.*;
 
@@ -10,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RequestScoped
 public class CompanyDAO {
@@ -106,12 +103,28 @@ public class CompanyDAO {
 				.getResultList();
 	}
 
-	public List<EmployeeDTO> getEmployeesForServices(long cityId, List<Long> sIds, long cId) {
+	public List<EmployeeDTO> employeesForServices(long cityId, List<Long> sIds, long cId) {
+
+		//*** Think about to include active working days of employee in conditions
 		StringBuilder query = new StringBuilder("""
-				SELECT DISTINCT e.id, e.user FROM Employee e
+				SELECT DISTINCT e.id,
+				e.user.id AS userId,
+				e.user.firstName,
+				e.user.lastName,
+				e.user.username,
+				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.id, ',') AS s_ids,
+				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.duration, ',') AS s_durations,
+				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.price, '#') AS s_prices,
+				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.service.name, ',') AS s_names,
+				
+				e.company.name AS c_name,
+				e.company.address.street AS c_street,
+				e.company.address.number AS c_number
+				
+				FROM Employee e
+								
 				INNER JOIN EmployeeService AS es ON es.employee.id = e.id
 				INNER JOIN CompanyService AS cs ON cs.id = es.companyService.id
-								
 				WHERE e.company.active = 1
 				AND e.company.approved = 1
 				AND e.active = 1
@@ -119,13 +132,15 @@ public class CompanyDAO {
 				AND es.active = 1
 				AND cs.active = 1
 				AND cs.service.active = 1
-								
-				AND e.company.address.city.id = :cityId
 				AND cs.service.id IN :sIds
 				""");
 
 		if (cId > 0)
 			query.append(" AND e.company.id = :cId");
+		if (cityId > 0)
+			query.append(" AND e.company.address.city.id = :cityId");
+
+		query.append(" GROUP BY e.id");
 
 		TypedQuery<Object[]> q = em.createQuery(query.toString(), Object[].class)
 				.setParameter("cityId", cityId)
@@ -133,23 +148,28 @@ public class CompanyDAO {
 
 		if (cId > 0)
 			q.setParameter("cId", cId);
+		if (cityId > 0)
+			q.setParameter("cityId", cityId);
 
-		List<EmployeeDTO> res = new ArrayList<>();
 		List<Object[]> dbRes = q.getResultList();
-		dbRes.forEach(r -> {
-			User u = (User) r[1];
-			res.add(new EmployeeDTO()
-					.setId((Long) r[0])
-					.setUser(new UserDTO()
-							.setId(u.getId())
-							.setFirstName(u.getFirstName())
-							.setLastName(u.getLastName())
-							.setUsername(u.getUsername())
-					)
-			);
-		});
 
-		return res;
+		return toListOfEmployeeDTOs(dbRes);
+	}
+
+	public List<EmployeeDTO> employeesOfCompany(long cId) {
+		String query = """
+				SELECT DISTINCT e.id, e.user.id AS userId, e.user.firstName, e.user.lastName, e.user.username FROM Employee e
+				WHERE e.company.active = 1
+				AND e.company.approved = 1
+				AND e.company.id = :cId
+				AND e.active = 1
+				AND e.user.active = 1
+				""";
+
+		TypedQuery<Object[]> q = em.createQuery(query, Object[].class).setParameter("cId", cId);
+		List<Object[]> dbRes = q.getResultList();
+
+		return toListOfEmployeeDTOs(dbRes);
 	}
 
 
@@ -236,19 +256,68 @@ public class CompanyDAO {
 		for (int i = 0, s = eIds.size(); i < s; i++)
 			q.setParameter(i + 1, eIds.get(i));
 
-		List<Object[]> dbRes = q.getResultList();
+		List<?> dbRes = q.getResultList();
 
-		return dbRes.stream().map(o -> new EmployeeWorkDayDTO()
-				.setStartDay(Byte.parseByte(o[0].toString()))
-				.setStartTime(LocalTime.parse(o[1].toString()))
-				.setEndDay(Byte.parseByte(o[2].toString()))
-				.setEndTime(LocalTime.parse(o[3].toString()))
-				.setBreakStartDay(Byte.parseByte(o[4].toString()))
-				.setBreakStartTime(LocalTime.parse(o[5].toString()))
-				.setBreakEndDay(Byte.parseByte(o[6].toString()))
-				.setBreakEndTime(LocalTime.parse(o[7].toString()))
-				.setEmployeeId(Long.parseLong(o[8].toString()))
-		).toList();
-		//return dbRes;
+
+		return dbRes.stream()
+				.filter(Object[].class::isInstance)
+				.map(Object[].class::cast)
+				.map(o -> {
+							EmployeeWorkDayDTO eWD = new EmployeeWorkDayDTO()
+									.setStartDay(Byte.parseByte(o[0].toString()))
+									.setStartTime(LocalTime.parse(o[1].toString()))
+									.setEndDay(Byte.parseByte(o[2].toString()))
+									.setEndTime(LocalTime.parse(o[3].toString()))
+									.setEmployeeId(Long.parseLong(o[8].toString()));
+
+							if (o[4] != null && o[5] != null && o[6] != null && o[7] != null)
+								eWD.setBreakStartDay(Byte.parseByte(o[4].toString()))
+										.setBreakStartTime(LocalTime.parse(o[5].toString()))
+										.setBreakEndDay(Byte.parseByte(o[6].toString()))
+										.setBreakEndTime(LocalTime.parse(o[7].toString()));
+							return eWD;
+						}
+				).toList();
+	}
+
+	private static List<EmployeeDTO> toListOfEmployeeDTOs(List<Object[]> dbEmployees) {
+		return dbEmployees.stream()
+				.map(r -> {
+							EmployeeDTO e = new EmployeeDTO()
+									.setId(Long.parseLong(r[0].toString()))
+									.setUser(new UserDTO(Long.parseLong(r[1].toString()), r[2].toString(), r[3].toString(), r[4].toString()));
+
+							//Looking services
+							if (r[5] != null && r[6] != null && r[7] != null && r[8] != null) {
+
+								String[] sIds = r[5].toString().split(",");
+								String[] sDurations = r[6].toString().split(",");
+								String[] sPrices = r[7].toString().split("#");
+								String[] sNames = r[8].toString().split(",");
+
+								List<ServiceDTO> services = new ArrayList<>();
+								for (int i = 0, s = sIds.length; i < s; i++) {
+									services.add(
+											new ServiceDTO(
+													Long.parseLong(sIds[i]),
+													sNames[i],
+													Integer.parseInt(sDurations[i]),
+													BigDecimal.valueOf(Double.parseDouble(sPrices[i]))
+											)
+									);
+								}
+
+								e.setLookingServices(services);
+							}
+
+							//Company
+							if (r[9] != null && r[10] != null) {
+								String address = r[10] + (r[11] != null ? " " + r[11] : "");
+								e.setCompany(new CompanyDTO(r[9].toString(), address));
+							}
+
+							return e;
+						}
+				).toList();
 	}
 }

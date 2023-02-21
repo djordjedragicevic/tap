@@ -8,14 +8,13 @@ const XText = ({ primary, secondary, light, style, children }) => {
 		const st = {
 			...styles.text,
 			...(light ? styles.light : {}),
-			...(secondary ? styles.secondary : {}),
-			...style
+			...(secondary ? styles.secondary : {})
 		};
 		return st;
 	}, [styles, primary, secondary, light, style]);
 
 	return (
-		<Text style={composedStyle}>{children}</Text>
+		<Text style={[composedStyle, style]}>{children}</Text>
 	);
 };
 

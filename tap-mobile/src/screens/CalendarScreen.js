@@ -13,19 +13,23 @@ import I18nContext from '../store/I18nContext';
 
 const CalendarScreen = ({ navigation, route }) => {
 
-	const [sizeCoef, setSizeCoef] = useState(4);
+	const [sizeCoef, setSizeCoef] = useState(2);
 	const [data, setData] = useState();
 	const [fromDate, setFromDate] = useState(new Date());
 	const { lng } = useContext(I18nContext);
+	const from = useState(new Date('2023-02-07'))[0];
 
 	useEffect(() => {
 		let finish = true;
 		Http.get("/appointments/free", {
 			cId: route.params.companyId,
-			services: route.params.services,
-			from: new Date(fromDate.getTime() - fromDate.getTimezoneOffset() * 60000).toISOString(),
+			cityId: 1,
+			services: 1,
+			from: from.toISOString()
+			//from: new Date(fromDate.getTime() - fromDate.getTimezoneOffset() * 60000).toISOString(),
 		})
 			.then(res => {
+				
 				if (finish) {
 					setData(res);
 				}
@@ -35,7 +39,6 @@ const CalendarScreen = ({ navigation, route }) => {
 	}, []);
 
 	const onTimePeriodPress = useCallback((item) => {
-		console.log("ITEM", item);
 		XAlert.show("Rezervacija termina", "Da li ste sigurni da zelite rezervisati termin", [
 			{
 				onPress: () => {
@@ -45,7 +48,7 @@ const CalendarScreen = ({ navigation, route }) => {
 			{
 				onPress: () => {
 					Http.post("/appointments/book", {
-						services: route.params.services,
+						services: 1,
 						uId: 1,
 						eId: item.epmloyeeId,
 						start: item.start,
@@ -53,7 +56,7 @@ const CalendarScreen = ({ navigation, route }) => {
 					})
 						.then(() => {
 							Http.get("/appointments/calendar", {
-								cId: route.params.companyId,
+								//cId: route.params.companyId,
 								from: new Date(fromDate.getTime() - fromDate.getTimezoneOffset() * 60000).toISOString(),
 							}).then(res => setData(res))
 						})
@@ -74,16 +77,17 @@ const CalendarScreen = ({ navigation, route }) => {
 				<XText>CalendarScreen, company id: {route.params.companyId}</XText>
 				<XText>CalendarScreen, services ids: {route.params.services}</XText>
 				<XText>Date: {fromDate.toLocaleString(lng.code)}</XText>
-				<TimePeriodsPanel height={calculateHeightTime(data.company.start, data.company.end, sizeCoef)}>
-					{data && data.employeePeriods[0].timePeriods.map((p, idx) => p.subType !== 'FREE_PERIOD' && <TimePeriod
+				<TimePeriodsPanel height={30000}>
+					{data && data.employees[0].periods.map((p, idx) => <TimePeriod
 						key={idx}
+						from={from}
 						item={{
 							...p,
-							username: data.employeePeriods[0].employeeWorkDayDTO.username,
-							epmloyeeId: data.employeePeriods[0].employeeWorkDayDTO.userId
+							username: data.employees[0].user.username,
+							epmloyeeId: data.employees[0].user.id
 						}}
 						sizeCoef={sizeCoef}
-						offset={calculateTopTime(data.company.start)}
+						// offset={calculateTopTime(data[0].company.start)}
 						onPress={onTimePeriodPress}
 					/>)}
 				</TimePeriodsPanel>

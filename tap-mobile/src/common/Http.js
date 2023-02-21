@@ -12,12 +12,16 @@ export class Http {
 				body: data
 			})
 				.then((resp) => {
+					console.log(resp);
 					return resp ? resp.json() : Promise.resolve()
 				})
-				.then((resolve))
+				.then((resp) =>{
+					//console.log(resp);
+					resolve(resp)
+				})
 				.catch((err) => {
 					console.log('NETWORK ERR', err);
-					reject(err);
+					//reject(err);
 				});
 		});
 	}

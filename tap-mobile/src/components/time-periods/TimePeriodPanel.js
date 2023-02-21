@@ -11,8 +11,6 @@ const TimePeriodsPanel = ({ height, children }) => {
 			<View style={styles.right}>
 				{children}
 			</View>
-
-
 		</View>
 	)
 };

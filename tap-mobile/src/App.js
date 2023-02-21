@@ -14,7 +14,7 @@ const App = () => {
 			...navigationTheme,
 			colors: {
 				...navigationTheme.colors,
-				//background: theme.colors.background,
+				background: theme.colors.background,
 				//card: theme.colors.backgroundElement,
 				text: theme.colors.textPrimary,
 				primary: theme.colors.primary

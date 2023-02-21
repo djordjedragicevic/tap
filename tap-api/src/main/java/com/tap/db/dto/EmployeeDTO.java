@@ -1,62 +1,47 @@
 package com.tap.db.dto;
 
 import com.tap.appointments.TimePeriod;
+import com.tap.company.CompanyDAO;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.*;
 
+@Getter
+@Setter
 public class EmployeeDTO {
-	private long id;
+	private Long id;
 	private UserDTO user;
 	private List<EmployeeWorkDayDTO> workDays;
-	private Map<LocalDate, List<TimePeriod>> calendar;
+	private List<CalendarDayDTO> calendar;
+	private List<TimePeriod> periods;
+	private List<ServiceDTO> lookingServices;
+	private CompanyDTO company;
 
-	public long getId() {
-		return id;
+
+	public void addTimePeriod(LocalDate d, TimePeriod tp) {
+		if (this.calendar == null)
+			this.calendar = new ArrayList<>();
+
+		if (tp != null)
+			this.getCalendarDay(d).getPeriods().add(tp);
+		else
+			this.getCalendarDay(d).setWorking(false);
+
 	}
 
-	public EmployeeDTO setId(long id) {
-		this.id = id;
-		return this;
-	}
+	public CalendarDayDTO getCalendarDay(LocalDate date) {
+		if (this.calendar == null)
+			this.calendar = new ArrayList<>();
 
-	public UserDTO getUser() {
-		return user;
-	}
-
-	public EmployeeDTO setUser(UserDTO user) {
-		this.user = user;
-		return this;
-	}
-
-	public List<EmployeeWorkDayDTO> getWorkDays() {
-		return workDays;
-	}
-
-	public EmployeeDTO setWorkDays(List<EmployeeWorkDayDTO> workDays) {
-		this.workDays = workDays;
-		return this;
-	}
-
-	public void addWorkDay(EmployeeWorkDayDTO workDay) {
-		if (this.workDays == null)
-			this.workDays = new ArrayList<>();
-		this.workDays.add(workDay);
-	}
-
-	public Map<LocalDate, List<TimePeriod>> getCalendar() {
-		return calendar;
-	}
-
-	public EmployeeDTO setCalendar(Map<LocalDate, List<TimePeriod>> calendar) {
-		this.calendar = calendar;
-		return this;
-	}
-
-	public EmployeeDTO addTimePeriod(LocalDate d, TimePeriod tp) {
-		if(this.calendar == null)
-			this.calendar = new LinkedHashMap<>();
-		this.calendar.computeIfAbsent(d, k -> new ArrayList<>()).add(tp);
-		return this;
+		return this.calendar.stream()
+				.filter(d -> d.getDate().isEqual(date))
+				.findAny()
+				.orElseGet(() -> {
+					CalendarDayDTO cD = new CalendarDayDTO(date);
+					this.calendar.add(cD);
+					return cD;
+				});
 	}
 }

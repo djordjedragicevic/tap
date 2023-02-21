@@ -8,7 +8,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,7 @@ public class AppointmentsDAO {
 			q.append("AND a.employeeService.employee.id IN :empIds");
 
 		TypedQuery<AppointmentDTO> tQ = em.createQuery(q.toString(), AppointmentDTO.class)
-				.setParameter("start", from.minus(12, ChronoUnit.MONTHS))
+				.setParameter("start", from)
 				.setParameter("end", to);
 
 		if (eIdsDefined)
