@@ -11,7 +11,7 @@ import java.util.Optional;
 public class Utils {
 
 	public static final int DAYS_TO_GET = 3;
-	public static final int FREE_APP_DAYS = 3;
+	public static final int FREE_APP_DAYS = 10;
 
 	public static Optional<LocalDateTime> parseDT(String dt) {
 		return Optional.ofNullable(dt != null && !dt.isEmpty() ? LocalDateTime.parse(dt, DateTimeFormatter.ISO_DATE_TIME) : null);

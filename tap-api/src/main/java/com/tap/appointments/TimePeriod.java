@@ -3,6 +3,7 @@ package com.tap.appointments;
 import com.tap.db.dto.AppointmentDTO;
 import com.tap.db.dto.EmployeeDTO;
 import com.tap.db.dto.EmployeeWorkDayDTO;
+import com.tap.db.entity.WEmployeeWD;
 import lombok.Data;
 import lombok.Getter;
 
@@ -43,11 +44,11 @@ public class TimePeriod {
 		return new TimePeriod(a.getStart(), a.getEnd(), TimePeriod.BUSY, TimePeriod.BUSY_APPOINTMENT);
 	}
 
-	public static TimePeriod ofEmployeeWorkDate(LocalDate d, EmployeeWorkDayDTO eWD) {
+	public static TimePeriod ofEmployeeWorkDate(LocalDate d, WEmployeeWD eWD) {
 		return new TimePeriod(LocalDateTime.of(d, eWD.getStartTime()), LocalDateTime.of(d, eWD.getEndTime()), TimePeriod.FREE, TimePeriod.FREE_WORK_HOURS);
 	}
 
-	public static TimePeriod ofEmployeeBrake(LocalDate d, EmployeeWorkDayDTO eWD) {
+	public static TimePeriod ofEmployeeBrake(LocalDate d, WEmployeeWD eWD) {
 		return new TimePeriod(LocalDateTime.of(d, eWD.getBreakStartTime()), LocalDateTime.of(d, eWD.getBreakEndTime()), TimePeriod.BUSY, TimePeriod.BUSY_BREAK);
 	}
 

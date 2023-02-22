@@ -1,12 +1,16 @@
 package com.tap.company;
 
 import com.tap.db.dto.*;
+import com.tap.db.entity.WEmployeeWD;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RequestScoped
@@ -169,7 +173,7 @@ public class CompanyDAO {
 				e.company.address.street AS c_street,
 				e.company.address.number AS c_number
 				FROM Employee e
-				
+								
 				WHERE e.company.active = 1
 				AND e.company.approved = 1
 				AND e.company.id = :cId
@@ -243,52 +247,18 @@ public class CompanyDAO {
 //		return null;
 //	}
 
-	public List<EmployeeWorkDayDTO> getEmployeesWorkDays(List<Long> eIds) {
+	public List<WEmployeeWD> getEffEmployeesWorkDays(List<Long> eIds) {
+
 		String query = """
-				SELECT
-				start_day,
-				start_time,
-				end_day,
-				end_time,
-				break_start_day,
-				break_start_time,
-				break_end_day,
-				break_end_time,
-				e_id
-				FROM tap.w_employee_wd
-				WHERE ewd_active = 1
-				AND cwd_active = 1
-				AND e_id IN (%s)
+				SELECT wd FROM WEmployeeWD wd
+				WHERE wd.ewdActive = 1
+				AND wd.cwdActive = 1
+				AND wd.employeeId IN :eIds
 				""";
 
-		String in = String.join(",", eIds.stream().map(eId -> "?").toList());
-
-		Query q = em.createNativeQuery(String.format(query, in));
-		for (int i = 0, s = eIds.size(); i < s; i++)
-			q.setParameter(i + 1, eIds.get(i));
-
-		List<?> dbRes = q.getResultList();
-
-
-		return dbRes.stream()
-				.filter(Object[].class::isInstance)
-				.map(Object[].class::cast)
-				.map(o -> {
-							EmployeeWorkDayDTO eWD = new EmployeeWorkDayDTO()
-									.setStartDay(Byte.parseByte(o[0].toString()))
-									.setStartTime(LocalTime.parse(o[1].toString()))
-									.setEndDay(Byte.parseByte(o[2].toString()))
-									.setEndTime(LocalTime.parse(o[3].toString()))
-									.setEmployeeId(Long.parseLong(o[8].toString()));
-
-							if (o[4] != null && o[5] != null && o[6] != null && o[7] != null)
-								eWD.setBreakStartDay(Byte.parseByte(o[4].toString()))
-										.setBreakStartTime(LocalTime.parse(o[5].toString()))
-										.setBreakEndDay(Byte.parseByte(o[6].toString()))
-										.setBreakEndTime(LocalTime.parse(o[7].toString()));
-							return eWD;
-						}
-				).toList();
+		return em.createQuery(query, WEmployeeWD.class)
+				.setParameter("eIds", eIds)
+				.getResultList();
 	}
 
 	private static List<EmployeeDTO> toListOfEmployeeDTOs(List<Object[]> dbEmployees) {

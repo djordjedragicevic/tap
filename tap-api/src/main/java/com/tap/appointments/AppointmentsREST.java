@@ -2,6 +2,7 @@ package com.tap.appointments;
 
 import com.tap.company.CompanyDAO;
 import com.tap.db.dto.*;
+import com.tap.db.entity.WEmployeeWD;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -11,8 +12,6 @@ import jakarta.ws.rs.core.MediaType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.chrono.ChronoLocalDateTime;
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -41,7 +40,6 @@ public class AppointmentsREST {
 		LocalDateTime fromDT = Utils.parseDT(from).orElse(LocalDateTime.now());
 		LocalDateTime toDT = Utils.parseDT(to).orElse(fromDT.toLocalDate().plus(Utils.FREE_APP_DAYS, ChronoUnit.DAYS).atTime(LocalTime.MAX));
 		System.out.println(fromDT + " " + toDT);
-
 		if (!employees.isEmpty()) {
 			this.addCalendarTimePeriods(employees, fromDT, toDT);
 			//int duration = e.getLookingServices().stream().mapToInt(ServiceDTO::getDuration).sum();
@@ -58,13 +56,11 @@ public class AppointmentsREST {
 			@QueryParam("from") String from,
 			@QueryParam("to") String to
 	) {
-		System.out.println(cId + " " + from + " " + to);
-
 		List<EmployeeDTO> employees = companyDAO.employeesOfCompany(cId);
 
 		if (!employees.isEmpty()) {
 			LocalDate fromD = Utils.parseDate(from).orElse(LocalDate.now());
-			LocalDate toD = Utils.parseDate(to).orElse(fromD);
+			LocalDate toD = Utils.parseDate(to).orElse(fromD.plus(1, ChronoUnit.DAYS));
 			this.addCalendarTimePeriods(employees, fromD.atTime(LocalTime.MIN), toD.atTime(LocalTime.MAX));
 		}
 
@@ -89,22 +85,23 @@ public class AppointmentsREST {
 
 
 	private void addCalendarTimePeriods(List<EmployeeDTO> employees, LocalDateTime from, LocalDateTime to) {
+
 		List<Long> eIds = employees.stream().map(EmployeeDTO::getId).toList();
 		List<AppointmentDTO> apps = appointmentsDAO.getAppointments(from, to, eIds);
-		List<EmployeeWorkDayDTO> employeesWorkDays = companyDAO.getEmployeesWorkDays(eIds);
+		List<WEmployeeWD> employeesWorkDays = companyDAO.getEffEmployeesWorkDays(eIds);
 
 		long eId;
 		List<TimePeriod> periods;
 		CalendarDayDTO cD;
-		List<LocalDate> dates;
+		List<LocalDate> dates = from
+				.toLocalDate()
+				.datesUntil(to.toLocalDate())
+				.toList();
+
 
 		for (EmployeeDTO e : employees) {
 			eId = e.getId();
 			e.setCalendar(new ArrayList<>());
-			dates = from
-					.toLocalDate()
-					.datesUntil(to.toLocalDate().plus(1, ChronoUnit.DAYS))
-					.toList();
 
 			for (LocalDate d : dates) {
 				cD = new CalendarDayDTO(d);
@@ -165,20 +162,13 @@ public class AppointmentsREST {
 		}
 	}
 
-	private static void generateWorkDayPeriods(LocalDate d, List<EmployeeWorkDayDTO> employeesWorkDays, long eId, List<TimePeriod> periods) {
+	private static void generateWorkDayPeriods(LocalDate d, List<WEmployeeWD> employeesWorkDays, long eId, List<TimePeriod> periods) {
 		employeesWorkDays
 				.stream()
-				.filter(eWD ->
-						eWD.getEmployeeId() == eId &&
-						eWD.getStartDay() == d.getDayOfWeek().getValue()
-				)
-//						.filter(eWD ->
-//								eWD.getStartDay() > fromDT.getDayOfWeek().getValue() ||
-//								eWD.getEndTime().isAfter(LocalTime.from(fromDT))
-//						)
+				.filter(eWD -> eWD.getEmployeeId() == eId && eWD.getStartDay() == d.getDayOfWeek().getValue())
 				.forEach(eWD -> {
 							periods.add(TimePeriod.ofEmployeeWorkDate(d, eWD));
-							if (eWD.hasBreak())
+							if (eWD.getBreakStartDay() != null && eWD.getBreakStartTime() != null && eWD.getBreakEndDay() != null && eWD.getBreakEndTime() != null)
 								periods.add(TimePeriod.ofEmployeeBrake(d, eWD));
 						}
 				);
