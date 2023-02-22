@@ -2,7 +2,8 @@ import { API_URL } from './config';
 
 export class Http {
 	static send(url, method = 'GET', data = null) {
-		console.log(method, ': ', API_URL.concat(url), data);
+		//console.log(method, ': ', API_URL.concat(url), data);
+		const d = new Date().getTime();
 		return new Promise((resolve, reject) => {
 			fetch(API_URL.concat(url), {
 				method,
@@ -12,10 +13,11 @@ export class Http {
 				body: data
 			})
 				.then((resp) => {
-					console.log(resp);
+					const t = new Date().getTime() - d;
+					console.log('SUCCESS: ' + method, ': ', API_URL.concat(url), data, '(' + t / 1000 + 's)');
 					return resp ? resp.json() : Promise.resolve()
 				})
-				.then((resp) =>{
+				.then((resp) => {
 					//console.log(resp);
 					resolve(resp)
 				})

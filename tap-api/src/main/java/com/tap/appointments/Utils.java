@@ -2,6 +2,7 @@ package com.tap.appointments;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -10,13 +11,13 @@ import java.util.Optional;
 public class Utils {
 
 	public static final int DAYS_TO_GET = 3;
-	public static final int DAYS_TO_GET_FOR_FREE_APPS = 5;
+	public static final int FREE_APP_DAYS = 3;
 
 	public static Optional<LocalDateTime> parseDT(String dt) {
 		return Optional.ofNullable(dt != null && !dt.isEmpty() ? LocalDateTime.parse(dt, DateTimeFormatter.ISO_DATE_TIME) : null);
 	}
 
-	public static Optional<LocalDate> parseT(String t) {
+	public static Optional<LocalDate> parseDate(String t) {
 		return Optional.ofNullable(t != null && !t.isEmpty() ? LocalDate.parse(t, DateTimeFormatter.ISO_DATE) : null);
 	}
 

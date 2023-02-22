@@ -28,3 +28,9 @@ export const getUserDisplayName = (user) => {
 export const formatTime = (date, loc) => {
 	return date.toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit', hour12: false });
 };
+
+export const measureDuration = (fn) => {
+	const start = new Date().getTime();
+	fn();
+	console.log('Duration ' + (new Date().getTime() - start) / 1000);
+}

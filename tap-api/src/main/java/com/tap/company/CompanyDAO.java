@@ -112,15 +112,16 @@ public class CompanyDAO {
 				e.user.firstName,
 				e.user.lastName,
 				e.user.username,
+								
+				e.company.name AS c_name,
+				e.company.address.street AS c_street,
+				e.company.address.number AS c_number,
+								
 				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.id, ',') AS s_ids,
 				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.duration, ',') AS s_durations,
 				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.price, '#') AS s_prices,
-				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.service.name, ',') AS s_names,
-				
-				e.company.name AS c_name,
-				e.company.address.street AS c_street,
-				e.company.address.number AS c_number
-				
+				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.service.name, ',') AS s_names
+								
 				FROM Employee e
 								
 				INNER JOIN EmployeeService AS es ON es.employee.id = e.id
@@ -158,7 +159,17 @@ public class CompanyDAO {
 
 	public List<EmployeeDTO> employeesOfCompany(long cId) {
 		String query = """
-				SELECT DISTINCT e.id, e.user.id AS userId, e.user.firstName, e.user.lastName, e.user.username FROM Employee e
+				SELECT DISTINCT
+				e.id,
+				e.user.id AS userId,
+				e.user.firstName,
+				e.user.lastName,
+				e.user.username,
+				e.company.name AS c_name,
+				e.company.address.street AS c_street,
+				e.company.address.number AS c_number
+				FROM Employee e
+				
 				WHERE e.company.active = 1
 				AND e.company.approved = 1
 				AND e.company.id = :cId
@@ -287,13 +298,17 @@ public class CompanyDAO {
 									.setId(Long.parseLong(r[0].toString()))
 									.setUser(new UserDTO(Long.parseLong(r[1].toString()), r[2].toString(), r[3].toString(), r[4].toString()));
 
-							//Looking services
-							if (r[5] != null && r[6] != null && r[7] != null && r[8] != null) {
+							//Company
+							String address = r[6] + (r[7] != null ? " " + r[7] : "");
+							e.setCompany(new CompanyDTO(r[5].toString(), address));
 
-								String[] sIds = r[5].toString().split(",");
-								String[] sDurations = r[6].toString().split(",");
-								String[] sPrices = r[7].toString().split("#");
-								String[] sNames = r[8].toString().split(",");
+							//Looking services
+							if (r.length > 11) {
+
+								String[] sIds = r[8].toString().split(",");
+								String[] sDurations = r[9].toString().split(",");
+								String[] sPrices = r[10].toString().split("#");
+								String[] sNames = r[11].toString().split(",");
 
 								List<ServiceDTO> services = new ArrayList<>();
 								for (int i = 0, s = sIds.length; i < s; i++) {
@@ -310,11 +325,6 @@ public class CompanyDAO {
 								e.setLookingServices(services);
 							}
 
-							//Company
-							if (r[9] != null && r[10] != null) {
-								String address = r[10] + (r[11] != null ? " " + r[11] : "");
-								e.setCompany(new CompanyDTO(r[9].toString(), address));
-							}
 
 							return e;
 						}

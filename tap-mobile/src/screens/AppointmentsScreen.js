@@ -1,11 +1,12 @@
 import { memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Http } from "../common/Http";
-import { formatTime } from "../common/utils";
+import { formatTime, measureDuration } from "../common/utils";
 import XText from "../components/basic/XText";
 import Screen from "../components/Screen";
 import I18nContext from "../store/I18nContext";
 import { useThemedStyle } from "../store/ThemeContext";
+import { ExpandableCalendar, AgendaList, CalendarProvider, WeekCalendar } from 'react-native-calendars';
 
 const convertDateToSectionTitle = (dateString, loc) => {
 
@@ -21,7 +22,8 @@ const convertData = (resp) => {
 	resp.employees.forEach(e => {
 		e.periods.forEach(p => {
 			tmpSD = new Date(p.start);
-			const s = convertDateToSectionTitle(tmpSD);
+			const [s] = p.start.split('T');
+			convertDateToSectionTitle(tmpSD)
 			if (!dataMap[s])
 				dataMap[s] = [];
 
@@ -39,13 +41,15 @@ const convertData = (resp) => {
 	});
 
 
-	return Object.entries(dataMap).map(([k, v]) => {
+	const res =  Object.entries(dataMap).map(([k, v]) => {
 		v.sort((a, b) => a.startDate - b.startDate);
 		return {
 			title: k,
 			data: v
 		}
 	});
+	console.log(res[0].title);
+	return res;
 };
 
 const SectionHeader = memo(({ title }) => {
@@ -107,16 +111,20 @@ const AppointmentsScreen = ({ route }) => {
 
 	const [data, setData] = useState();
 	const { lng } = useContext(I18nContext);
+	const [weekView, setWeekView] = useState(false);
 
 	useEffect(() => {
 		let finish = true;
 		Http.get('/appointments/free', {
 			cityId: 1,
-			sIds: '1,2'
+			sIds: '1,2',
 			//cId: '1'
 		}).then((resp) => {
-			const converted = convertData(resp);
-			setData(converted);
+			let c;
+			measureDuration(() => {
+				c = convertData(resp);
+			})
+			setData(c);
 
 
 
@@ -150,15 +158,57 @@ const AppointmentsScreen = ({ route }) => {
 		<Screen>
 			<XText>Services: {'1,2'}</XText>
 			<XText>CompanyId: {'1'}</XText>
-			<SectionList
+			<CalendarProvider
+				date={data[0]?.title}
+				// onDateChanged={onDateChanged}
+				// onMonthChange={onMonthChange}
+				showTodayButton
+			// disabledOpacity={0.6}
+			//theme={todayBtnTheme.current}
+			// todayBottomMargin={16}
+			>
+				{weekView ? (
+					<WeekCalendar
+						//testID={testIDs.weekCalendar.CONTAINER}
+						firstDay={1}
+					//markedDates={marked.current}
+					/>
+				) : (
+					<ExpandableCalendar
+						//testID={testIDs.expandableCalendar.CONTAINER}
+						// horizontal={false}
+						// hideArrows
+						// disablePan
+						// hideKnob
+						// initialPosition={ExpandableCalendar.positions.OPEN}
+						// calendarStyle={styles.calendar}
+						// headerStyle={styles.header} // for horizontal only
+						// disableWeekScroll
+						//theme={theme.current}
+						// disableAllTouchEventsForDisabledDays
+						firstDay={1}
+					//markedDates={marked.current}
+					//leftArrowImageSource={leftArrowIcon}
+					//rightArrowImageSource={rightArrowIcon}
+					// animateScroll
+					// closeOnDayPress={false}
+					/>
+				)}
+				<AgendaList
+					sections={data}
+					renderItem={renderItem}
+				// scrollToNextEvent
+				//sectionStyle={styles.section}
+				// dayFormat={'yyyy-MM-d'}
+				/>
+			</CalendarProvider>
+
+			{/* <SectionList
 				sections={data}
 				renderSectionHeader={renderSectionHeader}
 				renderItem={renderItem}
 				stickySectionHeadersEnabled
-			// keyExtractor={(item, idx) => idx.toString()}
-
-
-			/>
+			/> */}
 		</Screen>
 	);
 }
