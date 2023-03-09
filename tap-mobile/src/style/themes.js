@@ -7,7 +7,7 @@ export const THEME = {
 
 export const values = {
 	mainPaddingHorizontal: 8,
-	borderRadius: 6,
+	borderRadius: 16,
 	borderWidth: 0.8,
 	disabledOpacity: 0.7
 }
@@ -24,7 +24,9 @@ export const Theme = {
 			textSecondary: '#8c8c8c',
 			textTertiary: '#cccccc',
 			textLight: '#f2f2f3',
+
 			borderColor: '#a6a6a6',
+			red: 'red'
 		},
 		periodColors: {
 			'FREE_APPOINTMENT': '#3399ff',
@@ -34,7 +36,7 @@ export const Theme = {
 		},
 		values: values
 	},
-	
+
 	Dark: {
 		id: THEME.DARK,
 		colors: {
@@ -45,7 +47,9 @@ export const Theme = {
 			textSecondary: '#e4e4e7',
 			textTertiary: '#d7d7da',
 			textLight: '#f2f2f3',
-			borderColor: '#595959'
+
+			borderColor: '#595959',
+			red: 'red'
 		},
 		periodColors: {
 			'FREE_APPOINTMENT': '#46b7d7',

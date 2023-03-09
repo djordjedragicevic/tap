@@ -41,14 +41,13 @@ const convertData = (resp) => {
 	});
 
 
-	const res =  Object.entries(dataMap).map(([k, v]) => {
+	const res = Object.entries(dataMap).map(([k, v]) => {
 		v.sort((a, b) => a.startDate - b.startDate);
 		return {
 			title: k,
 			data: v
 		}
 	});
-	console.log(res[0].title);
 	return res;
 };
 
