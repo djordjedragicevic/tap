@@ -1,8 +1,8 @@
 import React from 'react';
-import DrawerNavigator from './DrawerNavigator';
+import MainTabNavigator from './MainTabNavigator';
 
 const MainNavigator = () => {
-	return <DrawerNavigator />;
+	return <MainTabNavigator />;
 };
 
 export default MainNavigator;

@@ -13,4 +13,6 @@ export const MONTH_NUM = {
 	9: 'October',
 	10: 'November',
 	11: 'December '
-}
+};
+
+export const HOUR_HEIGHT = 60;
