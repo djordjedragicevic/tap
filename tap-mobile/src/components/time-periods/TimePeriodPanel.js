@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { HOUR_HEIGHT } from "../../common/general";
 import { DateUtils } from "../../common/utils";
 import { useThemedStyle } from "../../store/ThemeContext";
-import XContainer from "../basic/XContainer";
 
 import XText from '../basic/XText';
 
@@ -80,7 +79,7 @@ const TimePeriodsPanel = ({ sizeCoef, showCurrentTime, startHour, children }) =>
 
 const createStyle = (theme) => StyleSheet.create({
 	container: {
-		backgroundColor: theme.colors.backgroundElement,
+		//backgroundColor: theme.colors.backgroundElement,
 		flexDirection: 'row',
 		padding: 10,
 	},
@@ -107,7 +106,7 @@ const createStyle = (theme) => StyleSheet.create({
 	currentTimeText: {
 		paddingHorizontal: 10,
 		color: theme.colors.red,
-		backgroundColor: theme.colors.backgroundElement
+		//backgroundColor: theme.colors.backgroundElement
 	},
 	currentTimeLineDot: {
 		height: 5,

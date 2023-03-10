@@ -17,7 +17,9 @@ export const Theme = {
 	Light: {
 		id: THEME.LIGHT,
 		colors: {
-			primary: '#66b3ff',
+			primary: '#005c99',
+			primaryDark: '#0080ff',
+			primaryLight: '#cce6ff',
 			background: '#f0f0f5',
 			backgroundElement: DefaultTheme.colors.card,
 			textPrimary: '#404040',
@@ -40,7 +42,9 @@ export const Theme = {
 	Dark: {
 		id: THEME.DARK,
 		colors: {
-			primary: '#007acc',
+			primary: '#66c2ff',
+			primaryDark: '#005c99',
+			primaryLight: '#4db8ff',
 			background: DarkTheme.colors.background,
 			backgroundElement: DarkTheme.colors.card,
 			textPrimary: '#f2f2f3',
