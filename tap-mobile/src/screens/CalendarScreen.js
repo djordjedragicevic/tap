@@ -10,8 +10,7 @@ import TimePeriodsPanel from '../components/time-periods/TimePeriodPanel';
 import XAlert from '../components/basic/XAlert';
 import I18nContext from '../store/I18nContext';
 import { getUserDisplayName } from '../common/utils';
-import { Agenda, Calendar, CalendarContext, CalendarProvider, ExpandableCalendar, Timeline, TimelineList, WeekCalendar } from 'react-native-calendars';
-import XContainer from '../components/basic/XContainer';
+import { Agenda, Calendar, CalendarContext, CalendarList, CalendarProvider, ExpandableCalendar, Timeline, TimelineList, WeekCalendar } from 'react-native-calendars';
 import { useThemedStyle } from '../store/ThemeContext';
 
 
@@ -58,23 +57,17 @@ const CalendarScreen = ({ navigation, route }) => {
 	}, []);
 
 	return (
+
+
+
 		<Screen style={{ paddingBottom: 10 }}>
-			<XText>Date: {fromDate.toLocaleString(lng.code)}</XText>
 
 			<CalendarProvider
-				style={{}}
+				date={fromDate}
 				onDateChanged={onDateChange}
-				date={currentDate}
 			>
-				<ExpandableCalendar
-					firstDay={1}
-					disablePan={false}
-					allowShadow={false}
-					disableWeekScroll
-					calendarStyle={{}}
+				<ExpandableCalendar firstDay={1} />
 
-				/>
-				{/* <WeekCalendar /> */}
 				<View style={{ paddingVertical: 6 }}>
 					<ScrollView horizontal contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
 						{data && data.employees.map((e) => {
@@ -93,7 +86,7 @@ const CalendarScreen = ({ navigation, route }) => {
 					</ScrollView>
 				</View>
 
-				<ScrollView>
+				<ScrollView contentContainerStyle={{}}>
 					<TimePeriodsPanel sizeCoef={sizeCoef}>
 						{employeeData && employeeData.calendar[0].periods.map((p, idx) => {
 							return (
@@ -112,9 +105,10 @@ const CalendarScreen = ({ navigation, route }) => {
 					</TimePeriodsPanel>
 				</ScrollView>
 			</CalendarProvider>
-
-
 		</Screen>
+
+
+
 	);
 };
 

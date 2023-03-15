@@ -14,7 +14,7 @@ const AppointmentsStackNavigator = () => {
 		<Stack.Navigator screenOptions={{ headerShown: true }}>
 			<Stack.Screen name={COMPANIES_SCREEN} component={CompaniesScreen} options={{ title: 'Companies' }} />
 			<Stack.Screen name={COMPANY_SCREEN} component={CompanyScreen} options={{ title: 'Company' }} />
-			<Stack.Screen name={CALENDAR_SCREEN} component={CalendarScreen} options={{ title: 'Calendar' }} />
+			{/* <Stack.Screen name={CALENDAR_SCREEN} component={CalendarScreen} options={{ title: 'Calendar' }} /> */}
 			<Stack.Screen name={APPOINTMENTS_SCREEN} component={AppointmentsScreen} options={{ title: 'Appointments' }} />
 		</Stack.Navigator>
 	);

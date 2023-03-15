@@ -49,7 +49,7 @@ const createStyle = (theme) => StyleSheet.create({
 		width: 18,
 		height: 18,
 		marginHorizontal: 5,
-		borderRadius: 50,
+		borderRadius: 5,
 		borderWidth: theme.values.borderWidth,
 	},
 	icon: {
