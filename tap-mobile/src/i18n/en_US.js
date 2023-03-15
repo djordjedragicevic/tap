@@ -14,7 +14,13 @@ const en_US = {
 	"September": "September",
 	"October": "October",
 	"November": "November",
-	"December": "December"
+	"December": "December",
+
+	"Search": "Search",
+	"Home": "Home",
+
+	"City": "City",
+	"Service": "Service"
 
 };
 

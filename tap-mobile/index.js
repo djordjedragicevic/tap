@@ -10,14 +10,14 @@ import { GlobalContextProvider } from './src/store/GlobalContext';
 import { ThemeContextProvider } from './src/store/ThemeContext';
 import { Theme } from './src/style/themes';
 import { I18nContextProvider } from './src/store/I18nContext';
-import { languages } from './src/common/i18n';
+import { languages } from './src/i18n/i18n';
 import { DEFAULT_LANGUAGE } from './src/common/config';
 
 const Root = () => {
 	return (
 		<GlobalContextProvider>
 			<ThemeContextProvider initialTheme={Theme.Light}>
-				<I18nContextProvider language={languages[DEFAULT_LANGUAGE]}>
+				<I18nContextProvider language={DEFAULT_LANGUAGE} languages={languages}>
 					<App />
 				</I18nContextProvider>
 			</ThemeContextProvider>

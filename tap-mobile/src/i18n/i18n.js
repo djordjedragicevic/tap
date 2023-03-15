@@ -1,6 +1,6 @@
 
-import en from '../i18n/en_US';
-import sr from '../i18n/sr_SP';
+import en from './en_US';
+import sr from './sr_SP';
 
 export const languages = {
 	en_US: {

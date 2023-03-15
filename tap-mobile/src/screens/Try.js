@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Button, StyleSheet, Text } from "react-native";
-import { languages } from "../common/i18n";
+import { languages } from "../i18n/i18n";
 import HeaderDrawerButton from "../components/HeaderDrawerButton";
 import Screen from "../components/Screen";
 import I18nContext, { useTranslation } from "../store/I18nContext";

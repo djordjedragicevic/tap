@@ -14,7 +14,7 @@ const XButton = ({ title, onPress, disabled, style }) => {
 			}
 		else return {}
 	}, [disabled]);
-	
+
 	return (
 		<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
 			{!!title && <XText style={styles.text} secondary>{title}</XText>}
@@ -29,7 +29,7 @@ XButton.defaultProps = {
 
 const createStyle = (theme) => StyleSheet.create({
 	button: {
-		height: 30,
+		height: 42,
 		paddingHorizontal: 10,
 		backgroundColor: theme.colors.primary,
 		borderRadius: theme.values.borderRadius,
