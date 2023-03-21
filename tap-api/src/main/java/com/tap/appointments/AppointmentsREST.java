@@ -2,6 +2,7 @@ package com.tap.appointments;
 
 import com.tap.company.CompanyDAO;
 import com.tap.db.dto.*;
+import com.tap.db.entity.Employee;
 import com.tap.db.entity.WEmployeeWD;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -12,6 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -39,13 +41,40 @@ public class AppointmentsREST {
 		List<EmployeeDTO> employees = companyDAO.employeesForServices(cityId, Utils.parseIDs(sIds), cId);
 		LocalDateTime fromDT = Utils.parseDT(from).orElse(LocalDateTime.now());
 		LocalDateTime toDT = Utils.parseDT(to).orElse(fromDT.toLocalDate().plus(Utils.FREE_APP_DAYS, ChronoUnit.DAYS).atTime(LocalTime.MAX));
-		System.out.println(fromDT + " " + toDT);
+
+		Map<String, List<FreeTimePeriod>> resp = new HashMap<>();
+
 		if (!employees.isEmpty()) {
-			this.addCalendarTimePeriods(employees, fromDT, toDT);
-			//int duration = e.getLookingServices().stream().mapToInt(ServiceDTO::getDuration).sum();
+			addCalendarTimePeriods(employees, fromDT, toDT);
+
+
+			for (EmployeeDTO e : employees) {
+				int duration = e.getLookingServices().stream().mapToInt(ServiceDTO::getDuration).sum();
+
+				e.getCalendar().forEach(c -> c
+						.getPeriods()
+						.stream()
+						.filter(p -> p.getSubType().equals(TimePeriod.FREE_PERIOD))
+						.forEach(p -> {
+							int period = (int) ChronoUnit.MINUTES.between(p.getStart(), p.getEnd());
+							int freeCount = period / duration;
+							for (int i = 0; i < freeCount; i++) {
+								resp.computeIfAbsent(c.getDate().format(DateTimeFormatter.ISO_DATE), k -> new ArrayList<>())
+										.add(new FreeTimePeriod(
+												p.getStart().plusMinutes((long) duration * i),
+												p.getStart().plusMinutes(((long) duration * i) + duration),
+												new EmployeeDTO()
+														.setId(e.getId())
+														.setUser(e.getUser())
+														.setCompany(e.getCompany())
+										));
+							}
+						})
+				);
+			}
 		}
 
-		return Map.of("employees", employees);
+		return Map.of("apps", resp);
 	}
 
 	@GET
@@ -61,7 +90,7 @@ public class AppointmentsREST {
 		if (!employees.isEmpty()) {
 			LocalDate fromD = Utils.parseDate(from).orElse(LocalDate.now());
 			LocalDate toD = Utils.parseDate(to).orElse(fromD.plus(1, ChronoUnit.DAYS));
-			this.addCalendarTimePeriods(employees, fromD.atTime(LocalTime.MIN), toD.atTime(LocalTime.MAX));
+			addCalendarTimePeriods(employees, fromD.atTime(LocalTime.MIN), toD.atTime(LocalTime.MAX));
 		}
 
 		return Map.of("employees", employees);

@@ -120,6 +120,8 @@ public class CompanyDAO {
 				e.company.name AS c_name,
 				e.company.address.street AS c_street,
 				e.company.address.number AS c_number,
+				e.company.address.city.name AS c_city,
+				e.company.address.city.country.name AS c_country,
 								
 				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.id, ',') AS s_ids,
 				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.duration, ',') AS s_durations,
@@ -171,7 +173,9 @@ public class CompanyDAO {
 				e.user.username,
 				e.company.name AS c_name,
 				e.company.address.street AS c_street,
-				e.company.address.number AS c_number
+				e.company.address.number AS c_number,
+				e.company.address.city.name AS c_city,
+				e.company.address.city.country.name AS c_country
 				FROM Employee e
 								
 				WHERE e.company.active = 1
@@ -270,15 +274,15 @@ public class CompanyDAO {
 
 							//Company
 							String address = r[6] + (r[7] != null ? " " + r[7] : "");
-							e.setCompany(new CompanyDTO(r[5].toString(), address));
+							e.setCompany(new CompanyDTO(r[5].toString(), address, r[8].toString(), r[9].toString()));
 
 							//Looking services
-							if (r.length > 11) {
+							if (r.length > 13) {
 
-								String[] sIds = r[8].toString().split(",");
-								String[] sDurations = r[9].toString().split(",");
-								String[] sPrices = r[10].toString().split("#");
-								String[] sNames = r[11].toString().split(",");
+								String[] sIds = r[10].toString().split(",");
+								String[] sDurations = r[11].toString().split(",");
+								String[] sPrices = r[12].toString().split("#");
+								String[] sNames = r[13].toString().split(",");
 
 								List<ServiceDTO> services = new ArrayList<>();
 								for (int i = 0, s = sIds.length; i < s; i++) {
