@@ -4,15 +4,15 @@ import { emptyFn } from "../../common/utils";
 import { useThemedStyle } from "../../store/ThemeContext";
 import XMask from "./XMask";
 
-const XTextInput = React.forwardRef(({
+const XFieldContainer = ({
 	iconRight = false,
 	iconLeft = false,
 	style = {},
 	disabled = false,
 	pressable = false,
 	onPress = emptyFn,
-	...rest
-}, ref) => {
+	children,
+}) => {
 
 	const styles = useThemedStyle(createStyle);
 	const RootCmp = pressable ? TouchableOpacity : Pressable;
@@ -21,50 +21,43 @@ const XTextInput = React.forwardRef(({
 		<RootCmp style={[styles.container, style]} onPress={onPress}>
 			{
 				!!iconLeft &&
-				<View style={styles.iconLeft}>
+				<View style={styles.icon}>
 					{iconLeft({ size: 22, color: styles.iconColor })}
 				</View>
 			}
-			<TextInput
-				ref={ref}
-				editable={rest.editable !== false || !disabled}
-				{...rest}
-				style={styles.field}
-			/>
+			<View style={styles.centerContainer}>
+				{children}
+			</View>
 			{
 				!!iconRight &&
-				<View style={styles.iconRight}>
-					{iconRight({ size: 22, color: styles.iconColor })}
+				<View style={styles.icon}>
+					{iconRight({ size: 22, color: styles.iconRightColor })}
 				</View>
 			}
 			{disabled && <XMask />}
 		</RootCmp>
 	);
-});
+};
 
 const createStyle = (theme) => StyleSheet.create({
 	container: {
 		borderRadius: theme.values.borderRadius,
 		flexDirection: 'row',
+		backgroundColor: theme.colors.backgroundElement,
+		height: 48
+	},
+	icon: {
+		paddingHorizontal: 8,
 		alignItems: 'center',
-		backgroundColor: 'white',
+		justifyContent: 'center'
+	},
+	centerContainer: {
+		flex: 1,
 		paddingHorizontal: 5,
-		height: 45
-	},
-	iconRight: {
-		paddingEnd: 3,
-		alignItems: 'center',
 		justifyContent: 'center'
 	},
-	iconLeft: {
-		paddingHorizontal: 7,
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	field: {
-		flex: 1
-	},
-	iconColor: theme.colors.primary
+	iconColor: theme.colors.primary,
+	iconRightColor: theme.colors.textSecondary
 });
 
-export default XTextInput;
+export default XFieldContainer;

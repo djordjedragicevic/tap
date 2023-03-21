@@ -20,7 +20,13 @@ const en_US = {
 	"Home": "Home",
 
 	"City": "City",
-	"Service": "Service"
+	"Service": "Service",
+	"Location": "Location",
+	"Service type": "Service type",
+	"Services": "Services",
+	"Company": "Company",
+	"From": "From",
+	"To": "To"
 
 };
 
