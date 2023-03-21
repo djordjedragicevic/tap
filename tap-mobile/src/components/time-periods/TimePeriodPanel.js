@@ -106,7 +106,7 @@ const createStyle = (theme) => StyleSheet.create({
 	currentTimeText: {
 		paddingHorizontal: 10,
 		color: theme.colors.red,
-		//backgroundColor: theme.colors.backgroundElement
+		backgroundColor: theme.colors.backgroundElement
 	},
 	currentTimeLineDot: {
 		height: 5,

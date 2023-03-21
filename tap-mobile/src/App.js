@@ -5,6 +5,8 @@ import { useTheme } from './store/ThemeContext';
 import { StatusBar } from 'react-native';
 import DrawerNavigator from './navigators/DrawerNavigator';
 import MainTabNavigator from './navigators/MainTabNavigator';
+import MainNavigator from './navigators/MainNavigator';
+
 const App = () => {
 
 	const { theme } = useTheme();
