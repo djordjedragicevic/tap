@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CalendarScreen from '../screens/CalendarScreen';
 import SearchScreen from '../screens/SearchScreen';
 import AppointmentsStackNavigator from './AppointmentsStackNavigator';
-import { MAIN_TAB_COMPANIES, MAIN_TAB_SEARCH } from './routes';
+import { CALENDAR_SCREEN, MAIN_TAB_COMPANIES, MAIN_TAB_SEARCH } from './routes';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTranslation } from "../store/I18nContext";
 
@@ -29,14 +29,14 @@ const MainTabNavigator = () => {
 					tabBarIcon: (props) => <Icon {...props} name='search' />
 				}}
 			/>
-			{/* <Tab.Screen
-				name={'a'}
+			<Tab.Screen
+				name={CALENDAR_SCREEN}
 				component={CalendarScreen}
 				options={{
 					title: 'settings',
 					tabBarIcon: (props) => <Icon {...props} name='settings' />
 				}}
-			/> */}
+			/>
 
 		</Tab.Navigator>
 	);
