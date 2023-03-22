@@ -1,7 +1,6 @@
 import Try from "../screens/Try";
 import { useTranslation } from "../store/I18nContext";
-import AppointmentsStackNavigator from "./AppointmentsStackNavigator";
-import { DRAWER_APPOINTMENTS } from "./routes";
+import { DRAWER_CALENDAR, DRAWER_HOME } from "./routes";
 import { HeaderBackButton } from '@react-navigation/elements';
 import {
 	DrawerContentScrollView,
@@ -10,6 +9,8 @@ import {
 } from '@react-navigation/drawer';
 import { View } from "react-native";
 import XText from "../components/basic/XText";
+import HomeTabNavigator from "./HomeTabNavigator";
+import CalendarScreen from "../screens/CalendarScreen";
 
 
 const Drawer = createDrawerNavigator();
@@ -30,8 +31,24 @@ const DrawerNavigator = () => {
 	const t = useTranslation();
 	return (
 		<Drawer.Navigator screenOptions={{ headerShown: false }} drawerContent={(props) => <CustomDrawerContent {...props} />}>
-			<Drawer.Screen name={DRAWER_APPOINTMENTS} component={AppointmentsStackNavigator} options={{ title: t('Appointments') }} />
-			<Drawer.Screen name={'TRY'} component={Try} options={{ headerShown: true }} />
+			<Drawer.Screen
+				name={DRAWER_HOME}
+				component={HomeTabNavigator}
+				options={{ title: t('Home') }}
+			/>
+			<Drawer.Screen
+				name={DRAWER_CALENDAR}
+				component={CalendarScreen}
+				options={{ 
+					title: t('Calendar'),
+					headerShown: true
+				}}
+			/>
+			<Drawer.Screen
+				name={'TRY'}
+				component={Try}
+				options={{ headerShown: true }}
+			/>
 		</Drawer.Navigator>
 	);
 };

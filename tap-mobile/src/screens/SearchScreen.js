@@ -11,7 +11,7 @@ const SearchScreen = ({ }) => {
 	const t = useTranslation();
 	return (
 		<Screen style={{ justifyContent: 'center' }}>
-			<ScrollView style={{}}>
+			<ScrollView>
 				<XSelectField
 					placeholder={t('Location')}
 					value='Banja Luka'
@@ -45,8 +45,8 @@ const SearchScreen = ({ }) => {
 					iconRight={(props) => <Icon {...props} name='add' />}
 					iconLeft={(props) => <Icon {...props} name='calendar' />}
 				/>
-				<XButton style={{ marginTop: 30 }} title={t('Search')} />
 			</ScrollView>
+			<XButton style={{ marginTop: 30 }} title={t('Search')} bottom />
 		</Screen>
 	);
 }

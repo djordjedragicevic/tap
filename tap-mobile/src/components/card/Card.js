@@ -35,7 +35,6 @@ Card.defaultProps = {
 
 const createStyle = (theme) => StyleSheet.create({
 	card: {
-		//height: 160,
 		padding: 8,
 		elevation: 1,
 		marginHorizontal: theme.values.mainPaddingHorizontal,
@@ -45,9 +44,7 @@ const createStyle = (theme) => StyleSheet.create({
 	},
 	container: {
 		flexDirection: 'row',
-		flex: 1,
-		//justifyContent: 'space-evenly', 
-		//marginLeft: 8
+		flex: 1
 	},
 	image: {
 		color: theme.colors.primary

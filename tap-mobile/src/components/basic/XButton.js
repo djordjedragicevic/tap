@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useThemedStyle } from "../../store/ThemeContext";
 import { values } from "../../style/themes";
 import XText from "./XText";
 
-const XButton = ({ title, onPress, disabled, style }) => {
+const XButton = ({ title, onPress, disabled, style, bottom = false }) => {
 	const styles = useThemedStyle(createStyle);
 
 	const dinStyle = useMemo(() => {
@@ -16,9 +16,12 @@ const XButton = ({ title, onPress, disabled, style }) => {
 	}, [disabled]);
 
 	return (
-		<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
-			{!!title && <XText style={styles.text} secondary>{title}</XText>}
-		</TouchableOpacity>
+		<>
+			{bottom && <View style={styles.flexView} />}
+			<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
+				{!!title && <XText style={styles.text} secondary>{title}</XText>}
+			</TouchableOpacity>
+		</>
 	);
 };
 
@@ -39,6 +42,9 @@ const createStyle = (theme) => StyleSheet.create({
 	text: {
 		textTransform: 'uppercase',
 		color: theme.colors.textLight
+	},
+	flexView: {
+		flex: 1
 	}
 });
 

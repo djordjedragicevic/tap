@@ -2,19 +2,19 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CalendarScreen from '../screens/CalendarScreen';
 import SearchScreen from '../screens/SearchScreen';
 import AppointmentsStackNavigator from './AppointmentsStackNavigator';
-import { CALENDAR_SCREEN, MAIN_TAB_COMPANIES, MAIN_TAB_SEARCH } from './routes';
+import { CALENDAR_SCREEN, HOME_TAB_COMPANIES, HOME_TAB_SEARCH } from './routes';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTranslation } from "../store/I18nContext";
 
 
 const Tab = createBottomTabNavigator();
 
-const MainTabNavigator = () => {
+const HomeTabNavigator = () => {
 	const t = useTranslation()
 	return (
 		<Tab.Navigator screenOptions={{ headerShown: false }}>
 			<Tab.Screen
-				name={MAIN_TAB_COMPANIES}
+				name={HOME_TAB_COMPANIES}
 				component={AppointmentsStackNavigator}
 				options={{
 					title: t('Home'),
@@ -22,24 +22,24 @@ const MainTabNavigator = () => {
 				}}
 				/>
 			<Tab.Screen
-				name={MAIN_TAB_SEARCH}
+				name={HOME_TAB_SEARCH}
 				component={SearchScreen}
 				options={{
 					title: t('Search'),
 					tabBarIcon: (props) => <Icon {...props} name='search' />
 				}}
 			/>
-			<Tab.Screen
+			{/* <Tab.Screen
 				name={CALENDAR_SCREEN}
 				component={CalendarScreen}
 				options={{
 					title: 'settings',
 					tabBarIcon: (props) => <Icon {...props} name='settings' />
 				}}
-			/>
+			/> */}
 
 		</Tab.Navigator>
 	);
 }
 
-export default MainTabNavigator;
+export default HomeTabNavigator;

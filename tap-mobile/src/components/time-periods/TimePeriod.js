@@ -36,7 +36,6 @@ const TimePeriod = ({ item, sizeCoef, offset, from, onPress, children, style }) 
 const createStyle = (theme, periodSubType) => StyleSheet.create({
 	item: {
 		backgroundColor: theme.periodColors[periodSubType],
-		// /borderWidth: 1,
 		width: '100%',
 		opacity: 0.75,
 		position: 'absolute',

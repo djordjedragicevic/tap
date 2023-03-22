@@ -94,20 +94,14 @@ const CompanyScreen = ({ navigation, route }) => {
 
 	return (
 		<Screen>
-			{/* <XCard>
-				<XText style={{ fontWeight: '600' }}>{company.name}</XText>
-				<XText>{company.typeName}</XText>
-			</XCard> */}
-
-
-			<XButton title={'Calendar'} onPress={() => navigation.navigate(CALENDAR_SCREEN, { companyId: route.params.id })} />
 
 			<XCard style={staticStyles.cardServices}>
 				<Services services={company.services} selectedItems={selectedServices} onItemPress={onServicePress} />
 			</XCard>
 
 			<XButton
-				style={{ marginTop: 10 }}
+				bottom
+				style={{ marginTop: 10, selfAlign: 'flex-end' }}
 				disabled={!selectedServices || selectedServices?.length === 0}
 				title={t('Appointments')}
 				onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { companyId: route.params.id, services: selectedServices.map(s => s.id).join(',') })}

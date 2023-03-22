@@ -26,7 +26,8 @@ const en_US = {
 	"Services": "Services",
 	"Company": "Company",
 	"From": "From",
-	"To": "To"
+	"To": "To",
+	"Calendar": "Calendar"
 
 };
 

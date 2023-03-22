@@ -3,7 +3,7 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/
 import { THEME } from './style/themes';
 import { useTheme } from './store/ThemeContext';
 import { StatusBar } from 'react-native';
-import MainTabNavigator from './navigators/MainTabNavigator';
+import MainNavigator from './navigators/MainNavigator';
 
 const App = () => {
 
@@ -22,7 +22,6 @@ const App = () => {
 		}
 	}, [theme]);
 
-	// console.log(navTheme)
 
 	return (
 		<>
@@ -31,7 +30,7 @@ const App = () => {
 				backgroundColor={theme.colors.backgroundElement}
 			/>
 			<NavigationContainer theme={navTheme}>
-				<MainTabNavigator />
+				<MainNavigator />
 			</NavigationContainer>
 		</>
 	);

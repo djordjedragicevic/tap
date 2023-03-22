@@ -79,7 +79,6 @@ const TimePeriodsPanel = ({ sizeCoef, showCurrentTime, startHour, children }) =>
 
 const createStyle = (theme) => StyleSheet.create({
 	container: {
-		//backgroundColor: theme.colors.backgroundElement,
 		flexDirection: 'row',
 		padding: 10,
 	},
