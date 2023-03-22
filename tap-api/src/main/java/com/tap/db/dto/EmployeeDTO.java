@@ -1,15 +1,9 @@
 package com.tap.db.dto;
 
 import com.tap.appointments.TimePeriod;
-import com.tap.company.CompanyDAO;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDate;
 import java.util.*;
 
-@Getter
-@Setter
 public class EmployeeDTO {
 	private Long id;
 	private UserDTO user;
@@ -43,5 +37,68 @@ public class EmployeeDTO {
 					this.calendar.add(cD);
 					return cD;
 				});
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public EmployeeDTO setId(Long id) {
+		this.id = id;
+		return this;
+	}
+
+	public UserDTO getUser() {
+		return user;
+	}
+
+	public EmployeeDTO setUser(UserDTO user) {
+		this.user = user;
+		return this;
+	}
+
+	public List<EmployeeWorkDayDTO> getWorkDays() {
+		return workDays;
+	}
+
+	public EmployeeDTO setWorkDays(List<EmployeeWorkDayDTO> workDays) {
+		this.workDays = workDays;
+		return this;
+	}
+
+	public List<CalendarDayDTO> getCalendar() {
+		return calendar;
+	}
+
+	public EmployeeDTO setCalendar(List<CalendarDayDTO> calendar) {
+		this.calendar = calendar;
+		return this;
+	}
+
+	public List<TimePeriod> getPeriods() {
+		return periods;
+	}
+
+	public EmployeeDTO setPeriods(List<TimePeriod> periods) {
+		this.periods = periods;
+		return this;
+	}
+
+	public List<ServiceDTO> getLookingServices() {
+		return lookingServices;
+	}
+
+	public EmployeeDTO setLookingServices(List<ServiceDTO> lookingServices) {
+		this.lookingServices = lookingServices;
+		return this;
+	}
+
+	public CompanyDTO getCompany() {
+		return company;
+	}
+
+	public EmployeeDTO setCompany(CompanyDTO company) {
+		this.company = company;
+		return this;
 	}
 }
