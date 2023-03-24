@@ -7,11 +7,12 @@ import { useThemedStyle } from "../../store/ThemeContext";
 import XText from '../basic/XText';
 
 const getDateState = () => {
+	//const d = new Date('2020-05-12T09:49:00.000Z');
 	const d = new Date();
 	return {
 		h: d.getHours(),
 		m: d.getMinutes(),
-		timeString: DateUtils.dateToTimeString(d)
+		timeString: DateUtils.dateToTimeString(d, false)
 	}
 };
 
@@ -105,13 +106,23 @@ const createStyle = (theme) => StyleSheet.create({
 	currentTimeText: {
 		paddingHorizontal: 10,
 		color: theme.colors.red,
-		backgroundColor: theme.colors.backgroundElement
+		//backgroundColor: theme.colors.backgroundElement
 	},
 	currentTimeLineDot: {
-		height: 5,
-		width: 5,
+		height: 8,
+		width: 8,
 		borderRadius: 50,
 		backgroundColor: theme.colors.red
+	},
+	currentTimeLineTriangle: {
+		height: 0,
+		width: 0,
+		borderTopWidth: 8,
+		borderTopColor: 'transparent',
+		borderBottomWidth: 8,
+		borderBottomColor: 'transparent',
+		borderLeftWidth: 8,
+		borderLeftColor: theme.colors.red
 	},
 
 	hourLine: {

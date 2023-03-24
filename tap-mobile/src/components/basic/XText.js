@@ -35,8 +35,7 @@ XText.defaultProps = {
 const createStyle = (theme, textColor) => {
 	return StyleSheet.create({
 		text: {
-			color: theme.colors[textColor],
-			fontWeight: '500'
+			color: theme.colors[textColor]
 		}
 	})
 };

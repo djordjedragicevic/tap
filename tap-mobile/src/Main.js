@@ -5,7 +5,7 @@ import { useTheme } from './store/ThemeContext';
 import { StatusBar } from 'react-native';
 import MainNavigator from './navigators/MainNavigator';
 
-const App = () => {
+const Main = () => {
 
 	const { theme } = useTheme();
 	const navTheme = useMemo(() => {
@@ -36,4 +36,4 @@ const App = () => {
 	);
 };
 
-export default App;
+export default Main;
