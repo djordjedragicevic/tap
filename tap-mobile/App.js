@@ -1,28 +1,20 @@
-/**
- * @format
- */
-
 import 'react-native-gesture-handler';
-import { AppRegistry } from 'react-native';
-import App from './src/App';
-import { name as appName } from './app.json';
 import { GlobalContextProvider } from './src/store/GlobalContext';
 import { ThemeContextProvider } from './src/store/ThemeContext';
 import { Theme } from './src/style/themes';
 import { I18nContextProvider } from './src/store/I18nContext';
 import { languages } from './src/i18n/i18n';
 import { DEFAULT_LANGUAGE } from './src/common/config';
+import Main from './src/Main';
 
-const Root = () => {
+export default App = () => {
 	return (
 		<GlobalContextProvider>
 			<ThemeContextProvider initialTheme={Theme.Light}>
 				<I18nContextProvider language={DEFAULT_LANGUAGE} languages={languages}>
-					<App />
+					<Main />
 				</I18nContextProvider>
 			</ThemeContextProvider>
 		</GlobalContextProvider>
 	)
 };
-
-AppRegistry.registerComponent(appName, () => Root);

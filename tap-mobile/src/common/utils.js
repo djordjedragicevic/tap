@@ -36,8 +36,8 @@ export const DateUtils = {
 	dateToString: (date) => {
 		return date?.toISOString().split('T')[0];
 	},
-	dateToTimeString: (d) => {
-		return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+	dateToTimeString: (d, hour12 = true) => {
+		return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12 });
 	},
 	stringToTimeString: (s) => {
 		return DateUtils.dateToTimeString(new Date(s))
