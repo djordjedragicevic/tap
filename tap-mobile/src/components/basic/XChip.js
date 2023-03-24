@@ -16,7 +16,7 @@ const XChip = ({ text, style, textStyle, children, primary = true }) => {
 const createStyle = (theme) => StyleSheet.create({
 	container: {
 		paddingHorizontal: 6,
-		paddingVertical: 2,
+		height: 23,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderRadius: theme.values.borderRadius,

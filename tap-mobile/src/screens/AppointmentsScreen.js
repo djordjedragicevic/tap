@@ -8,6 +8,7 @@ import I18nContext from "../store/I18nContext";
 import { useThemedStyle } from "../store/ThemeContext";
 import { ExpandableCalendar, AgendaList, CalendarProvider, WeekCalendar } from 'react-native-calendars';
 import XChip from "../components/basic/XChip";
+import XSeparator from "../components/basic/XSeparator";
 
 
 const SectionHeader = memo(({ title }) => {
@@ -51,16 +52,18 @@ const FreeAppointmentPeriod = memo(({ item }) => {
 					<XText>{DateUtils.stringToTimeString(item.start)}</XText>
 					<XText>{'(' + sumDuration + 'min)'}</XText>
 				</View>
+				<XSeparator vertical />
 				<View style={{ flex: 1, alignItems: 'flex-start', paddingHorizontal: 5, justifyContent: 'center' }}>
 					<View style={{ flexDirection: 'row' }}>
 						<XText style={styles.textCmp}>{item.employee.company.type} </XText>
 						<XText style={styles.textCmp}>{item.employee.company.name}</XText>
 					</View>
+					<XText style={{ fontStyle: 'italic' }} secondary>{item.employee.company.address}, {item.employee.company.country}</XText>
 					{/* <View style={{ flexDirection: 'row' }}>
 						{item.employee.lookingServices.map(s => <XChip text={s.name} textStyle={{ color: 'hsla(30, 100%, 50%, 1)', fontWeight: 'bold', fontSize: 13 }} style={{ backgroundColor: 'hsla(30, 90%, 80%, 0.6)', marginEnd: 5 }} />)}
 					</View> */}
 
-					<XChip text={getUserDisplayName(item.employee.user)} />
+					<XChip text={getUserDisplayName(item.employee.user)} style={{ marginTop: 5 }} />
 				</View>
 				<View style={{ justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 5 }}>
 					<XText secondary style={[{ alignSelf: 'flex-end' }]}>{sumPrice || '-'} KM</XText>
@@ -80,7 +83,7 @@ const createAppStyle = (theme) => StyleSheet.create({
 		borderRadius: theme.values.borderRadius,
 		//borderWidth: theme.values.borderWidth,
 		//borderColor: theme.colors.borderColor,
-		marginBottom: 5
+		marginBottom: 2
 	},
 	text: {
 
@@ -153,6 +156,7 @@ const AppointmentsScreen = ({ route }) => {
 					renderSectionHeader={renderSectionHeader}
 					renderItem={renderItem}
 					stickySectionHeadersEnabled
+				// ItemSeparatorComponent={XSeparator}
 				/>
 			}
 		</Screen>

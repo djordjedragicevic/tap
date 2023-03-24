@@ -29,10 +29,10 @@ export const ThemeContextProvider = ({ initialTheme = Theme.Dark, children }) =>
 
 export const useTheme = () => useContext(ThemeContext);
 
-export const useThemedStyle = (styleSheetCreator, arg1) => {
+export const useThemedStyle = (styleSheetCreator, arg1, arg2, arg3) => {
 	const { theme } = useTheme();
 
-	const stOb = useMemo(() => styleSheetCreator(theme, arg1), [theme, styleSheetCreator, arg1]);
+	const stOb = useMemo(() => styleSheetCreator(theme, arg1, arg2, arg3), [theme, styleSheetCreator, arg1, arg2, arg3]);
 
 	return stOb;
 }
