@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class CompanyDTO {
 	private String name;
+	private String type;
 	private String address;
 	private String country;
 	private String city;

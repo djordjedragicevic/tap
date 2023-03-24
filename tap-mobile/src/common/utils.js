@@ -2,24 +2,24 @@ import { HOUR_HEIGHT } from "./general";
 
 export const emptyFn = function () { };
 
-const getTimeMOD = (timeString) => {
+const getMinutesOfDay = (timeString) => {
 	const t = timeString.split(":");
-	return (parseInt(t[0]) * HOUR_HEIGHT) + parseInt(t[1]);
+	return (parseInt(t[0]) * 60) + parseInt(t[1]);
 };
 
 export const calculateHeightFromDate = (startDate, endDate, coef = 1) => {
 	const startTime = startDate.split('T')[1];
 	const endTime = endDate.split('T')[1];
-	return (getTimeMOD(endTime) * coef - getTimeMOD(startTime) * coef)
+	return (getMinutesOfDay(endTime) * coef - getMinutesOfDay(startTime) * coef)
 };
 
 export const calculateTopFromDate = (startDate, offset = 0, coef = 1, fromDate) => {
 	const dateOffset = fromDate ? ((new Date(startDate).getDay() - fromDate.getDay()) * 24 * HOUR_HEIGHT * coef) : 0;
-	return (getTimeMOD(startDate.split('T')[1]) * coef + offset) + dateOffset
+	return (getMinutesOfDay(startDate.split('T')[1]) * coef + offset) + dateOffset
 };
 
 export const getUserDisplayName = (user) => {
-	return user.username || ((user.firstName || '') + (user.lastName || ''));
+	return user.username || ((user.firstName || '') + ' ' + (user.lastName || ''));
 };
 
 export const formatTime = (date, loc) => {
@@ -37,7 +37,10 @@ export const DateUtils = {
 		return date?.toISOString().split('T')[0];
 	},
 	dateToTimeString: (d) => {
-		return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+		return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+	},
+	stringToTimeString: (s) => {
+		return DateUtils.dateToTimeString(new Date(s))
 	},
 	getDayHours: (from, to) => {
 		if (from == null)

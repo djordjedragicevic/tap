@@ -28,7 +28,16 @@ export class Http {
 		});
 	}
 
-	static get(url, qParams) {
+	static get(url, qParams, validate = false) {
+
+		if (qParams && validate) {
+			const tmpQP = {};
+			for (const [k, v] of Object.entries(qParams))
+				if (v !== undefined)
+					tmpQP[k] = v;
+			qParams = tmpQP;
+		}
+
 		let _url = qParams ? url + '?' + new URLSearchParams(qParams) : url;
 		return Http.send(_url);
 	}

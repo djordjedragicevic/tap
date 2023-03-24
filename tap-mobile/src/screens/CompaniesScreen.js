@@ -5,7 +5,7 @@ import XText from "../components/basic/XText";
 import Screen from "../components/Screen";
 import { COMPANY_SCREEN } from "../navigators/routes";
 import HeaderDrawerButton from "../components/HeaderDrawerButton";
-import XCard from "../components/basic/XCard";
+import XSection from "../components/basic/XSection";
 import { values } from "../style/themes";
 
 const CompaniesScreen = ({ navigation }) => {
@@ -30,10 +30,10 @@ const CompaniesScreen = ({ navigation }) => {
 
 	const renderCompany = useCallback(({ item }) => {
 		return (
-			<XCard onPress={() => navigation.navigate(COMPANY_SCREEN, { id: item.id, companyName: item.name, companyTypeName: item.typeName })} style={styles.card}>
+			<XSection onPress={() => navigation.navigate(COMPANY_SCREEN, { id: item.id, companyName: item.name, companyTypeName: item.typeName })} style={styles.card}>
 				<XText style={styles.titleType}>{item.typeName}</XText>
 				<XText style={styles.title}>{item.name}</XText>
-			</XCard>
+			</XSection>
 
 		);
 	}, []);

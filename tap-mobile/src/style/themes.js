@@ -23,7 +23,7 @@ export const Theme = {
 			background: '#f0f0f5',
 			backgroundElement: DefaultTheme.colors.card,
 			textPrimary: 'hsl(0, 0%, 5%)',
-			textSecondary: 'hsl(0, 0%, 30%)',
+			textSecondary: 'hsl(0, 0%, 40%)',
 			textTertiary: 'hsl(0, 0%, 70%)',
 			textLight: '#f2f2f3',
 

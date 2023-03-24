@@ -2,10 +2,10 @@ import Screen from "../components/Screen";
 import XText from "../components/basic/XText";
 import XButton from "../components/basic/XButton";
 import { useTranslation } from "../store/I18nContext";
-import { APPOINTMENTS_SCREEN, CALENDAR_SCREEN } from "../navigators/routes";
+import { APPOINTMENTS_SCREEN, CALENDAR_SCREEN, MAIN_FREE_APPOINTMENTS } from "../navigators/routes";
 import { useCallback, useEffect, useState } from "react";
 import { Http } from "../common/Http";
-import XCard from "../components/basic/XCard";
+import XSection from "../components/basic/XSection";
 import { FlatList, StyleSheet, View } from "react-native";
 import { convert } from "../common/currency";
 import ListSeparator from "../components/list/ListSeparator";
@@ -95,16 +95,19 @@ const CompanyScreen = ({ navigation, route }) => {
 	return (
 		<Screen>
 
-			<XCard style={staticStyles.cardServices}>
+			<XSection style={staticStyles.cardServices}>
 				<Services services={company.services} selectedItems={selectedServices} onItemPress={onServicePress} />
-			</XCard>
+			</XSection>
 
 			<XButton
 				bottom
 				style={{ marginTop: 10, selfAlign: 'flex-end' }}
 				disabled={!selectedServices || selectedServices?.length === 0}
 				title={t('Appointments')}
-				onPress={() => navigation.navigate(APPOINTMENTS_SCREEN, { companyId: route.params.id, services: selectedServices.map(s => s.id).join(',') })}
+				onPress={() => navigation.navigate(MAIN_FREE_APPOINTMENTS, {
+					company: route.params.id,
+					services: selectedServices.map(s => s.id).join(',')
+				})}
 			/>
 		</Screen>
 	);

@@ -1,6 +1,6 @@
 import Screen from '../components/Screen';
 import XText from '../components/basic/XText';
-import XCard from '../components/basic/XCard';
+import XSection from '../components/basic/XSection';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Http } from '../common/Http';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -65,7 +65,7 @@ const CalendarScreen = ({ route }) => {
 					<ScrollView horizontal contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
 						{data && data.employees.map((e) => {
 							return (
-								<XCard
+								<XSection
 									key={e.id}
 									style={styles.empl}
 									onPress={() => setEmployeeData(e)}
@@ -73,7 +73,7 @@ const CalendarScreen = ({ route }) => {
 									disabledOpacity={0.4}
 								>
 									<XText light>{getUserDisplayName(e.user)}</XText>
-								</XCard>
+								</XSection>
 							)
 						})}
 					</ScrollView>

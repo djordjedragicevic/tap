@@ -118,6 +118,7 @@ public class CompanyDAO {
 				e.user.username,
 								
 				e.company.name AS c_name,
+				e.company.typeName as c_type_name,
 				e.company.address.street AS c_street,
 				e.company.address.number AS c_number,
 				e.company.address.city.name AS c_city,
@@ -149,10 +150,9 @@ public class CompanyDAO {
 
 		query.append(" GROUP BY e.id");
 
-		TypedQuery<Object[]> q = em.createQuery(query.toString(), Object[].class)
-				.setParameter("cityId", cityId)
-				.setParameter("sIds", sIds);
+		TypedQuery<Object[]> q = em.createQuery(query.toString(), Object[].class);
 
+		q.setParameter("sIds", sIds);
 		if (cId > 0)
 			q.setParameter("cId", cId);
 		if (cityId > 0)
@@ -172,6 +172,7 @@ public class CompanyDAO {
 				e.user.lastName,
 				e.user.username,
 				e.company.name AS c_name,
+				e.company.typeName as c_type_name,
 				e.company.address.street AS c_street,
 				e.company.address.number AS c_number,
 				e.company.address.city.name AS c_city,
@@ -273,16 +274,16 @@ public class CompanyDAO {
 									.setUser(new UserDTO(Long.parseLong(r[1].toString()), r[2].toString(), r[3].toString(), r[4].toString()));
 
 							//Company
-							String address = r[6] + (r[7] != null ? " " + r[7] : "");
-							e.setCompany(new CompanyDTO(r[5].toString(), address, r[8].toString(), r[9].toString()));
+							String address = r[7] + (r[8] != null ? " " + r[8] : "");
+							e.setCompany(new CompanyDTO(r[5].toString(),r[6].toString(), address, r[9].toString(), r[10].toString()));
 
 							//Looking services
-							if (r.length > 13) {
+							if (r.length > 14) {
 
-								String[] sIds = r[10].toString().split(",");
-								String[] sDurations = r[11].toString().split(",");
-								String[] sPrices = r[12].toString().split("#");
-								String[] sNames = r[13].toString().split(",");
+								String[] sIds = r[11].toString().split(",");
+								String[] sDurations = r[12].toString().split(",");
+								String[] sPrices = r[13].toString().split("#");
+								String[] sNames = r[14].toString().split(",");
 
 								List<ServiceDTO> services = new ArrayList<>();
 								for (int i = 0, s = sIds.length; i < s; i++) {

@@ -2,19 +2,25 @@ import { useMemo } from "react";
 import { StyleSheet, Text } from "react-native";
 import { useThemedStyle } from "../../store/ThemeContext";
 
-const XText = ({ primary, secondary, light, style, children }) => {
-	const styles = useThemedStyle(createStyle);
-	const composedStyle = useMemo(() => {
-		const st = {
-			...styles.text,
-			...(light ? styles.light : {}),
-			...(secondary ? styles.secondary : {})
-		};
-		return st;
-	}, [styles, primary, secondary, light, style]);
+
+
+const XText = ({ primary, secondary, tertiary, light, style, children }) => {
+	const textColor = useMemo(() => {
+		if (light)
+			return 'textLight'
+		else if (secondary)
+			return 'textSecondary';
+		else if (tertiary)
+			return 'textTertiary';
+		else
+			return 'textPrimary';
+
+	}, [primary, secondary, light]);
+
+	const styles = useThemedStyle(createStyle, textColor);
 
 	return (
-		<Text style={[composedStyle, style]}>{children}</Text>
+		<Text style={[styles.text, style]}>{children}</Text>
 	);
 };
 
@@ -22,19 +28,17 @@ XText.defaultProps = {
 	primary: true,
 	secondary: false,
 	light: false,
+	tertiary: false,
 	style: {}
 };
 
-const createStyle = (theme) => StyleSheet.create({
-	text: {
-		color: theme.colors.textPrimary
-	},
-	light: {
-		color: theme.colors.textLight
-	},
-	secondary: {
-		color: theme.colors.textSecondary
-	}
-});
+const createStyle = (theme, textColor) => {
+	return StyleSheet.create({
+		text: {
+			color: theme.colors[textColor],
+			fontWeight: '500'
+		}
+	})
+};
 
 export default XText;
