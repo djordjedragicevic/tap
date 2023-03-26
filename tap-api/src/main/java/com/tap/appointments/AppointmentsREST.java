@@ -48,7 +48,7 @@ public class AppointmentsREST {
 
 
 			for (EmployeeDTO e : employees) {
-				int duration = e.getLookingServices().stream().mapToInt(ServiceDTO::getDuration).sum();
+				int duration = e.getLookingServices().stream().mapToInt(CompanyServiceDTO::getDuration).sum();
 
 				e.getCalendar().forEach(c -> c
 						.getPeriods()
@@ -111,13 +111,14 @@ public class AppointmentsREST {
 	@Transactional
 	public Object bookFreeAppointment(
 			@FormParam("services") String services,
-			@FormParam("uId") long uId,
 			@FormParam("eId") long eId,
+			@FormParam("csId") long csId,
+			@FormParam("uId") long uId,
 			@FormParam("start") String start,
 			@FormParam("end") String end
 	) {
-		List<Long> srvcs = Arrays.stream(services.split("_")).map(Long::parseLong).toList();
-		appointmentsDAO.bookAppointment(srvcs, uId, eId, LocalDateTime.parse(start), LocalDateTime.parse(end));
+		//List<Long> srvcs = Arrays.stream(services.split("_")).map(Long::parseLong).toList();
+		appointmentsDAO.bookAppointment(eId, csId, uId, LocalDateTime.parse(start), LocalDateTime.parse(end));
 		return true;
 	}
 

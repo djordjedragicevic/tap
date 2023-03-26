@@ -23,4 +23,11 @@ public class EmployeeService implements Serializable {
 
 	private Byte active;
 
+	public CompanyService getCompanyService() {
+		return companyService;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
 }

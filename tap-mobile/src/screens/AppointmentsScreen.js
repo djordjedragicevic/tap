@@ -1,15 +1,14 @@
 import { memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Http } from "../common/Http";
-import { DateUtils, formatTime, getUserDisplayName, measureDuration } from "../common/utils";
+import { DateUtils, getUserDisplayName } from "../common/utils";
 import XText from "../components/basic/XText";
 import Screen from "../components/Screen";
-import I18nContext from "../store/I18nContext";
+import I18nContext, { useTranslation } from "../store/I18nContext";
 import { useThemedStyle } from "../store/ThemeContext";
-import { ExpandableCalendar, AgendaList, CalendarProvider, WeekCalendar } from 'react-native-calendars';
 import XChip from "../components/basic/XChip";
 import XSeparator from "../components/basic/XSeparator";
-
+import XAlert from '../components/basic/XAlert';
 
 const SectionHeader = memo(({ title }) => {
 	const styles = useThemedStyle(createSecHeaderStyle);
@@ -32,13 +31,14 @@ const createSecHeaderStyle = (theme) => StyleSheet.create({
 	}
 });
 
-const FreeAppointmentPeriod = memo(({ item }) => {
+const FreeAppointment = memo(({ onPress, item: { employee, start } }) => {
 	const { lng } = useContext(I18nContext);
+	const t = useTranslation();
 	const styles = useThemedStyle(createAppStyle);
 
 	const [sumPrice, sumDuration] = useMemo(() => {
 		let p = 0, d = 0;
-		item.employee.lookingServices.forEach(s => {
+		employee.lookingServices.forEach(s => {
 			p += s.price || 0;
 			d += s.duration;
 		});
@@ -46,31 +46,32 @@ const FreeAppointmentPeriod = memo(({ item }) => {
 	}, []);
 
 	return (
-		<TouchableOpacity style={styles.container} onPress={() => { }}>
-			<View style={{ flex: 1, flexDirection: 'row', padding: 5 }}>
-				<View style={{ justifyContent: 'center', minWidth: 75, paddingHorizontal: 5, alignItems: 'center' }}>
-					<XText>{DateUtils.stringToTimeString(item.start)}</XText>
-					<XText>{'(' + sumDuration + 'min)'}</XText>
-				</View>
-				<XSeparator vertical />
-				<View style={{ flex: 1, alignItems: 'flex-start', paddingHorizontal: 5, justifyContent: 'center' }}>
-					<View style={{ flexDirection: 'row' }}>
-						<XText style={styles.textCmp}>{item.employee.company.type} </XText>
-						<XText style={styles.textCmp}>{item.employee.company.name}</XText>
-					</View>
-					<XText style={{ fontStyle: 'italic' }} secondary>{item.employee.company.address}, {item.employee.company.country}</XText>
-					{/* <View style={{ flexDirection: 'row' }}>
-						{item.employee.lookingServices.map(s => <XChip text={s.name} textStyle={{ color: 'hsla(30, 100%, 50%, 1)', fontWeight: 'bold', fontSize: 13 }} style={{ backgroundColor: 'hsla(30, 90%, 80%, 0.6)', marginEnd: 5 }} />)}
-					</View> */}
+		<TouchableOpacity style={styles.container} onPress={onPress}>
+			<View style={{ flex: 1, flexDirection: 'row' }}>
 
-					<XChip text={getUserDisplayName(item.employee.user)} style={{ marginTop: 5 }} />
+				<View style={styles.timeContainer}>
+					<XText light style={{ fontWeight: '500' }}>{DateUtils.stringToTimeString(start)}</XText>
+					<XText light style={{ fontWeight: '500' }}>{sumDuration + ' min'}</XText>
 				</View>
-				<View style={{ justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 5 }}>
-					<XText secondary style={[{ alignSelf: 'flex-end' }]}>{sumPrice || '-'} KM</XText>
+
+				<View style={{ flex: 1, padding: 5, justifyContent: 'center' }}>
+
+					<XText numberOfLines={1} ellipsizeMode='tail' style={styles.textTitle}>{employee.company.name} - {employee.company.type}</XText>
+					<XText
+						ellipsizeMode='tail'
+						numberOfLines={1}
+						style={{ fontStyle: 'italic' }}
+						secondary
+					>
+						{employee.company.address}, {employee.company.country}
+					</XText>
+
+					<View style={{ justifyContent: 'space-between', flex: 1, flexDirection: 'row' }}>
+						<XChip text={getUserDisplayName(employee.user)} style={{ marginTop: 5 }} />
+						<XChip text={(sumPrice || '-') + ' KM'} style={[{}]}></XChip>
+					</View>
 				</View>
 			</View>
-
-
 		</TouchableOpacity>
 	);
 });
@@ -78,18 +79,23 @@ const FreeAppointmentPeriod = memo(({ item }) => {
 const createAppStyle = (theme) => StyleSheet.create({
 	container: {
 		minHeight: 50,
-		//borderWidth: 0.5,
 		backgroundColor: theme.colors.backgroundElement,
 		borderRadius: theme.values.borderRadius,
-		//borderWidth: theme.values.borderWidth,
-		//borderColor: theme.colors.borderColor,
-		marginBottom: 2
+		marginBottom: 4,
+		overflow: 'hidden'
 	},
-	text: {
+	timeContainer: {
+		justifyContent: 'center',
+		minWidth: 70,
+		paddingHorizontal: 5,
+		alignItems: 'center',
+		backgroundColor: theme.colors.primary
+	},
+	headerText: {
 
 	},
-	textCmp: {
-		fontSize: 18
+	textTitle: {
+		fontSize: 17
 	},
 	textEmp: {
 		fontSize: 18
@@ -102,6 +108,7 @@ const AppointmentsScreen = ({ route }) => {
 	const [data, setData] = useState([]);
 	const { lng } = useContext(I18nContext);
 	const [weekView, setWeekView] = useState(false);
+	const t = useTranslation();
 
 	const { city, services, company } = route.params;
 
@@ -121,22 +128,40 @@ const AppointmentsScreen = ({ route }) => {
 						data: a.periods
 					}
 				}));
-			// resp.employees[0].periods.forEach(element => {
-
-			// });
-
-			//console.log("FREE APPS", JSON.stringify(resp));
-			// setData({
-			// 	raw: resp,
-			// 	appointments: convertData(resp)
-			// })
 		});
 
 		return () => finish = false;
 	}, []);
 
+
+	const onAppPress = (item) => {
+		XAlert.show(
+			t('Book appointment'),
+			t('Book appointment'),
+			[
+				{
+					text: t('OK'),
+					onPress: () => {
+						Http.post('/appointments/book', {
+							services,
+							eId: item.employee.id,
+							csId: item.employee.lookingServices[0].id,
+							uId: 1,
+							start: item.start,
+							end: item.end
+						});
+					}
+				},
+				{
+					text: t('Cancel')
+				}
+			]
+
+		);
+	};
+
 	const renderItem = useCallback(({ item }) => {
-		return <FreeAppointmentPeriod item={item} />
+		return <FreeAppointment item={item} onPress={() => onAppPress(item)} />
 	}, []);
 
 	const renderSectionHeader = useCallback((item) => {

@@ -2,7 +2,7 @@ package com.tap.services;
 
 import com.tap.company.CompanyDAO;
 import com.tap.db.dto.CompanyBasicDTO;
-import com.tap.db.dto.ServiceDTO;
+import com.tap.db.dto.CompanyServiceDTO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -31,14 +31,14 @@ public class CompanyService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Map<String, Object> getCompanyInfo(@PathParam("id") Long id) {
 		CompanyBasicDTO companyBasicDTO = companyDAO.getCompany(id);
-		List<ServiceDTO> services = companyDAO.getCompanyServices(id);
+		List<CompanyServiceDTO> services = companyDAO.getCompanyServices(id);
 		return Map.of("company", companyBasicDTO, "services", services);
 	}
 
 	@GET
 	@Path("services/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<ServiceDTO> getCompanyServices(@PathParam("id") Long companyId) {
+	public List<CompanyServiceDTO> getCompanyServices(@PathParam("id") Long companyId) {
 		return companyDAO.getCompanyServices(companyId);
 	}
 

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ServiceDTO {
+public class CompanyServiceDTO {
 	private long id;
 	private String name;
 	private int duration;

@@ -8,7 +8,7 @@ const XChip = ({ text, style, textStyle, children, primary = true }) => {
 
 	return (
 		<View style={[primary && styles.primary, styles.container, style]}>
-			{(typeof text === 'string') ? <XText light={primary} style={textStyle}>{text}</XText> : children}
+			{text ? <XText light={primary} style={textStyle}>{text}</XText> : children}
 		</View>
 	)
 };

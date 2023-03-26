@@ -13,8 +13,9 @@ public class Appointment implements Serializable {
 	private static final long serialVersionUID = 8047777733962317152L;
 
 	private Long id;
+	private Employee employee;
+	private CompanyService companyService;
 	private User user;
-	private EmployeeService employeeService;
 	private User createdBy;
 	private LocalDateTime createIn;
 	private LocalDateTime start;
@@ -32,15 +33,24 @@ public class Appointment implements Serializable {
 		this.id = id;
 		return this;
 	}
-
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "employee_service_id", nullable = false)
-	public EmployeeService getEmployeeService() {
-		return employeeService;
+	@JoinColumn(name = "employee_id", nullable = false)
+	public Employee getEmployee() {
+		return employee;
 	}
 
-	public Appointment setEmployeeService(EmployeeService employeeService) {
-		this.employeeService = employeeService;
+	public Appointment setEmployee(Employee employee) {
+		this.employee = employee;
+		return this;
+	}
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "company_service_id", nullable = false)
+	public CompanyService getCompanyService() {
+		return companyService;
+	}
+
+	public Appointment setCompanyService(CompanyService companyService) {
+		this.companyService = companyService;
 		return this;
 	}
 

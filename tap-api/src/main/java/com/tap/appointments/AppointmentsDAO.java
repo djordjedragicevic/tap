@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
+import jakarta.ws.rs.core.Response;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,28 +23,41 @@ public class AppointmentsDAO {
 	private EntityManager em;
 
 	public List<AppointmentDTO> getAppointments(LocalDateTime from, LocalDateTime to, List<Long> empIds) {
+//		StringBuilder q = new StringBuilder("""
+//				SELECT new com.tap.db.dto.AppointmentDTO(
+//				a.id,
+//				a.user.id,
+//				a.employee.id,
+//				cs.service.id,
+//				a.createdBy.id,
+//				a.createIn,
+//				a.start,
+//				a.end,
+//				a.comment)
+//				FROM Appointment a
+//				INNER JOIN CompanyService cs ON cs.id = a.employeeService.companyService.id
+//				WHERE ((a.start BETWEEN :start AND :end) OR (a.end BETWEEN :start AND :end))
+//				AND a.employeeService.active = 1
+//				""");
 		StringBuilder q = new StringBuilder("""
 				SELECT new com.tap.db.dto.AppointmentDTO(
 				a.id,
 				a.user.id,
-				a.employeeService.id,
-				a.employeeService.employee.id,
-				cs.service.id,
+				a.employee.id,
+				a.companyService.id,
 				a.createdBy.id,
 				a.createIn,
 				a.start,
 				a.end,
 				a.comment)
 				FROM Appointment a
-				INNER JOIN CompanyService cs ON cs.id = a.employeeService.companyService.id
 				WHERE ((a.start BETWEEN :start AND :end) OR (a.end BETWEEN :start AND :end))
-				AND a.employeeService.active = 1
 				""");
 
 		boolean eIdsDefined = empIds != null && !empIds.isEmpty();
 
 		if (eIdsDefined)
-			q.append("AND a.employeeService.employee.id IN :empIds");
+			q.append("AND a.employee.id IN :empIds");
 
 		TypedQuery<AppointmentDTO> tQ = em.createQuery(q.toString(), AppointmentDTO.class)
 				.setParameter("start", from)
@@ -79,23 +93,26 @@ public class AppointmentsDAO {
 		return res;
 	}
 
-	public void bookAppointment(List<Long> sIds, long uId, long eId, LocalDateTime start, LocalDateTime end) {
-//		if (em != null) {
-//			User u = em.find(User.class, uId);
-//			Employee e = em.find(Employee.class, eId);
-//			for (Long sId : sIds) {
-//				Service s = em.find(Service.class, sId);
-//				Appointment a = new Appointment()
-//						.setService(s)
-//						.setUser(u)
-//						.setEmployee(e)
-//						.setCreatedBy(u)
-//						.setCreateIn(LocalDateTime.now())
-//						.setStart(start)
-//						.setEnd(end);
-//				em.persist(a);
-//			}
-//		}
+	public Response bookAppointment(long eId, long csId, long uId, LocalDateTime start, LocalDateTime end) {
+
+		CompanyService cs = em.find(CompanyService.class, csId);
+		Employee e = em.find(Employee.class, eId);
+		User u = em.find(User.class, uId);
+
+		if (cs != null && e != null && u != null) {
+			Appointment a = new Appointment()
+					.setEmployee(e)
+					.setCompanyService(cs)
+					.setUser(u)
+					.setCreatedBy(e.getUser())
+					.setCreateIn(LocalDateTime.now())
+					.setStart(start)
+					.setEnd(end);
+			em.persist(a);
+			return Response.ok(true).build();
+		} else {
+			return Response.serverError().build();
+		}
 	}
 
 }

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 public class AppointmentDTO {
 	private Long id;
 	private Long userId;
-	private Long employeeServiceId;
 	private Long employeeId;
 	private Long serviceId;
 	private Long createdById;
@@ -14,10 +13,9 @@ public class AppointmentDTO {
 	private LocalDateTime end;
 	private String comment;
 
-	public AppointmentDTO(Long id, Long userId, Long employeeServiceId, Long employeeId, Long serviceId, Long createdById, LocalDateTime createIn, LocalDateTime start, LocalDateTime end, String comment) {
+	public AppointmentDTO(Long id, Long userId, Long employeeId, Long serviceId, Long createdById, LocalDateTime createIn, LocalDateTime start, LocalDateTime end, String comment) {
 		this.id = id;
 		this.userId = userId;
-		this.employeeServiceId = employeeServiceId;
 		this.employeeId = employeeId;
 		this.serviceId = serviceId;
 		this.createdById = createdById;
@@ -33,10 +31,6 @@ public class AppointmentDTO {
 
 	public Long getUserId() {
 		return userId;
-	}
-
-	public Long getEmployeeServiceId() {
-		return employeeServiceId;
 	}
 
 	public Long getEmployeeId() {

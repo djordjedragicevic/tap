@@ -16,7 +16,7 @@ import { useThemedStyle } from '../store/ThemeContext';
 
 const CalendarScreen = ({ route }) => {
 
-	const [sizeCoef, setSizeCoef] = useState(1);
+	const [sizeCoef, setSizeCoef] = useState(2);
 	const [data, setData] = useState();
 	const [fromDate, setFromDate] = useState(new Date());
 	const [employeeData, setEmployeeData] = useState(null);

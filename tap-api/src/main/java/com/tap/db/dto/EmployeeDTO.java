@@ -10,8 +10,9 @@ public class EmployeeDTO {
 	private List<EmployeeWorkDayDTO> workDays;
 	private List<CalendarDayDTO> calendar;
 	private List<TimePeriod> periods;
-	private List<ServiceDTO> lookingServices;
+	private List<CompanyServiceDTO> lookingServices;
 	private CompanyDTO company;
+	private List<EmployeeCompanyServiceDTO> employeeServices;
 
 
 	public void addTimePeriod(LocalDate d, TimePeriod tp) {
@@ -84,11 +85,11 @@ public class EmployeeDTO {
 		return this;
 	}
 
-	public List<ServiceDTO> getLookingServices() {
+	public List<CompanyServiceDTO> getLookingServices() {
 		return lookingServices;
 	}
 
-	public EmployeeDTO setLookingServices(List<ServiceDTO> lookingServices) {
+	public EmployeeDTO setLookingServices(List<CompanyServiceDTO> lookingServices) {
 		this.lookingServices = lookingServices;
 		return this;
 	}
@@ -99,6 +100,15 @@ public class EmployeeDTO {
 
 	public EmployeeDTO setCompany(CompanyDTO company) {
 		this.company = company;
+		return this;
+	}
+
+	public List<EmployeeCompanyServiceDTO> getEmployeeServices() {
+		return employeeServices;
+	}
+
+	public EmployeeDTO setEmployeeServices(List<EmployeeCompanyServiceDTO> employeeServices) {
+		this.employeeServices = employeeServices;
 		return this;
 	}
 }
