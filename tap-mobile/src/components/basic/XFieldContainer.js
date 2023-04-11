@@ -53,7 +53,7 @@ const createStyle = (theme) => StyleSheet.create({
 	},
 	centerContainer: {
 		flex: 1,
-		paddingHorizontal: 5,
+		paddingHorizontal: 8,
 		justifyContent: 'center'
 	},
 	iconColor: theme.colors.primary,

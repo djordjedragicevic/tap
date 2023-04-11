@@ -9,11 +9,13 @@ import XSelectField from "../components/basic/XSelectField";
 
 const SearchScreen = ({ }) => {
 	const t = useTranslation();
+	
 	return (
 		<Screen style={{ justifyContent: 'center' }}>
 			<ScrollView>
 				<XSelectField
 					placeholder={t('Location')}
+					style={styles.field}
 					value='Banja Luka'
 					editable={false}
 					iconRight={(props) => <Icon {...props} name='add' />}
@@ -42,7 +44,7 @@ const SearchScreen = ({ }) => {
 					placeholder={t('From')}
 					value="Now"
 					style={styles.field}
-					iconRight={(props) => <Icon {...props} name='add' />}
+					iconRight={(props) => <Icon {...props} name='chevron-forward' />}
 					iconLeft={(props) => <Icon {...props} name='calendar' />}
 				/>
 			</ScrollView>
@@ -53,7 +55,8 @@ const SearchScreen = ({ }) => {
 
 const styles = StyleSheet.create({
 	field: {
-		marginTop: 5
+		marginTop: 10,
+		height: 55
 	}
 })
 

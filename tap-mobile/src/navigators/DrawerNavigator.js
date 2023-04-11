@@ -11,6 +11,9 @@ import { View } from "react-native";
 import XText from "../components/basic/XText";
 import HomeTabNavigator from "./HomeTabNavigator";
 import CalendarScreen from "../screens/CalendarScreen";
+import HomeScreen from "../screens/HoomeScreen";
+import CompaniesScreen from "../screens/CompaniesScreen";
+import AppointmentsStackNavigator from "./AppointmentsStackNavigator";
 
 
 const Drawer = createDrawerNavigator();
@@ -30,16 +33,21 @@ const CustomDrawerContent = (props) => {
 const DrawerNavigator = () => {
 	const t = useTranslation();
 	return (
-		<Drawer.Navigator screenOptions={{ headerShown: false }} drawerContent={(props) => <CustomDrawerContent {...props} />}>
+		<Drawer.Navigator
+			screenOptions={{
+				headerShown: false
+			}}
+			drawerContent={(props) => <CustomDrawerContent {...props} />}
+		>
 			<Drawer.Screen
 				name={DRAWER_HOME}
-				component={HomeTabNavigator}
+				component={AppointmentsStackNavigator}
 				options={{ title: t('Home') }}
 			/>
 			<Drawer.Screen
 				name={DRAWER_CALENDAR}
 				component={CalendarScreen}
-				options={{ 
+				options={{
 					title: t('Calendar'),
 					headerShown: true
 				}}

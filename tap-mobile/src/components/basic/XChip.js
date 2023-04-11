@@ -3,11 +3,11 @@ import { StyleSheet, View } from "react-native";
 import { useThemedStyle } from "../../store/ThemeContext";
 import XText from "./XText";
 
-const XChip = ({ text, style, textStyle, children, primary = true }) => {
+const XChip = ({ text, style, textStyle, children, primary = true, ...rest }) => {
 	const styles = useThemedStyle(createStyle);
 
 	return (
-		<View style={[primary && styles.primary, styles.container, style]}>
+		<View style={[primary && styles.primary, styles.container, style]} {...rest}>
 			{text ? <XText light={primary} style={textStyle}>{text}</XText> : children}
 		</View>
 	)

@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RequestScoped
 public class CompanyDAO {
@@ -118,8 +117,8 @@ public class CompanyDAO {
 				e.company.typeName as c_type_name,
 				e.company.address.street AS c_street,
 				e.company.address.number AS c_number,
-				e.company.address.city.name AS c_city,
 				e.company.address.city.country.name AS c_country,
+				e.company.address.city.name AS c_city,
 								
 				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.id, ',') AS s_ids,
 				SQL('GROUP_CONCAT(? SEPARATOR ?)', cs.duration, ',') AS s_durations,
@@ -173,8 +172,8 @@ public class CompanyDAO {
 				e.company.typeName as c_type_name,
 				e.company.address.street AS c_street,
 				e.company.address.number AS c_number,
-				e.company.address.city.name AS c_city,
-				e.company.address.city.country.name AS c_country
+				e.company.address.city.country.name AS c_country,
+				e.company.address.city.name AS c_city
 				FROM Employee e
 								
 				WHERE e.company.active = 1

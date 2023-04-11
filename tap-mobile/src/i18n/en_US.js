@@ -30,7 +30,8 @@ const en_US = {
 	"Calendar": "Calendar",
 	"Book appointment": "Book appointment",
 	"OK": "OK",
-	"Cancel": "Cancel"
+	"Cancel": "Cancel",
+	"Find appointment": "Find appointment"
 
 };
 

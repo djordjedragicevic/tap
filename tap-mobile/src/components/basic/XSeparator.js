@@ -11,8 +11,8 @@ const XSeparator = ({ vertical = false, margin = 5, color }) => {
 const createStyle = (theme, vertical, margin, color) => StyleSheet.create({
 	separator: {
 		flex: 1,
-		backgroundColor: color || theme.colors.textSecondary,
-		...(vertical ? { maxWidth: 0.8, marginVertical: margin } : { maxHeight: 0.8, marginHorizontal: margin })
+		backgroundColor: color || theme.colors.textTertiary,
+		...(vertical ? { width: 0.7, height: '100%', marginVertical: margin } : { height: 0.7, width: '100%', marginHorizontal: margin })
 	}
 })
 

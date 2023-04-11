@@ -17,14 +17,14 @@ export const Theme = {
 	Light: {
 		id: THEME.LIGHT,
 		colors: {
-			primary: '#005c99',
+			primary: 'steelblue',
 			primaryDark: '#0080ff',
 			primaryLight: '#cce6ff',
 			background: '#f0f0f5',
 			backgroundElement: DefaultTheme.colors.card,
-			textPrimary: 'hsl(0, 0%, 5%)',
-			textSecondary: 'hsl(0, 0%, 40%)',
-			textTertiary: 'hsl(0, 0%, 70%)',
+			textPrimary: 'hsl(0, 0%, 30%)',
+			textSecondary: 'hsl(0, 0%, 60%)',
+			textTertiary: 'hsl(0, 0%, 80%)',
 			textLight: '#f2f2f3',
 
 			borderColor: '#a6a6a6',

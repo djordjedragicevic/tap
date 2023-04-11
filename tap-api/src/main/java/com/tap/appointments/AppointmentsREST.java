@@ -10,9 +10,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -37,7 +35,7 @@ public class AppointmentsREST {
 	) {
 
 		List<EmployeeDTO> employees = companyDAO.employeesForServices(cityId, Utils.parseIDs(sIds), cId);
-		LocalDateTime fromDT = Utils.parseDT(from).orElse(LocalDateTime.now());
+		LocalDateTime fromDT = Utils.parseDT(from).orElse(LocalDateTime.now(ZoneOffset.UTC));
 		LocalDateTime toDT = Utils.parseDT(to).orElse(fromDT.toLocalDate().plus(Utils.FREE_APP_DAYS, ChronoUnit.DAYS).atTime(LocalTime.MAX));
 
 		Map<LocalDate, List<FreeAppointment>> apps = new HashMap<>();
@@ -80,10 +78,10 @@ public class AppointmentsREST {
 						.sorted(Map.Entry.comparingByKey())
 						.map(e -> Map.of(
 								"date", e.getKey().format(DateTimeFormatter.ISO_DATE),
-								"periods", e.getValue()
+								"periods", e.getValue().stream().sorted(Comparator.comparing(FreeAppointment::getStart)).toList()
 						))
-						.toList()
-		).build();
+						.toList())
+				.build();
 	}
 
 	@GET
@@ -117,7 +115,6 @@ public class AppointmentsREST {
 			@FormParam("start") String start,
 			@FormParam("end") String end
 	) {
-		//List<Long> srvcs = Arrays.stream(services.split("_")).map(Long::parseLong).toList();
 		appointmentsDAO.bookAppointment(eId, csId, uId, LocalDateTime.parse(start), LocalDateTime.parse(end));
 		return true;
 	}

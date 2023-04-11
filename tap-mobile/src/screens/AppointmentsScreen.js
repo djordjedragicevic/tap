@@ -50,24 +50,26 @@ const FreeAppointment = memo(({ onPress, item: { employee, start } }) => {
 			<View style={{ flex: 1, flexDirection: 'row' }}>
 
 				<View style={styles.timeContainer}>
-					<XText light style={{ fontWeight: '500' }}>{DateUtils.stringToTimeString(start)}</XText>
-					<XText light style={{ fontWeight: '500' }}>{sumDuration + ' min'}</XText>
+					<XText light style={{}}>{DateUtils.stringToTimeString(start)}</XText>
+					<XText light style={{}}>{sumDuration + ' min'}</XText>
 				</View>
 
 				<View style={{ flex: 1, padding: 5, justifyContent: 'center' }}>
 
-					<XText numberOfLines={1} ellipsizeMode='tail' style={styles.textTitle}>{employee.company.name} - {employee.company.type}</XText>
-					<XText
-						ellipsizeMode='tail'
-						numberOfLines={1}
-						style={{ fontStyle: 'italic' }}
-						secondary
-					>
-						{employee.company.address}, {employee.company.country}
-					</XText>
+					<View style={{ paddingBottom: 20 }}>
+						<XText numberOfLines={1} ellipsizeMode='tail' style={styles.textTitle}>{employee.company.name} - {employee.company.type}</XText>
+						<XText
+							ellipsizeMode='tail'
+							numberOfLines={1}
+							style={{ fontStyle: 'italic', fontSize: 13 }}
+							secondary
+						>
+							{employee.company.address}, {employee.company.country}
+						</XText>
+					</View>
 
 					<View style={{ justifyContent: 'space-between', flex: 1, flexDirection: 'row' }}>
-						<XChip text={getUserDisplayName(employee.user)} style={{ marginTop: 5 }} />
+						<XChip text={getUserDisplayName(employee.user)} style={{}} />
 						<XChip text={(sumPrice || '-') + ' KM'} style={[{}]}></XChip>
 					</View>
 				</View>
@@ -86,7 +88,7 @@ const createAppStyle = (theme) => StyleSheet.create({
 	},
 	timeContainer: {
 		justifyContent: 'center',
-		minWidth: 70,
+		minWidth: 80,
 		paddingHorizontal: 5,
 		alignItems: 'center',
 		backgroundColor: theme.colors.primary
@@ -95,7 +97,8 @@ const createAppStyle = (theme) => StyleSheet.create({
 
 	},
 	textTitle: {
-		fontSize: 17
+		fontSize: 16,
+		fontWeight: '500'
 	},
 	textEmp: {
 		fontSize: 18

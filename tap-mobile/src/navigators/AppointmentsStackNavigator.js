@@ -9,10 +9,15 @@ const Stack = createStackNavigator();
 
 const AppointmentsStackNavigator = () => {
 	return (
-		<Stack.Navigator screenOptions={{ headerShown: true }}>
+		<Stack.Navigator
+			screenOptions={{
+				headerShown: true,
+				headerTitleStyle: { fontFamily: "Roboto_400Regular" }
+			}}
+		>
 			<Stack.Screen name={COMPANIES_SCREEN} component={CompaniesScreen} options={{ title: 'Companies' }} />
 			<Stack.Screen name={COMPANY_SCREEN} component={CompanyScreen} options={{ title: 'Company' }} />
-			
+
 		</Stack.Navigator>
 	);
 };
