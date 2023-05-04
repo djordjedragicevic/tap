@@ -1,0 +1,13 @@
+@DbTable(services)
+@DbCatalog(tap)
+Services {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(64)") @NotNull @NotEmpty @Size(64) @MaxLen(64) };
+  companyTypeId : short { @DbName(company_type_id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty @FK(fk_services_company_types1, CompanyTypes.id) };
+  description : string { @DbName(description) @DbType("VARCHAR(512)") @Size(512) @MaxLen(512) };
+  active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  companyserviceList : CompanyService[];
+  companytypes : CompanyTypes { @LinkByFK(fk_services_company_types1) };
+}

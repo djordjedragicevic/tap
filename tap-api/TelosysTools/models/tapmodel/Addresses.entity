@@ -1,0 +1,14 @@
+@DbTable(addresses)
+@DbCatalog(tap)
+Addresses {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  street : string { @DbName(street) @DbType("VARCHAR(128)") @NotNull @NotEmpty @Size(128) @MaxLen(128) };
+  number : string { @DbName(number) @DbType("VARCHAR(16)") @NotNull @NotEmpty @Size(16) @MaxLen(16) };
+  cityId : short { @DbName(city_id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty @FK(fk_addresses_cities1, Cities.id) };
+  longitude : float { @DbName(longitude) @DbType(FLOAT) };
+  latitude : float { @DbName(latitude) @DbType(FLOAT) };
+  // links
+  cities : Cities { @LinkByFK(fk_addresses_cities1) };
+  companiesList : Companies[];
+}

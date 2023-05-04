@@ -1,0 +1,19 @@
+@DbTable(appointments)
+@DbCatalog(tap)
+Appointments {
+  // attributes
+  id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
+  employeeId : int { @DbName(employee_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointments_employees1, Employees.id) };
+  companyServiceId : int { @DbName(company_service_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointments_company_service1, CompanyService.id) };
+  userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointments_users1, Users.id) };
+  createdById : int { @DbName(created_by_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointments_users2, Users.id) };
+  createIn : timestamp { @DbName(create_in) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
+  start : timestamp { @DbName(start) @DbType(DATETIME) @NotNull @NotEmpty };
+  end : timestamp { @DbName(end) @DbType(DATETIME) @NotNull @NotEmpty };
+  comment : string { @DbName(comment) @DbType("VARCHAR(256)") @Size(256) @MaxLen(256) };
+  // links
+  companyservice : CompanyService { @LinkByFK(fk_appointments_company_service1) };
+  employees : Employees { @LinkByFK(fk_appointments_employees1) };
+  users : Users { @LinkByFK(fk_appointments_users1) };
+  users2 : Users { @LinkByFK(fk_appointments_users2) };
+}

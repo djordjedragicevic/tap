@@ -1,0 +1,11 @@
+@DbTable(users_roles)
+@DbCatalog(tap)
+UsersRoles {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  roleId : byte { @DbName(role_id) @DbType(TINYINT UNSIGNED) @NotNull @NotEmpty @FK(fk_users_roles_roles, Roles.id) };
+  userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_users_roles_users1, Users.id) };
+  // links
+  roles : Roles { @LinkByFK(fk_users_roles_roles) };
+  users : Users { @LinkByFK(fk_users_roles_users1) };
+}

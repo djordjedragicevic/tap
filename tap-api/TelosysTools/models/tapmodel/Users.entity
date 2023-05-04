@@ -1,0 +1,18 @@
+@DbTable(users)
+@DbCatalog(tap)
+Users {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  username : string { @DbName(username) @DbType("VARCHAR(32)") @Size(32) @MaxLen(32) };
+  password : string { @DbName(password) @DbType("VARCHAR(128)") @NotNull @NotEmpty @Size(128) @MaxLen(128) };
+  firstName : string { @DbName(first_name) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
+  lastName : string { @DbName(last_name) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
+  email : string { @DbName(email) @DbType("VARCHAR(256)") @NotNull @NotEmpty @Size(256) @MaxLen(256) };
+  active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  appointmentsList : Appointments[];
+  appointmentsList2 : Appointments[];
+  companiesList : Companies[];
+  employeesList : Employees[];
+  usersrolesList : UsersRoles[];
+}

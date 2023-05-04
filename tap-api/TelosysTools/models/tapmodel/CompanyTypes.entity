@@ -1,0 +1,11 @@
+@DbTable(company_types)
+@DbCatalog(tap)
+CompanyTypes {
+  // attributes
+  id : short { @Id @AutoIncremented @DbName(id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(64)") @NotNull @NotEmpty @Size(64) @MaxLen(64) };
+  active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  companiesList : Companies[];
+  servicesList : Services[];
+}

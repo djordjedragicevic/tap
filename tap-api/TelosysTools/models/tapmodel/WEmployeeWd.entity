@@ -1,0 +1,25 @@
+@DbTable(w_employee_wd)
+@DbCatalog(tap)
+@DbComment(VIEW)
+@DbView
+WEmployeeWd {
+  // attributes
+  eId : int { @AutoIncremented @DbName(e_id) @DbType(INT UNSIGNED) @DbDefaultValue(0) @NotNull @NotEmpty };
+  ewdId : int { @AutoIncremented @DbName(ewd_id) @DbType(INT UNSIGNED) @DbDefaultValue(0) @NotNull @NotEmpty };
+  cId : int { @AutoIncremented @DbName(c_id) @DbType(INT UNSIGNED) @DbDefaultValue(0) @NotNull @NotEmpty };
+  startDay : byte { @DbName(start_day) @DbType(TINYINT) };
+  startTime : time { @DbName(start_time) @DbType(TIME) };
+  breakStartDay : byte { @DbName(break_start_day) @DbType(TINYINT) };
+  breakStartTime : time { @DbName(break_start_time) @DbType(TIME) };
+  breakEndDay : byte { @DbName(break_end_day) @DbType(TINYINT) };
+  breakEndTime : time { @DbName(break_end_time) @DbType(TIME) };
+  endDay : byte { @DbName(end_day) @DbType(TINYINT) };
+  endTime : time { @DbName(end_time) @DbType(TIME) };
+  cActive : byte { @DbName(c_active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  cApproved : byte { @DbName(c_approved) @DbType(TINYINT) @DbDefaultValue(0) @NotNull @NotEmpty };
+  eActive : byte { @DbName(e_active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  uActive : byte { @DbName(u_active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  ewdActive : byte { @DbName(ewd_active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  cwdActive : byte { @DbName(cwd_active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+}
