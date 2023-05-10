@@ -3,7 +3,7 @@
 #cancel("No JPA class for join entity")
 #end
 ## --------------------------------------------------
-#checkId($entity)
+## #checkId($entity)
 #parse("include/init_var_entity.vm")
 #parse("include/java_header.vm")
 ##---------------------------------------------------------------------------------------
@@ -32,13 +32,15 @@ package ${target.javaPackageFromFolder(${SRC})};
 $generator.generate($target.entityName ,  "${jpaEntityIdClass}.java", $target.folder, "main-java/XxxJpaEntityId_java.vm" )
 #end
 
+import java.io.Serial;
 import java.io.Serializable;
 #foreach( $import in $java.imports($entity) )
 import $import;
 #end
-#foreach( $import in $jpa.imports($entity) )
-import $import;
-#end
+import jakarta.persistence.*;
+## #foreach( $import in $jpa.imports($entity) )
+## import $import;
+## #end
 
 /**
  * JPA entity class for "${entity.name}"
@@ -49,10 +51,10 @@ import $import;
 $jpa.entityAnnotations(0, $entity)
 ## IF ENTITY HAS A COMPOSITE PRIMARY KEY => DECLARE 'ID CLASS' FOR THIS PRIMARY KEY
 #if ( $entity.hasCompositePrimaryKey() )  
-@IdClass(${jpaEntityIdClass}.class)
+## @IdClass(${jpaEntityIdClass}.class)
 #end
 public class ${entity.name} implements Serializable {
-
+    @Serial
     private static final long serialVersionUID = 1L;
 
     //--- ENTITY PRIMARY KEY 
