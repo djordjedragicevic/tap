@@ -50,7 +50,7 @@ const getDurationSum = (items) => {
 	return d;
 };
 
-const CompanyScreen = ({ navigation, route }) => {
+const ProviderScreen = ({ navigation, route }) => {
 	const [company, setCompany] = useState({});
 
 	const [selectedServices, setSelectedServices] = useState([]);
@@ -121,4 +121,4 @@ const staticStyles = StyleSheet.create({
 })
 
 
-export default CompanyScreen;
+export default ProviderScreen;

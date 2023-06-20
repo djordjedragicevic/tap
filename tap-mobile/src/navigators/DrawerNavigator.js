@@ -9,10 +9,7 @@ import {
 } from '@react-navigation/drawer';
 import { View } from "react-native";
 import XText from "../components/basic/XText";
-import HomeTabNavigator from "./HomeTabNavigator";
 import CalendarScreen from "../screens/CalendarScreen";
-import HomeScreen from "../screens/HoomeScreen";
-import CompaniesScreen from "../screens/CompaniesScreen";
 import AppointmentsStackNavigator from "./AppointmentsStackNavigator";
 
 

@@ -13,12 +13,12 @@ import { API_URL, HOST } from "../common/config";
 import Icon from 'react-native-vector-icons/Ionicons';
 import XSeparator from "../components/basic/XSeparator";
 
-const CompaniesScreen = ({ navigation }) => {
+const ProvidersScreen = ({ navigation }) => {
 	const [companies, setCompanies] = useState([]);
 
 	useEffect(() => {
 		let process = true;
-		Http.get('/company/list')
+		Http.get('/provider/list', { cId: 1 })
 			.then(res => {
 				if (process)
 					setCompanies(res);
@@ -140,4 +140,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default CompaniesScreen;
+export default ProvidersScreen;

@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import CompaniesScreen from "../screens/CompaniesScreen";
-import CompanyScreen from "../screens/CompanyScreen";
-import { COMPANIES_SCREEN, COMPANY_SCREEN } from "./routes";
+import ProvidersScreen from "../screens/ProvidersScreen";
+import ProviderScreen from "../screens/ProviderScreen";
+import { PROVIDER_SCREEN, PROVIDERS_SCREEN } from "./routes";
 
 
 const Stack = createStackNavigator();
@@ -15,8 +15,8 @@ const AppointmentsStackNavigator = () => {
 				headerTitleStyle: { fontFamily: "Roboto_400Regular" }
 			}}
 		>
-			<Stack.Screen name={COMPANIES_SCREEN} component={CompaniesScreen} options={{ title: 'Companies' }} />
-			<Stack.Screen name={COMPANY_SCREEN} component={CompanyScreen} options={{ title: 'Company' }} />
+			<Stack.Screen name={PROVIDERS_SCREEN} component={ProvidersScreen} options={{ title: 'Providers' }} />
+			<Stack.Screen name={PROVIDER_SCREEN} component={ProviderScreen} options={{ title: 'Provider' }} />
 
 		</Stack.Navigator>
 	);
