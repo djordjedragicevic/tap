@@ -3,8 +3,8 @@
 
 	<!-- Enable features -->
 	<featureManager>
-		<feature>microProfile-5.0</feature>
-		<feature>persistence-3.0</feature>
+		<feature>microProfile-6.0</feature>
+		<feature>persistence-3.1</feature>
 	</featureManager>
 
 	<!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
