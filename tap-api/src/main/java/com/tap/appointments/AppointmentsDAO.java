@@ -95,24 +95,24 @@ public class AppointmentsDAO {
 
 	public Response bookAppointment(long eId, long csId, long uId, LocalDateTime start, LocalDateTime end) {
 
-		CompanyService cs = em.find(CompanyService.class, csId);
-		Employee e = em.find(Employee.class, eId);
-		User u = em.find(User.class, uId);
-
-		if (cs != null && e != null && u != null) {
-			Appointment a = new Appointment()
-					.setEmployee(e)
-					.setCompanyService(cs)
-					.setUser(u)
-					.setCreatedBy(e.getUser())
-					.setCreateIn(LocalDateTime.now())
-					.setStart(start)
-					.setEnd(end);
-			em.persist(a);
+//		CompanyService cs = em.find(CompanyService.class, csId);
+//		Employee e = em.find(Employee.class, eId);
+//		User u = em.find(User.class, uId);
+//
+//		if (cs != null && e != null && u != null) {
+//			Appointment a = new Appointment()
+//					.setEmployee(e)
+//					.setCompanyService(cs)
+//					.setUser(u)
+//					.setCreatedBy(e.getUser())
+//					.setCreateIn(LocalDateTime.now())
+//					.setStart(start)
+//					.setEnd(end);
+//			em.persist(a);
+//		} else {
+//			return Response.serverError().build();
+//		}
 			return Response.ok(true).build();
-		} else {
-			return Response.serverError().build();
-		}
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.tap.company;
 
 import com.tap.db.dto.*;
-import com.tap.db.entity.WEmployeeWD;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.*;
 
@@ -189,18 +188,19 @@ public class CompanyDAO {
 		return toListOfEmployeeDTOs(dbRes);
 	}
 
-	public List<WEmployeeWD> getEffEmployeesWorkDays(List<Long> eIds) {
+	public List getEffEmployeesWorkDays(List<Long> eIds) {
 
-		String query = """
-				SELECT wd FROM WEmployeeWD wd
-				WHERE wd.ewdActive = 1
-				AND wd.cwdActive = 1
-				AND wd.employeeId IN :eIds
-				""";
-
-		return em.createQuery(query, WEmployeeWD.class)
-				.setParameter("eIds", eIds)
-				.getResultList();
+//		String query = """
+//				SELECT wd FROM WEmployeeWD wd
+//				WHERE wd.ewdActive = 1
+//				AND wd.cwdActive = 1
+//				AND wd.employeeId IN :eIds
+//				""";
+//
+//		return em.createQuery(query, WEmployeeWD.class)
+//				.setParameter("eIds", eIds)
+//				.getResultList();
+		return new ArrayList<>();
 	}
 
 	private static List<EmployeeDTO> toListOfEmployeeDTOs(List<Object[]> dbEmployees) {
