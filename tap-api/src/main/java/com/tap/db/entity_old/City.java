@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Entity
 @Table(name = "cities")
 public class City implements Serializable {
 	@Serial

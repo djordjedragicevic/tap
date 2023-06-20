@@ -14,6 +14,16 @@ public class CompanyDAO {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
 
+	public List<Object> getCompanyList() {
+		String query = """
+				SELECT Company c FROM Company;
+				""";
+
+		return em.createQuery(query, Object.class).getResultList();
+	}
+
+
+	//---------------------------------------------
 
 	public List<Object> getCompaniesBasic() {
 		String query = """
@@ -25,6 +35,7 @@ public class CompanyDAO {
 
 		return em.createQuery(query, Object.class).getResultList();
 	}
+
 
 	public CompanyBasicDTO getCompany(Long id) {
 		String query = """

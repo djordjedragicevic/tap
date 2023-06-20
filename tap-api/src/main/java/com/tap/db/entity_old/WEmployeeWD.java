@@ -3,7 +3,6 @@ package com.tap.db.entity_old;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;
-@Entity
 @Table(name = "w_employee_wd")
 public class WEmployeeWD {
 

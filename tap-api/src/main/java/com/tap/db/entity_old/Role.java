@@ -8,7 +8,6 @@ import jakarta.persistence.Table;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Entity
 @Table(name = "roles")
 public class Role implements Serializable {
 	@Serial

@@ -8,7 +8,6 @@ import jakarta.persistence.Table;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Entity
 @Table(name = "countries")
 public class Country implements Serializable {
 	@Serial

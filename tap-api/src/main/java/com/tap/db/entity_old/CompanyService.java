@@ -6,7 +6,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Entity
 @Table(name = "company_service")
 public class CompanyService implements Serializable {
 	@Serial

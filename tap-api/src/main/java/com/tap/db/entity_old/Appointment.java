@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-@Entity
 @Table(name = "appointments")
 public class Appointment implements Serializable {
 	@Serial

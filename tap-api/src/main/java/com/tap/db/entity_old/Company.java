@@ -6,7 +6,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
 @Table(name = "companies")
 public class Company implements Serializable {
 	@Serial

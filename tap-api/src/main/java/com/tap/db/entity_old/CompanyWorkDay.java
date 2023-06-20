@@ -6,7 +6,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalTime;
 
-@Entity
 @Table(name = "company_work_days")
 public class CompanyWorkDay implements Serializable {
 	@Serial

@@ -8,7 +8,6 @@ import jakarta.persistence.Table;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Entity
 @Table(name = "company_types")
 public class CompanyType implements Serializable {
 	@Serial

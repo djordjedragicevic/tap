@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Entity
 @Table(name = "users_roles")
 public class UsersRole implements Serializable {
 	@Serial
