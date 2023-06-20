@@ -40,7 +40,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 #foreach( $import in $java.imports($entity) )
+#if(!$import.toString().contains("List"))
 import $import;
+#end
 #end
 ## #foreach( $import in $jpa.imports($entity) )
 ## import $import;
@@ -75,9 +77,9 @@ $jpa.fieldAnnotations(4, $attribute)
 #if($link.isOwningSide())
 ## all annotations : Cardinality, JoinColumn(s), etc
 ##--- with "insertable=false, updatable=false" if attribute already mapped
-$jpa.linkAnnotations(4, $link, $entity.attributes)
+##$jpa.linkAnnotations(4, $link, $entity.attributes)
 ##--- no "insertable=false, updatable=false" if already mapped
-## $jpa.linkAnnotations(4, $link)
+$jpa.linkAnnotations(4, $link)
 ##--- Just @Cardinality annotation
 ## $jpa.linkCardinalityAnnotation(4, $link) 
 ##--- Just @JoinColumn(s) annotation(s)

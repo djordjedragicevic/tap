@@ -13,9 +13,6 @@ public class ProviderDAO {
 	private EntityManager em;
 
 	public List getProviders() {
-		if (em == null)
-			return List.of("nema", "nicega");
-		else
-			return em.createQuery("SELECT p FROM Provider p", Provider.class).getResultList();
+		return em.createQuery("SELECT p FROM Provider p", Provider.class).getResultList();
 	}
 }
