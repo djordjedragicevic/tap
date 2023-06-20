@@ -1,0 +1,9 @@
+@DbTable(appointment_status)
+@DbCatalog(tap)
+AppointmentStatus {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(16)") @Size(16) @MaxLen(16) };
+  // links
+  appointmentList : Appointment[];
+}

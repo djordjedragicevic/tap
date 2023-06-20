@@ -1,0 +1,23 @@
+@DbTable(service)
+@DbCatalog(tap)
+Service {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_service_provider1, Provider.id) };
+  name : string { @DbName(name) @DbType("VARCHAR(256)") @Size(256) @MaxLen(256) };
+  note : string { @DbName(note) @DbType("VARCHAR(256)") @Size(256) @MaxLen(256) };
+  groupId : int { @DbName(group_id) @DbType(INT UNSIGNED) @FK(fk_provider_service_group1, Group.id) };
+  categoryId : int { @DbName(category_id) @DbType(INT UNSIGNED) @FK(fk_provider_service_category1, Category.id) };
+  price : decimal { @DbName(price) @DbType("DECIMAL UNSIGNED(10,2)") @NotNull @NotEmpty @Size(10,2) };
+  priceTo : decimal { @DbName(price_to) @DbType("DECIMAL UNSIGNED(10,2)") @Size(10,2) };
+  duration : short { @DbName(duration) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty };
+  durationTo : short { @DbName(duration_to) @DbType(SMALLINT) };
+  description : string { @DbName(description) @DbType("VARCHAR(512)") @Size(512) @MaxLen(512) };
+  active : boolean { @DbName(active) @DbType(BIT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  appointmentList : Appointment[];
+  category : Category { @LinkByFK(fk_provider_service_category1) };
+  group : Group { @LinkByFK(fk_provider_service_group1) };
+  provider : Provider { @LinkByFK(fk_provider_service_provider1) };
+  serviceemployeeList : ServiceEmployee[];
+}

@@ -1,0 +1,13 @@
+@DbTable(city)
+@DbCatalog(tap)
+City {
+  // attributes
+  id : short { @Id @AutoIncremented @DbName(id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(64)") @NotNull @NotEmpty @Size(64) @MaxLen(64) };
+  postCode : string { @DbName(post_code) @DbType("VARCHAR(16)") @NotNull @NotEmpty @Size(16) @MaxLen(16) };
+  countryId : short { @DbName(country_id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty @FK(fk_city_country1, Country.id) };
+  active : boolean { @DbName(active) @DbType(BIT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  addressList : Address[];
+  country : Country { @LinkByFK(fk_city_country1) };
+}

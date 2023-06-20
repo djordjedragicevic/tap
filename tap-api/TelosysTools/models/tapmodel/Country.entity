@@ -1,0 +1,14 @@
+@DbTable(country)
+@DbCatalog(tap)
+Country {
+  // attributes
+  id : short { @Id @AutoIncremented @DbName(id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(64)") @NotNull @NotEmpty @Size(64) @MaxLen(64) };
+  code : string { @DbName(code) @DbType("CHAR(2)") @NotNull @NotEmpty @Size(2) @MaxLen(2) };
+  phone : int { @DbName(phone) @DbType(INT) @NotNull @NotEmpty };
+  currency : string { @DbName(currency) @DbType("VARCHAR(4)") @NotNull @NotEmpty @Size(4) @MaxLen(4) };
+  currencySymbol : string { @DbName(currency_symbol) @DbType("VARCHAR(16)") @NotNull @NotEmpty @Size(16) @MaxLen(16) };
+  active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(0) @NotNull @NotEmpty };
+  // links
+  cityList : City[];
+}

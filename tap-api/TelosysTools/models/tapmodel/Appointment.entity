@@ -1,0 +1,26 @@
+@DbTable(appointment)
+@DbCatalog(tap)
+Appointment {
+  // attributes
+  id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
+  start : timestamp { @DbName(start) @DbType(DATETIME) };
+  end : timestamp { @DbName(end) @DbType(DATETIME) };
+  userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_user1, User.id) };
+  employeeId : int { @DbName(employee_id) @DbType(INT UNSIGNED) @FK(fk_appointment_employee1, Employee.id) };
+  providerServiceId : int { @DbName(provider_service_id) @DbType(INT UNSIGNED) @FK(fk_appointment_provider_service1, Service.id) };
+  appointmentTypeId : byte { @DbName(appointment_type_id) @DbType(TINYINT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_appointment_type1, AppointmentType.id) };
+  repeatTypeId : byte { @DbName(repeat_type_id) @DbType(TINYINT UNSIGNED) @FK(fk_appointment_repeat_type1, RepeatType.id) };
+  createdDate : timestamp { @DbName(created_date) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
+  createdById : int { @DbName(created_by_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_user2, User.id) };
+  appointmentStatusId : int { @DbName(appointment_status_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_appointment_status1, AppointmentStatus.id) };
+  statusResponseDate : timestamp { @DbName(status_response_date) @DbType(DATETIME) };
+  comment : string { @DbName(comment) @DbType("VARCHAR(512)") @Size(512) @MaxLen(512) };
+  // links
+  appointmentstatus : AppointmentStatus { @LinkByFK(fk_appointment_appointment_status1) };
+  appointmenttype : AppointmentType { @LinkByFK(fk_appointment_appointment_type1) };
+  employee : Employee { @LinkByFK(fk_appointment_employee1) };
+  service : Service { @LinkByFK(fk_appointment_provider_service1) };
+  repeattype : RepeatType { @LinkByFK(fk_appointment_repeat_type1) };
+  user : User { @LinkByFK(fk_appointment_user1) };
+  user2 : User { @LinkByFK(fk_appointment_user2) };
+}

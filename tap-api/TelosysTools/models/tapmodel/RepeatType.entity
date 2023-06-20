@@ -1,0 +1,10 @@
+@DbTable(repeat_type)
+@DbCatalog(tap)
+RepeatType {
+  // attributes
+  id : byte { @Id @AutoIncremented @DbName(id) @DbType(TINYINT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(45)") @NotNull @NotEmpty @Size(45) @MaxLen(45) };
+  active : boolean { @DbName(active) @DbType(BIT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  appointmentList : Appointment[];
+}

@@ -1,0 +1,22 @@
+@DbTable(provider)
+@DbCatalog(tap)
+Provider {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(64)") @NotNull @NotEmpty @Size(64) @MaxLen(64) };
+  description : string { @DbName(description) @DbType("VARCHAR(512)") @Size(512) @MaxLen(512) };
+  providerTypeId : short { @DbName(provider_type_id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_provider_type, ProviderType.id) };
+  addressId : int { @DbName(address_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_address1, Address.id) };
+  idNumber : string { @DbName(id_number) @DbType("VARCHAR(32)") @NotNull @NotEmpty @Size(32) @MaxLen(32) };
+  legalEntity : byte { @DbName(legal_entity) @DbType(TINYINT) @NotNull @NotEmpty };
+  approved : byte { @DbName(approved) @DbType(TINYINT) @DbDefaultValue(0) @NotNull @NotEmpty };
+  approvedDate : timestamp { @DbName(approved_date) @DbType(DATETIME) };
+  approvedBy : int { @DbName(approved_by) @DbType(INT) };
+  active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  employeeList : Employee[];
+  address : Address { @LinkByFK(fk_provider_address1) };
+  providertype : ProviderType { @LinkByFK(fk_provider_provider_type) };
+  providerworkperiodList : ProviderWorkPeriod[];
+  serviceList : Service[];
+}

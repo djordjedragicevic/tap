@@ -1,0 +1,10 @@
+@DbTable(role)
+@DbCatalog(tap)
+Role {
+  // attributes
+  id : byte { @Id @AutoIncremented @DbName(id) @DbType(TINYINT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(64)") @NotNull @NotEmpty @Size(64) @MaxLen(64) };
+  active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  userroleList : UserRole[];
+}

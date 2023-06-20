@@ -1,0 +1,9 @@
+@DbTable(group)
+@DbCatalog(tap)
+Group {
+  // attributes
+  id : int { @Id @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(64)") @NotNull @NotEmpty @Size(64) @MaxLen(64) };
+  // links
+  serviceList : Service[];
+}

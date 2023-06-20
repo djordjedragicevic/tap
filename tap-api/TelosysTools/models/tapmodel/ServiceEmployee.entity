@@ -1,0 +1,11 @@
+@DbTable(service_employee)
+@DbCatalog(tap)
+ServiceEmployee {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  serviceId : int { @DbName(service_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_service_employee_service1, Service.id) };
+  employeeId : int { @DbName(employee_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_service_employee_employee1, Employee.id) };
+  // links
+  employee : Employee { @LinkByFK(fk_service_employee_employee1) };
+  service : Service { @LinkByFK(fk_service_employee_service1) };
+}

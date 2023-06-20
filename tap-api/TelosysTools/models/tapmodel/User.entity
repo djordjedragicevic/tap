@@ -1,0 +1,21 @@
+@DbTable(user)
+@DbCatalog(tap)
+User {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  username : string { @DbName(username) @DbType("VARCHAR(32)") @Size(32) @MaxLen(32) };
+  email : string { @DbName(email) @DbType("VARCHAR(128)") @NotNull @NotEmpty @Size(128) @MaxLen(128) };
+  password : string { @DbName(password) @DbType("VARCHAR(128)") @NotNull @NotEmpty @Size(128) @MaxLen(128) };
+  firstName : string { @DbName(first_name) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
+  lastName : string { @DbName(last_name) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
+  addressId : int { @DbName(address_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_user_address1, Address.id) };
+  createDate : timestamp { @DbName(create_date) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
+  lastLogin : timestamp { @DbName(last_login) @DbType(DATETIME) };
+  active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  appointmentList : Appointment[];
+  appointmentList2 : Appointment[];
+  employeeList : Employee[];
+  address : Address { @LinkByFK(fk_user_address1) };
+  userroleList : UserRole[];
+}
