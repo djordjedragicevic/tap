@@ -1,4 +1,4 @@
-package com.tap.db.entity;
+package com.tap.db.entity_old;
 
 import jakarta.persistence.*;
 
