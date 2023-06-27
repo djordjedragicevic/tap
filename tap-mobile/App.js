@@ -6,13 +6,14 @@ import { I18nContextProvider } from './src/store/I18nContext';
 import { languages } from './src/i18n/i18n';
 import { DEFAULT_LANGUAGE } from './src/common/config';
 import Main from './src/Main';
-import { useFonts, Roboto_400Regular, Roboto_500Medium } from '@expo-google-fonts/roboto';
+//import { useFonts, Roboto_400Regular, Roboto_500Medium } from '@expo-google-fonts/roboto';
+import { useFonts, Montserrat_400Regular, Montserrat_500Medium } from '@expo-google-fonts/montserrat';
 
 
 export default App = () => {
 	let [fontsLoaded] = useFonts({
-		Roboto_400Regular,
-		Roboto_500Medium
+		Montserrat_400Regular,
+		Montserrat_500Medium
 	});
 	if (!fontsLoaded)
 		return null;

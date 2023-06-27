@@ -25,6 +25,7 @@ const en_US = {
 	"Service type": "Service type",
 	"Services": "Services",
 	"Provider": "Provider",
+	"Providers": "Providers",
 	"From": "From",
 	"To": "To",
 	"Calendar": "Calendar",

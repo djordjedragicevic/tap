@@ -12,7 +12,7 @@ const AppointmentsStackNavigator = () => {
 		<Stack.Navigator
 			screenOptions={{
 				headerShown: true,
-				headerTitleStyle: { fontFamily: "Roboto_400Regular" }
+				headerTitleStyle: { fontFamily: "Montserrat_500Medium" }
 			}}
 		>
 			<Stack.Screen name={PROVIDERS_SCREEN} component={ProvidersScreen} options={{ title: 'Providers' }} />

@@ -6,6 +6,8 @@ import Screen from "../components/Screen";
 import I18nContext, { useTranslation } from "../store/I18nContext";
 import ThemeContext, { useThemedStyle } from "../store/ThemeContext";
 import { THEME } from "../style/themes";
+import XText from "../components/basic/XText";
+import XButton from "../components/basic/XButton";
 
 
 const Try = ({ navigation }) => {
@@ -24,10 +26,10 @@ const Try = ({ navigation }) => {
 
 	return (
 		<Screen style={themedStyle.screen}>
-			<Text style={themedStyle.text}>Try Screen</Text>
-			<Button title="Switch theme" onPress={() => themeContext.setTheme(themeContext.theme.id === THEME.DARK ? THEME.LIGHT : THEME.DARK)} />
-			<Button title="Transation" onPress={() => i18nContext.setLanguage(i18nContext.lng.code === languages.en_US.code ? languages.sr_SP : languages.en_US)} />
-			<Text style={[themedStyle.text, { alignSelf: "center", fontSize: 20 }]}>{t('Language')}</Text>
+			<XText style={themedStyle.text}>Try Screen</XText>
+			<XButton title="Switch theme" onPress={() => themeContext.setTheme(themeContext.theme.id === THEME.DARK ? THEME.LIGHT : THEME.DARK)} />
+			<XButton title="Transation" onPress={() => i18nContext.setLanguage(i18nContext.lng.code === languages.en_US.code ? languages.sr_SP : languages.en_US)} />
+			<XText style={[themedStyle.text, { alignSelf: "center", fontSize: 20 }]}>{t('Language')}</XText>
 		</Screen>
 	);
 };
@@ -38,7 +40,8 @@ const createStyle = (theme) => StyleSheet.create({
 		justifyContent: 'space-around'
 	},
 	text: {
-		color: theme.colors.textPrimary
+		color: theme.colors.textPrimary,
+		fontWeight: '600'
 	}
 })
 

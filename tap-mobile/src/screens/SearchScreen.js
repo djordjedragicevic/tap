@@ -35,7 +35,7 @@ const SearchScreen = ({ }) => {
 					iconLeft={(props) => <Icon {...props} name='ios-construct' />}
 				/>
 				<XSelectField
-					placeholder={t('Company')}
+					placeholder={t('Provider')}
 					style={styles.field}
 					iconRight={(props) => <Icon {...props} name='add' />}
 					iconLeft={(props) => <Icon {...props} name='ios-business' />}

@@ -22,6 +22,7 @@ public class ProviderDAO {
 				p.name,
 				p.providertype.name,
 				p.legalEntity,
+				p.address.address1,
 				p.address.city.name
 				FROM Provider p
 				WHERE p.active = 1
@@ -35,7 +36,7 @@ public class ProviderDAO {
 				.setParameter("cityId", cityId)
 				.getResultList();
 
-		List<Map<String, Object>> reps = Util.convertToListOfMap(dbRes, "id", "name", "type", "legalEntity", "city");
+		List<Map<String, Object>> reps = Util.convertToListOfMap(dbRes, "id", "name", "type", "legalEntity", "address1", "city");
 		return reps;
 	}
 }

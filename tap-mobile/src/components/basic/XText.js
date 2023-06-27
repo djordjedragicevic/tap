@@ -36,7 +36,7 @@ const createStyle = (theme, textColor) => {
 	return StyleSheet.create({
 		text: {
 			color: theme.colors[textColor],
-			fontFamily: 'Roboto_400Regular'
+			fontFamily: 'Montserrat_500Medium'
 		}
 	})
 };
