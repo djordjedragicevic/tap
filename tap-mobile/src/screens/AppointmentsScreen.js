@@ -1,14 +1,13 @@
-import { memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { SectionList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Http } from "../common/Http";
 import { DateUtils, getUserDisplayName } from "../common/utils";
 import XText from "../components/basic/XText";
 import Screen from "../components/Screen";
-import I18nContext, { useTranslation } from "../store/I18nContext";
-import { useThemedStyle } from "../store/ThemeContext";
+import { useThemedStyle } from "../style/ThemeContext";
 import XChip from "../components/basic/XChip";
-import XSeparator from "../components/basic/XSeparator";
 import XAlert from '../components/basic/XAlert';
+import { useTranslation } from "../i18n/I18nContext";
 
 const SectionHeader = memo(({ title }) => {
 	const styles = useThemedStyle(createSecHeaderStyle);
@@ -32,8 +31,6 @@ const createSecHeaderStyle = (theme) => StyleSheet.create({
 });
 
 const FreeAppointment = memo(({ onPress, item: { employee, start } }) => {
-	const { lng } = useContext(I18nContext);
-	const t = useTranslation();
 	const styles = useThemedStyle(createAppStyle);
 
 	const [sumPrice, sumDuration] = useMemo(() => {
@@ -109,7 +106,6 @@ const createAppStyle = (theme) => StyleSheet.create({
 const AppointmentsScreen = ({ route }) => {
 
 	const [data, setData] = useState([]);
-	const { lng } = useContext(I18nContext);
 	const [weekView, setWeekView] = useState(false);
 	const t = useTranslation();
 

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { emptyFn } from "../../common/utils";
-import { useThemedStyle } from "../../store/ThemeContext";
+import { useThemedStyle } from "../../style/ThemeContext";
 import XCheckBox from "../basic/XCheckBox";
 
 const ListItemBasic = ({ selected, children, idx, onPress }) => {

@@ -7,10 +7,9 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { DateUtils } from '../common/utils';
 import TimePeriod from '../components/time-periods/TimePeriod';
 import TimePeriodsPanel from '../components/time-periods/TimePeriodPanel';
-import I18nContext from '../store/I18nContext';
 import { getUserDisplayName } from '../common/utils';
 import { CalendarProvider, ExpandableCalendar } from 'react-native-calendars';
-import { useThemedStyle } from '../store/ThemeContext';
+import { useThemedStyle } from '../style/ThemeContext';
 
 
 

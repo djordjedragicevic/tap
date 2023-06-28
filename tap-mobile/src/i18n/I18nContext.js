@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useMemo, useState } from "react";
-import en_US from "../i18n/en_US";
 
 const I18nContext = React.createContext({
 	lng: {},

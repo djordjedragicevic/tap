@@ -1,13 +1,13 @@
 import { useContext, useEffect } from "react";
-import { Button, StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import { languages } from "../i18n/i18n";
 import HeaderDrawerButton from "../components/HeaderDrawerButton";
 import Screen from "../components/Screen";
-import I18nContext, { useTranslation } from "../store/I18nContext";
-import ThemeContext, { useThemedStyle } from "../store/ThemeContext";
+import ThemeContext, { useThemedStyle } from "../style/ThemeContext";
 import { THEME } from "../style/themes";
 import XText from "../components/basic/XText";
 import XButton from "../components/basic/XButton";
+import I18nContext, { useTranslation } from "../i18n/I18nContext";
 
 
 const Try = ({ navigation }) => {

@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { StyleSheet, View } from "react-native";
-import { useThemedStyle } from "../../store/ThemeContext";
+import { useThemedStyle } from "../../style/ThemeContext";
 
 const XContainer = memo(({ children, style }) => {
 	const styles = useThemedStyle(createStyle);

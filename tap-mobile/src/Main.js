@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { THEME } from './style/themes';
-import { useTheme } from './store/ThemeContext';
+import { useTheme } from './style/ThemeContext';
 import { StatusBar } from 'react-native';
-import MainNavigator from './navigators/MainNavigator';
+import AppNavigator from './navigators/AppNavigator';
 
 const Main = () => {
 
@@ -30,7 +30,7 @@ const Main = () => {
 				backgroundColor={theme.colors.backgroundElement}
 			/>
 			<NavigationContainer theme={navTheme}>
-				<MainNavigator />
+				<AppNavigator />
 			</NavigationContainer>
 		</>
 	);

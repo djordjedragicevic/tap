@@ -1,7 +1,7 @@
 import XSelectField from "../components/basic/XSelectField";
 import Screen from "../components/Screen";
-import Icon from 'react-native-vector-icons/Ionicons'
-import { useTranslation } from "../store/I18nContext";
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useTranslation } from "../i18n/I18nContext";
 
 const HomeScreen = ({ }) => {
 	const t = useTranslation();

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { StyleSheet, Text } from "react-native";
-import { useThemedStyle } from "../../store/ThemeContext";
+import { useThemedStyle } from "../../style/ThemeContext";
 
 
 

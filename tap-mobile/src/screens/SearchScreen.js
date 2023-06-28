@@ -2,10 +2,10 @@ import XText from "../components/basic/XText";
 import XTextInput from "../components/basic/XTextInput";
 import Screen from "../components/Screen";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useTranslation } from "../store/I18nContext";
 import XButton from "../components/basic/XButton";
 import { ScrollView, StyleSheet, View } from "react-native";
 import XSelectField from "../components/basic/XSelectField";
+import { useTranslation } from "../i18n/I18nContext";
 
 const SearchScreen = ({ }) => {
 	const t = useTranslation();

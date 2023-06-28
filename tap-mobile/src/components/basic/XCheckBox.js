@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet } from "react-native";
-import { useThemedStyle } from "../../store/ThemeContext";
+import { useThemedStyle } from "../../style/ThemeContext";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import React, { useCallback, useEffect, useState } from "react";
 

@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { useThemedStyle } from "../../store/ThemeContext";
+import { useThemedStyle } from "../../style/ThemeContext";
 
 const XSeparator = ({ vertical = false, margin = 5, color }) => {
 	const styles = useThemedStyle(createStyle, vertical, margin, color);

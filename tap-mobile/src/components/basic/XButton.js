@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { useThemedStyle } from "../../store/ThemeContext";
 import { values } from "../../style/themes";
 import XText from "./XText";
+import { useThemedStyle } from "../../style/ThemeContext";
 
 const XButton = ({ title, onPress, disabled, style, bottom = false }) => {
 	const styles = useThemedStyle(createStyle);

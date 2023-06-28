@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { useThemedStyle } from "../../store/ThemeContext";
+import { useThemedStyle } from "../../style/ThemeContext";
 import XMask from "./XMask";
 
 const XSection = ({ children, style, disabled, onPress, disabledOpacity }) => {

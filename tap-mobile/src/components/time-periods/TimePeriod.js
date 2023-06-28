@@ -2,9 +2,9 @@ import React, { useCallback, useContext, useMemo } from "react";
 import { StyleSheet, TouchableOpacity, } from "react-native";
 import { HOUR_HEIGHT } from "../../common/general";
 import { calculateHeightFromDate, calculateTopFromDate, emptyFn, getUserDisplayName } from "../../common/utils";
-import I18nContext from "../../store/I18nContext";
-import { useThemedStyle } from "../../store/ThemeContext";
+import { useThemedStyle } from "../../style/ThemeContext";
 import XText from "../basic/XText";
+import I18nContext from "../../i18n/I18nContext";
 
 
 const formatTime = (dtString, loc) => {

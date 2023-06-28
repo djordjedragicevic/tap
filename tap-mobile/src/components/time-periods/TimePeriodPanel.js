@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { HOUR_HEIGHT } from "../../common/general";
 import { DateUtils } from "../../common/utils";
-import { useThemedStyle } from "../../store/ThemeContext";
+import { useThemedStyle } from "../../style/ThemeContext";
 
 import XText from '../basic/XText';
 

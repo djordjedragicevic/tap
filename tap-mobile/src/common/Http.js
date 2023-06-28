@@ -46,3 +46,7 @@ export class Http {
 		return Http.send(url, 'POST', Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&'))
 	}
 }
+
+export function useGetRequest(url, params) {
+
+}

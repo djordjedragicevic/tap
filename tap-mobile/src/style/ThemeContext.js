@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from "react";
-import { Theme } from "../style/themes";
+import { Theme } from "./themes";
 
 const ThemeContext = React.createContext({
 	theme: Theme.Light,

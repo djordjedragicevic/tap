@@ -1,7 +1,6 @@
 import Screen from "../components/Screen";
 import XText from "../components/basic/XText";
 import XButton from "../components/basic/XButton";
-import { useTranslation } from "../store/I18nContext";
 import { APPOINTMENTS_SCREEN, CALENDAR_SCREEN, MAIN_FREE_APPOINTMENTS } from "../navigators/routes";
 import { useCallback, useEffect, useState } from "react";
 import { Http } from "../common/Http";
@@ -11,6 +10,7 @@ import { convert } from "../common/currency";
 import ListSeparator from "../components/list/ListSeparator";
 import { emptyFn } from '../common/utils';
 import ListItemBasic from "../components/list/ListItemBasic";
+import { useTranslation } from "../i18n/I18nContext";
 
 const Services = ({ services, onItemPress, selectedItems }) => {
 
