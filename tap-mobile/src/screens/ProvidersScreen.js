@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { Http, useInitializer } from "../common/Http";
+import { Http, useHTTPGet, useInitializer } from "../common/Http";
 import XText from "../components/basic/XText";
 import XChip from "../components/basic/XChip";
 import Screen from "../components/Screen";
@@ -17,7 +17,7 @@ import { useAsyncData, useAsyncGetData } from "../common/hook";
 const ProvidersScreen = ({ navigation }) => {
 
 
-	const [providers] = useAsyncGetData(['/provider/list', { cId: 1 }], []);
+	const providers = useHTTPGet('/provider/list', { cId: 1 }, []);
 
 
 	useEffect(() => {

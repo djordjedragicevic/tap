@@ -1,34 +1,36 @@
+import { useEffect, useState } from 'react';
 import { API_URL } from './config';
+import { S_KEY, SecureStorage } from '../store/deviceStorage';
 
 export class Http {
-	static send(url, method = 'GET', data = null) {
-		console.log(method, ': ', API_URL.concat(url), data);
+
+	static async send(url, config) {
+
 		const d = new Date().getTime();
-		return new Promise((resolve, reject) => {
-			fetch(API_URL.concat(url), {
-				method,
-				headers: {
-					'Content-Type': method === 'POST' ? 'application/x-www-form-urlencoded;charset=UTF-8' : 'application/json',
-				},
-				body: data
-			})
-				.then((resp) => {
-					const t = new Date().getTime() - d;
-					console.log('SUCCESS: ' + method, ': ', API_URL.concat(url), data, '(' + t / 1000 + 's)');
-					return resp ? resp.json() : Promise.resolve()
-				})
-				.then((resp) => {
-					//console.log(resp);
-					resolve(resp)
-				})
-				.catch((err) => {
-					console.log('NETWORK ERR', err);
-					//reject(err);
-				});
-		});
+		try {
+
+			config.headers['Authorization'] = Http.getToken();
+
+			const response = await fetch(API_URL.concat(url), config);
+			if (!response.ok)
+				throw new Error('Response unsuccessful!');
+
+			console.log('SUCCESS: ' + config.method, ': ', API_URL.concat(url), '(' + (new Date().getTime() - d) / 1000 + 's)');
+
+			try {
+				const data = await response.json();
+				return data;
+			}
+			catch (_) {
+				throw new Error('Response format error!');
+			}
+
+		} catch (err) {
+			console.log('ERROR: ' + config.method, ': ', API_URL.concat(url), '(' + (new Date().getTime() - d) / 1000 + 's)', '\n -- ', err);
+		}
 	}
 
-	static get(url, qParams, validate = false) {
+	static async get(url, qParams, validate = false) {
 
 		if (qParams && validate) {
 			const tmpQP = {};
@@ -39,14 +41,56 @@ export class Http {
 		}
 
 		let _url = qParams ? url + '?' + new URLSearchParams(qParams) : url;
-		return Http.send(_url);
+
+		const resp = await Http.send(_url, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		});
+
+		return resp;
 	}
 
-	static post(url, data) {
-		return Http.send(url, 'POST', Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&'))
+	static async getToken() {
+		if (!Http._token) {
+			const t = await SecureStorage.get(S_KEY.TOKEN);
+			Http._token = t;
+		}
+
+		return Http._token || '';
+	}
+
+
+	static async post(url, data) {
+		const resp = await Http.send(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+			},
+			body: Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&')
+		});
+
+		return resp;
 	}
 }
 
-export function useGetRequest(url, params) {
+export function useHTTPGet(url, params, initData) {
 
-}
+	const [data, setData] = useState(initData);
+
+	useEffect(() => {
+		let doSetState = true;
+
+		const asyncWrap = async () => {
+			const d = await Http.get(url, params);
+			if (doSetState)
+				setData(d);
+		};
+		asyncWrap();
+
+		return () => doSetState = false;
+	}, []);
+
+	return data;
+};

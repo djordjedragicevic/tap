@@ -1,10 +1,10 @@
-import { useMemo } from "react";
+import { Children, useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { values } from "../../style/themes";
 import XText from "./XText";
 import { useThemedStyle } from "../../style/ThemeContext";
 
-const XButton = ({ title, onPress, disabled, style, bottom = false }) => {
+const XButton = ({ title, onPress, disabled, style, children, bottom = false }) => {
 	const styles = useThemedStyle(createStyle);
 
 	const dinStyle = useMemo(() => {
@@ -20,6 +20,7 @@ const XButton = ({ title, onPress, disabled, style, bottom = false }) => {
 			{bottom && <View style={styles.flexView} />}
 			<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
 				{!!title && <XText style={styles.text} secondary>{title}</XText>}
+				{children}
 			</TouchableOpacity>
 		</>
 	);
