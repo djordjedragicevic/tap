@@ -1,17 +1,25 @@
 import { useEffect, useState } from 'react';
-import { API_URL } from './config';
+import { API_URL, HTTP_TIMEOUT } from './config';
 import { S_KEY, SecureStorage } from '../store/deviceStorage';
+
 
 export class Http {
 
 	static async send(url, config) {
-
 		const d = new Date().getTime();
 		try {
+			console.log('START HTTP: ' + config.method, ': ', API_URL.concat(url));
 
-			config.headers['Authorization'] = Http.getToken();
+			config.headers['Authorization'] = await Http.getToken();
 
+			const controller = new AbortController();
+			const signal = controller.signal;
+			config.signal = signal;
+
+			const fId = setTimeout(() => controller.abort(), HTTP_TIMEOUT);
 			const response = await fetch(API_URL.concat(url), config);
+			clearTimeout(fId);
+
 			if (!response.ok)
 				throw new Error('Response unsuccessful!');
 
@@ -26,7 +34,7 @@ export class Http {
 			}
 
 		} catch (err) {
-			console.log('ERROR: ' + config.method, ': ', API_URL.concat(url), '(' + (new Date().getTime() - d) / 1000 + 's)', '\n -- ', err);
+			console.error('HTTP ERROR:', err);
 		}
 	}
 

@@ -8,23 +8,22 @@ import { THEME } from "../style/themes";
 import XText from "../components/basic/XText";
 import XButton from "../components/basic/XButton";
 import I18nContext, { useTranslation } from "../i18n/I18nContext";
-import { useGlobalStore } from "../store/globalStore";
+import { storeDispatch, useStore } from "../store/store";
 
 
 const Test1 = () => {
-	const [test1, dispatch] = useGlobalStore(false, (state) => state.test1);
-	const [test2] = useGlobalStore(false, (state) => state.test2);
+	const test1 = useStore((state) => state.test.test1);
 
 
 	console.log("RENDER TEST 1", test1);
 
-	return <XButton onPress={() => dispatch('TEST_1')}>
+	return <XButton onPress={() => storeDispatch('app.test_1')}>
 		<XText >TEST 1: {test1}</XText>
 	</XButton>
 };
 
 const Test2 = () => {
-	const [test2, dispatch] = useGlobalStore(false, (state) => state.test2);
+	const test2 = useStore(state => state.test);
 
 	// useEffect(() => {
 	// 	console.log("TEST 2 - CHANGE test2", test2);
@@ -35,8 +34,8 @@ const Test2 = () => {
 	// }, [dispatch]);
 
 	console.log("RENDER TEST 2", test2);
-	return <XButton onPress={() => dispatch('TEST_2')}>
-		<XText>TEST 2: {test2}</XText>
+	return <XButton onPress={() => storeDispatch('app.test_2')}>
+		<XText>TEST 2:</XText>
 	</XButton>
 };
 

@@ -10,8 +10,12 @@ import { ThemeContextProvider } from './src/style/ThemeContext';
 import { useEffect, useState } from 'react';
 import { S_KEY, SecureStorage } from './src/store/deviceStorage';
 import { Http } from './src/common/Http';
-import { useGlobalStore } from './src/store/globalStore';
+import { storeDispatch, storeInit } from './src/store/store';
+import { appStore, testStore, userStore } from './src/store/concreteStores';
 
+storeInit(appStore());
+storeInit(userStore());
+storeInit(testStore());
 
 export default App = () => {
 	let [fontsLoaded] = useFonts({
@@ -20,29 +24,25 @@ export default App = () => {
 	});
 
 	const [inited, setInited] = useState(false);
-	//const [state, dispatch] = useGlobalStore();
 
 	useEffect(() => {
 		const asyncWrap = async () => {
-			const token = await Http.getToken();
-			//if (token) {
-			const userData = await Http.post('/user/by-token', { token });
-			if (userData) {
-				//dispatch('USER.SET_DATA', userData);
+			const token = await Http.getToken() || 'apc';
+			if (token) {
+				const userData = await Http.post('/user/by-token', { token });
+				if (userData)
+					storeDispatch('user.set_data', userData);
+
 			}
-			//setInited(true);
-			//	}
+			setInited(true);
 		};
 
 		asyncWrap();
 	}, []);
 
 
-	console.log("RENDER APP");
-
-	if (!fontsLoaded)
+	if (!fontsLoaded && inited)
 		return null;
-
 
 	return (
 		<ThemeContextProvider initialTheme={Theme.Light}>
