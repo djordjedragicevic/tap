@@ -5,9 +5,7 @@ import com.tap.db.entity.Provider;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,8 +47,51 @@ public class ProviderDAO {
 		);
 	}
 
-	public Object getProvider(long id) {
+	public Map<String, Object> getProvider(long id) {
 		Provider p = em.find(Provider.class, (int) id);
-		return p.getActive() == 1 ? p : Map.of();
+
+		return p.getActive() == 1 ?
+				Map.of(
+						"id", p.getId(),
+						"name", p.getName(),
+						"type", p.getProvidertype().getName(),
+						"address", p.getAddress().getAddress1(),
+						"image", p.getMainImg()
+				) :
+				Map.of();
 	}
+
+	public Object getProviderServices(long pId) {
+		String query = """
+				SELECT
+				s.id,
+				s.name,
+				s.duration,
+				s.price,
+				g.id,
+				g.name,
+				c.id,
+				c.name
+				FROM Service s LEFT JOIN s.group g LEFT JOIN s.category c
+				WHERE s.active = 1
+				AND s.provider.id = :pId
+				ORDER BY c.id, g.id
+				""";
+
+		List<Object[]> dbRes = em.createQuery(query, Object[].class)
+				.setParameter("pId", pId)
+				.getResultList();
+
+		return Util.convertToListOfMap(dbRes,
+				"id",
+				"name",
+				"duration",
+				"price",
+				"g_id",
+				"g_name",
+				"c_id",
+				"c_name"
+		);
+	}
+
 }

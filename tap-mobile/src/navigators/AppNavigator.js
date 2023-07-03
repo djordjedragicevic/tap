@@ -7,6 +7,9 @@ import Try from '../screens/Try';
 import { useStore } from '../store/store';
 import HeaderDrawerButton from '../components/HeaderDrawerButton';
 import { useCallback } from 'react';
+import { BlurView } from 'expo-blur';
+import { StyleSheet } from 'react-native';
+
 
 const HomeStack = createStackNavigator();
 const HomeStackNavigator = ({ navigation }) => {
@@ -24,6 +27,13 @@ const HomeStackNavigator = ({ navigation }) => {
 				component={ProvidersScreen}
 			/>
 			<HomeStack.Screen
+				options={{
+					// headerTransparent: true,
+					// headerBackground: () => (
+					// 	<BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
+					// )
+					headerShown: false
+				}}
 				name={PROVIDER_SCREEN}
 				component={ProviderScreen}
 			/>

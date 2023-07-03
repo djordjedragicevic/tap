@@ -1,25 +1,19 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { emptyFn } from "../../common/utils";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XCheckBox from "../basic/XCheckBox";
 
-const ListItemBasic = ({ selected, children, idx, onPress }) => {
+const ListItemBasic = ({ children, id, onPress = emptyFn, selected = false }) => {
 	const styles = useThemedStyle(createStyle);
-	const onPressHandler = useCallback(() => onPress(idx), []);
 	return (
-		<TouchableOpacity style={styles.item} onPress={onPressHandler}>
+		<TouchableOpacity key={id} style={styles.item} onPress={onPress}>
 			<>
-				<XCheckBox isChecked={selected} />
+				<XCheckBox isChecked={selected} size={14} />
 				{children}
 			</>
 		</TouchableOpacity>
 	);
-};
-
-ListItemBasic.defaultProps = {
-	selected: false,
-	onPress: emptyFn
 };
 
 const createStyle = (theme) => StyleSheet.create({

@@ -10,11 +10,9 @@ const XSection = ({ children, style, disabled, onPress, disabledOpacity }) => {
 	const RootCmp = onPress instanceof Function ? TouchableOpacity : View;
 
 	return (
-		<RootCmp>
-			<TouchableOpacity style={[styles.card, style]} onPress={onPress}>
-				{children}
-				{disabled && <XMask opacity={disabledOpacity} />}
-			</TouchableOpacity>
+		<RootCmp style={[styles.card, style]} onPress={onPress}>
+			{children}
+			{disabled && <XMask opacity={disabledOpacity} />}
 		</RootCmp>
 	);
 }
@@ -27,7 +25,8 @@ XSection.defaultProps = {
 
 const createStyle = (theme) => StyleSheet.create({
 	card: {
-		padding: 8,
+		paddingHorizontal: 8,
+		paddingVertical: 8,
 		overflow: 'hidden',
 		borderRadius: theme.values.borderRadius,
 		backgroundColor: theme.colors.backgroundElement

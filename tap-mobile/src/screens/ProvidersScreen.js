@@ -24,14 +24,12 @@ const ProvidersScreen = ({ navigation }) => {
 					elevation: 2
 				}}
 			>
-				<View style={{ overflow: 'hidden', height: 150 }}>
-					{
-						item.mainImg &&
-						<Image
-							source={`${HOST}${item.mainImg}`}
-							contentFit='fill'
-						/>
-					}
+				<View style={{ overflow: 'hidden', height: 200 }}>
+					<Image
+						source={`${HOST}${item.mainImg}`}
+						contentFit='cover'
+						style={{ flex: 1 }}
+					/>
 				</View>
 
 				<View style={{ flex: 1 }}>

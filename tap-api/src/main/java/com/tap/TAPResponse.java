@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class TAPResponse {
 
-	private TAPResponse(){
+	private TAPResponse() {
 	}
 
 	public static Map<String, Object> wrap(Object data) {
