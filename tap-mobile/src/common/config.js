@@ -1,5 +1,5 @@
-//export const HOST = 'http://192.168.100.85:9080';
-export const HOST = 'http://172.17.60.5:9080';
+export const HOST = 'http://192.168.100.85:9080';
+//export const HOST = 'http://172.17.60.5:9080';
 export const API_URL = `${HOST}/api/v1`;
 export const HTTP_TIMEOUT = 5000;
 

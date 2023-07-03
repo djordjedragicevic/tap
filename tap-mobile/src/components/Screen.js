@@ -1,9 +1,18 @@
 import { useMemo } from "react";
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { values } from "../style/themes";
 
-const Screen = ({ style, center, children, flat }) => {
+const Screen = ({
+	children,
+	style = {},
+	center = false,
+	flat = false,
+	marginTop = values.mainPaddingHorizontal
+}) => {
+
+	const insets = useSafeAreaInsets();
+
 	const dynStyle = useMemo(() => {
 		const dS = {};
 		if (center) {
@@ -12,28 +21,32 @@ const Screen = ({ style, center, children, flat }) => {
 		}
 		if (!flat) {
 			dS.marginHorizontal = values.mainPaddingHorizontal;
-			dS.marginTop = values.mainPaddingHorizontal;
+			dS.marginTop = marginTop
 		}
 		return dS;
-	}, [center, flat]);
+	}, [center, flat, marginTop]);
 
 	return (
-		<SafeAreaView style={[styles.screen, style, dynStyle]}>
-			{children}
-		</SafeAreaView>
+		<View style={{
+			paddingTop: insets.top,
+			paddingBottom: insets.bottom,
+			paddingLeft: insets.left,
+			paddingRight: insets.right,
+			flex: 1
+		}}>
+			<View style={[style, dynStyle]}>
+				{children}
+			</View>
+			{/* <View style={{ backgroundColor: 'red', position: 'absolute', height: 3, width: '100%' }}></View> */}
+		</View>
 	);
 };
 
-Screen.defaultProps = {
-	style: {},
-	center: false,
-	flat: false
-};
 
-const styles = StyleSheet.create({
-	screen: {
-		flex: 1
-	}
-});
+// const styles = StyleSheet.create({
+// 	screen: {
+// 		flex: 1
+// 	}
+// });
 
 export default Screen;

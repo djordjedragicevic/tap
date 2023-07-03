@@ -2,8 +2,10 @@ import React, { useMemo } from 'react';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { THEME } from './style/themes';
 import { useTheme } from './style/ThemeContext';
-import { StatusBar } from 'react-native';
+import { ActivityIndicator, StatusBar, View } from 'react-native';
 import AppNavigator from './navigators/AppNavigator';
+import { useStore } from './store/store';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Main = () => {
 
@@ -22,16 +24,17 @@ const Main = () => {
 		}
 	}, [theme]);
 
-
 	return (
 		<>
 			<StatusBar
 				barStyle={theme.id === THEME.DARK ? 'light-content' : 'dark-content'}
 				backgroundColor={theme.colors.backgroundElement}
 			/>
-			<NavigationContainer theme={navTheme}>
-				<AppNavigator />
-			</NavigationContainer>
+			<SafeAreaProvider>
+				<NavigationContainer theme={navTheme}>
+					<AppNavigator />
+				</NavigationContainer>
+			</SafeAreaProvider>
 		</>
 	);
 };

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { StyleSheet, Text } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
+import { useStore } from "../../store/store";
 
 
 
@@ -17,7 +18,8 @@ const XText = ({ primary, secondary, tertiary, light, style, children, ...rest }
 
 	}, [primary, secondary, light]);
 
-	const styles = useThemedStyle(createStyle, textColor);
+	const font = useStore(state => state.app.font);
+	const styles = useThemedStyle(createStyle, textColor, font);
 
 	return (
 		<Text style={[styles.text, style]} {...rest}>{children}</Text>
@@ -32,11 +34,12 @@ XText.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme, textColor) => {
+const createStyle = (theme, textColor, font) => {
 	return StyleSheet.create({
 		text: {
 			color: theme.colors[textColor],
-			fontFamily: 'Montserrat_500Medium'
+			//fontFamily: 'Montserrat_500Medium'
+			fontFamily: font
 		}
 	})
 };

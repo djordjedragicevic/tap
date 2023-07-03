@@ -1,5 +1,5 @@
 import { AsyncStorage } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
+import * as SS from 'expo-secure-store';
 
 const KEY_PRE = '@TAP:';
 
@@ -32,19 +32,20 @@ export class Storage {
 };
 
 export class SecureStorage {
-	static async get(key) {
+	static async get(key, defValue = null) {
 		try {
-			const v = await SecureStore.getItemAsync(key);
-			return JSON.parse(v);
+			const v = await SS.getItemAsync(key);
+			return v == null ? defValue : JSON.parse(v);
 
 		} catch (err) {
 			console.log("SECURE STORAGE ERROR GET: ", key, err);
+			return defValue;
 		}
 	}
 	static async set(key, value) {
 		try {
 			const v = JSON.stringify(value);
-			await SecureStore.setItemAsync(KEY_PRE + key, v);
+			await SS.setItemAsync(KEY_PRE + key, v);
 
 		} catch (err) {
 			console.log("SECURE STORAGE ERROR SET: ", key, err);

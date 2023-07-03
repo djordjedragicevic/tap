@@ -19,3 +19,4 @@ export const PROVIDER_SCREEN = 'ProviderScreen';
 
 export const DRAWER_HOME = 'DrowerHome';
 export const MAIN_STACK_DRAWER = 'MainStackDrawer';
+export const HOME_STACK = 'HomeStack';

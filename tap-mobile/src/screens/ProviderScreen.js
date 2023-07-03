@@ -3,7 +3,7 @@ import XText from "../components/basic/XText";
 import XButton from "../components/basic/XButton";
 import { APPOINTMENTS_SCREEN, CALENDAR_SCREEN, MAIN_FREE_APPOINTMENTS } from "../navigators/routes";
 import { useCallback, useEffect, useState } from "react";
-import { Http } from "../common/Http";
+import { Http, useHTTPGet } from "../common/Http";
 import XSection from "../components/basic/XSection";
 import { FlatList, StyleSheet, View } from "react-native";
 import { convert } from "../common/currency";
@@ -15,6 +15,7 @@ import { useTranslation } from "../i18n/I18nContext";
 const Services = ({ services, onItemPress, selectedItems }) => {
 
 	const onPressHandler = useCallback((idx) => onItemPress(services[idx]));
+
 
 	const renderItem = ({ item, index }) => {
 		return (
@@ -51,64 +52,13 @@ const getDurationSum = (items) => {
 };
 
 const ProviderScreen = ({ navigation, route }) => {
-	const [company, setCompany] = useState({});
-
-	const [selectedServices, setSelectedServices] = useState([]);
-
+	const providerId = route.params.id;
+	const provider = useHTTPGet(`/provider/${providerId}`);
 	const t = useTranslation();
-
-	const onServicePress = (service) => {
-		setSelectedServices(old => {
-			const newS = [...old];
-			const exist = newS.findIndex(s => s.id === service.id);
-			if (exist > -1)
-				newS.splice(exist, 1);
-			else
-				newS.push(service);
-			return newS;
-		})
-	};
-
-	useEffect(() => {
-
-		navigation.setOptions({
-			headerTitle: () => {
-				return (
-					<>
-						<XText style={{ fontSize: 16, fontWeight: '600' }}>{route.params?.companyName}</XText>
-						<XText style={{ fontSize: 12 }} secondary>{route.params?.companyTypeName}</XText>
-					</>
-				)
-			}
-		});
-
-		let finish = true;
-		Http.get("/company/" + route.params.id)
-			.then(res => {
-				if (finish)
-					setCompany(res);
-			});
-
-		return () => finish = false;
-	}, []);
-
+	
 	return (
-		<Screen>
-
-			<XSection style={staticStyles.cardServices}>
-				<Services services={company.services} selectedItems={selectedServices} onItemPress={onServicePress} />
-			</XSection>
-
-			<XButton
-				bottom
-				style={{ marginTop: 10, selfAlign: 'flex-end' }}
-				disabled={!selectedServices || selectedServices?.length === 0}
-				title={t('Appointments')}
-				onPress={() => navigation.navigate(MAIN_FREE_APPOINTMENTS, {
-					company: route.params.id,
-					services: selectedServices.map(s => s.id).join(',')
-				})}
-			/>
+		<Screen center>
+			<XText>{providerId}</XText>
 		</Screen>
 	);
 };

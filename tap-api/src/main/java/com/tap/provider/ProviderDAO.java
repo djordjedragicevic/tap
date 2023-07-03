@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,5 +39,10 @@ public class ProviderDAO {
 
 		List<Map<String, Object>> reps = Util.convertToListOfMap(dbRes, "id", "name", "type", "legalEntity", "address1", "city");
 		return reps;
+	}
+
+	public Object getProvider(long id) {
+		Provider p = em.find(Provider.class, (int) id);
+		return p.getActive() == 1 ? p : Map.of();
 	}
 }

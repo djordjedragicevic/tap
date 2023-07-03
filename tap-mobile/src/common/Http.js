@@ -1,32 +1,36 @@
 import { useEffect, useState } from 'react';
 import { API_URL, HTTP_TIMEOUT } from './config';
 import { S_KEY, SecureStorage } from '../store/deviceStorage';
+import { storeDispatch } from '../store/store';
 
-
+let _token = null;
 export class Http {
 
+	static LOADING = 'loadint'
+
 	static async send(url, config) {
+		storeDispatch('app.http_loading_on')
 		const d = new Date().getTime();
 		try {
-			console.log('START HTTP: ' + config.method, ': ', API_URL.concat(url));
+			console.log('HTTP START: ' + config.method, ': ', API_URL.concat(url));
 
 			config.headers['Authorization'] = await Http.getToken();
 
-			const controller = new AbortController();
-			const signal = controller.signal;
-			config.signal = signal;
+			// const controller = new AbortController();
+			// const signal = controller.signal;
+			// config.signal = signal;
 
-			const fId = setTimeout(() => controller.abort(), HTTP_TIMEOUT);
+			//const fId = setTimeout(() => controller.abort(), HTTP_TIMEOUT);
 			const response = await fetch(API_URL.concat(url), config);
-			clearTimeout(fId);
+			//clearTimeout(fId);
 
 			if (!response.ok)
 				throw new Error('Response unsuccessful!');
 
-			console.log('SUCCESS: ' + config.method, ': ', API_URL.concat(url), '(' + (new Date().getTime() - d) / 1000 + 's)');
+			console.log('HTTP SUCCESS: ' + config.method, ': ', API_URL.concat(url), '(' + (new Date().getTime() - d) / 1000 + 's)');
 
 			try {
-				const data = await response.json();
+				const data = response.status === 204 ? null : await response.json();
 				return data;
 			}
 			catch (_) {
@@ -35,6 +39,10 @@ export class Http {
 
 		} catch (err) {
 			console.error('HTTP ERROR:', err);
+		}
+		finally {
+			storeDispatch('app.http_loading_off');
+			console.log('')
 		}
 	}
 
@@ -61,12 +69,12 @@ export class Http {
 	}
 
 	static async getToken() {
-		if (!Http._token) {
-			const t = await SecureStorage.get(S_KEY.TOKEN);
-			Http._token = t;
+		if (_token == null) {
+			const t = await SecureStorage.get(S_KEY.TOKEN, '');
+			_token = t;
 		}
 
-		return Http._token || '';
+		return _token;
 	}
 
 

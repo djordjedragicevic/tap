@@ -16,10 +16,19 @@ export const appStore = (initD = {}) => ({
 					httpLoading: false
 				}
 			}
+		},
+		'app.set_font': (globalState, font) => {
+			return {
+				app: {
+					...globalState.app,
+					font
+				}
+			}
 		}
 	},
 	initData: {
 		httpLoading: false,
+		font: '',
 		...initD
 	}
 });
@@ -28,16 +37,25 @@ export const appStore = (initD = {}) => ({
 export const userStore = (initD = {}) => ({
 	name: 'user',
 	actions: {
-		['user.set_data']: (globalState, userData) => {
+		'user.set_data': (globalState, userData) => {
 			return {
 				user: {
 					...globalState.user,
 					...userData
 				}
 			};
+		},
+		'user.set_is_logged': (globalState, isLogged) => {
+			return {
+				user: {
+					...globalState.user,
+					isLogged
+				}
+			};
 		}
 	},
 	initData: {
+		isLogged: false,
 		...initD
 	}
 
@@ -66,6 +84,6 @@ export const testStore = (initD = {}) => ({
 	initData: {
 		test1: 0,
 		test2: 0,
-		...initD
+		...initD,
 	}
 });
