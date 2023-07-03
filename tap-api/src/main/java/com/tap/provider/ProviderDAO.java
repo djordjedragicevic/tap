@@ -21,6 +21,7 @@ public class ProviderDAO {
 				SELECT
 				p.id,
 				p.name,
+				p.mainImg,
 				p.providertype.name,
 				p.legalEntity,
 				p.address.address1,
@@ -37,8 +38,15 @@ public class ProviderDAO {
 				.setParameter("cityId", cityId)
 				.getResultList();
 
-		List<Map<String, Object>> reps = Util.convertToListOfMap(dbRes, "id", "name", "type", "legalEntity", "address1", "city");
-		return reps;
+		return Util.convertToListOfMap(dbRes,
+				"id",
+				"name",
+				"mainImg",
+				"type",
+				"legalEntity",
+				"address1",
+				"city"
+		);
 	}
 
 	public Object getProvider(long id) {
