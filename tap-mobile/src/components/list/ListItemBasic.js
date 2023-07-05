@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import { emptyFn } from "../../common/utils";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XCheckBox from "../basic/XCheckBox";
@@ -7,22 +7,22 @@ import XCheckBox from "../basic/XCheckBox";
 const ListItemBasic = ({ children, id, onPress = emptyFn, selected = false }) => {
 	const styles = useThemedStyle(createStyle);
 	return (
-		<TouchableOpacity key={id} style={styles.item} onPress={onPress}>
+		<Pressable key={id} style={styles.item} onPress={onPress}>
 			<>
-				<XCheckBox isChecked={selected} size={14} />
+				<XCheckBox isChecked={selected} size={16} />
 				{children}
 			</>
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 
 const createStyle = (theme) => StyleSheet.create({
 	item: {
-		height: 45,
+		height: 60,
 		flexDirection: 'row',
 		alignItems: 'center',
 		backgroundColor: theme.colors.backgroundElement
 	}
 });
 
-export default React.memo(ListItemBasic);
+export default ListItemBasic;

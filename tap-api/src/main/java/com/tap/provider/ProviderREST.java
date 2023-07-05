@@ -32,8 +32,7 @@ public class ProviderREST {
 	@Path("list")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getProviders(@QueryParam("cId") long cityId) {
-		List<Map<String, Object>> resp = providerDAO.getProviders(cityId);
-		return resp;
+		return providerDAO.getProviders(cityId);
 	}
 
 

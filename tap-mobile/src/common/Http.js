@@ -9,6 +9,7 @@ export class Http {
 	static LOADING = 'loadint'
 
 	static async send(url, config) {
+
 		storeDispatch('app.http_loading_on')
 		const d = new Date().getTime();
 		try {
@@ -27,7 +28,7 @@ export class Http {
 			if (!response.ok)
 				throw new Error('Response unsuccessful!');
 
-			console.log('HTTP SUCCESS: ' + config.method, ': ', API_URL.concat(url), '(' + (new Date().getTime() - d) / 1000 + 's)');
+			console.log('HTTP SUCCESS: ' + '(' + (new Date().getTime() - d) / 1000 + 's)');
 
 			try {
 				const data = response.status === 204 ? null : await response.json();

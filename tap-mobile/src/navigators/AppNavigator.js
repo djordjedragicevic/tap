@@ -9,9 +9,11 @@ import HeaderDrawerButton from '../components/HeaderDrawerButton';
 import { useCallback } from 'react';
 import { BlurView } from 'expo-blur';
 import { StyleSheet } from 'react-native';
+import TryAH from '../screens/TryAH';
 
 
 const HomeStack = createStackNavigator();
+
 const HomeStackNavigator = ({ navigation }) => {
 	const font = useStore(s => s.app.font);
 	const getHeaderLeft = useCallback(() => <HeaderDrawerButton navigation={navigation} />, [navigation]);
@@ -36,6 +38,13 @@ const HomeStackNavigator = ({ navigation }) => {
 				}}
 				name={PROVIDER_SCREEN}
 				component={ProviderScreen}
+			/>
+			<HomeStack.Screen
+				name={"T2"}
+				component={TryAH}
+				options={{
+					headerTransparent: true
+				}}
 			/>
 		</HomeStack.Navigator >
 	)

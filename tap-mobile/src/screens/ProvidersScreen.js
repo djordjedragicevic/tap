@@ -26,7 +26,7 @@ const ProvidersScreen = ({ navigation }) => {
 			>
 				<View style={{ overflow: 'hidden', height: 200 }}>
 					<Image
-						source={`${HOST}${item.mainImg}`}
+						source={`${HOST}${item.mainImg?.split(',')[0]}`}
 						contentFit='cover'
 						style={{ flex: 1 }}
 					/>

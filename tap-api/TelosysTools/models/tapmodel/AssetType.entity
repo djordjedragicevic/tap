@@ -1,0 +1,9 @@
+@DbTable(asset_type)
+@DbCatalog(tap)
+AssetType {
+  // attributes
+  id : short { @Id @AutoIncremented @DbName(id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(16)") @Size(16) @MaxLen(16) };
+  // links
+  assetList : Asset[];
+}

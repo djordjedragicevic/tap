@@ -12,9 +12,9 @@ Provider {
   approved : byte { @DbName(approved) @DbType(TINYINT) @DbDefaultValue(0) @NotNull @NotEmpty };
   approvedDate : timestamp { @DbName(approved_date) @DbType(DATETIME) };
   approvedBy : int { @DbName(approved_by) @DbType(INT) };
-  mainImg : string { @DbName(main_img) @DbType("VARCHAR(64)") @Size(64) @MaxLen(64) };
   active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
   // links
+  assetList : Asset[];
   employeeList : Employee[];
   address : Address { @LinkByFK(fk_provider_address1) };
   providertype : ProviderType { @LinkByFK(fk_provider_provider_type) };
