@@ -35,6 +35,11 @@ export const useThemedStyle = (styleSheetCreator, arg1, arg2, arg3) => {
 	const stOb = useMemo(() => styleSheetCreator(theme, arg1, arg2, arg3), [theme, arg1, arg2, arg3]);
 
 	return stOb;
-}
+};
+
+export const usePrimaryColor = () => {
+	const { theme } = useTheme();
+	return theme.colors.primary;
+};
 
 export default ThemeContext;

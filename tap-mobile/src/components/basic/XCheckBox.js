@@ -1,37 +1,20 @@
 import { Pressable, StyleSheet } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
+import { emptyFn } from "../../common/utils";
+import { Theme } from "../../style/themes";
 
 
-const XCheckBox = ({ isChecked, onChange, size = 10 }) => {
-
-	const [checked, setChecked] = useState(isChecked);
-
-	useEffect(() => {
-		onChange(checked);
-	}, [checked])
-
-	useEffect(() => {
-		setChecked(isChecked);
-	}, [isChecked])
+const XCheckBox = ({ checked = false, setChecked = emptyFn, size = 10 }) => {
 
 	const styles = useThemedStyle(createStyle, size);
-	const onPress = useCallback(() => {
-		setChecked(old => !old);
-	}, []);
-
 
 	return (
-		<Pressable style={[styles.checkbox, checked ? styles.checked : styles.unchecked]} onPress={onPress}>
+		<Pressable style={[styles.checkbox, checked ? styles.checked : styles.unchecked]} onPress={setChecked}>
 			{checked && <Icon name="check" size={size} color={styles.icon.color} />}
 		</Pressable>
 	)
-};
-
-XCheckBox.defaultProps = {
-	isChecked: false,
-	onChange: function () { }
 };
 
 const createStyle = (theme, size) => StyleSheet.create({
@@ -41,16 +24,15 @@ const createStyle = (theme, size) => StyleSheet.create({
 
 	},
 	unchecked: {
-		borderColor: theme.colors.textSecondary
+		borderColor: theme.colors.textTertiary
 	},
 	checkbox: {
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: size + 8,
 		height: size + 8,
-		marginHorizontal: 5,
-		borderRadius: 5,
-		borderWidth: theme.values.borderWidth,
+		borderRadius: Theme.values.borderRadius,
+		borderWidth: Theme.values.borderWidth,
 	},
 	icon: {
 		color: theme.colors.textLight

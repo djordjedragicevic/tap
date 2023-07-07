@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, TextInput, TouchableOpacity, View } from "react-
 import { emptyFn } from "../../common/utils";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XMask from "./XMask";
+import { Theme } from "../../style/themes";
 
 const XFieldContainer = ({
 	iconRight = false,
@@ -41,7 +42,7 @@ const XFieldContainer = ({
 
 const createStyle = (theme) => StyleSheet.create({
 	container: {
-		borderRadius: theme.values.borderRadius,
+		borderRadius: Theme.values.borderRadius,
 		flexDirection: 'row',
 		backgroundColor: theme.colors.backgroundElement,
 		height: 48

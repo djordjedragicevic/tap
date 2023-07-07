@@ -5,24 +5,28 @@ export const THEME = {
 	DARK: 'Dark'
 };
 
-export const values = {
-	mainPaddingHorizontal: 8,
-	borderRadius: 8,
-	borderWidth: 0.8,
-	disabledOpacity: 0.7
-}
-
 
 export const Theme = {
+	values: {
+		mainPaddingHorizontal: 8,
+		borderRadius: 5,
+		borderWidth: 0.7,
+		disabledOpacity: 0.7
+	},
 	Light: {
 		id: THEME.LIGHT,
 		colors: {
-			primary: 'steelblue',
-			primaryDark: '#0080ff',
-			primaryLight: '#cce6ff',
+			//primary: 'steelblue',
+			//primaryDark: '#0080ff',
+			primary: 'darkorange', //#ff8c00
+			primaryDark: 'hsl(33°, 100%, 75%)',
+			primaryLight: 'hsl(33°, 100%, 75%)',
+
 			background: '#f0f0f5',
+			//background: 'hsla(33, 100%, 95%, 0.90)',
+
 			backgroundElement: DefaultTheme.colors.card,
-			textPrimary: 'hsl(0, 0%, 30%)',
+			textPrimary: 'hsl(0, 0%, 35%)',
 			textSecondary: 'hsl(0, 0%, 60%)',
 			textTertiary: 'hsl(0, 0%, 80%)',
 			textLight: '#f2f2f3',
@@ -35,14 +39,15 @@ export const Theme = {
 			'FREE_PERIOD': 'green',
 			'BUSY_APPOINTMENT': 'red',
 			'BUSY_BREAK': 'orange'
-		},
-		values: values
+		}
 	},
 
 	Dark: {
 		id: THEME.DARK,
 		colors: {
 			primary: '#66c2ff',
+			primary: 'lightsalmon',
+
 			primaryDark: '#005c99',
 			primaryLight: '#4db8ff',
 			background: DarkTheme.colors.background,
@@ -60,7 +65,6 @@ export const Theme = {
 			'FREE_PERIOD': 'green',
 			'BUSY_APPOINTMENT': 'red',
 			'BUSY_BREAK': 'orange'
-		},
-		values: values
+		}
 	}
 };

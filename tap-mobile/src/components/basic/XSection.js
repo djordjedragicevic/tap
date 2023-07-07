@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XMask from "./XMask";
+import { Theme } from "../../style/themes";
 
 const XSection = ({ children, style, disabled, onPress, disabledOpacity }) => {
 
@@ -28,7 +29,7 @@ const createStyle = (theme) => StyleSheet.create({
 		paddingHorizontal: 8,
 		paddingVertical: 8,
 		overflow: 'hidden',
-		borderRadius: theme.values.borderRadius,
+		borderRadius: Theme.values.borderRadius,
 		backgroundColor: theme.colors.backgroundElement
 	}
 });

@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { values } from "../style/themes";
+import { Theme } from "../style/themes";
 
 const Screen = ({
 	children,
 	style = {},
 	center = false,
 	flat = false,
-	marginTop = values.mainPaddingHorizontal
+	marginTop = Theme.values.mainPaddingHorizontal
 }) => {
 
 	const dynStyle = useMemo(() => {
@@ -18,7 +18,7 @@ const Screen = ({
 			dS.justifyContent = 'center';
 		}
 		if (!flat) {
-			dS.marginHorizontal = values.mainPaddingHorizontal;
+			dS.marginHorizontal = Theme.values.mainPaddingHorizontal;
 			dS.marginTop = marginTop
 		}
 		return dS;

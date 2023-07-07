@@ -1,16 +1,16 @@
 import { Children, useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { values } from "../../style/themes";
+import { Theme } from "../../style/themes";
 import XText from "./XText";
 import { useThemedStyle } from "../../style/ThemeContext";
 
-const XButton = ({ title, onPress, disabled, style, children, bottom = false }) => {
-	const styles = useThemedStyle(createStyle);
+const XButton = ({ title, onPress, disabled, style, children, bottom = false, flat = false }) => {
+	const styles = useThemedStyle(createStyle, flat);
 
 	const dinStyle = useMemo(() => {
 		if (disabled)
 			return {
-				opacity: values.disabledOpacity
+				opacity: Theme.values.disabledOpacity
 			}
 		else return {}
 	}, [disabled]);
@@ -31,12 +31,12 @@ XButton.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme) => StyleSheet.create({
+const createStyle = (theme, flat) => StyleSheet.create({
 	button: {
 		height: 42,
 		paddingHorizontal: 10,
 		backgroundColor: theme.colors.primary,
-		borderRadius: theme.values.borderRadius,
+		borderRadius: flat ? 0 : Theme.values.borderRadius,
 		alignItems: 'center',
 		justifyContent: 'center'
 	},

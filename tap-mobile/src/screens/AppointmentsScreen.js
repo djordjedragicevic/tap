@@ -8,6 +8,7 @@ import { useThemedStyle } from "../style/ThemeContext";
 import XChip from "../components/basic/XChip";
 import XAlert from '../components/basic/XAlert';
 import { useTranslation } from "../i18n/I18nContext";
+import { Theme } from "../style/themes";
 
 const SectionHeader = memo(({ title }) => {
 	const styles = useThemedStyle(createSecHeaderStyle);
@@ -79,7 +80,7 @@ const createAppStyle = (theme) => StyleSheet.create({
 	container: {
 		minHeight: 50,
 		backgroundColor: theme.colors.backgroundElement,
-		borderRadius: theme.values.borderRadius,
+		borderRadius: Theme.values.borderRadius,
 		marginBottom: 4,
 		overflow: 'hidden'
 	},

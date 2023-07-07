@@ -5,7 +5,7 @@ import XText from "../components/basic/XText";
 import Screen from "../components/Screen";
 import { PROVIDER_SCREEN } from "../navigators/routes";
 import XSection from "../components/basic/XSection";
-import { values } from "../style/themes";
+import { Theme } from "../style/themes";
 import { Image } from 'expo-image';
 import { HOST } from "../common/config";
 
@@ -68,7 +68,7 @@ const ProvidersScreen = ({ navigation }) => {
 	return (
 		<Screen flat>
 			<FlatList
-				style={{ paddingHorizontal: values.mainPaddingHorizontal }}
+				style={{ paddingHorizontal: Theme.values.mainPaddingHorizontal }}
 				data={providers}
 				renderItem={renderCompany}
 			/>
@@ -79,7 +79,7 @@ const ProvidersScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
 	card: {
 		height: 160,
-		marginHorizontal: values.mainPaddingHorizontal,
+		marginHorizontal: Theme.values.mainPaddingHorizontal,
 		marginTop: 6,
 		alignItems: 'center',
 		justifyContent: 'space-evenly',

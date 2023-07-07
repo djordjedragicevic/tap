@@ -3,9 +3,28 @@ import { StyleSheet, Text } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 import { useStore } from "../../store/store";
 
+const fontWeights = {
+	100: 'Thin',
+	300: 'Light',
+	400: 'Regular',
+	500: 'Medium',
+	700: 'Bold',
+	900: 'Black'
+}
 
 
-const XText = ({ primary, secondary, tertiary, light, style, children, ...rest }) => {
+const XText = ({
+	primary,
+	secondary,
+	tertiary,
+	light,
+	style,
+	children,
+	weight,
+	italic,
+	size,
+	...rest
+}) => {
 	const textColor = useMemo(() => {
 		if (light)
 			return 'textLight'
@@ -18,9 +37,19 @@ const XText = ({ primary, secondary, tertiary, light, style, children, ...rest }
 
 	}, [primary, secondary, light]);
 
-	const font = useStore(state => state.app.font);
-	const styles = useThemedStyle(createStyle, textColor, font);
+	const appFont = useStore(state => state.app.font);
 
+	const fontFamily = useMemo(() => {
+		if (!weight && !italic)
+			return appFont;
+
+		const fSplit = appFont.split('_');
+		const w = weight ? weight + fontWeights[weight] : fSplit[1];
+
+		return fSplit[0] + '_' + w + (italic ? '_Italic' : '');
+	}, [weight, italic, appFont]);
+
+	const styles = useThemedStyle(createStyle, textColor, fontFamily, size);
 	return (
 		<Text style={[styles.text, style]} {...rest}>{children}</Text>
 	);
@@ -31,15 +60,18 @@ XText.defaultProps = {
 	secondary: false,
 	light: false,
 	tertiary: false,
+	weight: 0,
+	italic: false,
 	style: {}
 };
 
-const createStyle = (theme, textColor, font) => {
+const createStyle = (theme, textColor, font, size) => {
 	return StyleSheet.create({
 		text: {
 			color: theme.colors[textColor],
 			//fontFamily: 'Montserrat_500Medium'
-			fontFamily: font
+			fontFamily: font,
+			fontSize: size
 		}
 	})
 };

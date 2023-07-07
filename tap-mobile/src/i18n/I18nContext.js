@@ -42,4 +42,8 @@ export const useTranslation = () => {
 	return t;
 };
 
+export const useCurrency = () => {
+
+};
+
 export default I18nContext;

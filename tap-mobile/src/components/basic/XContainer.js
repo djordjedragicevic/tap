@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { StyleSheet, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
+import { Theme } from "../../style/themes";
 
 const XContainer = memo(({ children, style }) => {
 	const styles = useThemedStyle(createStyle);
@@ -14,7 +15,7 @@ const XContainer = memo(({ children, style }) => {
 const createStyle = (theme) => StyleSheet.create({
 	container: {
 		backgroundColor: theme.colors.backgroundElement,
-		borderRadius: theme.values.borderRadius,
+		borderRadius: Theme.values.borderRadius,
 		overflow: 'hidden'
 	}
 });

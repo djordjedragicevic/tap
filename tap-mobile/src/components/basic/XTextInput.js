@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, TextInput, TouchableOpacity, View } from "react-
 import { emptyFn } from "../../common/utils";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XMask from "./XMask";
+import { Theme } from "../../style/themes";
 
 const XTextInput = React.forwardRef(({
 	iconRight = false,
@@ -44,7 +45,7 @@ const XTextInput = React.forwardRef(({
 
 const createStyle = (theme) => StyleSheet.create({
 	container: {
-		borderRadius: theme.values.borderRadius,
+		borderRadius: Theme.values.borderRadius,
 		flexDirection: 'row',
 		alignItems: 'center',
 		backgroundColor: 'white',

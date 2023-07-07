@@ -32,7 +32,11 @@ const en_US = {
 	"Book appointment": "Book appointment",
 	"OK": "OK",
 	"Cancel": "Cancel",
-	"Find appointment": "Find appointment"
+	"Find appointment": "Find appointment",
+
+
+	"minutes": "minutes",
+	"appointments": "appointments"
 
 };
 

@@ -2,6 +2,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XMask from "../basic/XMask";
 import HairDryer from "../images/HairDryer";
+import { Theme } from "../../style/themes";
 
 const Card = ({ children, disabled, onPress, image, style, contentStyle }) => {
 	const styles = useThemedStyle(createStyle);
@@ -37,9 +38,9 @@ const createStyle = (theme) => StyleSheet.create({
 	card: {
 		padding: 8,
 		elevation: 1,
-		marginHorizontal: theme.values.mainPaddingHorizontal,
+		marginHorizontal: Theme.values.mainPaddingHorizontal,
 		marginVertical: 4,
-		borderRadius: theme.values.borderRadius,
+		borderRadius: Theme.values.borderRadius,
 		backgroundColor: theme.colors.backgroundElement
 	},
 	container: {

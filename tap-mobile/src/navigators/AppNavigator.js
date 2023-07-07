@@ -10,43 +10,48 @@ import { useCallback } from 'react';
 import { BlurView } from 'expo-blur';
 import { StyleSheet } from 'react-native';
 import TryAH from '../screens/TryAH';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
-const HomeStack = createStackNavigator();
+
+const HomeNativeStack = createNativeStackNavigator();
+
 
 const HomeStackNavigator = ({ navigation }) => {
 	const font = useStore(s => s.app.font);
 	const getHeaderLeft = useCallback(() => <HeaderDrawerButton navigation={navigation} />, [navigation]);
 
 	return (
-		<HomeStack.Navigator
+		<HomeNativeStack.Navigator
 			screenOptions={{
 				headerTitleStyle: { fontFamily: font },
-				headerLeft: getHeaderLeft
 			}}>
-			<HomeStack.Screen
+			<HomeNativeStack.Screen
 				name={PROVIDERS_SCREEN}
 				component={ProvidersScreen}
-			/>
-			<HomeStack.Screen
 				options={{
-					// headerTransparent: true,
+					headerLeft: getHeaderLeft
+				}}
+			/>
+			<HomeNativeStack.Screen
+				options={{
+					headerTransparent: true,
 					// headerBackground: () => (
 					// 	<BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
 					// )
-					headerShown: false
+					//headerShown: false
 				}}
 				name={PROVIDER_SCREEN}
 				component={ProviderScreen}
 			/>
-			<HomeStack.Screen
+			<HomeNativeStack.Screen
 				name={"T2"}
 				component={TryAH}
 				options={{
 					headerTransparent: true
 				}}
 			/>
-		</HomeStack.Navigator >
+		</HomeNativeStack.Navigator >
 	)
 };
 
