@@ -22,8 +22,14 @@ public class Util {
 		return listOfMap;
 	}
 
+	public static Map<String, Object> convertToMap(Object[] r, String ...keys){
+		return generateMapForConversion(r, Arrays.asList(keys), new LinkedHashMap<>());
+	}
+
 	private static Map<String, Object> generateMapForConversion(Object[] r, List<Object> keys, Map<String, Object> map) {
 
+		if(r == null || r.length == 0)
+			return  map;
 
 		Object tmpK;
 		Map<String, Object> tmpV;

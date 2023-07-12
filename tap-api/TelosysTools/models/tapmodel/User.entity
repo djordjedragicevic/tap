@@ -18,4 +18,5 @@ User {
   employeeList : Employee[];
   address : Address { @LinkByFK(fk_user_address1) };
   userroleList : UserRole[];
+  userstateList : UserState[];
 }

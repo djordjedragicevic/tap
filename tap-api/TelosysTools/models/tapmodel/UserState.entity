@@ -1,0 +1,13 @@
+@DbTable(user_state)
+@DbCatalog(tap)
+UserState {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_user_state_user1, User.id) };
+  favoriteProviders : string { @DbName(favorite_providers) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
+  language : string { @DbName(language) @DbType("VARCHAR(8)") @Size(8) @MaxLen(8) };
+  theme : string { @DbName(theme) @DbType("VARCHAR(16)") @Size(16) @MaxLen(16) };
+  custom : string { @DbName(custom) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
+  // links
+  user : User { @LinkByFK(fk_user_state_user1) };
+}

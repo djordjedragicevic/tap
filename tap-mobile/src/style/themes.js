@@ -26,7 +26,7 @@ export const Theme = {
 			//background: 'hsla(33, 100%, 95%, 0.90)',
 
 			backgroundElement: DefaultTheme.colors.card,
-			textPrimary: 'hsl(0, 0%, 35%)',
+			textPrimary: 'hsl(0, 0%, 25%)',
 			textSecondary: 'hsl(0, 0%, 60%)',
 			textTertiary: 'hsl(0, 0%, 80%)',
 			textLight: '#f2f2f3',

@@ -21,6 +21,9 @@ import XCheckBox from "../components/basic/XCheckBox";
 import { useThemedStyle } from "../style/ThemeContext";
 import { ScrollView } from "react-native-gesture-handler";
 import { Theme } from "../style/themes";
+import HairSalon from "../components/svg/HairSalon";
+import FavoriteButton from "../components/FavoriteButton";
+import { storeDispatch, useStore } from "../store/store";
 
 
 const getDurationSum = (items) => {
@@ -153,7 +156,7 @@ const serviceItemSC = (theme) => StyleSheet.create({
 		padding: 10,
 		elevation: 0,
 		borderRadius: 5,
-		backgroundColor: 'white',
+		backgroundColor: theme.colors.backgroundElement,
 		flexDirection: 'row',
 		minHeight: 60
 	}
@@ -174,6 +177,30 @@ const ProviderScreen = ({ navigation, route }) => {
 	const groupedServices = useMemo(() => groupServices(provider?.services), [provider]);
 	const hasCats = groupedServices?.categoryList.length > 1;
 
+	const fProviders = useStore(st => st.user.favoriteProviders);
+	const userId = useStore(st => st.user.userData.id);
+
+	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
+	console.log(userId);
+
+	useEffect(() => {
+		const asyncWrap = async () => {
+			if (fProviders && userId) {
+				const rsp = await Http.post(`/user/${userId}/state`, { favoriteProviders: fProviders });
+				console.log("STATE", rsp);
+			}
+		}
+		asyncWrap()
+	}, [fProviders, userId]);
+
+	useEffect(() => {
+		const onFPress = () => {
+			storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId);
+		};
+		navigation.setOptions({
+			headerRight: ({ tintColor }) => <FavoriteButton color={tintColor} favorit={isFavorite} onPress={onFPress} />
+		});
+	}, [navigation, isFavorite, providerId]);
 
 
 	const onItemPress = useCallback((itemId) => {
@@ -225,8 +252,6 @@ const ProviderScreen = ({ navigation, route }) => {
 	return (
 
 		<SafeAreaView style={{ flex: 1 }}>
-
-
 			<Animated.View
 				style={{
 					//backgroundColor: 'cyan',
@@ -243,12 +268,24 @@ const ProviderScreen = ({ navigation, route }) => {
 					//justifyContent: 'center'
 				}}
 			>
-				{/* <Image
-					source={`${HOST}${provider.image[0]}`}
+				<View style={{ flex: 1 }}>
+					{
 
-					style={{ flex: 1 }}
-					contentFit="cover"
-				/>
+						provider.image.length ?
+							<Image
+								source={`${HOST}${provider.image[0]}`}
+								cachePolicy={'none'}
+								style={{ flex: 1 }}
+								contentFit="cover"
+							/>
+							:
+							<View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+								<HairSalon height={150} width={150} />
+							</View>
+					}
+
+				</View>
+
 				<XSection style={{ flex: 1, maxHeight: 120 }}>
 					<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 
@@ -263,9 +300,9 @@ const ProviderScreen = ({ navigation, route }) => {
 						</XChip>
 					</View>
 
-					<XText secondary style={{ fontSize: 18 }}>{provider.type}</XText>
+					<XText style={{ fontSize: 18 }}>{provider.type}</XText>
 					<XText secondary style={{ fontSize: 18 }}>{provider.address}</XText>
-				</XSection> */}
+				</XSection>
 			</Animated.View>
 
 
@@ -329,13 +366,6 @@ const ProviderScreen = ({ navigation, route }) => {
 
 	);
 };
-
-
-const staticStyles = StyleSheet.create({
-	cardServices: {
-
-	}
-})
 
 
 export default ProviderScreen;

@@ -42,7 +42,6 @@ storeInit(testStore());
 
 export default App = () => {
 	let [fontsLoaded] = useFonts({
-
 		Roboto_100Thin,
 		Roboto_100Thin_Italic,
 		Roboto_300Light,
@@ -66,9 +65,7 @@ export default App = () => {
 				const userData = await Http.post('/user/by-token', { token });
 				if (userData) {
 					storeDispatch('user.set_data', userData);
-					storeDispatch('user.set_is_logged', true);
 				}
-
 			}
 			setInited(true);
 		};

@@ -82,10 +82,14 @@ export class Http {
 	static async post(url, data) {
 		const resp = await Http.send(url, {
 			method: 'POST',
+			// headers: {
+			// 	'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+			// },
+			// body: Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&')
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+				'Content-Type': 'application/json'
 			},
-			body: Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&')
+			body: JSON.stringify(data)
 		});
 
 		return resp;

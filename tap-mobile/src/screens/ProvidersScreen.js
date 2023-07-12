@@ -8,6 +8,7 @@ import XSection from "../components/basic/XSection";
 import { Theme } from "../style/themes";
 import { Image } from 'expo-image';
 import { HOST } from "../common/config";
+import HairSalon from "../components/svg/HairSalon";
 
 const ProvidersScreen = ({ navigation }) => {
 
@@ -25,11 +26,21 @@ const ProvidersScreen = ({ navigation }) => {
 				}}
 			>
 				<View style={{ overflow: 'hidden', height: 200 }}>
-					<Image
-						source={`${HOST}${item.mainImg?.split(',')[0]}`}
-						contentFit='cover'
-						style={{ flex: 1 }}
-					/>
+					{
+						item.mainImg ?
+
+							<Image
+								source={`${HOST}${item.mainImg?.split(',')[0]}`}
+								contentFit='cover'
+								cachePolicy={'none'}
+								style={{ flex: 1 }}
+							/>
+							:
+							<View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+								<HairSalon height={100} width={150} />
+							</View>
+					}
+
 				</View>
 
 				<View style={{ flex: 1 }}>

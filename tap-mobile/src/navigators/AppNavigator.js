@@ -6,11 +6,17 @@ import ProviderScreen from '../screens/ProviderScreen';
 import Try from '../screens/Try';
 import { useStore } from '../store/store';
 import HeaderDrawerButton from '../components/HeaderDrawerButton';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { BlurView } from 'expo-blur';
 import { StyleSheet } from 'react-native';
 import TryAH from '../screens/TryAH';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Pressable } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Theme } from '../style/themes';
+import { emptyFn } from '../common/utils';
+import FavoriteButton from '../components/FavoriteButton';
+
 
 
 
@@ -40,6 +46,7 @@ const HomeStackNavigator = ({ navigation }) => {
 					// 	<BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
 					// )
 					//headerShown: false
+					headerRight: (props) => <FavoriteButton color={props.tintColor} />
 				}}
 				name={PROVIDER_SCREEN}
 				component={ProviderScreen}

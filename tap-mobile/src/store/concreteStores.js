@@ -1,28 +1,22 @@
 export const appStore = (initD = {}) => ({
 	name: 'app',
 	actions: {
-		'app.http_loading_on': (globalState) => {
+		'app.http_loading_on': (appStore) => {
 			return {
-				app: {
-					...globalState.app,
-					httpLoading: true
-				}
+				...appStore,
+				httpLoading: true
 			};
 		},
-		'app.http_loading_off': (globalState) => {
+		'app.http_loading_off': (appStore) => {
 			return {
-				app: {
-					...globalState.app,
-					httpLoading: false
-				}
+				...appStore,
+				httpLoading: false
 			}
 		},
-		'app.set_font': (globalState, font) => {
+		'app.set_font': (appStore, font) => {
 			return {
-				app: {
-					...globalState.app,
-					font
-				}
+				...appStore,
+				font
 			}
 		}
 	},
@@ -37,21 +31,33 @@ export const appStore = (initD = {}) => ({
 export const userStore = (initD = {}) => ({
 	name: 'user',
 	actions: {
-		'user.set_data': (globalState, userData) => {
+		'user.set_data': (userStore, userData) => {
 			return {
-				user: {
-					...globalState.user,
-					...userData
-				}
-			};
+				...userStore,
+				userData,
+				isLogged: true
+			}
 		},
-		'user.set_is_logged': (globalState, isLogged) => {
+		'user.set_is_logged': (userStore, isLogged) => {
+			return {
+				...userStore,
+				isLogged
+			}
+		},
+		'user.favorite_add': (userStore, providerId) => {
+			const newFav = userStore.favoriteProviders ? [...userStore.favoriteProviders, providerId] : [providerId];
+			return {
+				...userStore,
+				favoriteProviders: newFav
+			}
+		},
+		'user.favorite_remove': (userStore, providerId) => {
 			return {
 				user: {
-					...globalState.user,
-					isLogged
+					...userStore,
+					favoriteProviders: userStore.favoriteProviders.filter(pId => pId !== providerId)
 				}
-			};
+			}
 		}
 	},
 	initData: {
@@ -64,20 +70,16 @@ export const userStore = (initD = {}) => ({
 export const testStore = (initD = {}) => ({
 	name: 'test',
 	actions: {
-		'app.test_1': (globalState) => {
+		'app.test_1': (testStore) => {
 			return {
-				test: {
-					...globalState.test,
-					test1: globalState.test.test1 + 1
-				}
+				...testStore,
+				test1: testStore.test1 + 1
 			};
 		},
-		'app.test_2': (globalState) => {
+		'app.test_2': (testStore) => {
 			return {
-				test: {
-					...globalState.test,
-					test2: globalState.test.test2 + 1
-				}
+				...testStore,
+				test2: testStore.test2 + 1
 			};
 		}
 	},

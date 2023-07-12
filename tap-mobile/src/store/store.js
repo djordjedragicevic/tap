@@ -11,11 +11,13 @@ export const storeDispatch = function (actionId, payload) {
 		return false
 	}
 
-	const newState = actions[actionId](globalState, payload);
+	const storeName = actionId.split('.')[0];
+	const newState = actions[actionId](globalState[storeName], payload);
+
 	globalState = {
 		...globalState,
-		...newState
-	};
+		[storeName]: { ...newState }
+	}
 
 	listeners.forEach((lisOb) => {
 		const newV = lisOb.selector(globalState);
