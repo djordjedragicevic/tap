@@ -1,5 +1,8 @@
 package com.tap.common;
 
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+
 import java.util.*;
 
 public class Util {
@@ -57,5 +60,15 @@ public class Util {
 		}
 
 		return map;
+	}
+
+	public static boolean isMail (String mail){
+		try {
+			InternetAddress email = new InternetAddress(mail);
+			email.validate();
+			return true;
+		} catch (AddressException ignored) {
+			return false;
+		}
 	}
 }

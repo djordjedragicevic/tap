@@ -1,15 +1,19 @@
 package com.tap.user;
 
+import com.tap.common.Util;
 import com.tap.db.entity.User;
 import com.tap.db.entity.UserState;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.JsonObject;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RequestScoped
 public class UserDAO {
@@ -32,6 +36,29 @@ public class UserDAO {
 		return resp;
 
 	}
+
+	public Optional<User> getUserByCredentials(String username, String password) {
+
+		boolean byMail = Util.isMail(username);
+
+		String query = "SELECT u FROM User u WHERE u.active = 1 AND u.password = :pass "
+					   + (byMail ? "AND u.email = :username" : "AND u.username = :username");
+
+		try {
+
+			User u = em.createQuery(query, User.class)
+					.setParameter("pass", password)
+					.setParameter("username", username)
+					.getSingleResult();
+
+			return Optional.of(u);
+
+		} catch (Exception e) {
+			return Optional.empty();
+		}
+
+	}
+
 
 	@Transactional
 	public void updateState(int userId, JsonObject state) {
