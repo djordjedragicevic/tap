@@ -1,0 +1,10 @@
+@DbTable(token_status)
+@DbCatalog(tap)
+TokenStatus {
+  // attributes
+  id : short { @Id @AutoIncremented @DbName(id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(32)") @NotNull @NotEmpty @Size(32) @MaxLen(32) };
+  description : string { @DbName(description) @DbType("VARCHAR(256)") @Size(256) @MaxLen(256) };
+  // links
+  tokenList : Token[];
+}

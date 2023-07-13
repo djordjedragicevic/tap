@@ -5,8 +5,6 @@ import com.tap.db.entity.User;
 import com.tap.db.entity.UserState;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.JsonObject;
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;

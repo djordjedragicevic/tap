@@ -14,6 +14,8 @@ import java.util.Optional;
 public class AuthRest {
 	@Inject
 	UserDAO userDAO;
+	@Inject
+	AuthDao authDao;
 
 	@Path("login")
 	@POST
@@ -23,7 +25,7 @@ public class AuthRest {
 		try {
 			User u = authenticate(username, password);
 
-			String token = generateToken(u.getId());
+			String token = generateToken(u);
 
 			return Response.ok(token).build();
 
@@ -40,8 +42,9 @@ public class AuthRest {
 		return u.get();
 	}
 
-	private String generateToken(int userId) {
-		return "ToKEn!_" + userId;
+	private String generateToken(User u) {
+		String token =  "ToKEn!_" + u.getId();
+		authDao.saveToken(u, token);
+		return token;
 	}
-
 }

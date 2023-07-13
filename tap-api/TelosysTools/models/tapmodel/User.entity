@@ -17,6 +17,7 @@ User {
   appointmentList : Appointment[];
   appointmentList2 : Appointment[];
   employeeList : Employee[];
+  tokenList : Token[];
   address : Address { @LinkByFK(fk_user_address1) };
   userstate : UserState { @LinkByFK(fk_user_user_state1) };
   userroleList : UserRole[];
