@@ -26,6 +26,8 @@ export const storeDispatch = function (actionId, payload) {
 			lisOb.setData(newV);
 		}
 	});
+
+	return newState;
 };
 
 export const storeInit = function ({ name, actions: storeActions, initData }) {

@@ -122,6 +122,10 @@ $jpa.linkAnnotations(4, $link)
 	public ${link.formattedFieldType(1)} ${link.getter}() {
 		return this.${link.formattedFieldName(1)};
 	}
+	
+	public void ${link.setter}($link.fieldType $link.fieldName) {
+		this.$link.fieldName = $link.fieldName;
+	}
 #end
 #end
 ##	//--- toString specific method

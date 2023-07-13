@@ -63,6 +63,7 @@ export default App = () => {
 			const token = await Http.getToken() || 'apc';
 			if (token) {
 				const userData = await Http.post('/user/by-token', { token });
+				console.log("USER STATE", userData);
 				if (userData) {
 					storeDispatch('user.set_data', userData);
 				}

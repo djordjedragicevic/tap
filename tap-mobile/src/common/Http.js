@@ -34,8 +34,8 @@ export class Http {
 				const data = response.status === 204 ? null : await response.json();
 				return data;
 			}
-			catch (_) {
-				throw new Error('Response format error!');
+			catch (err) {
+				throw new Error('Response format error!', err);
 			}
 
 		} catch (err) {

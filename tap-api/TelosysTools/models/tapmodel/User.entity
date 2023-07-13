@@ -11,12 +11,13 @@ User {
   addressId : int { @DbName(address_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_user_address1, Address.id) };
   createDate : timestamp { @DbName(create_date) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
   lastLogin : timestamp { @DbName(last_login) @DbType(DATETIME) };
+  userStateId : int { @DbName(user_state_id) @DbType(INT UNSIGNED) @FK(fk_user_user_state1, UserState.id) };
   active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
   // links
   appointmentList : Appointment[];
   appointmentList2 : Appointment[];
   employeeList : Employee[];
   address : Address { @LinkByFK(fk_user_address1) };
+  userstate : UserState { @LinkByFK(fk_user_user_state1) };
   userroleList : UserRole[];
-  userstateList : UserState[];
 }

@@ -32,11 +32,20 @@ export const userStore = (initD = {}) => ({
 	name: 'user',
 	actions: {
 		'user.set_data': (userStore, userData) => {
-			return {
+
+			const newData = {
 				...userStore,
-				userData,
+				...userData,
 				isLogged: true
-			}
+			};
+
+			if (!newData.state)
+				newData.state = {};
+
+			if (newData.state.favoriteProviders)
+				newData.state.favoriteProviders = JSON.parse(newData.state.favoriteProviders);
+
+			return newData;
 		},
 		'user.set_is_logged': (userStore, isLogged) => {
 			return {
@@ -45,23 +54,28 @@ export const userStore = (initD = {}) => ({
 			}
 		},
 		'user.favorite_add': (userStore, providerId) => {
-			const newFav = userStore.favoriteProviders ? [...userStore.favoriteProviders, providerId] : [providerId];
+			const newFav = userStore.state.favoriteProviders ? [...userStore.state.favoriteProviders, providerId] : [providerId];
 			return {
 				...userStore,
-				favoriteProviders: newFav
+				state: {
+					...userStore.state,
+					favoriteProviders: newFav
+				}
 			}
 		},
 		'user.favorite_remove': (userStore, providerId) => {
 			return {
-				user: {
-					...userStore,
-					favoriteProviders: userStore.favoriteProviders.filter(pId => pId !== providerId)
+				...userStore,
+				state: {
+					...userStore.state,
+					favoriteProviders: userStore.state.favoriteProviders.filter(pId => pId !== providerId)
 				}
 			}
 		}
 	},
 	initData: {
 		isLogged: false,
+		state: {},
 		...initD
 	}
 

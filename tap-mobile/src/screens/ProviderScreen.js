@@ -177,30 +177,22 @@ const ProviderScreen = ({ navigation, route }) => {
 	const groupedServices = useMemo(() => groupServices(provider?.services), [provider]);
 	const hasCats = groupedServices?.categoryList.length > 1;
 
-	const fProviders = useStore(st => st.user.favoriteProviders);
-	const userId = useStore(st => st.user.userData.id);
+	const fProviders = useStore(st => st.user.state.favoriteProviders);
+	const userId = useStore(st => st.user.id);
 
 	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
-	console.log(userId);
+
+
+	const onFPress = () => {
+		const { state: { favoriteProviders } } = storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId);
+		Http.post(`/user/${userId}/state`, { favoriteProviders });
+	};
 
 	useEffect(() => {
-		const asyncWrap = async () => {
-			if (fProviders && userId) {
-				const rsp = await Http.post(`/user/${userId}/state`, { favoriteProviders: fProviders });
-				console.log("STATE", rsp);
-			}
-		}
-		asyncWrap()
-	}, [fProviders, userId]);
-
-	useEffect(() => {
-		const onFPress = () => {
-			storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId);
-		};
 		navigation.setOptions({
 			headerRight: ({ tintColor }) => <FavoriteButton color={tintColor} favorit={isFavorite} onPress={onFPress} />
 		});
-	}, [navigation, isFavorite, providerId]);
+	}, [onFPress]);
 
 
 	const onItemPress = useCallback((itemId) => {
