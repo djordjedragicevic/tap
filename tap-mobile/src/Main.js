@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
-import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { THEME } from './style/themes';
 import { useTheme } from './style/ThemeContext';
-import { ActivityIndicator, StatusBar, View } from 'react-native';
+import { StatusBar } from 'react-native';
 import AppNavigator from './navigators/AppNavigator';
-import { useStore } from './store/store';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Main = () => {
 
 	const { theme } = useTheme();
+	const navRef = useNavigationContainerRef();
 	const navTheme = useMemo(() => {
 		const navigationTheme = theme.id === THEME.DARK ? DarkTheme : DefaultTheme;
 		return {
@@ -31,7 +31,20 @@ const Main = () => {
 				backgroundColor={theme.colors.backgroundElement}
 			/>
 			<SafeAreaProvider>
-				<NavigationContainer theme={navTheme}>
+				<NavigationContainer
+					theme={navTheme}
+					ref={navRef}
+					onStateChange={state => {
+						const route = navRef.getCurrentRoute();
+						// if (route.name === MAIN_TAB_USER) {
+						// 	navRef.dispatch({
+						// 		...StackActions.replace(LAOGIN_SCREEN),
+						// 		source: route.key,
+						// 		target: navRef.getState().key
+						// 	})
+						// }
+					}}
+				>
 					<AppNavigator />
 				</NavigationContainer>
 			</SafeAreaProvider>

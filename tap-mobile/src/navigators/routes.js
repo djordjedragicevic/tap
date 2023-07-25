@@ -23,7 +23,9 @@ export const MAIN_TAB_FIND = 'MAIN_TAB_FIND';
 export const MAIN_TAB_FAVORITES = 'MAIN_TAB_FAVORITES';
 export const MAIN_TAB_USER = 'MAIN_TAB_USER';
 
-export const MAIN_STACK_TAB_NAVIGATOR = 'MAIN_STACK_TAB_NAVIGATOR';
+export const MAIN_STACK = 'MAIN_STACK';
+
+export const LOGIN_SCREEN = 'LOGIN_SCREEN';
 
 
 
@@ -31,6 +33,4 @@ export const MAIN_STACK_TAB_NAVIGATOR = 'MAIN_STACK_TAB_NAVIGATOR';
 // export const MAIN_TAB_PROFILE = 'MAIN_TAB_PROFILE';
 
 export const DRAWER_HOME = 'DrowerHome';
-export const MAIN_STACK_DRAWER = 'MainStackDrawer';
-export const HOME_STACK = 'HomeStack';
 

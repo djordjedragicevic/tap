@@ -1,3 +1,5 @@
+import { useStore } from "./store";
+
 export const appStore = (initD = {}) => ({
 	name: 'app',
 	actions: {
@@ -80,6 +82,11 @@ export const userStore = (initD = {}) => ({
 	}
 
 });
+
+export const useIsUserLogged = function (params) {
+	const isLogged = useStore(gS => gS.user.isLogged);
+	return isLogged;
+};
 
 export const testStore = (initD = {}) => ({
 	name: 'test',
