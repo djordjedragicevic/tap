@@ -43,15 +43,18 @@ public class AuthFilter implements ContainerRequestFilter {
 				//Authenticate
 				Token t = new Token(authorizationHeader);
 
-				System.out.println(t.isValid() + " " + isValidOnDb(t));
 				if (!t.isValid() || !isValidOnDb(t)) {
 					requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
 					return;
 				}
 
 				//Authorize
-				if (!authorize(t.getAud(), secAnno))
+				if (!authorize(t.getAud(), secAnno)){
 					requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
+					return;
+				}
+
+				requestContext.setSecurityContext(new TAPSecurityContext(t.getSub()));
 
 			} catch (Exception e) {
 				requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());

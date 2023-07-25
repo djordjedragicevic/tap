@@ -3,7 +3,6 @@ package com.tap.auth;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 
@@ -91,19 +90,26 @@ public class Token {
 	public String generate() {
 		return eHeader + "." + ePayload + "." + eSignature;
 	}
+
 	public String getJti() {
 		return this.payload.getString("jti");
 	}
+
 	public List<String> getAud() {
 		List<String> reps = new ArrayList<>();
-		JsonArray aud =  this.payload.getJsonArray("aud");
-		for(int i = 0, s = aud.size(); i < s; i++)
+		JsonArray aud = this.payload.getJsonArray("aud");
+		for (int i = 0, s = aud.size(); i < s; i++)
 			reps.add(aud.getString(i));
 
 		return reps;
 	}
+
 	public long getRid() {
 		return this.payload.getJsonNumber("rid").longValue();
+	}
+
+	public int getSub() {
+		return this.payload.getJsonNumber("sub").intValue();
 	}
 
 

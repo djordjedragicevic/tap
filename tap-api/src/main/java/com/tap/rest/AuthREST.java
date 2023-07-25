@@ -70,18 +70,4 @@ public class AuthREST {
 		}
 
 	}
-
-
-	private Map<String, Object> authenticate(String username, String password) throws Exception {
-		Optional<User> u = userDAO.getUserByCredentials(username, password);
-		if (u.isEmpty())
-			throw new Exception("Cant find user");
-
-		List<Role> roles = userDAO.getRoles(u.get().getId());
-
-		return Map.of(
-				"userId", u.get().getId(),
-				"roles", roles.stream().map(Role::getName).toList()
-		);
-	}
 }

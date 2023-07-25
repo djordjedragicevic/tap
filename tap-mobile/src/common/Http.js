@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { API_URL, HTTP_TIMEOUT } from './config';
 import { S_KEY, SecureStorage } from '../store/deviceStorage';
-import { storeDispatch } from '../store/store';
+import { storeDispatch, storeGetValue } from '../store/store';
 
 let _token = null;
 export class Http {
 
 	static LOADING = 'loadint'
 
-	static async send(url, config) {
+	static async send(url, config, silent) {
 
 		storeDispatch('app.http_loading_on')
 		const d = new Date().getTime();
@@ -24,14 +24,30 @@ export class Http {
 			//const fId = setTimeout(() => controller.abort(), HTTP_TIMEOUT);
 			const response = await fetch(API_URL.concat(url), config);
 			//clearTimeout(fId);
+			console.log(response.ok, response.status)
 
 			if (!response.ok)
-				throw new Error('Response unsuccessful!');
 
-			console.log('HTTP SUCCESS: ' + '(' + (new Date().getTime() - d) / 1000 + 's)');
+				console.log('HTTP SUCCESS: ' + '(' + (new Date().getTime() - d) / 1000 + 's)');
+
+			const isLogged = storeGetValue((gS) => gS.user.isLogged);
+			console.log("USER LOGGED", isLogged);
+
+			//Handle Unautenticate error
+			if (response.status === 401) {
+				console.warn("UNAUTENTICATED user");
+			}
+			//Handle Unauthorize error
+			else if (response.status === 403) {
+				console.warn("FORBIDEN error");
+
+			}
+			else if (!response.ok) {
+				throw new Error('Response unsuccessful!');
+			}
 
 			try {
-				const data = response.status === 204 ? null : await response.json();
+				const data = response.status !== 200 ? null : await response.json();
 				return data;
 			}
 			catch (err) {
@@ -79,7 +95,7 @@ export class Http {
 	}
 
 
-	static async post(url, data) {
+	static async post(url, data, silent = false) {
 		const resp = await Http.send(url, {
 			method: 'POST',
 			// headers: {
@@ -90,7 +106,7 @@ export class Http {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(data)
-		});
+		}, silent);
 
 		return resp;
 	}

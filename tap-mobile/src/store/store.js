@@ -61,3 +61,7 @@ export function useStore(selector = () => globalState) {
 
 	return selectorValue;
 };
+
+export const storeGetValue = function (selector) {
+	return selector instanceof Function ? selector(globalState) : selector;
+};

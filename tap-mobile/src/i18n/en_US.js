@@ -17,8 +17,7 @@ const en_US = {
 	"December": "December",
 
 	"Search": "Search",
-	"Home": "Home",
-
+	
 	"City": "City",
 	"Service": "Service",
 	"Location": "Location",
@@ -33,11 +32,16 @@ const en_US = {
 	"OK": "OK",
 	"Cancel": "Cancel",
 	"Find appointment": "Find appointment",
-
+	
+	"----------------------------": "-------------------",
 
 	"minutes": "minutes",
-	"appointments": "appointments"
-
+	"appointments": "appointments",
+	"Home": "Home",
+	"Find": "Find",
+	"Saved": "Saved",
+	"Profile": "Profile",
+	"Sign in": "Sign in"
 };
 
 export default en_US;

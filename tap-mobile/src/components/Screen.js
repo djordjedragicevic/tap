@@ -12,7 +12,9 @@ const Screen = ({
 }) => {
 
 	const dynStyle = useMemo(() => {
-		const dS = {};
+		const dS = {
+			flex: 1
+		};
 		if (center) {
 			dS.alignItems = 'center';
 			dS.justifyContent = 'center';
@@ -25,7 +27,7 @@ const Screen = ({
 	}, [center, flat, marginTop]);
 
 	return (
-		<SafeAreaView style={style.safeArea}>
+		<SafeAreaView style={styles.safeArea}>
 			<View style={[style, dynStyle]}>
 				{children}
 			</View>
