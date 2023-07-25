@@ -3,9 +3,17 @@ package com.tap.common;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.*;
 
 public class Util {
+
+	private static final Random random = new SecureRandom();
 
 	private Util() {
 
@@ -25,14 +33,14 @@ public class Util {
 		return listOfMap;
 	}
 
-	public static Map<String, Object> convertToMap(Object[] r, String ...keys){
+	public static Map<String, Object> convertToMap(Object[] r, String... keys) {
 		return generateMapForConversion(r, Arrays.asList(keys), new LinkedHashMap<>());
 	}
 
 	private static Map<String, Object> generateMapForConversion(Object[] r, List<Object> keys, Map<String, Object> map) {
 
-		if(r == null || r.length == 0)
-			return  map;
+		if (r == null || r.length == 0)
+			return map;
 
 		Object tmpK;
 		Map<String, Object> tmpV;
@@ -62,7 +70,7 @@ public class Util {
 		return map;
 	}
 
-	public static boolean isMail (String mail){
+	public static boolean isMail(String mail) {
 		try {
 			InternetAddress email = new InternetAddress(mail);
 			email.validate();
@@ -71,4 +79,36 @@ public class Util {
 			return false;
 		}
 	}
+
+	public static String base64encode(byte[] data) {
+		return Base64.getUrlEncoder().withoutPadding().encodeToString(data);
+	}
+	public static String base64encode(String data) {
+		return Base64.getUrlEncoder().withoutPadding().encodeToString(data.getBytes(StandardCharsets.UTF_8));
+	}
+
+	public static byte[] base64decode(String data) {
+		return Base64.getUrlDecoder().decode(data);
+	}
+
+	public static String getRandomString(byte from, byte to, int length) {
+		byte[] bytes = new byte[length];
+		for (int i = 0; i < length; i++) {
+			int b = random.nextInt(from, to + 1);
+			bytes[i] = (byte) b;
+		}
+
+		return new String(bytes, StandardCharsets.UTF_8);
+	}
+
+	public static byte[] sign(String data, String secret) throws NoSuchAlgorithmException, InvalidKeyException {
+		Mac sha256Hmac = Mac.getInstance("HmacSHA256");
+		SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+		sha256Hmac.init(secretKey);
+
+		byte[] signed = sha256Hmac.doFinal(data.getBytes(StandardCharsets.UTF_8));
+
+		return signed;
+	}
+
 }

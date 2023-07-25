@@ -1,6 +1,7 @@
-package com.tap.user;
+package com.tap.db.dao;
 
 import com.tap.common.Util;
+import com.tap.db.entity.Role;
 import com.tap.db.entity.User;
 import com.tap.db.entity.UserState;
 import jakarta.enterprise.context.RequestScoped;
@@ -10,6 +11,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -55,6 +57,13 @@ public class UserDAO {
 			return Optional.empty();
 		}
 
+	}
+
+	public List<Role> getRoles(int userId){
+
+		return em.createQuery("SELECT r FROM Role r INNER JOIN UserRole uR ON r = uR.role WHERE uR.user.id = :uId", Role.class)
+				.setParameter("uId", userId)
+				.getResultList();
 	}
 
 

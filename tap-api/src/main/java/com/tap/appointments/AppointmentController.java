@@ -1,18 +1,8 @@
 package com.tap.appointments;
 
-import com.tap.company.CompanyDAO;
-import com.tap.db.dto.CompanyWorkDayDTO;
-import com.tap.db.dto.EmployeeWorkDayDTO;
+import com.tap.db.dao.CompanyDAO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 @RequestScoped
 public class AppointmentController {

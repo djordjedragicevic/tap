@@ -1,5 +1,8 @@
-package com.tap.user;
+package com.tap.rest;
 
+import com.tap.auth.Role;
+import com.tap.auth.Secured;
+import com.tap.db.dao.UserDAO;
 import jakarta.inject.Inject;
 import jakarta.json.*;
 import jakarta.ws.rs.*;
@@ -22,6 +25,7 @@ public class UserREST {
 	@Path("{id}/state")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
 	public void changeUserState(@PathParam("id") int userId, JsonObject userState){
 		userDAO.updateState(userId, userState);
 	}

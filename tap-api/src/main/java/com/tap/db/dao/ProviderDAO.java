@@ -1,4 +1,4 @@
-package com.tap.provider;
+package com.tap.db.dao;
 
 import com.tap.common.Util;
 import com.tap.db.entity.Asset;

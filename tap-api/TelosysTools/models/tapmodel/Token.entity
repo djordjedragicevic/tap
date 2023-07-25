@@ -2,8 +2,8 @@
 @DbCatalog(tap)
 Token {
   // attributes
-  id : long { @Id @DbName(id) @DbType(BIGINT) @NotNull @NotEmpty };
-  token : string { @DbName(token) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
+  id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
+  jti : string { @DbName(jti) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
   userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_token_user1, User.id) };
   tokenStatusId : short { @DbName(token_status_id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty @FK(fk_token_token_status1, TokenStatus.id) };
   // links

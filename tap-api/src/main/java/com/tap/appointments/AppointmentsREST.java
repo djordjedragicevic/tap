@@ -1,6 +1,6 @@
 package com.tap.appointments;
 
-import com.tap.company.CompanyDAO;
+import com.tap.db.dao.CompanyDAO;
 import com.tap.db.dto.*;
 import com.tap.db.entity.WEmployeeWD;
 import jakarta.enterprise.context.RequestScoped;

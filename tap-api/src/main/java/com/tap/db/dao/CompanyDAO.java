@@ -1,4 +1,4 @@
-package com.tap.company;
+package com.tap.db.dao;
 
 import com.tap.db.dto.*;
 import jakarta.enterprise.context.RequestScoped;
