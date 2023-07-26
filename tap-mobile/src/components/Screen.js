@@ -8,7 +8,8 @@ const Screen = ({
 	style = {},
 	center = false,
 	flat = false,
-	marginTop = Theme.values.mainPaddingHorizontal
+	marginTop = Theme.values.mainPaddingHorizontal,
+	loading = false
 }) => {
 
 	const dynStyle = useMemo(() => {
@@ -31,7 +32,7 @@ const Screen = ({
 			<View style={[style, dynStyle]}>
 				{children}
 			</View>
-			{/* <View style={{ backgroundColor: 'red', position: 'absolute', height: 3, width: '100%' }}></View> */}
+			{loading && <View style={{ backgroundColor: 'red', position: 'absolute', height: 3, width: '100%' }}></View>}
 		</SafeAreaView>
 	);
 };

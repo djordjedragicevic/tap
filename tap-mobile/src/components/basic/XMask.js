@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
+import { memo } from "react";
 
 const XMask = ({ enabled, opacity }) => {
 	const styles = useThemedStyle(createStyle, opacity);
@@ -24,4 +25,4 @@ const createStyle = (theme, opacity) => StyleSheet.create({
 	}
 });
 
-export default XMask;
+export default memo(XMask);

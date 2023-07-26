@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native';
 import * as SS from 'expo-secure-store';
 
-const KEY_PRE = '@TAP:';
+const KEY_PRE = 'TAP_';
 
 export const S_KEY = {
 	TOKEN: 'token'
@@ -12,6 +12,7 @@ export const KEY = {
 
 export class Storage {
 	static async get(key) {
+		key = KEY_PRE + key;
 		try {
 			const v = await AsyncStorage.getTime(key);
 			return JSON.parse(v);
@@ -21,9 +22,10 @@ export class Storage {
 		}
 	}
 	static async set(key, value) {
+		key = KEY_PRE + key;
 		try {
 			const v = JSON.stringify(value);
-			await AsyncStorage.set(KEY_PRE + key, v);
+			await AsyncStorage.set(key, v);
 
 		} catch (err) {
 			console.log("STORAGE ERROR SET: ", key, err);
@@ -33,6 +35,7 @@ export class Storage {
 
 export class SecureStorage {
 	static async get(key, defValue = null) {
+		key = KEY_PRE + key;
 		try {
 			const v = await SS.getItemAsync(key);
 			return v == null ? defValue : JSON.parse(v);
@@ -43,9 +46,10 @@ export class SecureStorage {
 		}
 	}
 	static async set(key, value) {
+		key = KEY_PRE + key;
 		try {
 			const v = JSON.stringify(value);
-			await SS.setItemAsync(KEY_PRE + key, v);
+			await SS.setItemAsync(key, v);
 
 		} catch (err) {
 			console.log("SECURE STORAGE ERROR SET: ", key, err);

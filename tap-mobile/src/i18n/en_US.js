@@ -29,19 +29,19 @@ const en_US = {
 	"To": "To",
 	"Calendar": "Calendar",
 	"Book appointment": "Book appointment",
-	"OK": "OK",
-	"Cancel": "Cancel",
 	"Find appointment": "Find appointment",
 	
 	"----------------------------": "-------------------",
-
+	
 	"minutes": "minutes",
 	"appointments": "appointments",
 	"Home": "Home",
 	"Find": "Find",
 	"Saved": "Saved",
 	"Profile": "Profile",
-	"Sign in": "Sign in"
+	"Sign in": "Sign in",
+	"OK": "OK",
+	"Cancel": "Cancel"
 };
 
 export default en_US;

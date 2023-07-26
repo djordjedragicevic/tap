@@ -1,71 +1,26 @@
 import React from "react";
-import { Pressable, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import { emptyFn } from "../../common/utils";
+import { StyleSheet, TextInput } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
-import XMask from "./XMask";
-import { Theme } from "../../style/themes";
+import { useStore } from "../../store/store";
+import XFieldContainer from "./XFieldContainer";
 
-const XTextInput = React.forwardRef(({
-	iconRight = false,
-	iconLeft = false,
-	style = {},
-	disabled = false,
-	pressable = false,
-	onPress = emptyFn,
-	...rest
-}, ref) => {
+const XTextInput = React.forwardRef((props, ref) => {
 
-	const styles = useThemedStyle(createStyle);
-	const RootCmp = pressable ? TouchableOpacity : Pressable;
+	const appFont = useStore(state => state.app.font);
+	const styles = useThemedStyle(createStyle, appFont);
 
 	return (
-		<RootCmp style={[styles.container, style]} onPress={onPress}>
-			{
-				!!iconLeft &&
-				<View style={styles.iconLeft}>
-					{iconLeft({ size: 22, color: styles.iconColor })}
-				</View>
-			}
-			<TextInput
-				ref={ref}
-				editable={rest.editable !== false || !disabled}
-				{...rest}
-				style={styles.field}
-			/>
-			{
-				!!iconRight &&
-				<View style={styles.iconRight}>
-					{iconRight({ size: 22, color: styles.iconColor })}
-				</View>
-			}
-			{disabled && <XMask />}
-		</RootCmp>
+		<XFieldContainer {...props}>
+			<TextInput ref={ref} {...props} style={styles.field} editable={!!props.editable || !props.disabled} />
+		</XFieldContainer>
 	);
 });
 
-const createStyle = (theme) => StyleSheet.create({
-	container: {
-		borderRadius: Theme.values.borderRadius,
-		flexDirection: 'row',
-		alignItems: 'center',
-		backgroundColor: 'white',
-		paddingHorizontal: 5,
-		height: 45
-	},
-	iconRight: {
-		paddingEnd: 3,
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	iconLeft: {
-		paddingHorizontal: 7,
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
+const createStyle = (_, font) => StyleSheet.create({
 	field: {
-		flex: 1
-	},
-	iconColor: theme.colors.primary
+		fontFamily: font,
+		fontSize: 15
+	}
 });
 
 export default XTextInput;

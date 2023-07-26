@@ -67,7 +67,6 @@ const MainBottomTabNavigator = ({ navigation }) => {
 
 
 	const onTabPress = useCallback((e) => {
-		console.log(e);
 		if (!logged && (e.target.startsWith(MAIN_TAB_FAVORITES))) {
 			e.preventDefault();
 			navigation.navigate(LOGIN_SCREEN);
@@ -142,9 +141,10 @@ const AppNavigator = () => {
 				}}
 			/>
 			<NativeStack.Group
-				screenOptions={{ presentation: 'fullScreenModal' }}
+				screenOptions={{ presentation: 'containedModal' }}
 			>
 				<NativeStack.Screen
+					options={{ headerShown: true }}
 					name={LOGIN_SCREEN}
 					component={LoginScreen}
 				/>

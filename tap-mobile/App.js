@@ -56,19 +56,19 @@ export default App = () => {
 		Roboto_900Black_Italic
 	});
 
-	const [inited, setInited] = useState(false);
+	const [inited, setInited] = useState(true);
 
 	useEffect(() => {
 		const asyncWrap = async () => {
 
 
-			const userData = await Http.get('/user/by-token');
-			console.log("USER STATE", userData);
+			const userData = await Http.get('/user/by-token', null, false, true);
+			console.log("USER DATA", userData);
 			if (userData) {
 				storeDispatch('user.set_data', userData);
 			}
 
-			setInited(true);
+			//setInited(true);
 		};
 
 		asyncWrap();

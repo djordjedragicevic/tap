@@ -30,7 +30,3 @@ export function useAsyncData(fn, initData, onThen, onErr) {
 export function useAsyncGetData(getParams, initData, onThen, onErr) {
 	return useAsyncData(() => Http.get(...getParams), initData, onThen, onErr);
 };
-
-export function usetGetRequest(url, params = {}) {
-	
-};

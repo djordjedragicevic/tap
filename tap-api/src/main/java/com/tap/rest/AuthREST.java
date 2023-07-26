@@ -64,7 +64,8 @@ public class AuthREST {
 		try {
 			Token newToken = new Token(userId, roles, tokenRec.getId());
 			authDao.setTokenJTI(tokenRec.getId(), newToken.getJti());
-			return Response.ok(newToken.generate()).build();
+
+			return Response.ok(Map.of("token", newToken.generate())).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}

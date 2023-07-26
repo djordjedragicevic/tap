@@ -5,7 +5,9 @@ const sr_SP = {
 	"Find": "Pronađi",
 	"Saved": "Sačuvano",
 	"Profile": "Profil",
-	"Sign in": "Uloguj se"
+	"Sign in": "Uloguj se",
+	"OK": "Uredu",
+	"Cancel": "Otkaži"
 };
 
 export default sr_SP;

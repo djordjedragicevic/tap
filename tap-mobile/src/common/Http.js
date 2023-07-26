@@ -2,68 +2,82 @@ import { useEffect, useState } from 'react';
 import { API_URL, HTTP_TIMEOUT } from './config';
 import { S_KEY, SecureStorage } from '../store/deviceStorage';
 import { storeDispatch, storeGetValue } from '../store/store';
+import { ERR } from './err';
 
 let _token = null;
+
+const handleHttpError = {
+
+}
 export class Http {
 
 	static LOADING = 'loadint'
 
 	static async send(url, config, silent) {
 
+
+
 		storeDispatch('app.http_loading_on')
 		const d = new Date().getTime();
-		try {
-			console.log('HTTP START: ' + config.method, ': ', API_URL.concat(url));
 
-			config.headers['Authorization'] = await Http.getToken();
+		let errName;
+		let data;
 
-			// const controller = new AbortController();
-			// const signal = controller.signal;
-			// config.signal = signal;
+		console.log('HTTP START: ' + config.method, ': ', API_URL.concat(url));
 
-			//const fId = setTimeout(() => controller.abort(), HTTP_TIMEOUT);
-			const response = await fetch(API_URL.concat(url), config);
-			//clearTimeout(fId);
-			console.log(response.ok, response.status)
+		config.headers['Authorization'] = 'Bearer ' + await Http.getToken();
 
-			if (!response.ok)
+		const controller = new AbortController();
+		const signal = controller.signal;
+		config.signal = signal;
 
-				console.log('HTTP SUCCESS: ' + '(' + (new Date().getTime() - d) / 1000 + 's)');
+		const fId = setTimeout(() => controller.abort(), HTTP_TIMEOUT);
+		const response = await fetch(API_URL.concat(url), config);
+		clearTimeout(fId);
 
-			const isLogged = storeGetValue((gS) => gS.user.isLogged);
-			console.log("USER LOGGED", isLogged);
-
-			//Handle Unautenticate error
+		console.log(response.status, response.ok)
+		if (!response.ok) {
 			if (response.status === 401) {
-				console.warn("UNAUTENTICATED user");
+				errName = ERR.UNAUTHENTICATE;
 			}
-			//Handle Unauthorize error
 			else if (response.status === 403) {
-				console.warn("FORBIDEN error");
-
+				errName = ERR.FORBIDEN;
 			}
-			else if (!response.ok) {
-				throw new Error('Response unsuccessful!');
+			else {
+				errName = ERR.UNEXPECTED;
 			}
-
+		}
+		else {
 			try {
-				const data = response.status !== 200 ? null : await response.json();
-				return data;
+				data = response.status !== 200 ? null : await response.json();
 			}
 			catch (err) {
-				throw new Error('Response format error!', err);
+				console.log(err, response);
+				errName = ERR.INVALID_RESPONSE;
 			}
+		}
 
-		} catch (err) {
-			console.error('HTTP ERROR:', err);
-		}
-		finally {
+
+		if (errName && silent) {
 			storeDispatch('app.http_loading_off');
-			console.log('')
+			return null;
 		}
+
+		if (errName) {
+			storeDispatch('app.http_loading_off');
+			const e = new Error();
+			e.name = errName;
+			throw e;
+		}
+
+		console.log('HTTP SUCCESS: ' + '(' + (new Date().getTime() - d) / 1000 + 's)');
+
+		storeDispatch('app.http_loading_off');
+		return data;
+
 	}
 
-	static async get(url, qParams, validate = false) {
+	static async get(url, qParams, validate = false, silent = false) {
 
 		if (qParams && validate) {
 			const tmpQP = {};
@@ -80,7 +94,7 @@ export class Http {
 			headers: {
 				'Content-Type': 'application/json',
 			}
-		});
+		}, silent);
 
 		return resp;
 	}
@@ -94,18 +108,23 @@ export class Http {
 		return _token;
 	}
 
+	static async setToken(token) {
+		await SecureStorage.set(S_KEY.TOKEN, token);
+		_token = token;
+	}
+
 
 	static async post(url, data, silent = false) {
 		const resp = await Http.send(url, {
 			method: 'POST',
-			// headers: {
-			// 	'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-			// },
-			// body: Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&')
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			},
-			body: JSON.stringify(data)
+			body: Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&')
+			// headers: {
+			// 	'Content-Type': 'application/json'
+			// },
+			//body: JSON.stringify(data)
 		}, silent);
 
 		return resp;

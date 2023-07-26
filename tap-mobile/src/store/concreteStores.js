@@ -49,6 +49,13 @@ export const userStore = (initD = {}) => ({
 
 			return newData;
 		},
+		'user.log_out': (userStore) => {
+			return {
+				...userStore,
+				isLogged: false,
+				state: {}
+			}
+		},
 		'user.set_is_logged': (userStore, isLogged) => {
 			return {
 				...userStore,

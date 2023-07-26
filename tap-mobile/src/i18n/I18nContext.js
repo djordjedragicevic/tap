@@ -5,11 +5,30 @@ const I18nContext = React.createContext({
 	setLanguage: () => { }
 });
 
+export const i18n = {
+	lng: '',
+	lngs: '',
+	fallback: '',
+
+	translate: (text, lng = i18n.lng, lngs = i18n.lngs, fallback = i18n.fallback) => {
+		if (lng.strings.hasOwnProperty(text))
+			return lng.strings[text];
+		else if (fallback && lngs[fallback].strings.hasOwnProperty(text))
+			return lngs[fallback].strings[text]
+		else
+			return `= LOC MISS [${lng.code}][${text}] =`;
+	}
+};
+
 export const I18nContextProvider = ({ children, language, languages, fallbackLanguage }) => {
 
 	const [lngs] = useState(languages);
 	const [fallback] = useState(fallbackLanguage);
 	const [lng, setLanguage] = useState(lngs[language]);
+
+	i18n.lng = lng;
+	i18n.lngs = lngs;
+	i18n.fallback = fallback;
 
 	const context = useMemo(() => {
 		return {
@@ -30,14 +49,7 @@ export const I18nContextProvider = ({ children, language, languages, fallbackLan
 export const useTranslation = () => {
 	const { lng, lngs, fallback } = useContext(I18nContext);
 
-	const t = useCallback((text) => {
-		if (lng.strings.hasOwnProperty(text))
-			return lng.strings[text];
-		else if (fallback && lngs[fallback].strings.hasOwnProperty(text))
-			return lngs[fallback].strings[text]
-		else
-			return `= LOC MISS [${lng.code}][${text}] =`;
-	}, [lng]);
+	const t = useCallback((text) => i18n.translate(text, lng, lngs, fallback), [lng]);
 
 	return t;
 };
