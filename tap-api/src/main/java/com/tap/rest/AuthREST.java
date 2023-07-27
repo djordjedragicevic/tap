@@ -1,6 +1,7 @@
 package com.tap.rest;
 
 import com.tap.auth.Public;
+import com.tap.auth.Secured;
 import com.tap.auth.Token;
 import com.tap.db.dao.AuthDAO;
 import com.tap.db.dao.UtilDAO;
@@ -21,13 +22,12 @@ public class AuthREST {
 	UserDAO userDAO;
 	@Inject
 	AuthDAO authDao;
-
 	@Inject
 	UtilDAO utilDAO;
 
 
-	@Path("login")
 	@POST
+	@Path("login")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Public
@@ -69,6 +69,12 @@ public class AuthREST {
 		} catch (Exception e) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
+	}
 
+	@GET
+	@Path("check")
+	@Secured
+	public Response check(){
+		return Response.ok(true).build();
 	}
 }

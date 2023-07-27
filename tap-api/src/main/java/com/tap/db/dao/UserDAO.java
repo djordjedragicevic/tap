@@ -27,14 +27,16 @@ public class UserDAO {
 		User u = em.find(User.class, userId);
 		if (u != null && u.getActive() == 1) {
 			resp.put("id", u.getId());
+			resp.put("username", u.getUsername());
 			resp.put("firstName", u.getFirstName());
 			resp.put("lastName", u.getLastName());
 			resp.put("email", u.getEmail());
 			resp.put("state", u.getUserstate());
+
+			resp.put("roles", getRoles(userId).stream().map(Role::getName).toList());
 		}
 
 		return resp;
-
 	}
 
 	public Optional<User> getUserByCredentials(String username, String password) {

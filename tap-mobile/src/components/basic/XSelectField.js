@@ -1,37 +1,34 @@
 import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
-import { useThemedStyle } from "../../style/ThemeContext";
 import XFieldContainer from "./XFieldContainer";
 import XText from "./XText";
 
-const XSelectField = ({ value, placeholder, ...rest }) => {
-
-	const styles = useThemedStyle(createStyle);
+const XSelectField = ({ title, value, placeholder, pressable = true, ...rest }) => {
 
 	const T = useMemo(() => {
-		if (value != null)
-			return <XText style={styles.textValue}>{value}</XText>
+		if (title != null)
+			return <XText size={18}>{title}</XText>
 		else if (placeholder != null)
-			return <XText style={styles.textPlaceholder}>{placeholder}</XText>
+			return <XText size={18} tertiary>{placeholder}</XText>
 		else
 			return null;
-	}, [value, placeholder, styles]);
+	}, [title, placeholder]);
 
 	return (
-		<XFieldContainer {...rest} pressable>
-			{T}
+		<XFieldContainer pressable={pressable} {...rest}>
+			<View style={styles.textContainer}>
+				{T}
+				{!!value && <XText secondary size={18}>{value}</XText>}
+			</View>
 		</XFieldContainer>
 	);
 };
 
-const createStyle = (theme) => StyleSheet.create({
-	textValue: {
-		fontSize: 17,
-		color: theme.colors.textPrimary
-	},
-	textPlaceholder: {
-		fontSize: 17,
-		color: theme.colors.textTertiary
+const styles = StyleSheet.create({
+	textContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between'
 	}
 })
 

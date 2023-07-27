@@ -65,4 +65,39 @@ export const DateUtils = {
 		}
 		return resp;
 	}
+};
+
+export const findFirstUpperLetter = (text) => {
+	for (let i = 0, s = text.length; i < s; i++)
+		if (text[i] === text[i].toUpperCase())
+			return text[i];
+}
+
+export const getInitials = (fN, lN, uN, email) => {
+	let initials = '';
+	if (fN) {
+		initials = fN.trim()[0];
+		if (lN)
+			initials += lN.trim()[0];
+	}
+	else if (uN) {
+		uN = uN.trim();
+		initials = uN[0];
+
+		const secondLetter = findFirstUpperLetter(uN.substring(1));
+		if (secondLetter) {
+			initials += secondLetter;
+		}
+		else {
+			let secondIdx = uN.indexOf(/[0-9]/, 1);
+			if (secondIdx > -1)
+				initials += uN[secondIdx];
+			else if (uN.indexOf(' ') > -1)
+				initials += uN[uN.indexOf(' ') + 1].toUpperCase();
+		}
+	}
+	else if (email)
+		initials = email[0];
+
+	return initials.toUpperCase();
 }

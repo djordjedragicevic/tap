@@ -27,54 +27,59 @@ export class Http {
 
 		config.headers['Authorization'] = 'Bearer ' + await Http.getToken();
 
-		const controller = new AbortController();
-		const signal = controller.signal;
-		config.signal = signal;
+		try {
 
-		const fId = setTimeout(() => controller.abort(), HTTP_TIMEOUT);
-		const response = await fetch(API_URL.concat(url), config);
-		clearTimeout(fId);
+			const controller = new AbortController();
+			const signal = controller.signal;
+			config.signal = signal;
 
-		console.log(response.status, response.ok)
-		if (!response.ok) {
-			if (response.status === 401) {
-				errName = ERR.UNAUTHENTICATE;
-			}
-			else if (response.status === 403) {
-				errName = ERR.FORBIDEN;
+			const fId = setTimeout(() => controller.abort("TIMEOT"), HTTP_TIMEOUT);
+			const response = await fetch(API_URL.concat(url), config);
+			clearTimeout(fId);
+
+			if (!response.ok) {
+				if (response.status === 401) {
+					errName = ERR.UNAUTHENTICATE;
+				}
+				else if (response.status === 403) {
+					errName = ERR.FORBIDEN;
+				}
+				else {
+					errName = ERR.UNEXPECTED;
+				}
 			}
 			else {
+				try {
+					data = response.status !== 200 ? null : await response.json();
+				}
+				catch (err) {
+					errName = ERR.INVALID_RESPONSE;
+				}
+			}
+
+
+		} catch (err) {
+			if (err?.name === 'AbortError')
+				errName = ERR.CONNECTION_TIMEOUT;
+			else
 				errName = ERR.UNEXPECTED;
-			}
 		}
-		else {
-			try {
-				data = response.status !== 200 ? null : await response.json();
-			}
-			catch (err) {
-				console.log(err, response);
-				errName = ERR.INVALID_RESPONSE;
-			}
-		}
-
-
-		if (errName && silent) {
+		finally {
 			storeDispatch('app.http_loading_off');
-			return null;
+
+			if (errName)
+				console.log('HTTP ERROR: ' + errName + ' (' + (new Date().getTime() - d) / 1000 + 's)');
+
+			if (errName && !silent) {
+				const e = new Error();
+				e.name = errName;
+				throw e;
+			}
+
+			console.log('HTTP SUCCESS: ' + '(' + (new Date().getTime() - d) / 1000 + 's)');
+			return data;
+
 		}
-
-		if (errName) {
-			storeDispatch('app.http_loading_off');
-			const e = new Error();
-			e.name = errName;
-			throw e;
-		}
-
-		console.log('HTTP SUCCESS: ' + '(' + (new Date().getTime() - d) / 1000 + 's)');
-
-		storeDispatch('app.http_loading_off');
-		return data;
-
 	}
 
 	static async get(url, qParams, validate = false, silent = false) {

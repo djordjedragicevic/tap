@@ -19,6 +19,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { View } from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import { useIsUserLogged } from '../store/concreteStores';
+import XAvatar from '../components/basic/XAvatar';
 
 
 
@@ -107,7 +108,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				options={{
 					title: logged ? t("Profile") : t("Sign in"),
 					tabBarIcon: (props) => logged ?
-						<View style={{ height: props.size, width: props.size, backgroundColor: 'orange', borderRadius: 7 }}></View>
+						<XAvatar {...props} />
 						:
 						<AntDesign name="user" {...props} />
 				}} />

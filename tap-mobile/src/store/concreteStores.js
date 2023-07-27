@@ -1,3 +1,4 @@
+import { getInitials } from "../common/utils";
 import { useStore } from "./store";
 
 export const appStore = (initD = {}) => ({
@@ -30,69 +31,95 @@ export const appStore = (initD = {}) => ({
 });
 
 
-export const userStore = (initD = {}) => ({
-	name: 'user',
-	actions: {
-		'user.set_data': (userStore, userData) => {
+export const userStore = (initD = {}) => {
 
-			const newData = {
-				...userStore,
-				...userData,
-				isLogged: true
-			};
-
-			if (!newData.state)
-				newData.state = {};
-
-			if (newData.state.favoriteProviders)
-				newData.state.favoriteProviders = JSON.parse(newData.state.favoriteProviders);
-
-			return newData;
-		},
-		'user.log_out': (userStore) => {
-			return {
-				...userStore,
-				isLogged: false,
-				state: {}
-			}
-		},
-		'user.set_is_logged': (userStore, isLogged) => {
-			return {
-				...userStore,
-				isLogged
-			}
-		},
-		'user.favorite_add': (userStore, providerId) => {
-			const newFav = userStore.state.favoriteProviders ? [...userStore.state.favoriteProviders, providerId] : [providerId];
-			return {
-				...userStore,
-				state: {
-					...userStore.state,
-					favoriteProviders: newFav
-				}
-			}
-		},
-		'user.favorite_remove': (userStore, providerId) => {
-			return {
-				...userStore,
-				state: {
-					...userStore.state,
-					favoriteProviders: userStore.state.favoriteProviders.filter(pId => pId !== providerId)
-				}
-			}
-		}
-	},
-	initData: {
+	const initData = {
 		isLogged: false,
-		state: {},
+		state: {
+			favoriteProviders: []
+		},
+		firstName: '',
+		lastName: '',
+		username: '',
+		email: '',
+		initials: '',
+		roles: [],
 		...initD
+	};
+
+	return {
+		name: 'user',
+		actions: {
+			'user.set_data': (userStore, userData) => {
+
+				const newData = {
+					...userStore,
+					...userData,
+					isLogged: true,
+					initials: getInitials(userData.firstName, userData.lastName, userData.username, userData.email)
+				};
+
+				if (!newData.state)
+					newData.state = {};
+
+				if (newData.state.favoriteProviders)
+					newData.state.favoriteProviders = JSON.parse(newData.state.favoriteProviders);
+
+				return newData;
+			},
+			'user.log_out': () => {
+				return {
+					...initData
+				}
+			},
+			'user.set_is_logged': (userStore, isLogged) => {
+				return {
+					...userStore,
+					isLogged
+				}
+			},
+			'user.favorite_add': (userStore, providerId) => {
+				const newFav = userStore.state.favoriteProviders ? [...userStore.state.favoriteProviders, providerId] : [providerId];
+				return {
+					...userStore,
+					state: {
+						...userStore.state,
+						favoriteProviders: newFav
+					}
+				}
+			},
+			'user.favorite_remove': (userStore, providerId) => {
+				return {
+					...userStore,
+					state: {
+						...userStore.state,
+						favoriteProviders: userStore.state.favoriteProviders.filter(pId => pId !== providerId)
+					}
+				}
+			}
+		},
+		initData: { ...initData }
 	}
 
-});
+};
 
 export const useIsUserLogged = function (params) {
 	const isLogged = useStore(gS => gS.user.isLogged);
 	return isLogged;
+};
+
+export const useUserName = function () {
+	const firstName = useStore(gS => gS.user.firstName);
+	const lastName = useStore(gS => gS.user.lastName);
+	const username = useStore(gS => gS.user.username);
+	const email = useStore(gS => gS.user.username);
+
+	if (firstName)
+		return firstName + (lastName ? ' ' + lastName : '');
+	else if (username)
+		return username;
+	else if (email)
+		return email;
 };
 
 export const testStore = (initD = {}) => ({

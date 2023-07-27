@@ -16,7 +16,7 @@ const XFieldContainer = ({
 }) => {
 
 	const styles = useThemedStyle(createStyle);
-	const RootCmp = pressable ? TouchableOpacity : Pressable;
+	const RootCmp = pressable ? TouchableOpacity : View;
 
 	return (
 		<RootCmp style={[styles.container, style]} onPress={onPress}>
@@ -45,7 +45,7 @@ const createStyle = (theme) => StyleSheet.create({
 		borderRadius: Theme.values.borderRadius,
 		flexDirection: 'row',
 		backgroundColor: theme.colors.backgroundElement,
-		height: 48
+		height: 55
 	},
 	icon: {
 		paddingHorizontal: 8,

@@ -65,6 +65,8 @@ public class AuthFilter implements ContainerRequestFilter {
 	private boolean authorize(List<String> userRoles, Secured secured) {
 		if (userRoles != null && !userRoles.isEmpty() && secured != null) {
 			Role[] roles = secured.value();
+			if(roles.length == 0)
+				return true;
 			for (String userRole : userRoles) {
 				if (userRole.equals(Role.SUPER_ADMIN.getName()))
 					return true;
