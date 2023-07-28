@@ -35,6 +35,8 @@ import { useEffect, useState } from 'react';
 import { Http } from './src/common/Http';
 import { storeDispatch, storeInit } from './src/store/store';
 import { appStore, testStore, userStore } from './src/store/concreteStores';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 storeInit(appStore());
 storeInit(userStore());
@@ -81,10 +83,12 @@ export default App = () => {
 		return null;
 
 	return (
-		<ThemeContextProvider initialTheme={Theme.Light}>
-			<I18nContextProvider language={DEFAULT_LANGUAGE} languages={languages}>
-				<Main />
-			</I18nContextProvider>
-		</ThemeContextProvider>
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<ThemeContextProvider initialTheme={Theme.Light}>
+				<I18nContextProvider language={DEFAULT_LANGUAGE} languages={languages}>
+					<Main />
+				</I18nContextProvider>
+			</ThemeContextProvider>
+		</GestureHandlerRootView>
 	)
 };

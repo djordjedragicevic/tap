@@ -4,6 +4,20 @@ let globalState = {};
 let listeners = [];
 let actions = {};
 
+const isValueChanged = (newV, oldV) => {
+
+	if (Array.isArray(newV) && Array.isArray(oldV)) {
+		for (let i = 0, s = newV.length; i < s; i++)
+			if (newV[i] !== oldV[i])
+				return true;
+	} else if (newV !== oldV) {
+		return true;
+	}
+
+
+	return false;
+};
+
 export const storeDispatch = function (actionId, payload) {
 
 	if (!actions.hasOwnProperty(actionId)) {
@@ -21,7 +35,7 @@ export const storeDispatch = function (actionId, payload) {
 
 	listeners.forEach((lisOb) => {
 		const newV = lisOb.selector(globalState);
-		if (newV !== lisOb.value) {
+		if (isValueChanged(newV, lisOb.value)) {
 			lisOb.value = newV;
 			lisOb.setData(newV);
 		}

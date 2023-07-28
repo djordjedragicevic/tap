@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useTranslation } from "../i18n/I18nContext";
 
 const HomeScreen = ({ }) => {
+	console.log('HOEM SCREEN RENDER');
 	const t = useTranslation();
 	return (
 		<Screen>

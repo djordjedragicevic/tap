@@ -109,10 +109,7 @@ export const useIsUserLogged = function (params) {
 };
 
 export const useUserName = function () {
-	const firstName = useStore(gS => gS.user.firstName);
-	const lastName = useStore(gS => gS.user.lastName);
-	const username = useStore(gS => gS.user.username);
-	const email = useStore(gS => gS.user.username);
+	const [firstName, lastName, username, email] = useStore(gS => [gS.user.firstName, gS.user.lastName, gS.user.email, gS.user.username]);
 
 	if (firstName)
 		return firstName + (lastName ? ' ' + lastName : '');

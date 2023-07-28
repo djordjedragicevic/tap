@@ -1,5 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN } from './routes';
+import { LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPERIENCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
 import Try from '../screens/Try';
@@ -20,6 +20,8 @@ import { View } from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import { useIsUserLogged } from '../store/concreteStores';
 import XAvatar from '../components/basic/XAvatar';
+import SelectLanguageScreen from '../screens/SelectLanguageScreen';
+import SelectApperienceScreen from '../screens/SelectApperienceScreen';
 
 
 
@@ -142,12 +144,30 @@ const AppNavigator = () => {
 				}}
 			/>
 			<NativeStack.Group
-				screenOptions={{ presentation: 'containedModal' }}
+				screenOptions={{
+					presentation: 'containedModal',
+					animation: 'slide_from_bottom',
+					animationDuration: 100
+				}}
 			>
 				<NativeStack.Screen
-					options={{ headerShown: true }}
+					options={{ headerShown: false }}
 					name={LOGIN_SCREEN}
 					component={LoginScreen}
+				/>
+				<NativeStack.Screen
+					options={{}}
+					name={SELECT_LANGUAGE_SCREEN}
+					component={SelectLanguageScreen}
+				/>
+				<NativeStack.Screen
+					options={{
+						headerLargeTitle: "SELECT THEME",
+						title: 'AA',
+						headerSearchBarOptions: {}
+					}}
+					name={SELECT_APPERIENCE_SCREEN}
+					component={SelectApperienceScreen}
 				/>
 
 			</NativeStack.Group>

@@ -5,6 +5,7 @@ import { useTheme } from './style/ThemeContext';
 import { StatusBar } from 'react-native';
 import AppNavigator from './navigators/AppNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 const Main = () => {
 
@@ -31,22 +32,24 @@ const Main = () => {
 				backgroundColor={theme.colors.backgroundElement}
 			/>
 			<SafeAreaProvider>
-				<NavigationContainer
-					theme={navTheme}
-					ref={navRef}
-					onStateChange={state => {
-						const route = navRef.getCurrentRoute();
-						// if (route.name === MAIN_TAB_USER) {
-						// 	navRef.dispatch({
-						// 		...StackActions.replace(LAOGIN_SCREEN),
-						// 		source: route.key,
-						// 		target: navRef.getState().key
-						// 	})
-						// }
-					}}
-				>
-					<AppNavigator />
-				</NavigationContainer>
+				<BottomSheetModalProvider>
+					<NavigationContainer
+						theme={navTheme}
+						ref={navRef}
+						onStateChange={state => {
+							const route = navRef.getCurrentRoute();
+							// if (route.name === MAIN_TAB_USER) {
+							// 	navRef.dispatch({
+							// 		...StackActions.replace(LAOGIN_SCREEN),
+							// 		source: route.key,
+							// 		target: navRef.getState().key
+							// 	})
+							// }
+						}}
+					>
+						<AppNavigator />
+					</NavigationContainer>
+				</BottomSheetModalProvider>
 			</SafeAreaProvider>
 		</>
 	);
