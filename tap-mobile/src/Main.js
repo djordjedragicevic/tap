@@ -9,7 +9,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 const Main = () => {
 
-	const { theme } = useTheme();
+	const theme = useTheme();
 	const navRef = useNavigationContainerRef();
 	const navTheme = useMemo(() => {
 		const navigationTheme = theme.id === THEME.DARK ? DarkTheme : DefaultTheme;

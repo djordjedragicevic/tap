@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { Theme } from './src/style/themes';
+import { THEME } from './src/style/themes';
 import { languages } from './src/i18n/i18n';
 import { DEFAULT_LANGUAGE } from './src/common/config';
 import Main from './src/Main';
@@ -35,8 +35,8 @@ import { useEffect, useState } from 'react';
 import { Http } from './src/common/Http';
 import { storeDispatch, storeInit } from './src/store/store';
 import { appStore, testStore, userStore } from './src/store/concreteStores';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KEY, Storage } from './src/store/deviceStorage';
 
 storeInit(appStore());
 storeInit(userStore());
@@ -58,33 +58,37 @@ export default App = () => {
 		Roboto_900Black_Italic
 	});
 
-	const [inited, setInited] = useState(false);
+
+	const [initialTheme, setInitialTheme] = useState(null);
 
 	useEffect(() => {
-		const asyncWrap = async () => {
-			const userData = await Http.get('/user/by-token', null, false, true);
-			console.log(userData)
-			if (userData)
-				storeDispatch('user.set_data', userData);
+		Promise.all([
+			Storage.get(KEY.THEME, THEME.SYSETM),
+			Http.get('/user/by-token', null, false, true)
+		])
+			.then(([themeId, userData]) => {
+				if (userData)
+					storeDispatch('user.set_data', userData);
 
-			setInited(true);
+				setInitialTheme(themeId);
 
-		};
+			})
+			.catch(e => console.log("ERR", e))
 
-		asyncWrap();
 	}, []);
+
 
 	useEffect(() => {
 		if (fontsLoaded)
-			storeDispatch('app.set_font', 'Roboto_500Medium');
+			storeDispatch('app.set_font', 'Roboto_400Regular');
 	}, [fontsLoaded]);
 
-	if (!fontsLoaded || !inited)
+	if (!fontsLoaded || !initialTheme)
 		return null;
 
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
-			<ThemeContextProvider initialTheme={Theme.Light}>
+			<ThemeContextProvider initialTheme={initialTheme}>
 				<I18nContextProvider language={DEFAULT_LANGUAGE} languages={languages}>
 					<Main />
 				</I18nContextProvider>

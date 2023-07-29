@@ -17,7 +17,7 @@ const en_US = {
 	"December": "December",
 
 	"Search": "Search",
-	
+
 	"City": "City",
 	"Service": "Service",
 	"Location": "Location",
@@ -30,9 +30,9 @@ const en_US = {
 	"Calendar": "Calendar",
 	"Book appointment": "Book appointment",
 	"Find appointment": "Find appointment",
-	
+
 	"----------------------------": "-------------------",
-	
+
 	"minutes": "minutes",
 	"appointments": "appointments",
 	"Home": "Home",
@@ -41,7 +41,13 @@ const en_US = {
 	"Profile": "Profile",
 	"Sign in": "Sign in",
 	"OK": "OK",
-	"Cancel": "Cancel"
+	"Cancel": "Cancel",
+	"Light theme": "Light theme",
+	"Dark theme": "Dark theme",
+	"Use device theme": "Use device theme",
+	"Appearance": "Appearance",
+	"Dark": "Dark",
+	"Light": "Light"
 };
 
 export default en_US;

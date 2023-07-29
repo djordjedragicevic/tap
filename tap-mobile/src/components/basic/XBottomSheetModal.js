@@ -1,10 +1,12 @@
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import XText from "./XText";
-import { BottomSheetBackdrop, BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { forwardRef, useCallback } from "react";
+import { useThemedStyle } from "../../style/ThemeContext";
 
 
-const XBottomSheetModal = forwardRef(({ title, children, ...rest }, sheetRef) => {
+const XBottomSheetModal = forwardRef(({ title, titleHeight = 40, children, ...rest }, sheetRef) => {
+
 	const renderBackdrop = useCallback((props) => {
 		return <BottomSheetBackdrop
 			{...props}
@@ -14,23 +16,31 @@ const XBottomSheetModal = forwardRef(({ title, children, ...rest }, sheetRef) =>
 		/>
 	}, []);
 
+	const styles = useThemedStyle(styleCreate);
+
 	return (
 		<BottomSheetModal
 			ref={sheetRef}
 			index={0}
 			backdropComponent={renderBackdrop}
-			style={{ paddingHorizontal: 10 }}
+			backgroundStyle={styles.modal}
 			{...rest}
 		>
 			{
 				!!title &&
-				<View>
-					<XText style={{ fontSize: 22 }}>Odaberi temu</XText>
+				<View height={titleHeight}>
+					<XText style={{ fontSize: 22, paddingHorizontal: 10 }}>{title}</XText>
 				</View>
 			}
 			{children}
 		</BottomSheetModal>
 	);
 });
+
+const styleCreate = (theme) => StyleSheet.create({
+	modal: {
+		backgroundColor: theme.colors.backgroundElement
+	}
+})
 
 export default XBottomSheetModal;

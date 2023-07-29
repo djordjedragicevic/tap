@@ -1,14 +1,14 @@
 import { Pressable, StyleSheet } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/AntDesign';
 import React from "react";
 import { emptyFn } from "../../common/utils";
 import { Theme } from "../../style/themes";
 
 
-const XCheckBox = ({ checked = false, setChecked = emptyFn, size = 10 }) => {
+const XCheckBox = ({ checked = false, setChecked = emptyFn, size = 12, round = false }) => {
 
-	const styles = useThemedStyle(createStyle, size);
+	const styles = useThemedStyle(createStyle, size, round);
 
 	return (
 		<Pressable style={[styles.checkbox, checked ? styles.checked : styles.unchecked]} onPress={setChecked}>
@@ -17,7 +17,7 @@ const XCheckBox = ({ checked = false, setChecked = emptyFn, size = 10 }) => {
 	)
 };
 
-const createStyle = (theme, size) => StyleSheet.create({
+const createStyle = (theme, size, round) => StyleSheet.create({
 	checked: {
 		backgroundColor: theme.colors.primary,
 		borderColor: theme.colors.primary
@@ -31,7 +31,7 @@ const createStyle = (theme, size) => StyleSheet.create({
 		justifyContent: 'center',
 		width: size + 8,
 		height: size + 8,
-		borderRadius: Theme.values.borderRadius,
+		borderRadius: round ? 100 : Theme.values.borderRadius,
 		borderWidth: Theme.values.borderWidth,
 	},
 	icon: {

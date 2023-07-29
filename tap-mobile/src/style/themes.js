@@ -2,7 +2,8 @@ import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 
 export const THEME = {
 	LIGHT: 'Light',
-	DARK: 'Dark'
+	DARK: 'Dark',
+	SYSETM: 'System'
 };
 
 

@@ -7,7 +7,13 @@ const sr_SP = {
 	"Profile": "Profil",
 	"Sign in": "Uloguj se",
 	"OK": "Uredu",
-	"Cancel": "Otkaži"
+	"Cancel": "Otkaži",
+	"Light theme": "Svijetla theme",
+	"Dark theme": "Tamna theme",
+	"Use device theme": "Koristi temu telefona",
+	"Appearance": "Teme",
+	"Dark": "Tamna",
+	"Light": "Svijetla"
 };
 
 export default sr_SP;

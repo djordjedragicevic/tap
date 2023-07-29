@@ -1,5 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPERIENCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
+import { LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
 import Try from '../screens/Try';
@@ -21,7 +21,7 @@ import LoginScreen from '../screens/LoginScreen';
 import { useIsUserLogged } from '../store/concreteStores';
 import XAvatar from '../components/basic/XAvatar';
 import SelectLanguageScreen from '../screens/SelectLanguageScreen';
-import SelectApperienceScreen from '../screens/SelectApperienceScreen';
+import SelectAppearanceScreen from '../screens/SelectAppearanceScreen';
 
 
 
@@ -77,9 +77,12 @@ const MainBottomTabNavigator = ({ navigation }) => {
 	}, [logged, navigation]);
 
 	return (
-		<BottomTab.Navigator screenListeners={{
-			tabPress: onTabPress
-		}}>
+		<BottomTab.Navigator
+			screenListeners={{
+				tabPress: onTabPress,
+			}}
+			initialRouteName={MAIN_TAB_USER}
+		>
 			<BottomTab.Screen
 				name={MAIN_TAB_HOME}
 				component={HomeScreen}
@@ -159,15 +162,6 @@ const AppNavigator = () => {
 					options={{}}
 					name={SELECT_LANGUAGE_SCREEN}
 					component={SelectLanguageScreen}
-				/>
-				<NativeStack.Screen
-					options={{
-						headerLargeTitle: "SELECT THEME",
-						title: 'AA',
-						headerSearchBarOptions: {}
-					}}
-					name={SELECT_APPERIENCE_SCREEN}
-					component={SelectApperienceScreen}
 				/>
 
 			</NativeStack.Group>
