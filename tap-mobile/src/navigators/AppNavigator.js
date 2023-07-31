@@ -158,12 +158,6 @@ const AppNavigator = () => {
 					name={LOGIN_SCREEN}
 					component={LoginScreen}
 				/>
-				<NativeStack.Screen
-					options={{}}
-					name={SELECT_LANGUAGE_SCREEN}
-					component={SelectLanguageScreen}
-				/>
-
 			</NativeStack.Group>
 		</NativeStack.Navigator>
 	);

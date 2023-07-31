@@ -8,12 +8,13 @@ const sr_SP = {
 	"Sign in": "Uloguj se",
 	"OK": "Uredu",
 	"Cancel": "Otkaži",
-	"Light theme": "Svijetla theme",
-	"Dark theme": "Tamna theme",
 	"Use device theme": "Koristi temu telefona",
 	"Appearance": "Teme",
 	"Dark": "Tamna",
-	"Light": "Svijetla"
+	"Light": "Svijetla",
+	"Language": "Jezik",
+	"English": "Engleski",
+	"Serbian": "Srpski"
 };
 
 export default sr_SP;

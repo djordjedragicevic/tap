@@ -1,7 +1,7 @@
 import Screen from "../components/Screen";
 import I18nContext, { useTranslation } from "../i18n/I18nContext";
 import XButton from "../components/basic/XButton";
-import { LOGIN_SCREEN, SELECT_LANGUAGE_SCREEN } from "../navigators/routes";
+import { LOGIN_SCREEN } from "../navigators/routes";
 import { useContext, useMemo, useRef } from "react";
 import { Http } from "../common/Http";
 import { storeDispatch, useStore } from "../store/store";
@@ -15,6 +15,7 @@ import { AntDesign } from '@expo/vector-icons';
 import ThemeContext from "../style/ThemeContext";
 import { THEME } from "../style/themes";
 import XBottomSheetSelector from "../components/basic/XBottomSheetSelector";
+import { languages } from "../i18n/i18n";
 
 const UserSettingsScreen = ({ navigation }) => {
 	const t = useTranslation();
@@ -24,17 +25,22 @@ const UserSettingsScreen = ({ navigation }) => {
 	const isLogged = useIsUserLogged();
 
 	const { themeId, setThemeId } = useContext(ThemeContext);
-	const themeName = (themeId === THEME.SYSETM && Appearance.getColorScheme() === 'dark') || themeId === THEME.DARK ? t('Dark') : t('Light')
+	const themeName = (themeId === THEME.SYSETM && Appearance.getColorScheme() === 'dark') || themeId === THEME.DARK ? 'Dark' : 'Light'
 
-	const { setLanguage } = useContext(I18nContext);
+	const { lng, setLanguage } = useContext(I18nContext);
 
 	const THEMES = useMemo(() => [
-		{ id: 'Light', title: t('Light theme') },
-		{ id: 'Dark', title: t('Dark theme') },
+		{ id: 'Light', title: t('Light') },
+		{ id: 'Dark', title: t('Dark') },
 		{ id: 'System', title: t('Use device theme') }
-	], []);
+	], [lng]);
+	const LANGS = useMemo(() => [
+		{ id: 'en_US', title: t('English') },
+		{ id: 'sr_SP', title: t('Serbian') }
+	], [lng]);
 
-	const sheetRef = useRef(null);
+	const themeRef = useRef(null);
+	const lngRef = useRef(null);
 
 
 	const doLogout = () => {
@@ -66,28 +72,36 @@ const UserSettingsScreen = ({ navigation }) => {
 
 			<XSelectField
 				title={t('Appearance')}
-				value={themeName}
+				value={t(themeName)}
 				style={{ marginTop: 10 }}
 				iconRight={(props) => <AntDesign name="right" {...props} />}
-				onPress={() => sheetRef.current?.present()}
+				onPress={() => themeRef.current?.present()}
 			/>
 
 			<XSelectField
-				title={'Language'}
-				value={'Srpski'}
+				title={t('Language')}
+				value={t(lng.name)}
 				style={{ marginTop: 10 }}
 				iconRight={(props) => <AntDesign name="right" {...props} />}
-				onPress={() => navigation.navigate(SELECT_LANGUAGE_SCREEN)}
+				onPress={() => lngRef.current?.present()}
 			/>
 
 			{isLogged && <XButton bottom title={"Log out"} style={{ margin: 5, marginTop: 15 }} onPress={() => doLogout()} />}
 
 			<XBottomSheetSelector
-				ref={sheetRef}
+				ref={themeRef}
 				title={t('Appearance')}
 				data={THEMES}
 				selectedId={themeId}
 				onItemSelect={(item) => setThemeId(item.id)}
+			/>
+
+			<XBottomSheetSelector
+				ref={lngRef}
+				title={t('Language')}
+				data={LANGS}
+				selectedId={lng.id}
+				onItemSelect={(item) => setLanguage(() => languages[item.id])}
 			/>
 		</Screen >
 

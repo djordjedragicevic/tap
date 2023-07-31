@@ -1,5 +1,5 @@
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import { forwardRef, useCallback, useMemo, useState } from "react";
+import { forwardRef, useCallback, useMemo } from "react";
 import { View } from "react-native";
 import XText from "./XText";
 import XBottomSheetModal from "./XBottomSheetModal";
@@ -12,12 +12,11 @@ const rowVerticalMargin = 5;
 
 const XBottomSheetSelector = forwardRef(({ data = [], onItemSelect, multiselect = false, selectedId = [], closeOnSelect = true, ...rest }, sheetRef) => {
 
-	const renderItem = useCallback(({ item, index }) => {
+	const renderItem = useCallback(({ item }) => {
 		return <XFieldContainer
 			title={item.title}
 			onPress={() => {
 				onItemSelect(item);
-				//setSel([item.id]);
 				if (closeOnSelect)
 					sheetRef?.current?.close();
 			}}

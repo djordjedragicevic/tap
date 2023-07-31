@@ -42,12 +42,15 @@ const en_US = {
 	"Sign in": "Sign in",
 	"OK": "OK",
 	"Cancel": "Cancel",
-	"Light theme": "Light theme",
-	"Dark theme": "Dark theme",
-	"Use device theme": "Use device theme",
+
 	"Appearance": "Appearance",
 	"Dark": "Dark",
-	"Light": "Light"
+	"Light": "Light",
+	"Use device theme": "Use device theme",
+
+	"English": "English",
+	"Serbian": "Serbian",
+	"Language": "Language"
 };
 
 export default en_US;
