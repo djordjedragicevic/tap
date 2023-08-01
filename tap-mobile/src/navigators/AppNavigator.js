@@ -1,5 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
+import { CHOOSE_APPOINTMENT_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
 import Try from '../screens/Try';
@@ -22,6 +22,7 @@ import { useIsUserLogged } from '../store/concreteStores';
 import XAvatar from '../components/basic/XAvatar';
 import SelectLanguageScreen from '../screens/SelectLanguageScreen';
 import SelectAppearanceScreen from '../screens/SelectAppearanceScreen';
+import ChooseAppointmentScreen from '../screens/ChooseAppointmentScreen';
 
 
 
@@ -81,7 +82,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 			screenListeners={{
 				tabPress: onTabPress,
 			}}
-			initialRouteName={MAIN_TAB_USER}
+			initialRouteName={MAIN_TAB_FIND}
 		>
 			<BottomTab.Screen
 				name={MAIN_TAB_HOME}
@@ -136,6 +137,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 const MainStack = createStackNavigator();
 const AppNavigator = () => {
 	const font = useStore(s => s.app.font);
+	const t = useTranslation();
 	return (
 		<NativeStack.Navigator>
 			<NativeStack.Screen
@@ -159,6 +161,14 @@ const AppNavigator = () => {
 					component={LoginScreen}
 				/>
 			</NativeStack.Group>
+
+			<NativeStack.Screen
+				name={CHOOSE_APPOINTMENT_SCREEN}
+				component={ChooseAppointmentScreen}
+				options={{
+					title: t('Choose appointment')
+				}}
+			/>
 		</NativeStack.Navigator>
 	);
 };

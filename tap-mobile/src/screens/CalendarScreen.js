@@ -33,7 +33,6 @@ const CalendarScreen = ({ route }) => {
 			from: currentDate
 		})
 			.then(res => {
-				console.log(res);
 				if (finish) {
 					res.employees = res.employees.filter(e => e.calendar[0].working)
 					setData(res);

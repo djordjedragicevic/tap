@@ -15,6 +15,7 @@ Provider {
   active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
   // links
   assetList : Asset[];
+  busyperiodList : BusyPeriod[];
   employeeList : Employee[];
   address : Address { @LinkByFK(fk_provider_address1) };
   providertype : ProviderType { @LinkByFK(fk_provider_provider_type) };

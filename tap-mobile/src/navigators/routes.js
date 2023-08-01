@@ -1,5 +1,7 @@
 export const PROVIDERS_SCREEN = 'ProvidersScreen';
+
 export const PROVIDER_SCREEN = 'ProviderScreen';
+export const CHOOSE_APPOINTMENT_SCREEN = 'ChooseAppoinmentScreen';
 
 export const MAIN_TAB_HOME = 'MAIN_TAB_HOME';
 export const MAIN_TAB_FIND = 'MAIN_TAB_FIND';

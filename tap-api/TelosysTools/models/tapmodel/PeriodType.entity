@@ -1,0 +1,11 @@
+@DbTable(period_type)
+@DbCatalog(tap)
+PeriodType {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  name : string { @DbName(name) @DbType("VARCHAR(32)") @NotNull @NotEmpty @Size(32) @MaxLen(32) };
+  active : boolean { @DbName(active) @DbType(BIT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  description : string { @DbName(description) @DbType("VARCHAR(512)") @Size(512) @MaxLen(512) };
+  // links
+  busyperiodList : BusyPeriod[];
+}

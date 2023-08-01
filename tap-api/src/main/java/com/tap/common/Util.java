@@ -80,16 +80,6 @@ public class Util {
 		}
 	}
 
-	public static String base64encode(byte[] data) {
-		return Base64.getUrlEncoder().withoutPadding().encodeToString(data);
-	}
-	public static String base64encode(String data) {
-		return Base64.getUrlEncoder().withoutPadding().encodeToString(data.getBytes(StandardCharsets.UTF_8));
-	}
-
-	public static byte[] base64decode(String data) {
-		return Base64.getUrlDecoder().decode(data);
-	}
 
 	public static String getRandomString(byte from, byte to, int length) {
 		byte[] bytes = new byte[length];
@@ -99,16 +89,6 @@ public class Util {
 		}
 
 		return new String(bytes, StandardCharsets.UTF_8);
-	}
-
-	public static byte[] sign(String data, String secret) throws NoSuchAlgorithmException, InvalidKeyException {
-		Mac sha256Hmac = Mac.getInstance("HmacSHA256");
-		SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
-		sha256Hmac.init(secretKey);
-
-		byte[] signed = sha256Hmac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-
-		return signed;
 	}
 
 }

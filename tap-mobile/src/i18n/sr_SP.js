@@ -14,7 +14,8 @@ const sr_SP = {
 	"Light": "Svijetla",
 	"Language": "Jezik",
 	"English": "Engleski",
-	"Serbian": "Srpski"
+	"Serbian": "Srpski",
+	"Choose appointment": "Izaberite termin"
 };
 
 export default sr_SP;

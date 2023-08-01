@@ -29,7 +29,7 @@ const XBottomSheetModal = forwardRef(({ title, titleHeight = 40, children, ...re
 			{
 				!!title &&
 				<View height={titleHeight}>
-					<XText style={{ fontSize: 22, paddingHorizontal: 10 }}>{title}</XText>
+					<XText style={{ fontSize: 22, paddingHorizontal: 12 }}>{title}</XText>
 				</View>
 			}
 			{children}

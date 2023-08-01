@@ -1,15 +1,11 @@
-import Screen from "../components/Screen";
+
 import XText from "../components/basic/XText";
 import XButton from "../components/basic/XButton";
-import { APPOINTMENTS_SCREEN, CALENDAR_SCREEN, MAIN_FREE_APPOINTMENTS } from "../navigators/routes";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Http, useHTTPGet } from "../common/Http";
 import XSection from "../components/basic/XSection";
-import { Animated, FlatList, Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
-import { convert } from "../common/currency";
-import ListSeparator from "../components/list/ListSeparator";
+import { Animated, Pressable, SectionList, StyleSheet, View } from "react-native"
 import { emptyFn } from '../common/utils';
-import ListItemBasic from "../components/list/ListItemBasic";
 import { useTranslation } from "../i18n/I18nContext";
 import { HOST } from "../common/config";
 import { Image } from "expo-image";
@@ -18,12 +14,14 @@ import { AntDesign } from '@expo/vector-icons';
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Header, useHeaderHeight } from "@react-navigation/elements";
 import XCheckBox from "../components/basic/XCheckBox";
+import XSeparator from "../components/basic/XSeparator";
 import { useThemedStyle } from "../style/ThemeContext";
 import { ScrollView } from "react-native-gesture-handler";
 import { Theme } from "../style/themes";
 import HairSalon from "../components/svg/HairSalon";
 import FavoriteButton from "../components/FavoriteButton";
 import { storeDispatch, useStore } from "../store/store";
+import { CHOOSE_APPOINTMENT_SCREEN } from "../navigators/routes";
 
 
 const getDurationSum = (items) => {
@@ -36,23 +34,6 @@ const H_MAX_HEIGHT = 350;
 
 let lastP = {};
 
-const getSCategories = (services) => {
-
-	if (!services)
-		return services;
-
-	const cat = [];
-	const sId = {};
-	services.forEach(s => {
-		if (s.c_name && s.c_id && !sId[s.c_id]) {
-			cat.push({ id: s.c_id, name: s.c_name });
-			sId[s.c_id] = true;
-		}
-	})
-
-	return cat;
-};
-
 const groupServices = (sers) => {
 
 	if (!sers)
@@ -61,12 +42,14 @@ const groupServices = (sers) => {
 	const cats = {};
 	const catList = [];
 
+	const gMap = {};
+
 	sers.forEach(ser => {
 		const cId = !ser.c_id ? 'default' : ser.c_id;
 		if (!cats[cId]) {
 			cats[cId] = {
 				name: ser.c_name,
-				groups: {}
+				groups: []
 			};
 			catList.push({
 				name: ser.c_name,
@@ -76,14 +59,17 @@ const groupServices = (sers) => {
 
 
 		const gId = !ser.g_id ? 'default' : ser.g_id;
-		if (!cats[cId].groups[gId]) {
-			cats[cId].groups[gId] = {
-				name: ser.g_name,
-				services: []
-			};
+		const gMid = gId + cId;
+		if (!gMap[gMid]) {
+			gMap[gMid] = { data: [] };
+
+			cats[cId].groups.push({
+				title: ser.g_name || 'default',
+				data: gMap[gMid].data
+			});
 		}
 
-		cats[cId].groups[gId].services.push(ser);
+		gMap[gMid].data.push(ser);
 
 	});
 
@@ -153,12 +139,12 @@ const serviceItemSC = (theme) => StyleSheet.create({
 		color: theme.colors.primary
 	},
 	container: {
-		padding: 10,
+		padding: 8,
 		elevation: 0,
 		borderRadius: 5,
 		backgroundColor: theme.colors.backgroundElement,
 		flexDirection: 'row',
-		minHeight: 60
+		minHeight: 55
 	}
 })
 
@@ -174,8 +160,8 @@ const ProviderScreen = ({ navigation, route }) => {
 	const [selected, setSelected] = useState([]);
 	const [selectedCatIdx, setSelectedCatIdx] = useState(0);
 
-	const groupedServices = useMemo(() => groupServices(provider?.services), [provider]);
-	const hasCats = groupedServices?.categoryList.length > 1;
+	const services = useMemo(() => groupServices(provider?.services), [provider]);
+	const hasCats = services?.categoryList.length > 1;
 
 	const fProviders = useStore(st => st.user.state.favoriteProviders);
 	const userId = useStore(st => st.user.id);
@@ -239,25 +225,20 @@ const ProviderScreen = ({ navigation, route }) => {
 	if (!provider)
 		return null
 
+	console.log(selected);
 
-	const services = hasCats ? groupedServices.categories[groupedServices.categoryList[selectedCatIdx].id].groups['default'].services : provider.services;
 	return (
 
 		<SafeAreaView style={{ flex: 1 }}>
 			<Animated.View
 				style={{
-					//backgroundColor: 'cyan',
 					height: H_MAX_HEIGHT,
 					flex: 1,
 					width: '100%',
 					top: 0,
 					left: 0,
 					opacity: anHeaderOpacity,
-					//position: 'absolute',
-					zIndex: 2,
-					//backgroundColor: 'red'
-					//alignItems: 'center',
-					//justifyContent: 'center'
+					zIndex: 2
 				}}
 			>
 				<View style={{ flex: 1 }}>
@@ -284,11 +265,7 @@ const ProviderScreen = ({ navigation, route }) => {
 						<XText style={{ fontSize: 30 }}>{provider.name}</XText>
 
 						<XChip style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<View style={{ marginEnd: 5 }}>
-								<AntDesign name="star" color="yellow" size={18} />
-							</View>
-							<XText light>4.9</XText>
-
+							<XText light weight={500}>4.9</XText>
 						</XChip>
 					</View>
 
@@ -304,7 +281,7 @@ const ProviderScreen = ({ navigation, route }) => {
 					hasCats &&
 					<View style={{ padding: 5 }}>
 						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-							{groupedServices?.categoryList.map((c, idx) => (
+							{services?.categoryList.map((c, idx) => (
 								<Pressable
 									onPress={() => setSelectedCatIdx(idx)}
 									key={c.id}
@@ -324,10 +301,15 @@ const ProviderScreen = ({ navigation, route }) => {
 					</View>
 				}
 
-				<FlatList
-					data={services}
+				<SectionList
+					sections={services.categories[services.categoryList[selectedCatIdx].id].groups}
 					renderItem={renderItem}
-					ItemSeparatorComponent={<View height={5}></View>}
+					renderSectionHeader={({ section: { title } }) => (
+						<View style={{ justifyContent: 'flex-end', padding: 5 }}>
+							<XText size={18}>{title}</XText>
+						</View>
+					)}
+
 					style={{
 						flex: 1,
 						zIndex: 1,
@@ -335,7 +317,8 @@ const ProviderScreen = ({ navigation, route }) => {
 					}}
 					contentContainerStyle={{
 						//paddingTop: H_MAX_HEIGHT - rnHH,
-						padding: 5
+						padding: 5,
+						backgroundColor: 'white'
 					}}
 					showsVerticalScrollIndicator={true}
 					scrollEventThrottle={16}
@@ -352,7 +335,12 @@ const ProviderScreen = ({ navigation, route }) => {
 				/>
 			</View>
 
-			<XButton style={{}} title={t('appointments')} disabled={selected.length === 0} flat />
+			<XButton
+				title={t('appointments')}
+				disabled={selected.length === 0}
+				flat
+				onPress={() => navigation.navigate(CHOOSE_APPOINTMENT_SCREEN, { services: [...selected] })}
+			/>
 
 		</SafeAreaView >
 

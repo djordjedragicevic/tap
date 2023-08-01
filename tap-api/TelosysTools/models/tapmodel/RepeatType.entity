@@ -6,5 +6,5 @@ RepeatType {
   name : string { @DbName(name) @DbType("VARCHAR(45)") @NotNull @NotEmpty @Size(45) @MaxLen(45) };
   active : boolean { @DbName(active) @DbType(BIT) @DbDefaultValue(1) @NotNull @NotEmpty };
   // links
-  appointmentList : Appointment[];
+  busyperiodList : BusyPeriod[];
 }

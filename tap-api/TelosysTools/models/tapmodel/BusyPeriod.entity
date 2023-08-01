@@ -1,0 +1,23 @@
+@DbTable(busy_period)
+@DbCatalog(tap)
+BusyPeriod {
+  // attributes
+  id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
+  startDate : date { @DbName(start_date) @DbType(DATE) };
+  startTime : time { @DbName(start_time) @DbType(TIME) };
+  endDate : date { @DbName(end_date) @DbType(DATE) };
+  endTime : time { @DbName(end_time) @DbType(TIME) };
+  periodTypeId : int { @DbName(period_type_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_busy_period_period_type1, PeriodType.id) };
+  createdBy : int { @DbName(created_by) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_busy_time_user1, User.id) };
+  usedBy : int { @DbName(used_by) @DbType(INT UNSIGNED) @FK(fk_busy_time_user2, User.id) };
+  providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @FK(fk_busy_period_provider1, Provider.id) };
+  repeatTypeId : byte { @DbName(repeat_type_id) @DbType(TINYINT UNSIGNED) @NotNull @NotEmpty @FK(fk_busy_period_repeat_type1, RepeatType.id) };
+  comment : string { @DbName(comment) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
+  createDate : timestamp { @DbName(create_date) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
+  // links
+  periodtype : PeriodType { @LinkByFK(fk_busy_period_period_type1) };
+  provider : Provider { @LinkByFK(fk_busy_period_provider1) };
+  repeattype : RepeatType { @LinkByFK(fk_busy_period_repeat_type1) };
+  user : User { @LinkByFK(fk_busy_time_user1) };
+  user2 : User { @LinkByFK(fk_busy_time_user2) };
+}

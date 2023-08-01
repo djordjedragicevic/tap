@@ -21,7 +21,7 @@ const XBottomSheetSelector = forwardRef(({ data = [], onItemSelect, multiselect 
 					sheetRef?.current?.close();
 			}}
 			style={{ height: rowHeight, marginVertical: rowVerticalMargin }}
-			iconRight={() => <XCheckBox round checked={multiselect ? false : item.id === selectedId} />}
+			iconLeft={() => <XCheckBox round checked={multiselect ? false : item.id === selectedId} />}
 		>
 			<View style={{ flex: 1, justifyContent: 'center' }}>
 				<XText size={15}>{item.title}</XText>

@@ -50,7 +50,9 @@ const en_US = {
 
 	"English": "English",
 	"Serbian": "Serbian",
-	"Language": "Language"
+	"Language": "Language",
+
+	"Choose appointment": "Choose appointment"
 };
 
 export default en_US;

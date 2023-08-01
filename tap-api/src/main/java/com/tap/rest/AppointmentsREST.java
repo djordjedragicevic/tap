@@ -1,10 +1,13 @@
-package com.tap.appointments;
+package com.tap.rest;
 
+import com.tap.appointments.*;
+import com.tap.auth.Public;
 import com.tap.db.dao.CompanyDAO;
 import com.tap.db.dto.*;
 import com.tap.db.entity.WEmployeeWD;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.json.JsonArray;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -24,65 +27,78 @@ public class AppointmentsREST {
 	private CompanyDAO companyDAO;
 
 	@GET
-	@Path("/free")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Path("free")
+	@Public
 	public Response getFreeAppointments(
-			@QueryParam("city") long cityId,
-			@QueryParam("services") String sIds,
-			@QueryParam("company") long cId,
-			@QueryParam("from") String from,
-			@QueryParam("to") String to
+			@QueryParam("p") long providerId,
+			@QueryParam("s") String services
 	) {
+		List<Long> sIds = Arrays.stream(services.split(",")).map(Long::parseLong).toList();
 
-		List<EmployeeDTO> employees = companyDAO.employeesForServices(cityId, Utils.parseIDs(sIds), cId);
-		LocalDateTime fromDT = Utils.parseDT(from).orElse(LocalDateTime.now(ZoneOffset.UTC));
-		LocalDateTime toDT = Utils.parseDT(to).orElse(fromDT.toLocalDate().plus(Utils.FREE_APP_DAYS, ChronoUnit.DAYS).atTime(LocalTime.MAX));
-
-		Map<LocalDate, List<FreeAppointment>> apps = new HashMap<>();
-
-
-		if (!employees.isEmpty()) {
-			addCalendarTimePeriods(employees, fromDT, toDT);
-
-
-			for (EmployeeDTO e : employees) {
-				int duration = e.getLookingServices().stream().mapToInt(CompanyServiceDTO::getDuration).sum();
-
-				e.getCalendar().forEach(c -> c
-						.getPeriods()
-						.stream()
-						.filter(p -> p.getSubType().equals(TimePeriod.FREE_PERIOD))
-						.forEach(p -> {
-							long period = ChronoUnit.MINUTES.between(p.getStart(), p.getEnd());
-							long freeCount = period / duration;
-							for (int i = 0; i < freeCount; i++) {
-								apps.computeIfAbsent(c.getDate(), k -> new ArrayList<>())
-										.add(new FreeAppointment(
-												p.getStart().plusMinutes((long) duration * i),
-												p.getStart().plusMinutes(((long) duration * i) + duration),
-												new EmployeeDTO()
-														.setId(e.getId())
-														.setUser(e.getUser())
-														.setCompany(e.getCompany())
-														.setLookingServices(e.getLookingServices())
-										));
-							}
-						})
-				);
-			}
-		}
-
-		return Response.ok(
-				apps.entrySet()
-						.stream()
-						.sorted(Map.Entry.comparingByKey())
-						.map(e -> Map.of(
-								"date", e.getKey().format(DateTimeFormatter.ISO_DATE),
-								"periods", e.getValue().stream().sorted(Comparator.comparing(FreeAppointment::getStart)).toList()
-						))
-						.toList())
-				.build();
+		return Response.ok().build();
 	}
+
+
+//	@GET
+//	@Path("/free")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response getFreeAppointments(
+//			@QueryParam("city") long cityId,
+//			@QueryParam("services") String sIds,
+//			@QueryParam("company") long cId,
+//			@QueryParam("from") String from,
+//			@QueryParam("to") String to
+//	) {
+//
+//		List<EmployeeDTO> employees = companyDAO.employeesForServices(cityId, Utils.parseIDs(sIds), cId);
+//		LocalDateTime fromDT = Utils.parseDT(from).orElse(LocalDateTime.now(ZoneOffset.UTC));
+//		LocalDateTime toDT = Utils.parseDT(to).orElse(fromDT.toLocalDate().plus(Utils.FREE_APP_DAYS, ChronoUnit.DAYS).atTime(LocalTime.MAX));
+//
+//		Map<LocalDate, List<FreeAppointment>> apps = new HashMap<>();
+//
+//
+//		if (!employees.isEmpty()) {
+//			addCalendarTimePeriods(employees, fromDT, toDT);
+//
+//
+//			for (EmployeeDTO e : employees) {
+//				int duration = e.getLookingServices().stream().mapToInt(CompanyServiceDTO::getDuration).sum();
+//
+//				e.getCalendar().forEach(c -> c
+//						.getPeriods()
+//						.stream()
+//						.filter(p -> p.getSubType().equals(TimePeriod.FREE_PERIOD))
+//						.forEach(p -> {
+//							long period = ChronoUnit.MINUTES.between(p.getStart(), p.getEnd());
+//							long freeCount = period / duration;
+//							for (int i = 0; i < freeCount; i++) {
+//								apps.computeIfAbsent(c.getDate(), k -> new ArrayList<>())
+//										.add(new FreeAppointment(
+//												p.getStart().plusMinutes((long) duration * i),
+//												p.getStart().plusMinutes(((long) duration * i) + duration),
+//												new EmployeeDTO()
+//														.setId(e.getId())
+//														.setUser(e.getUser())
+//														.setCompany(e.getCompany())
+//														.setLookingServices(e.getLookingServices())
+//										));
+//							}
+//						})
+//				);
+//			}
+//		}
+//
+//		return Response.ok(
+//				apps.entrySet()
+//						.stream()
+//						.sorted(Map.Entry.comparingByKey())
+//						.map(e -> Map.of(
+//								"date", e.getKey().format(DateTimeFormatter.ISO_DATE),
+//								"periods", e.getValue().stream().sorted(Comparator.comparing(FreeAppointment::getStart)).toList()
+//						))
+//						.toList())
+//				.build();
+//	}
 
 	@GET
 	@Path("/calendar")
@@ -102,6 +118,7 @@ public class AppointmentsREST {
 
 		return Map.of("employees", employees);
 	}
+
 
 	@POST
 	@Path("/book")
