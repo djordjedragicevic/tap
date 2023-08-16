@@ -33,17 +33,4 @@ public class AuthDAO {
 		Token t = em.find(Token.class, tokenId);
 		t.setJti(tokenJTI);
 	}
-
-	public Token getToken(long userId, String tokenId) {
-		try {
-
-			return em.createQuery("SELECT t FROM Token t WHERE t.user.is = :uId AND t.jti = :tId", Token.class)
-					.setParameter("uId", userId)
-					.setParameter("tId", tokenId)
-					.getSingleResult();
-
-		} catch (Exception e) {
-			return null;
-		}
-	}
 }

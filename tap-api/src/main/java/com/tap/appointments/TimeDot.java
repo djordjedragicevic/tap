@@ -13,5 +13,5 @@ public class TimeDot {
 
 	private LocalDateTime dateTime;
 	private byte type;
-	private TimePeriod timePeriod;
+	private TimePeriodOld timePeriod;
 }

@@ -5,10 +5,12 @@ Employee {
   id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
   providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_employee_provider1, Provider.id) };
   userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_employee_user1, User.id) };
+  active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
   // links
   appointmentList : Appointment[];
+  busyperiodList : BusyPeriod[];
   provider : Provider { @LinkByFK(fk_provider_employee_provider1) };
   user : User { @LinkByFK(fk_provider_employee_user1) };
-  employeeworkperiodList : EmployeeWorkPeriod[];
   serviceemployeeList : ServiceEmployee[];
+  workperiodList : WorkPeriod[];
 }

@@ -3,20 +3,20 @@
 Appointment {
   // attributes
   id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
-  start : timestamp { @DbName(start) @DbType(DATETIME) };
-  end : timestamp { @DbName(end) @DbType(DATETIME) };
+  start : timestamp { @DbName(start) @DbType(DATETIME) @NotNull @NotEmpty };
+  end : timestamp { @DbName(end) @DbType(DATETIME) @NotNull @NotEmpty };
   userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_user1, User.id) };
-  employeeId : int { @DbName(employee_id) @DbType(INT UNSIGNED) @FK(fk_appointment_employee1, Employee.id) };
-  providerServiceId : int { @DbName(provider_service_id) @DbType(INT UNSIGNED) @FK(fk_appointment_provider_service1, Service.id) };
+  serviceId : int { @DbName(service_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_service1, Service.id) };
+  employeeId : int { @DbName(employee_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_employee1, Employee.id) };
   createDate : timestamp { @DbName(create_date) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
   createdById : int { @DbName(created_by_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_user2, User.id) };
   appointmentStatusId : int { @DbName(appointment_status_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_appointment_status1, AppointmentStatus.id) };
   statusResponseDate : timestamp { @DbName(status_response_date) @DbType(DATETIME) };
-  comment : string { @DbName(comment) @DbType("VARCHAR(512)") @Size(512) @MaxLen(512) };
+  comment : string { @DbName(comment) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
   // links
   appointmentstatus : AppointmentStatus { @LinkByFK(fk_appointment_appointment_status1) };
   employee : Employee { @LinkByFK(fk_appointment_employee1) };
-  service : Service { @LinkByFK(fk_appointment_provider_service1) };
+  service : Service { @LinkByFK(fk_appointment_service1) };
   user : User { @LinkByFK(fk_appointment_user1) };
   user2 : User { @LinkByFK(fk_appointment_user2) };
 }

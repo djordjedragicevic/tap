@@ -61,7 +61,7 @@ public class UserDAO {
 
 	}
 
-	public List<Role> getRoles(int userId){
+	public List<Role> getRoles(int userId) {
 
 		return em.createQuery("SELECT r FROM Role r INNER JOIN UserRole uR ON r = uR.role WHERE uR.user.id = :uId", Role.class)
 				.setParameter("uId", userId)
@@ -86,6 +86,4 @@ public class UserDAO {
 				userState.setFavoriteProviders(state.getJsonArray("favoriteProviders").toString());
 		}
 	}
-
-
 }

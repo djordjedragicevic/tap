@@ -1,6 +1,6 @@
 package com.tap.db.dto;
 
-import com.tap.appointments.TimePeriod;
+import com.tap.appointments.TimePeriodOld;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class CalendarDayDTO {
 	private LocalDate date;
-	private List<TimePeriod> periods;
+	private List<TimePeriodOld> periods;
 
 	private boolean isWorking;
 
@@ -20,7 +20,7 @@ public class CalendarDayDTO {
 		this.isWorking = true;
 	}
 
-	public CalendarDayDTO addTimePeriod(TimePeriod tp){
+	public CalendarDayDTO addTimePeriod(TimePeriodOld tp){
 		this.periods.add(tp);
 		return this;
 	}

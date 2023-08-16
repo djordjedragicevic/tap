@@ -1,0 +1,17 @@
+@DbTable(work_period)
+@DbCatalog(tap)
+WorkPeriod {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  periodTypeId : int { @DbName(period_type_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_work_period_period_type1, PeriodType.id) };
+  employeeId : int { @DbName(employee_id) @DbType(INT UNSIGNED) @FK(fk_provider_work_period_employee1, Employee.id) };
+  providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @FK(fk_work_period_provider1, Provider.id) };
+  startDay : byte { @DbName(start_day) @DbType(TINYINT) @NotNull @NotEmpty };
+  startTime : time { @DbName(start_time) @DbType(TIME) @NotNull @NotEmpty };
+  endDay : byte { @DbName(end_day) @DbType(TINYINT) @NotNull @NotEmpty };
+  endTime : time { @DbName(end_time) @DbType(TIME) @NotNull @NotEmpty };
+  // links
+  employee : Employee { @LinkByFK(fk_provider_work_period_employee1) };
+  periodtype : PeriodType { @LinkByFK(fk_work_period_period_type1) };
+  provider : Provider { @LinkByFK(fk_work_period_provider1) };
+}

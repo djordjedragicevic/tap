@@ -1,6 +1,7 @@
 package com.tap.db.dto;
 
-import com.tap.appointments.TimePeriod;
+import com.tap.appointments.TimePeriodOld;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -9,13 +10,13 @@ public class EmployeeDTO {
 	private UserDTO user;
 	private List<EmployeeWorkDayDTO> workDays;
 	private List<CalendarDayDTO> calendar;
-	private List<TimePeriod> periods;
+	private List<TimePeriodOld> periods;
 	private List<CompanyServiceDTO> lookingServices;
 	private CompanyDTO company;
 	private List<EmployeeCompanyServiceDTO> employeeServices;
 
 
-	public void addTimePeriod(LocalDate d, TimePeriod tp) {
+	public void addTimePeriod(LocalDate d, TimePeriodOld tp) {
 		if (this.calendar == null)
 			this.calendar = new ArrayList<>();
 
@@ -76,11 +77,11 @@ public class EmployeeDTO {
 		return this;
 	}
 
-	public List<TimePeriod> getPeriods() {
+	public List<TimePeriodOld> getPeriods() {
 		return periods;
 	}
 
-	public EmployeeDTO setPeriods(List<TimePeriod> periods) {
+	public EmployeeDTO setPeriods(List<TimePeriodOld> periods) {
 		this.periods = periods;
 		return this;
 	}
