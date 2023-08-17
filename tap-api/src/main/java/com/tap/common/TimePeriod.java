@@ -8,7 +8,6 @@ public class TimePeriod {
 	private LocalTime start;
 	private LocalTime end;
 	private String type;
-	private String name;
 
 	public TimePeriod(LocalTime start, LocalTime end) {
 		this.start = start;
@@ -20,15 +19,11 @@ public class TimePeriod {
 		this.type = type;
 	}
 
-	public TimePeriod(LocalTime start, LocalTime end, String type, String name) {
-		this(start, end, type);
-		this.name = name;
-	}
-
-	public static TimePeriod open(LocalTime start, LocalTime end){
+	public static TimePeriod open(LocalTime start, LocalTime end) {
 		return new TimePeriod(start, end, TimePeriod.CLOSE);
 	}
-	public static TimePeriod close(LocalTime start, LocalTime end){
+
+	public static TimePeriod close(LocalTime start, LocalTime end) {
 		return new TimePeriod(start, end, TimePeriod.OPEN);
 	}
 
@@ -36,35 +31,16 @@ public class TimePeriod {
 		return start;
 	}
 
-	public TimePeriod setStart(LocalTime start) {
-		this.start = start;
-		return this;
-	}
-
 	public LocalTime getEnd() {
 		return end;
-	}
-
-	public TimePeriod setEnd(LocalTime end) {
-		this.end = end;
-		return this;
 	}
 
 	public String getType() {
 		return type;
 	}
 
-	public TimePeriod setType(String type) {
-		this.type = type;
-		return this;
+	public boolean isOpen() {
+		return this.type.equals(TimePeriod.OPEN);
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public TimePeriod setName(String name) {
-		this.name = name;
-		return this;
-	}
 }

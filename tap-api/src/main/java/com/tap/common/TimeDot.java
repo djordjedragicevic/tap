@@ -3,31 +3,24 @@ package com.tap.common;
 import java.time.LocalTime;
 
 public class TimeDot {
-	public static final short OPEN = 1;
-	public static final short CLOSE = 2;
 	private LocalTime time;
-	private short type;
+	private TimePeriod timePeriod;
+	private boolean isStart;
 
-	public TimeDot(LocalTime time, short type) {
+	public TimeDot(LocalTime time, TimePeriod timePeriod, boolean isStart) {
 		this.time = time;
-		this.type = type;
+		this.timePeriod = timePeriod;
+		this.isStart = isStart;
 	}
 
 	public LocalTime getTime() {
 		return time;
 	}
 
-	public TimeDot setTime(LocalTime time) {
-		this.time = time;
-		return this;
+	public TimePeriod getTimePeriod() {
+		return timePeriod;
 	}
-
-	public short getType() {
-		return type;
-	}
-
-	public TimeDot setType(short type) {
-		this.type = type;
-		return this;
+	public boolean isStart() {
+		return this.isStart;
 	}
 }
