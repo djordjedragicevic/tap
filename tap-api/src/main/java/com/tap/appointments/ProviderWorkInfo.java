@@ -13,13 +13,15 @@ public class ProviderWorkInfo {
 		private final String email;
 		private final List<TimePeriod> workPeriods;
 		private final List<TimePeriod> breakPeriods;
+		private ProviderWorkInfo providerInfo;
 
-		public Employee(Integer eId, String email) {
+		public Employee(Integer eId, String email, ProviderWorkInfo pWI) {
 			this.employeeId = eId;
 			this.isWorking = false;
 			this.workPeriods = new ArrayList<>();
 			this.breakPeriods = new ArrayList<>();
 			this.email = email;
+			this.providerInfo = pWI;
 		}
 
 		public int getEmployeeId() {
@@ -46,6 +48,14 @@ public class ProviderWorkInfo {
 		public String getEmail() {
 			return email;
 		}
+
+		public List<TimePeriod> getRealWorkTime() {
+			return this.workPeriods.isEmpty() ? this.workPeriods : this.providerInfo.getWorkPeriods();
+		}
+
+		public List<TimePeriod> getRealBreakTime() {
+			return this.breakPeriods.isEmpty() ? this.breakPeriods : this.providerInfo.getBreakPeriods();
+		}
 	}
 
 	private final int providerId;
@@ -54,7 +64,7 @@ public class ProviderWorkInfo {
 	private final List<TimePeriod> workPeriods;
 	private final List<TimePeriod> breakPeriods;
 	private final LocalDate atDay;
-	private List<Employee> employees;
+	private final List<Employee> employees;
 
 	public ProviderWorkInfo(int providerId, LocalDate date) {
 		this.providerId = providerId;

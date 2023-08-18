@@ -11,7 +11,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
-import java.sql.Time;
 import java.time.*;
 import java.util.*;
 
@@ -19,7 +18,7 @@ import java.util.*;
 @RequestScoped
 public class AppointmentsREST {
 
-	public class UserServicesMap {
+	public static class UserServicesMap {
 		public Set<Integer> serviceIds = new HashSet<>();
 		public int durationSum = 0;
 		public int employeeId;
@@ -75,21 +74,12 @@ public class AppointmentsREST {
 		for (ProviderWorkInfo.Employee e : pWI.getEmployees()) {
 			UserServicesMap employee = userServices.get(e.getEmployeeId());
 			employee.isWorking = e.isWorking();
+			employee.workTime = e.getRealWorkTime();
 
-			//Get employee work periods
-			List<TimePeriod> workPeriods = e.getWorkPeriods().isEmpty() ? pWI.getWorkPeriods() : e.getWorkPeriods();
-			employee.workTime = workPeriods;
-
-
-			//Add break time periods
-			List<TimePeriod> employeeTimePeriods = new ArrayList<>();
+			//Add breaks
+			List<TimePeriod> employeeTimePeriods = new ArrayList<>(e.getRealBreakTime());
 			TimePeriod tmpP;
 
-			if (e.getBreakPeriods() != null && !e.getBreakPeriods().isEmpty()) {
-				e.getBreakPeriods().forEach(tP -> employeeTimePeriods.add(new NamedTimePeriod(tP.getStart(), tP.getEnd(), TimePeriod.CLOSE, NamedTimePeriod.CLOSE_E_BREAK)));
-			} else if (pWI.getBreakPeriods() != null && !pWI.getBreakPeriods().isEmpty()) {
-				pWI.getBreakPeriods().forEach(tP -> employeeTimePeriods.add(new NamedTimePeriod(tP.getStart(), tP.getEnd(), TimePeriod.CLOSE, NamedTimePeriod.CLOSE_P_BREAK)));
-			}
 			//Add provider busy periods
 			for (BusyPeriod pBP : providerBusyPeriods) {
 				tmpP = adjustBusyTimeOneDate(date, pBP);
@@ -109,7 +99,7 @@ public class AppointmentsREST {
 			}
 
 			//--------CALCULATE FREE PERIODS-------
-			List<TimePeriod> freePeriods = calculateFreePeriods(workPeriods, employeeTimePeriods);
+			List<TimePeriod> freePeriods = calculateFreePeriods(employee.workTime, employeeTimePeriods);
 
 			employeeTimePeriods.addAll(freePeriods);
 			employeeTimePeriods.sort(Comparator.comparing(TimePeriod::getStart));
@@ -229,7 +219,7 @@ public class AppointmentsREST {
 				boolean isOpen = wP.getPeriodtype().getOpen() == 1;
 				LocalTime start = wP.getStartDay() < day ? LocalTime.MIN : wP.getStartTime();
 				LocalTime end = wP.getEndDay() > day ? LocalTime.MAX : wP.getEndTime();
-				TimePeriod timePeriod = new TimePeriod(start, end, isOpen ? TimePeriod.OPEN : TimePeriod.CLOSE);
+				TimePeriod timePeriod = new TimePeriod(start, end);
 
 				if (wP.getProvider() != null) {
 					if (isOpen) {
@@ -244,7 +234,7 @@ public class AppointmentsREST {
 							.filter(e -> e.getEmployeeId() == eId)
 							.findAny()
 							.orElseGet(() -> {
-								ProviderWorkInfo.Employee e = new ProviderWorkInfo.Employee(eId, wP.getEmployee().getUser().getEmail());
+								ProviderWorkInfo.Employee e = new ProviderWorkInfo.Employee(eId, wP.getEmployee().getUser().getEmail(), pWI);
 								pWI.getEmployees().add(e);
 								return e;
 							});
