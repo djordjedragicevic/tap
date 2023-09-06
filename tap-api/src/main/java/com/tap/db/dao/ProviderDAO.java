@@ -1,10 +1,15 @@
 package com.tap.db.dao;
 
 import com.tap.appointments.Utils;
-import com.tap.common.TimePeriod;
 import com.tap.common.Util;
+import com.tap.db.dto.EmployeeDTO;
+import com.tap.db.dto.ServiceEmployeesDTO;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -123,23 +128,122 @@ public class ProviderDAO {
 		);
 	}
 
-	public List<ServiceEmployee> getEmployeesOnServices(List<Integer> sIds, Integer pId) {
+	public List<Service> getServices(List<Integer> sIds) {
+		return em.createQuery("SELECT s FROM Service s WHERE s.active = 1 AND s.id IN :sIds", Service.class)
+				.setParameter("sIds", sIds)
+				.getResultList();
+
+	}
+
+//	public List<ServiceEmployee> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
+//		String query = """
+//				SELECT DISTINCT
+//				se
+//				FROM ServiceEmployee se
+//				JOIN se.service s
+//				JOIN se.employee e
+//				WHERE
+//				s.active = 1 AND
+//				e.active = 1 AND
+//				se.service.id IN :sIds AND e.provider.id = :pId
+//				""";
+//
+//		return em.createQuery(query, ServiceEmployee.class)
+//				.setParameter("sIds", sIds)
+//				.setParameter("pId", pId)
+//				.getResultList();
+//	}
+
+	public Map<Integer, ServiceEmployeesDTO> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
 		String query = """
-				SELECT se, s.active AS sActive, e.active AS eActive
+				SELECT DISTINCT
+				se, s, e, g, u
+				FROM ServiceEmployee se
+				JOIN se.service s
+				JOIN se.employee e
+				JOIN s.group g
+				JOIN e.user u
+				WHERE
+				s.active = 1 AND
+				e.active = 1 AND
+				se.service.id IN :sIds AND e.provider.id = :pId
+				""";
+
+		List<Object[]> dbResp = em.createQuery(query, Object[].class)
+				.setParameter("sIds", sIds)
+				.setParameter("pId", pId)
+				.getResultList();
+
+		Map<Integer, ServiceEmployeesDTO> resp = new LinkedHashMap<>();
+
+
+		for (Object[] r : dbResp) {
+			Service s = (Service) r[1];
+			Employee e = (Employee) r[2];
+			Group g = (Group) r[3];
+			User u = (User) r[4];
+
+			ServiceEmployeesDTO sEDTO = resp.computeIfAbsent(s.getId(), k -> new ServiceEmployeesDTO(k, s.getName()));
+			if (g != null)
+				sEDTO.setGroupId(g.getId()).setGroupName(g.getName());
+
+			sEDTO.getEmployees().add(new EmployeeDTO(e.getId(), u.getFirstName(), u.getLastName()));
+		}
+
+
+		for (Object[] r : dbResp) {
+			Service s = (Service) r[1];
+			Employee e = (Employee) r[2];
+			Group g = (Group) r[3];
+			User u = (User) r[4];
+
+			ServiceEmployeesDTO sEDTO = resp.computeIfAbsent(s.getId(), k -> new ServiceEmployeesDTO(k, s.getName()));
+			if (g != null)
+				sEDTO.setGroupId(g.getId()).setGroupName(g.getName());
+
+			sEDTO.getEmployees().add(new EmployeeDTO(e.getId(), u.getFirstName(), u.getLastName()));
+		}
+		return resp;
+
+	}
+
+	public JsonArray getEmployeesOnServices(List<Integer> sIds, Integer pId) {
+
+		JsonObjectBuilder jOB = Json.createObjectBuilder();
+		JsonArrayBuilder jLB = Json.createArrayBuilder();
+		String query = """
+				SELECT
+				se.service.id AS sId,
+				s.active AS sActive,
+				e.active AS eActive,
+				s.name AS sName,
+				e.id AS eId,
+				s.duration AS dur
 				FROM ServiceEmployee se
 				JOIN se.service s
 				JOIN se.employee e
 				WHERE
 				sActive = 1 AND
 				eActive = 1 AND
-				se.service IN :sIds AND e.provider.id = :pId
+				sId IN :sIds AND e.provider.id = :pId
 				""";
 
-		return em.createQuery(query, Object[].class)
+		List<Object[]> dbResp = em.createQuery(query, Object[].class)
 				.setParameter("sIds", sIds)
 				.setParameter("pId", pId)
-				.getResultList()
-				.stream().map(se -> (ServiceEmployee) se[0]).toList();
+				.getResultList();
+		for (Object[] r : dbResp) {
+			jLB.add(
+					jOB.add("sId", (int) r[0])
+							.add("sName", (String) r[3])
+							.add("eId", (int) r[4])
+							.add("dur", (short) r[5])
+							.build()
+			);
+		}
+
+		return jLB.build();
+
 	}
 
 	public List<WorkPeriod> getWorkPeriodsAtDay(List<Integer> eIds, int pId, LocalDate date) {

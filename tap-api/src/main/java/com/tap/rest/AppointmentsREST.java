@@ -5,6 +5,7 @@ import com.tap.appointments.Utils;
 import com.tap.auth.Public;
 import com.tap.common.*;
 import com.tap.db.dao.ProviderDAO;
+import com.tap.db.dto.ServiceEmployeesDTO;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -17,30 +18,7 @@ import java.util.*;
 @Path("appointments")
 @RequestScoped
 public class AppointmentsREST {
-
-	public static class UserServicesMap {
-		public Set<Integer> serviceIds = new HashSet<>();
-		public int durationSum = 0;
-		public int employeeId;
-		public LocalDate date;
-		public boolean isWorking = false;
-		public List<TimePeriod> timePeriods = new ArrayList<>();
-		public List<TimePeriod> workTime = new ArrayList<>();
-
-
-		public UserServicesMap(int employeeId) {
-			this.employeeId = employeeId;
-		}
-
-		public void addService(Service s, int dur) {
-			if (!serviceIds.contains(s.getId())) {
-				serviceIds.add(s.getId());
-				durationSum += dur;
-			}
-		}
-
-	}
-
+	private static final int FREE_APP_SHIFT = 15;
 	@Inject
 	private ProviderDAO providerDAO;
 
@@ -53,75 +31,74 @@ public class AppointmentsREST {
 			@QueryParam("s") String s,
 			@QueryParam("d") String d
 	) {
-		Map<Integer, UserServicesMap> userServices = new LinkedHashMap<>();
 
-		//Map employee and services on which they work
+
 		List<Integer> sIds = Arrays.stream(s.split(",")).map(Integer::parseInt).toList();
-		List<ServiceEmployee> sE = providerDAO.getEmployeesOnServices(sIds, pId);
-		sE.forEach(serEmp -> userServices
-				.computeIfAbsent(serEmp.getEmployee().getId(), key -> new UserServicesMap(serEmp.getEmployee().getId()))
-				.addService(serEmp.getService(), serEmp.getService().getDuration()));
+		Set<Integer> eIds = new HashSet<>();
+		Map<Integer, List<Map<String, Object>>> serEmpsMap = new HashMap<>();
 
-		//Get employee work periods for the date
+		Map<Integer, ServiceEmployeesDTO> serviceEmployees = providerDAO.getActiveServiceEmployees(sIds, pId);
+		//List<Integer> eIds = serviceEmployees.stream().mapToInt(se -> se.getEmployee().getId()).boxed().toList();
+
+//		serviceEmployees.forEach(sE -> {
+//			Service ser = sE.getService();
+//			Group g = ser.getGroup();
+//			serEmpsMap.computeIfAbsent(sE.getEmployee().getId(), k -> new ArrayList<>()).add(Map.of(
+//					"id", ser.getId(),
+//					"name",ser.getName(),
+//					"duration", ser.getDuration(),
+//					"group", g == null ? "" : g.getName()
+//			));
+//		});
+
+
 		LocalDate date = Utils.parseDate(d).orElse(LocalDate.now());
-		List<Integer> eIds = sE.stream().map(serviceEmployee -> serviceEmployee.getEmployee().getId()).toList();
-		ProviderWorkInfo pWI = getProviderWorkInfoAtDay(eIds, pId, date);
 
-		List<BusyPeriod> busyPeriods = providerDAO.getBusyPeriodsAtDay(pId, eIds, date);
-		List<BusyPeriod> providerBusyPeriods = busyPeriods.stream().filter(bP -> bP.getProvider() != null).toList();
+
+		//ProviderWorkInfo pWI = getProviderWorkInfoAtDay(pId, eIds, date);
+
 
 		//Form time periods
-		for (ProviderWorkInfo.Employee e : pWI.getEmployees()) {
-			UserServicesMap employee = userServices.get(e.getEmployeeId());
-			employee.isWorking = e.isWorking();
-			employee.workTime = e.getRealWorkTime();
+//			List<TimePeriod> employeeTimePeriods = new ArrayList<>(e.getRealBreakTime());
+//			for (TimePeriod freeTP : freePeriods) {
+//				LocalTime start = freeTP.getStart();
+//				long freePeriodDur = Duration.between(start, freeTP.getEnd()).toMinutes();
+//				long part = 0;
+//				while (employee.serviceDurationSum < freePeriodDur) {
+//					LocalTime freeApp = start.plusMinutes(part * FREE_APP_SHIFT);
+//					employee.freeAppointments.add(freeApp);
+//					freeApps.add(Map.of(
+//							"time", freeApp,
+//							"duration", employee.serviceDurationSum,
+//							"services", employee.services,
+//							"employee", Map.of(
+//									"id", employee.employeeId,
+//									"firstName", e.getFirstName(),
+//									"lastName", e.getLastName()
+//							)
+//					));
+//
+//					freePeriodDur -= FREE_APP_SHIFT;
+//					part += 1;
+//				}
+//			}
 
-			//Add breaks
-			List<TimePeriod> employeeTimePeriods = new ArrayList<>(e.getRealBreakTime());
-			TimePeriod tmpP;
 
-			//Add provider busy periods
-			for (BusyPeriod pBP : providerBusyPeriods) {
-				tmpP = adjustBusyTimeOneDate(date, pBP);
-				employeeTimePeriods.add(new NamedTimePeriod(tmpP.getStart(), tmpP.getEnd(), TimePeriod.CLOSE, NamedTimePeriod.CLOSE_P_BUSY));
-			}
-			//Add employee busy periods
-			List<BusyPeriod> employeeBusyPeriods = busyPeriods.stream().filter(bP -> bP.getEmployee() != null && bP.getEmployee().getId() == e.getEmployeeId()).toList();
-			for (BusyPeriod eBP : employeeBusyPeriods) {
-				tmpP = adjustBusyTimeOneDate(date, eBP);
-				employeeTimePeriods.add(new NamedTimePeriod(tmpP.getStart(), tmpP.getEnd(), TimePeriod.CLOSE, NamedTimePeriod.CLOSE_E_BUSY));
-			}
-			//Add employee appointments
-			List<Appointment> appointments = providerDAO.getAppointmentsAtDay(eIds, date);
-			for (Appointment a : appointments) {
-				tmpP = adjustTimeToOneDate(date, a.getStart(), a.getEnd());
-				employeeTimePeriods.add(new NamedTimePeriod(tmpP.getStart(), tmpP.getEnd(), TimePeriod.CLOSE, NamedTimePeriod.CLOSE_APPOINTMENT));
-			}
-
-			//--------CALCULATE FREE PERIODS-------
-			List<TimePeriod> freePeriods = calculateFreePeriods(employee.workTime, employeeTimePeriods);
-
-			employeeTimePeriods.addAll(freePeriods);
-			employeeTimePeriods.sort(Comparator.comparing(TimePeriod::getStart));
-			employee.timePeriods = employeeTimePeriods;
-
-		}
-
-		return userServices;
+		return serviceEmployees;
 	}
 
-	private static List<TimePeriod> calculateFreePeriods(List<TimePeriod> workPeriods, List<TimePeriod> busyPeriods) {
+	private static List<NamedTimePeriod> calculateFreePeriods(List<TimePeriod> workPeriods, List<NamedTimePeriod> timeline) {
 
-		List<TimePeriod> freePeriods = new ArrayList<>();
+		List<NamedTimePeriod> freePeriods = new ArrayList<>();
 		List<TimeDot> timeDots = new ArrayList<>();
 
 		workPeriods.forEach(tP -> {
-			timeDots.add(new TimeDot(tP.getStart(), tP, true));
-			timeDots.add(new TimeDot(tP.getEnd(), tP, false));
+			timeDots.add(new TimeDot(tP.getStart(), true, true));
+			timeDots.add(new TimeDot(tP.getEnd(), false, true));
 		});
-		busyPeriods.forEach(eTP -> {
-			timeDots.add(new TimeDot(eTP.getStart(), eTP, true));
-			timeDots.add(new TimeDot(eTP.getEnd(), eTP, false));
+		timeline.forEach(eTP -> {
+			timeDots.add(new TimeDot(eTP.getStart(), true, false));
+			timeDots.add(new TimeDot(eTP.getEnd(), false, false));
 		});
 		timeDots.sort(Comparator.comparing(TimeDot::getTime));
 
@@ -132,8 +109,8 @@ public class AppointmentsREST {
 
 		System.out.println("-------------------");
 		for (TimeDot dot : timeDots) {
-			System.out.println("TIME DOT - " + dot.getTime() + " " + (dot.isStart() ? " START " : " END ") + (dot.getTimePeriod().getType()));
-			if (dot.getTimePeriod().isOpen()) {
+			System.out.println("TIME DOT - " + dot.getTime() + " " + (dot.isStart() ? " START " : " END ") + (dot.isOpen() ? " OPEN " : " CLOSE "));
+			if (dot.isOpen()) {
 				if (dot.isStart()) {
 					if (lockCounter > 0)
 						lockCounter -= 1;
@@ -159,7 +136,7 @@ public class AppointmentsREST {
 
 			if (startOfFree != null && endOfFree != null) {
 				System.out.println("FREE TIME " + startOfFree + " " + endOfFree);
-				freePeriods.add(new NamedTimePeriod(startOfFree, endOfFree, TimePeriod.OPEN, NamedTimePeriod.OPEN_FREE_TIME));
+				freePeriods.add(new NamedTimePeriod(startOfFree, endOfFree, TypedTimePeriod.OPEN, NamedTimePeriod.OPEN_FREE_TIME));
 				startOfFree = null;
 				endOfFree = null;
 			}
@@ -207,45 +184,54 @@ public class AppointmentsREST {
 		}
 	}
 
-	private ProviderWorkInfo getProviderWorkInfoAtDay(List<Integer> eIds, Integer pId, LocalDate date) {
+	private ProviderWorkInfo getProviderWorkInfoAtDay(Integer pId, List<Integer> eIds, LocalDate date) {
+
+		ProviderWorkInfo pWI = new ProviderWorkInfo(pId, date);
 
 		int day = date.getDayOfWeek().getValue();
 		List<WorkPeriod> workPeriod = providerDAO.getWorkPeriodsAtDay(eIds, pId, date);
-		ProviderWorkInfo pWI = new ProviderWorkInfo(pId, date);
 
-		if (workPeriod != null && !workPeriod.isEmpty()) {
-			workPeriod.forEach(wP -> {
+		if (workPeriod == null || workPeriod.isEmpty())
+			return pWI;
 
-				boolean isOpen = wP.getPeriodtype().getOpen() == 1;
-				LocalTime start = wP.getStartDay() < day ? LocalTime.MIN : wP.getStartTime();
-				LocalTime end = wP.getEndDay() > day ? LocalTime.MAX : wP.getEndTime();
-				TimePeriod timePeriod = new TimePeriod(start, end);
 
-				if (wP.getProvider() != null) {
-					if (isOpen) {
-						pWI.getWorkPeriods().add(timePeriod);
-					} else {
-						pWI.getBreakPeriods().add(timePeriod);
-					}
-					pWI.setName(wP.getProvider().getName());
-				} else if (wP.getEmployee() != null) {
-					int eId = wP.getEmployee().getId();
-					ProviderWorkInfo.Employee eInfo = pWI.getEmployees().stream()
-							.filter(e -> e.getEmployeeId() == eId)
-							.findAny()
-							.orElseGet(() -> {
-								ProviderWorkInfo.Employee e = new ProviderWorkInfo.Employee(eId, wP.getEmployee().getUser().getEmail(), pWI);
-								pWI.getEmployees().add(e);
-								return e;
-							});
-					if (isOpen) {
-						eInfo.getWorkPeriods().add(timePeriod);
-					} else {
-						eInfo.getBreakPeriods().add(timePeriod);
-					}
-				}
-			});
-		}
+		workPeriod.forEach(wP -> {
+
+			boolean isOpen = wP.getPeriodtype().getOpen() == 1;
+			LocalTime start = wP.getStartDay() < day ? LocalTime.MIN : wP.getStartTime();
+			LocalTime end = wP.getEndDay() > day ? LocalTime.MAX : wP.getEndTime();
+
+			if (wP.getProvider() != null) {
+				if (isOpen)
+					pWI.getWorkPeriods().add(new TimePeriod(start, end));
+				else
+					pWI.getBreakPeriods().add(new TimePeriod(start, end));
+
+				pWI.setName(wP.getProvider().getName());
+
+			} else if (wP.getEmployee() != null) {
+				int eId = wP.getEmployee().getId();
+				User u = wP.getEmployee().getUser();
+				ProviderWorkInfo.Employee eInfo = pWI.getEmployees()
+						.stream()
+						.filter(e -> e.getEmployeeId() == eId)
+						.findAny()
+						.orElseGet(() -> {
+							ProviderWorkInfo.Employee e = new ProviderWorkInfo.Employee(
+									eId,
+									u.getEmail(),
+									u.getFirstName(),
+									u.getLastName()
+							);
+							pWI.getEmployees().add(e);
+							return e;
+						});
+				if (isOpen)
+					eInfo.getWorkPeriods().add(new TimePeriod(start, end));
+				else
+					eInfo.getBreakPeriods().add(new TimePeriod(start, end));
+			}
+		});
 
 		if (!pWI.getWorkPeriods().isEmpty())
 			pWI.setWorking(true);
@@ -253,12 +239,92 @@ public class AppointmentsREST {
 		pWI.getWorkPeriods().sort(Comparator.comparing(TimePeriod::getStart));
 		pWI.getBreakPeriods().sort(Comparator.comparing(TimePeriod::getStart));
 
-		pWI.getEmployees().forEach(e -> {
-			e.getWorkPeriods().sort(Comparator.comparing(TimePeriod::getStart));
-			e.getBreakPeriods().sort(Comparator.comparing(TimePeriod::getStart));
-			if (!e.getWorkPeriods().isEmpty())
-				e.setWorking(true);
+		//----------------Create Employee timeline----------------------------------
+
+		List<Appointment> appointments = providerDAO.getAppointmentsAtDay(eIds, date);
+		List<BusyPeriod> busyPeriods = providerDAO.getBusyPeriodsAtDay(pId, eIds, date);
+
+		List<TimePeriod> providerBTP = new ArrayList<>();
+		List<BusyPeriod> employeeBP = new ArrayList<>();
+		busyPeriods.forEach(bP -> {
+			if (bP.getProvider() != null)
+				providerBTP.add(adjustBusyTimeOneDate(date, bP));
+			else
+				employeeBP.add(bP);
 		});
+
+		for (ProviderWorkInfo.Employee e : pWI.getEmployees()) {
+
+			int eId = e.getEmployeeId();
+
+			if (!e.getWorkPeriods().isEmpty() || pWI.isWorking())
+				e.setWorking(true);
+
+			//Employee work time
+			boolean hasOwnWT = !e.getWorkPeriods().isEmpty();
+			String wWTName = hasOwnWT ? NamedTimePeriod.OPEN_E_WORK : NamedTimePeriod.OPEN_P_WORK;
+			List<NamedTimePeriod> eWorkTime = (hasOwnWT ? e.getWorkPeriods() : pWI.getWorkPeriods()).stream().map(wP -> new NamedTimePeriod(wP.getStart(), wP.getEnd(), TypedTimePeriod.OPEN, wWTName)).toList();
+
+			//Employee break time
+			boolean hasOwnBT = !e.getBreakPeriods().isEmpty();
+			String wBTName = hasOwnWT ? NamedTimePeriod.CLOSE_E_BREAK : NamedTimePeriod.CLOSE_P_BREAK;
+			List<NamedTimePeriod> eBreakTime = (hasOwnBT ? e.getBreakPeriods() : pWI.getBreakPeriods()).stream().map(bP -> new NamedTimePeriod(bP.getStart(), bP.getEnd(), TypedTimePeriod.CLOSE, wBTName)).toList();
+
+			//Calculate work time sum
+			long workSum = e.getWorkPeriods().stream().mapToLong(wP -> Duration.between(wP.getStart(), wP.getEnd()).toMinutes()).sum();
+			e.setWorkTimeSum((int) workSum);
+
+
+			//-----------Construct timeline--------------
+
+			List<NamedTimePeriod> timeline = e.getTimeline();
+
+			//Add employee breaks
+			timeline.addAll(eBreakTime);
+
+			//Add provider busy periods to employee
+			providerBTP
+					.forEach(pBP -> eWorkTime
+							.stream()
+							.filter(wP -> Utils.isTimeOverlap(pBP, wP))
+							.forEach(wP -> {
+								TimePeriod aTP = Utils.adjustOverlapTime(pBP, wP);
+								NamedTimePeriod nTP = new NamedTimePeriod(aTP.getStart(), aTP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_P_BUSY);
+								e.getTimeline().add(nTP);
+							})
+					);
+
+			//Add employee busy periods
+			employeeBP
+					.stream()
+					.filter(eBP -> eBP.getEmployee().getId() == eId)
+					.forEach(eBP -> {
+						TimePeriod tP = adjustBusyTimeOneDate(date, eBP);
+						NamedTimePeriod nTP = new NamedTimePeriod(tP.getStart(), tP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_E_BUSY);
+						e.getTimeline().add(nTP);
+					});
+
+			//Add appointments
+			appointments
+					.stream()
+					.filter(a -> a.getEmployee().getId() == eId)
+					.forEach(a -> {
+						TimePeriod tP = adjustTimeToOneDate(date, a.getStart(), a.getEnd());
+						NamedTimePeriod nTP = new NamedTimePeriod(tP.getStart(), tP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_APPOINTMENT);
+						e.getTimeline().add(nTP);
+					});
+
+
+			List<NamedTimePeriod> freePeriods = calculateFreePeriods(e.getWorkPeriods(), timeline);
+			timeline.addAll(freePeriods);
+
+			timeline.sort(Comparator.comparing(TimePeriod::getStart));
+
+			//Calculate free time sum
+			long freeSum = freePeriods.stream().mapToLong(fP -> Duration.between(fP.getStart(), fP.getEnd()).toMinutes()).sum();
+			e.setFreeTimeSum((int) freeSum);
+
+		}
 
 		return pWI;
 	}

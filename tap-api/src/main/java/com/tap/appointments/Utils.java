@@ -1,7 +1,10 @@
 package com.tap.appointments;
 
+import com.tap.common.TimePeriod;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -26,5 +29,19 @@ public class Utils {
 
 	public static List<Long> parseIDs(String ids) {
 		return Arrays.stream(ids.split(",")).map(Long::valueOf).toList();
+	}
+
+	public static boolean isTimeOverlap(TimePeriod time, TimePeriod target) {
+		return (time.getStart().isAfter(target.getStart()) && time.getStart().isBefore(target.getEnd()))
+			   ||
+			   (time.getEnd().isAfter(target.getStart()) && time.getEnd().isBefore(target.getEnd()))
+			   ||
+			   (time.getStart().isBefore(target.getStart()) && time.getEnd().isAfter(target.getEnd()));
+	}
+
+	public static TimePeriod adjustOverlapTime(TimePeriod time, TimePeriod target) {
+		LocalTime newStart = time.getStart().isBefore(target.getStart()) ? target.getStart() : time.getStart();
+		LocalTime newEnd = time.getEnd().isAfter(target.getEnd()) ? target.getEnd() : time.getEnd();
+		return new TimePeriod(newStart, newEnd);
 	}
 }

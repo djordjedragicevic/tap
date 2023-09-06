@@ -4,23 +4,24 @@ import java.time.LocalTime;
 
 public class TimeDot {
 	private LocalTime time;
-	private TimePeriod timePeriod;
 	private boolean isStart;
+	private boolean isOpen;
 
-	public TimeDot(LocalTime time, TimePeriod timePeriod, boolean isStart) {
+	public TimeDot(LocalTime time, boolean isStart, boolean isOpen) {
 		this.time = time;
-		this.timePeriod = timePeriod;
 		this.isStart = isStart;
+		this.isOpen = isOpen;
 	}
 
 	public LocalTime getTime() {
 		return time;
 	}
 
-	public TimePeriod getTimePeriod() {
-		return timePeriod;
-	}
 	public boolean isStart() {
-		return this.isStart;
+		return isStart;
+	}
+
+	public boolean isOpen() {
+		return isOpen;
 	}
 }

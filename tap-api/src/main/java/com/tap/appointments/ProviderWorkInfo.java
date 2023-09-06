@@ -1,5 +1,6 @@
 package com.tap.appointments;
 
+import com.tap.common.NamedTimePeriod;
 import com.tap.common.TimePeriod;
 
 import java.time.LocalDate;
@@ -9,23 +10,38 @@ import java.util.List;
 public class ProviderWorkInfo {
 	public static class Employee {
 		private final int employeeId;
-		boolean isWorking;
+		private boolean isWorking;
 		private final String email;
 		private final List<TimePeriod> workPeriods;
 		private final List<TimePeriod> breakPeriods;
-		private ProviderWorkInfo providerInfo;
+		private final String firstName;
+		private final String lastName;
+		private List<NamedTimePeriod> timeline;
+		private List<NamedTimePeriod> freePeriods;
+		private int freeTimeSum;
+		private int workTimeSum;
 
-		public Employee(Integer eId, String email, ProviderWorkInfo pWI) {
+		public Employee(Integer eId, String email, String fName, String lName) {
 			this.employeeId = eId;
 			this.isWorking = false;
 			this.workPeriods = new ArrayList<>();
 			this.breakPeriods = new ArrayList<>();
+			this.timeline = new ArrayList<>();
 			this.email = email;
-			this.providerInfo = pWI;
+			this.firstName = fName;
+			this.lastName = lName;
 		}
 
 		public int getEmployeeId() {
 			return employeeId;
+		}
+
+		public boolean isWorking() {
+			return isWorking;
+		}
+
+		public String getEmail() {
+			return email;
 		}
 
 		public List<TimePeriod> getWorkPeriods() {
@@ -36,8 +52,24 @@ public class ProviderWorkInfo {
 			return breakPeriods;
 		}
 
-		public boolean isWorking() {
-			return isWorking;
+		public String getFirstName() {
+			return firstName;
+		}
+
+		public String getLastName() {
+			return lastName;
+		}
+
+		public List<NamedTimePeriod> getTimeline() {
+			return timeline;
+		}
+
+		public int getFreeTimeSum() {
+			return freeTimeSum;
+		}
+
+		public int getWorkTimeSum() {
+			return workTimeSum;
 		}
 
 		public Employee setWorking(boolean working) {
@@ -45,16 +77,23 @@ public class ProviderWorkInfo {
 			return this;
 		}
 
-		public String getEmail() {
-			return email;
+		public Employee setFreeTimeSum(int freeTimeSum) {
+			this.freeTimeSum = freeTimeSum;
+			return this;
 		}
 
-		public List<TimePeriod> getRealWorkTime() {
-			return this.workPeriods.isEmpty() ? this.workPeriods : this.providerInfo.getWorkPeriods();
+		public Employee setWorkTimeSum(int workTimeSum) {
+			this.workTimeSum = workTimeSum;
+			return this;
 		}
 
-		public List<TimePeriod> getRealBreakTime() {
-			return this.breakPeriods.isEmpty() ? this.breakPeriods : this.providerInfo.getBreakPeriods();
+		public List<NamedTimePeriod> getFreePeriods() {
+			return freePeriods;
+		}
+
+		public Employee setFreePeriods(List<NamedTimePeriod> freePeriods) {
+			this.freePeriods = freePeriods;
+			return this;
 		}
 	}
 
@@ -74,6 +113,20 @@ public class ProviderWorkInfo {
 		this.breakPeriods = new ArrayList<>();
 		this.workPeriods = new ArrayList<>();
 	}
+
+	public Employee getEmployeeById(int id) {
+		for (Employee e : this.getEmployees())
+			if (e.getEmployeeId() == id)
+				return e;
+		return null;
+	}
+
+	public void addToEmployeeTimeline(NamedTimePeriod tp, int eId) {
+		Employee e = this.getEmployeeById(eId);
+		if (e != null)
+			e.getTimeline().add(tp);
+	}
+
 
 	public int getProviderId() {
 		return providerId;
