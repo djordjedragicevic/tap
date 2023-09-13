@@ -10,15 +10,16 @@ const XFieldContainer = ({
 	iconLeft = false,
 	style = {},
 	disabled = false,
-	onPress,
+	onPress = emptyFn,
 	children,
+	meta
 }) => {
 
 	const styles = useThemedStyle(createStyle);
 	const RootCmp = onPress ? TouchableOpacity : View;
 
 	return (
-		<RootCmp style={[styles.container, style]} onPress={onPress}>
+		<RootCmp style={[styles.container, style]} onPress={() => onPress(meta)}>
 			{
 				!!iconLeft &&
 				<View style={styles.icon}>

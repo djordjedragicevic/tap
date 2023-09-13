@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Theme } from "../style/themes";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Screen = ({
 	children,
@@ -9,7 +10,8 @@ const Screen = ({
 	center = false,
 	flat = false,
 	marginTop = Theme.values.mainPaddingHorizontal,
-	loading = false
+	loading = false,
+	scroll = false
 }) => {
 
 	const dynStyle = useMemo(() => {
@@ -21,17 +23,21 @@ const Screen = ({
 			dS.justifyContent = 'center';
 		}
 		if (!flat) {
-			dS.marginHorizontal = Theme.values.mainPaddingHorizontal;
-			dS.marginTop = marginTop
+			dS.paddingHorizontal = Theme.values.mainPaddingHorizontal;
+			dS.marginTop = marginTop;
+			if (!scroll)
+				dS.marginBottom = marginTop;
 		}
 		return dS;
-	}, [center, flat, marginTop]);
+	}, [center, flat, marginTop, scroll]);
+
+	const VCmp = scroll ? ScrollView : View;
 
 	return (
 		<SafeAreaView style={styles.safeArea}>
-			<View style={[style, dynStyle]}>
+			<VCmp style={[style, dynStyle]}>
 				{children}
-			</View>
+			</VCmp>
 			{loading && <View style={{ backgroundColor: 'red', position: 'absolute', height: 3, width: '100%' }}></View>}
 		</SafeAreaView>
 	);

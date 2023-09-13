@@ -1,12 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { CHOOSE_APPOINTMENT_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
+import { FREE_APPOINTMENTS_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
-import Try from '../screens/Try';
 import { useStore } from '../store/store';
-import HeaderDrawerButton from '../components/HeaderDrawerButton';
 import { useCallback, useEffect } from 'react';
-import TryAH from '../screens/TryAH';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import FavoriteButton from '../components/FavoriteButton';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -14,15 +11,11 @@ import HomeScreen from '../screens/HomeScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import UserSettingsScreen from '../screens/UserSettingsScreen';
 import { useTranslation } from '../i18n/I18nContext';
-
 import { AntDesign } from '@expo/vector-icons';
-import { View } from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import { useIsUserLogged } from '../store/concreteStores';
 import XAvatar from '../components/basic/XAvatar';
-import SelectLanguageScreen from '../screens/SelectLanguageScreen';
-import SelectAppearanceScreen from '../screens/SelectAppearanceScreen';
-import ChooseAppointmentScreen from '../screens/ChooseAppointmentScreen';
+import FreeAppointmentsScreen from '../screens/FreeAppointmentsScreen';
 
 
 
@@ -163,8 +156,8 @@ const AppNavigator = () => {
 			</NativeStack.Group>
 
 			<NativeStack.Screen
-				name={CHOOSE_APPOINTMENT_SCREEN}
-				component={ChooseAppointmentScreen}
+				name={FREE_APPOINTMENTS_SCREEN}
+				component={FreeAppointmentsScreen}
 				options={{
 					title: t('Choose appointment')
 				}}

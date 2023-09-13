@@ -1,6 +1,7 @@
 package com.tap.appointments;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class FreeAppointment {
 		private int employeeId;
 		private LocalTime time;
 		private int duration;
+		private String joinId;
 
 		public Service(int serviceId, String serviceName, int employeeId, LocalTime time, int duration) {
 			this.serviceId = serviceId;
@@ -40,17 +42,33 @@ public class FreeAppointment {
 		public int getDuration() {
 			return duration;
 		}
+
+		public String getJoinId() {
+			return joinId;
+		}
 	}
 
-	private LocalTime startAt;
+	private String id;
+	private String startAt;
 	private int durationSum;
 	private List<Service> services = new ArrayList<>();
-	public LocalTime getStartAt() {
+
+	public String getId() {
+		return id;
+	}
+
+	public FreeAppointment finalize(String id) {
+		this.id = id;
+		this.getServices().forEach(s -> s.joinId = id);
+		return this;
+	}
+
+	public String getStartAt() {
 		return startAt;
 	}
 
 	public FreeAppointment setStartAt(LocalTime startAt) {
-		this.startAt = startAt;
+		this.startAt = startAt.format(DateTimeFormatter.ofPattern("HH:mm"));
 		return this;
 	}
 

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -43,16 +44,23 @@ public class Utils {
 		return new TimePeriod(newStart, newEnd);
 	}
 
-	public static LocalTime roundUpTo5Min(LocalTime time) {
+	public static LocalTime roundUpToXMin(LocalTime time, int min) {
 		int m = time.getMinute();
-		while (m % 5 != 0)
+		while (m % min != 0)
 			m += 1;
-		return LocalTime.of(time.getHour(), m);
+
+		int h = time.getHour();
+		int newMin = m == 60 ? 0 : m;
+		if (m == 60)
+			h = h + 1;
+
+		return h > 23 ? LocalTime.MAX : LocalTime.of(h, newMin);
 	}
 
 	public static LocalTime getEarliestStartTime(Collection<List<TimePeriod>> times) {
+
 		return times.stream()
-				.map(t -> t.get(0))
+				.flatMap(Collection::stream)
 				.sorted(Comparator.comparing(TimePeriod::getStart))
 				.toList()
 				.get(0)
@@ -60,10 +68,13 @@ public class Utils {
 	}
 
 	public static LocalTime getLatestEndTime(Collection<List<TimePeriod>> times) {
-		List<TimePeriod> tP = times.stream()
-				.map(t -> t.get(0))
-				.sorted(Comparator.comparing(TimePeriod::getEnd))
-				.toList();
-		return tP.get(tP.size() - 1).getEnd();
+
+		return times.stream()
+				.flatMap(Collection::stream)
+				.sorted(Comparator.comparing(TimePeriod::getEnd).reversed())
+				.findFirst()
+				.get()
+				.getEnd();
+
 	}
 }

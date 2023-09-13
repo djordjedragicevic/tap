@@ -99,7 +99,7 @@ public class ProviderWorkInfo {
 	}
 
 	private final int providerId;
-	private String name;
+	private String providerName;
 	boolean isWorking;
 	private final List<TimePeriod> workPeriods;
 	private final List<TimePeriod> breakPeriods;
@@ -159,12 +159,12 @@ public class ProviderWorkInfo {
 		return employees;
 	}
 
-	public String getName() {
-		return name;
+	public String getProviderName() {
+		return providerName;
 	}
 
-	public ProviderWorkInfo setName(String name) {
-		this.name = name;
+	public ProviderWorkInfo setProviderName(String name) {
+		this.providerName = name;
 		return this;
 	}
 }

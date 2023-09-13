@@ -10,18 +10,16 @@ import { useTranslation } from "../i18n/I18nContext";
 import { HOST } from "../common/config";
 import { Image } from "expo-image";
 import XChip from "../components/basic/XChip";
-import { AntDesign } from '@expo/vector-icons';
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { Header, useHeaderHeight } from "@react-navigation/elements";
+import { useHeaderHeight } from "@react-navigation/elements";
 import XCheckBox from "../components/basic/XCheckBox";
-import XSeparator from "../components/basic/XSeparator";
 import { useThemedStyle } from "../style/ThemeContext";
 import { ScrollView } from "react-native-gesture-handler";
 import { Theme } from "../style/themes";
 import HairSalon from "../components/svg/HairSalon";
 import FavoriteButton from "../components/FavoriteButton";
 import { storeDispatch, useStore } from "../store/store";
-import { CHOOSE_APPOINTMENT_SCREEN } from "../navigators/routes";
+import { FREE_APPOINTMENTS_SCREEN } from "../navigators/routes";
 
 
 const getDurationSum = (items) => {
@@ -45,7 +43,7 @@ const groupServices = (sers) => {
 	const gMap = {};
 
 	sers.forEach(ser => {
-		const cId = !ser.c_id ? 'default' : ser.c_id;
+		const cId = !ser.c_id ? '__default' : ser.c_id;
 		if (!cats[cId]) {
 			cats[cId] = {
 				name: ser.c_name,
@@ -58,13 +56,13 @@ const groupServices = (sers) => {
 		}
 
 
-		const gId = !ser.g_id ? 'default' : ser.g_id;
+		const gId = !ser.g_id ? '__default' : ser.g_id;
 		const gMid = gId + cId;
 		if (!gMap[gMid]) {
 			gMap[gMid] = { data: [] };
 
 			cats[cId].groups.push({
-				title: ser.g_name || 'default',
+				title: ser.g_name || '__default',
 				data: gMap[gMid].data
 			});
 		}
@@ -146,7 +144,7 @@ const serviceItemSC = (theme) => StyleSheet.create({
 		flexDirection: 'row',
 		minHeight: 55
 	}
-})
+});
 
 
 const ProviderScreen = ({ navigation, route }) => {
@@ -165,6 +163,8 @@ const ProviderScreen = ({ navigation, route }) => {
 
 	const fProviders = useStore(st => st.user.state.favoriteProviders);
 	const userId = useStore(st => st.user.id);
+
+	const styles = useThemedStyle(providerStyle);
 
 	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
 
@@ -200,6 +200,19 @@ const ProviderScreen = ({ navigation, route }) => {
 		/>
 	), [selected, onItemPress]);
 
+	const renderSectionHeader = useCallback(({ section: { title } }) => {
+		return (
+			<>
+				{
+					title !== '__default' &&
+					<View style={styles.sHeaderContainer}>
+						<XText size={18}>{title}</XText>
+					</View>
+				}
+			</>
+		)
+	}, [styles]);
+
 	const offset = useRef(new Animated.Value(0)).current;
 	const insets = useSafeAreaInsets();
 	const rnHH = useHeaderHeight();
@@ -225,10 +238,8 @@ const ProviderScreen = ({ navigation, route }) => {
 	if (!provider)
 		return null
 
-	console.log(selected);
 
 	return (
-
 		<SafeAreaView style={{ flex: 1 }}>
 			<Animated.View
 				style={{
@@ -304,25 +315,15 @@ const ProviderScreen = ({ navigation, route }) => {
 				<SectionList
 					sections={services.categories[services.categoryList[selectedCatIdx].id].groups}
 					renderItem={renderItem}
-					renderSectionHeader={({ section: { title } }) => (
-						<View style={{ justifyContent: 'flex-end', padding: 5 }}>
-							<XText size={18}>{title}</XText>
-						</View>
-					)}
-
-					style={{
-						flex: 1,
-						zIndex: 1,
-						//marginTop: rnHH
-					}}
-					contentContainerStyle={{
-						//paddingTop: H_MAX_HEIGHT - rnHH,
-						padding: 5,
-						backgroundColor: 'white'
-					}}
+					renderSectionHeader={renderSectionHeader}
+					// style={{
+					// 	flex: 1,
+					// 	zIndex: 1,
+					// 	//marginTop: rnHH
+					// }}
+					contentContainerStyle={styles.sContentContainerStyle}
 					showsVerticalScrollIndicator={true}
 					scrollEventThrottle={16}
-
 					onScroll={Animated.event([
 						{
 							nativeEvent: {
@@ -338,14 +339,27 @@ const ProviderScreen = ({ navigation, route }) => {
 			<XButton
 				title={t('appointments')}
 				disabled={selected.length === 0}
-				flat
-				onPress={() => navigation.navigate(CHOOSE_APPOINTMENT_SCREEN, { services: [...selected] })}
+				style={{ margin: 5 }}
+				onPress={() => navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selected], providerId })}
 			/>
 
 		</SafeAreaView >
 
 	);
 };
+
+const providerStyle = (theme) => StyleSheet.create({
+	sHeaderContainer: {
+		justifyContent: 'flex-end',
+		padding: 5,
+		backgroundColor: theme.colors.backgroundColor,
+
+	},
+	sContentContainerStyle: {
+		padding: 5,
+		backgroundColor: theme.colors.backgroundColor,
+	}
+});
 
 
 export default ProviderScreen;

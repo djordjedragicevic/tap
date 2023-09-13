@@ -6,7 +6,6 @@ import com.tap.appointments.Utils;
 import com.tap.auth.Public;
 import com.tap.common.*;
 import com.tap.db.dao.ProviderDAO;
-import com.tap.db.dto.EmployeeDTO;
 import com.tap.db.dto.ServiceEmployeesDTO;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
@@ -15,13 +14,15 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Path("appointments")
 @RequestScoped
 public class AppointmentsREST {
-	private static final int FREE_APP_SHIFT = 15;
-	private static final int FREE_APP_CREATING_STEP = 5;
+	private static final int FREE_APP_CREATING_STEP = 15;
 	@Inject
 	private ProviderDAO providerDAO;
 
@@ -32,19 +33,29 @@ public class AppointmentsREST {
 	public Object getFreeAppointments(
 			@QueryParam("p") Integer pId,
 			@QueryParam("s") String s,
-			@QueryParam("d") String d
+			@QueryParam("d") String d,
+			@QueryParam("emps") String emps
 	) {
 
+		System.out.println("EMPS " + emps);
+		List<FreeAppointment> apps = new ArrayList<>();
+		Map<String, Object> resp = new HashMap<>();
+		resp.put("apps", apps);
+
 		List<Integer> sIds = Arrays.stream(s.split(",")).map(Integer::parseInt).toList();
-		Set<Integer> eIds = new HashSet<>();
 		LocalDate date = Utils.parseDate(d).orElse(LocalDate.now());
 
 		Map<Integer, ServiceEmployeesDTO> serEmpsMap = providerDAO.getActiveServiceEmployees(sIds, pId);
-		serEmpsMap
-				.values()
-				.forEach(sE -> eIds.addAll(sE.getEmployeeIds()));
+		resp.put("serEmps", serEmpsMap.values());
+
+		if (serEmpsMap.isEmpty())
+			return resp;
+
+		Set<Integer> eIds = new HashSet<>();
+		serEmpsMap.values().forEach(sE -> eIds.addAll(sE.getEmployeeIds()));
 
 		ProviderWorkInfo pWI = getProviderWorkInfoAtDay(pId, eIds, date);
+		resp.put("pwi", pWI);
 
 
 		//------------------------ CALCULATE FREE APPOINTMENTS -------------------------
@@ -52,22 +63,26 @@ public class AppointmentsREST {
 		Map<Integer, List<TimePeriod>> eFreePeriods = new HashMap<>();
 		pWI.getEmployees().forEach(e -> eFreePeriods.computeIfAbsent(e.getEmployeeId(), k -> new ArrayList<>()).addAll(e.getFreePeriods()));
 
-		LocalTime start = Utils.roundUpTo5Min(Utils.getEarliestStartTime(eFreePeriods.values()));
 		LocalTime end = Utils.getLatestEndTime(eFreePeriods.values());
-		LocalTime currentTime = start;
-
-		List<FreeAppointment> apps = new ArrayList<>();
+		LocalTime currentTime = LocalDate.now().equals(date) ? LocalTime.now() : Utils.getEarliestStartTime(eFreePeriods.values());
+		currentTime = Utils.roundUpToXMin(currentTime, FREE_APP_CREATING_STEP);
 
 		while (currentTime.isBefore(end)) {
+			//System.out.println("-- CURRENT: " + currentTime);
 
-			tryToCreateFreeAppointment(serEmpsMap, currentTime, eFreePeriods)
-					.ifPresent(apps::add);
+			Optional<FreeAppointment> app = tryToCreateFreeAppointment(serEmpsMap, currentTime, eFreePeriods);
+			if (app.isPresent()) {
+				String id = LocalDateTime.of(date, currentTime).toEpochSecond(ZoneOffset.UTC) + "S" + sIds.stream().map(String::valueOf).collect(Collectors.joining("_")) + "P" + pId;
+				app.get().finalize(id);
+				apps.add(app.get());
+			}
 
 			currentTime = currentTime.plusMinutes(FREE_APP_CREATING_STEP);
 
 		}
 
-		return Map.of("apps", apps);
+		System.out.println("----------------------");
+		return resp;
 	}
 
 	private Optional<FreeAppointment> tryToCreateFreeAppointment(Map<Integer, ServiceEmployeesDTO> serEmpsMap, LocalTime startTime, Map<Integer, List<TimePeriod>> empFPs) {
@@ -242,7 +257,7 @@ public class AppointmentsREST {
 				else
 					pWI.getBreakPeriods().add(new TimePeriod(start, end));
 
-				pWI.setName(wP.getProvider().getName());
+				pWI.setProviderName(wP.getProvider().getName());
 
 			} else if (wP.getEmployee() != null) {
 				int eId = wP.getEmployee().getId();
