@@ -183,26 +183,21 @@ public class ProviderDAO {
 			Group g = (Group) r[3];
 			User u = (User) r[4];
 
-			ServiceEmployeesDTO sEDTO = resp.computeIfAbsent(s.getId(), k -> new ServiceEmployeesDTO(k, s.getName()));
+			ServiceEmployeesDTO sEDTO = resp.computeIfAbsent(s.getId(), k -> new ServiceEmployeesDTO(k, s.getName(), s.getDuration()));
 			if (g != null)
 				sEDTO.setGroupId(g.getId()).setGroupName(g.getName());
 
-			sEDTO.getEmployees().add(new EmployeeDTO(e.getId(), u.getFirstName(), u.getLastName()));
+			if (!sEDTO.getEmployeeIds().contains(e.getId())) {
+				sEDTO.getEmployees().add(new EmployeeDTO(e.getId(), u.getFirstName(), u.getLastName()));
+				sEDTO.getEmployeeIds().add(e.getId());
+			}
 		}
 
+		resp.values().forEach(se -> {
+			se.getEmployees().sort(Comparator.comparing(EmployeeDTO::getId));
+			se.getEmployeeIds().sort(Integer::compareTo);
+		});
 
-		for (Object[] r : dbResp) {
-			Service s = (Service) r[1];
-			Employee e = (Employee) r[2];
-			Group g = (Group) r[3];
-			User u = (User) r[4];
-
-			ServiceEmployeesDTO sEDTO = resp.computeIfAbsent(s.getId(), k -> new ServiceEmployeesDTO(k, s.getName()));
-			if (g != null)
-				sEDTO.setGroupId(g.getId()).setGroupName(g.getName());
-
-			sEDTO.getEmployees().add(new EmployeeDTO(e.getId(), u.getFirstName(), u.getLastName()));
-		}
 		return resp;
 
 	}
@@ -246,7 +241,7 @@ public class ProviderDAO {
 
 	}
 
-	public List<WorkPeriod> getWorkPeriodsAtDay(List<Integer> eIds, int pId, LocalDate date) {
+	public List<WorkPeriod> getWorkPeriodsAtDay(Set<Integer> eIds, int pId, LocalDate date) {
 		int day = date.getDayOfWeek().getValue();
 		String query = """
 				SELECT wp FROM WorkPeriod wp WHERE
@@ -262,11 +257,11 @@ public class ProviderDAO {
 
 	}
 
-	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, List<Integer> eIds, LocalDate date) {
+	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, Set<Integer> eIds, LocalDate date) {
 		return getBusyPeriodsAtDay(pId, eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
 	}
 
-	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
+	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, Set<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 
 		String fromDate = from.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
 		String toDate = to.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -333,16 +328,16 @@ public class ProviderDAO {
 		if (hasPid)
 			q.setParameter("pId", pId);
 		if (hasEid)
-			q.setParameter("eIds", eIds.size() == 1 ? eIds.get(0) : eIds);
+			q.setParameter("eIds", eIds.size() == 1 ? eIds.iterator().next() : eIds);
 
 		return q.getResultList();
 	}
 
-	public List<Appointment> getAppointmentsAtDay(List<Integer> eIds, LocalDate date) {
+	public List<Appointment> getAppointmentsAtDay(Set<Integer> eIds, LocalDate date) {
 		return getAppointmentsAtDay(eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
 	}
 
-	public List<Appointment> getAppointmentsAtDay(List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
+	public List<Appointment> getAppointmentsAtDay(Set<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 
 		String query = """
 				SELECT a FROM Appointment a

@@ -1,10 +1,12 @@
 package com.tap.rest;
 
+import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
 import com.tap.auth.Public;
 import com.tap.common.*;
 import com.tap.db.dao.ProviderDAO;
+import com.tap.db.dto.EmployeeDTO;
 import com.tap.db.dto.ServiceEmployeesDTO;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
@@ -19,6 +21,7 @@ import java.util.*;
 @RequestScoped
 public class AppointmentsREST {
 	private static final int FREE_APP_SHIFT = 15;
+	private static final int FREE_APP_CREATING_STEP = 5;
 	@Inject
 	private ProviderDAO providerDAO;
 
@@ -32,62 +35,94 @@ public class AppointmentsREST {
 			@QueryParam("d") String d
 	) {
 
-
 		List<Integer> sIds = Arrays.stream(s.split(",")).map(Integer::parseInt).toList();
 		Set<Integer> eIds = new HashSet<>();
-		Map<Integer, List<Map<String, Object>>> serEmpsMap = new HashMap<>();
-
-		Map<Integer, ServiceEmployeesDTO> serviceEmployees = providerDAO.getActiveServiceEmployees(sIds, pId);
-		//List<Integer> eIds = serviceEmployees.stream().mapToInt(se -> se.getEmployee().getId()).boxed().toList();
-
-//		serviceEmployees.forEach(sE -> {
-//			Service ser = sE.getService();
-//			Group g = ser.getGroup();
-//			serEmpsMap.computeIfAbsent(sE.getEmployee().getId(), k -> new ArrayList<>()).add(Map.of(
-//					"id", ser.getId(),
-//					"name",ser.getName(),
-//					"duration", ser.getDuration(),
-//					"group", g == null ? "" : g.getName()
-//			));
-//		});
-
-
 		LocalDate date = Utils.parseDate(d).orElse(LocalDate.now());
 
+		Map<Integer, ServiceEmployeesDTO> serEmpsMap = providerDAO.getActiveServiceEmployees(sIds, pId);
+		serEmpsMap
+				.values()
+				.forEach(sE -> eIds.addAll(sE.getEmployeeIds()));
 
-		//ProviderWorkInfo pWI = getProviderWorkInfoAtDay(pId, eIds, date);
-
-
-		//Form time periods
-//			List<TimePeriod> employeeTimePeriods = new ArrayList<>(e.getRealBreakTime());
-//			for (TimePeriod freeTP : freePeriods) {
-//				LocalTime start = freeTP.getStart();
-//				long freePeriodDur = Duration.between(start, freeTP.getEnd()).toMinutes();
-//				long part = 0;
-//				while (employee.serviceDurationSum < freePeriodDur) {
-//					LocalTime freeApp = start.plusMinutes(part * FREE_APP_SHIFT);
-//					employee.freeAppointments.add(freeApp);
-//					freeApps.add(Map.of(
-//							"time", freeApp,
-//							"duration", employee.serviceDurationSum,
-//							"services", employee.services,
-//							"employee", Map.of(
-//									"id", employee.employeeId,
-//									"firstName", e.getFirstName(),
-//									"lastName", e.getLastName()
-//							)
-//					));
-//
-//					freePeriodDur -= FREE_APP_SHIFT;
-//					part += 1;
-//				}
-//			}
+		ProviderWorkInfo pWI = getProviderWorkInfoAtDay(pId, eIds, date);
 
 
-		return serviceEmployees;
+		//------------------------ CALCULATE FREE APPOINTMENTS -------------------------
+
+		Map<Integer, List<TimePeriod>> eFreePeriods = new HashMap<>();
+		pWI.getEmployees().forEach(e -> eFreePeriods.computeIfAbsent(e.getEmployeeId(), k -> new ArrayList<>()).addAll(e.getFreePeriods()));
+
+		LocalTime start = Utils.roundUpTo5Min(Utils.getEarliestStartTime(eFreePeriods.values()));
+		LocalTime end = Utils.getLatestEndTime(eFreePeriods.values());
+		LocalTime currentTime = start;
+
+		List<FreeAppointment> apps = new ArrayList<>();
+
+		while (currentTime.isBefore(end)) {
+
+			tryToCreateFreeAppointment(serEmpsMap, currentTime, eFreePeriods)
+					.ifPresent(apps::add);
+
+			currentTime = currentTime.plusMinutes(FREE_APP_CREATING_STEP);
+
+		}
+
+		return Map.of("apps", apps);
 	}
 
-	private static List<NamedTimePeriod> calculateFreePeriods(List<TimePeriod> workPeriods, List<NamedTimePeriod> timeline) {
+	private Optional<FreeAppointment> tryToCreateFreeAppointment(Map<Integer, ServiceEmployeesDTO> serEmpsMap, LocalTime startTime, Map<Integer, List<TimePeriod>> empFPs) {
+
+		Deque<Integer> serIds = new ArrayDeque<>(serEmpsMap.keySet());
+		FreeAppointment fApp = new FreeAppointment();
+		LocalTime startOS;
+		LocalTime endOS;
+		boolean found;
+
+		for (Integer serId : serIds) {
+			startOS = fApp.getServices().isEmpty() ? startTime : fApp.getServices().get(fApp.getServices().size() - 1).getTime().plusMinutes(fApp.getServices().get(fApp.getServices().size() - 1).getDuration());
+			endOS = startOS.plusMinutes(serEmpsMap.get(serId).getDuration());
+			found = false;
+			for (Integer serEmp : serEmpsMap.get(serId).getEmployeeIds()) {
+				for (TimePeriod tmpFP : empFPs.get(serEmp)) {
+					if (startOS.isAfter(tmpFP.getStart()) && endOS.isBefore(tmpFP.getEnd())) {
+						fApp.getServices().add(
+								new FreeAppointment.Service(
+										serId,
+										serEmpsMap.get(serId).getServiceName(),
+										serEmp,
+										startOS,
+										serEmpsMap.get(serId).getDuration()
+								)
+						);
+
+						fApp.setDurationSum(fApp.getDurationSum() + serEmpsMap.get(serId).getDuration());
+
+						found = true;
+						break;
+					} else if (endOS.isAfter(tmpFP.getEnd())) {
+						//empFPs.get(serEmp).remove(tmpFP);
+					}
+				}
+				if (found)
+					break;
+			}
+
+			if (!found)
+				break;
+		}
+
+
+		if (fApp.getServices().size() == serIds.size()) {
+			fApp.setStartAt(fApp.getServices().get(0).getTime());
+			return Optional.of(fApp);
+		} else {
+			return Optional.empty();
+		}
+
+	}
+
+	private static List<NamedTimePeriod> calculateFreePeriods
+			(List<TimePeriod> workPeriods, List<NamedTimePeriod> timeline) {
 
 		List<NamedTimePeriod> freePeriods = new ArrayList<>();
 		List<TimeDot> timeDots = new ArrayList<>();
@@ -184,7 +219,7 @@ public class AppointmentsREST {
 		}
 	}
 
-	private ProviderWorkInfo getProviderWorkInfoAtDay(Integer pId, List<Integer> eIds, LocalDate date) {
+	private ProviderWorkInfo getProviderWorkInfoAtDay(Integer pId, Set<Integer> eIds, LocalDate date) {
 
 		ProviderWorkInfo pWI = new ProviderWorkInfo(pId, date);
 
@@ -314,10 +349,14 @@ public class AppointmentsREST {
 						e.getTimeline().add(nTP);
 					});
 
+			timeline.sort(Comparator.comparing(TimePeriod::getStart));
+
 
 			List<NamedTimePeriod> freePeriods = calculateFreePeriods(e.getWorkPeriods(), timeline);
-			timeline.addAll(freePeriods);
+			freePeriods.sort(Comparator.comparing(TimePeriod::getStart));
+			e.setFreePeriods(freePeriods);
 
+			timeline.addAll(freePeriods);
 			timeline.sort(Comparator.comparing(TimePeriod::getStart));
 
 			//Calculate free time sum

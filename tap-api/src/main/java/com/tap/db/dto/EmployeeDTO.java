@@ -1,17 +1,19 @@
 package com.tap.db.dto;
 
+import java.util.Objects;
+
 public class EmployeeDTO {
-	private long id;
+	private int id;
 	private String firstName;
 	private String lastName;
 
-	public EmployeeDTO(long id, String firstName, String lastName) {
+	public EmployeeDTO(int id, String firstName, String lastName) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -24,16 +26,14 @@ public class EmployeeDTO {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof EmployeeDTO e)
-			return e.getId() == this.id;
-
-		return false;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof EmployeeDTO that)) return false;
+		return getId() == that.getId();
 	}
 
 	@Override
 	public int hashCode() {
-		return  (int)this.id;
+		return Objects.hash(getId(), getFirstName(), getLastName());
 	}
-
 }

@@ -6,9 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Utils {
 
@@ -43,5 +41,29 @@ public class Utils {
 		LocalTime newStart = time.getStart().isBefore(target.getStart()) ? target.getStart() : time.getStart();
 		LocalTime newEnd = time.getEnd().isAfter(target.getEnd()) ? target.getEnd() : time.getEnd();
 		return new TimePeriod(newStart, newEnd);
+	}
+
+	public static LocalTime roundUpTo5Min(LocalTime time) {
+		int m = time.getMinute();
+		while (m % 5 != 0)
+			m += 1;
+		return LocalTime.of(time.getHour(), m);
+	}
+
+	public static LocalTime getEarliestStartTime(Collection<List<TimePeriod>> times) {
+		return times.stream()
+				.map(t -> t.get(0))
+				.sorted(Comparator.comparing(TimePeriod::getStart))
+				.toList()
+				.get(0)
+				.getStart();
+	}
+
+	public static LocalTime getLatestEndTime(Collection<List<TimePeriod>> times) {
+		List<TimePeriod> tP = times.stream()
+				.map(t -> t.get(0))
+				.sorted(Comparator.comparing(TimePeriod::getEnd))
+				.toList();
+		return tP.get(tP.size() - 1).getEnd();
 	}
 }

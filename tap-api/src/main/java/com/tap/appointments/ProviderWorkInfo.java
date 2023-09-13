@@ -4,6 +4,7 @@ import com.tap.common.NamedTimePeriod;
 import com.tap.common.TimePeriod;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,10 +122,12 @@ public class ProviderWorkInfo {
 		return null;
 	}
 
-	public void addToEmployeeTimeline(NamedTimePeriod tp, int eId) {
-		Employee e = this.getEmployeeById(eId);
-		if (e != null)
-			e.getTimeline().add(tp);
+	public LocalTime getOpenTime() {
+		return this.getWorkPeriods().get(0).getStart();
+	}
+
+	public LocalTime getCloseTime() {
+		return this.getWorkPeriods().get(this.getWorkPeriods().size() - 1).getEnd();
 	}
 
 

@@ -1,6 +1,8 @@
 package com.tap.db.dto;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ServiceEmployeesDTO {
@@ -8,12 +10,16 @@ public class ServiceEmployeesDTO {
 	private String serviceName;
 	private int groupId;
 	private String groupName;
-	private Set<EmployeeDTO> employees;
+	private List<EmployeeDTO> employees;
+	private int duration;
+	public List<Integer> employeeIds;
 
-	public ServiceEmployeesDTO(long serviceId, String serviceName) {
+	public ServiceEmployeesDTO(long serviceId, String serviceName, int duration) {
 		this.serviceId = serviceId;
 		this.serviceName = serviceName;
-		this.employees = new HashSet<>();
+		this.employees = new ArrayList<>();
+		this.duration = duration;
+		this.employeeIds = new ArrayList<>();
 	}
 
 	public long getServiceId() {
@@ -32,7 +38,7 @@ public class ServiceEmployeesDTO {
 		return groupName;
 	}
 
-	public Set<EmployeeDTO> getEmployees() {
+	public List<EmployeeDTO> getEmployees() {
 		return employees;
 	}
 
@@ -44,5 +50,13 @@ public class ServiceEmployeesDTO {
 	public ServiceEmployeesDTO setGroupName(String groupName) {
 		this.groupName = groupName;
 		return this;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public List<Integer> getEmployeeIds() {
+		return employeeIds;
 	}
 }
