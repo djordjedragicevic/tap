@@ -1,8 +1,8 @@
 package com.tap.rest;
 
-import com.tap.auth.Public;
-import com.tap.auth.Secured;
-import com.tap.auth.Token;
+import com.tap.security.Public;
+import com.tap.security.Secured;
+import com.tap.security.Token;
 import com.tap.db.dao.AuthDAO;
 import com.tap.db.dao.UtilDAO;
 import com.tap.db.entity.Role;

@@ -1,7 +1,7 @@
 package com.tap.appointments;
 
-import com.tap.db.dto.EmployeeDTO;
-import com.tap.db.dto.ServiceDTO;
+import com.tap.db.dto.EmployeeDto;
+import com.tap.db.dto.ServiceDto;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -13,10 +13,10 @@ public class FreeAppointment {
 	public static class Service {
 		private LocalTime time;
 		private String joinId;
-		private ServiceDTO service;
-		private EmployeeDTO employee;
+		private ServiceDto service;
+		private EmployeeDto employee;
 
-		public Service(LocalTime time, ServiceDTO service, EmployeeDTO employee) {
+		public Service(LocalTime time, ServiceDto service, EmployeeDto employee) {
 			this.time = time;
 			this.service = service;
 			this.employee = employee;
@@ -30,11 +30,11 @@ public class FreeAppointment {
 			return joinId;
 		}
 
-		public ServiceDTO getService() {
+		public ServiceDto getService() {
 			return service;
 		}
 
-		public EmployeeDTO getEmployee() {
+		public EmployeeDto getEmployee() {
 			return employee;
 		}
 	}

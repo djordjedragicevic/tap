@@ -1,6 +1,6 @@
 package com.tap.rest;
 
-import com.tap.auth.Public;
+import com.tap.security.Public;
 import com.tap.db.dao.ProviderDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;

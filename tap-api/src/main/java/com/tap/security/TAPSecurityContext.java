@@ -1,4 +1,4 @@
-package com.tap.auth;
+package com.tap.security;
 
 import jakarta.ws.rs.core.SecurityContext;
 

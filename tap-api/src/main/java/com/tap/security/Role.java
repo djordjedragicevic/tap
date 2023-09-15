@@ -1,4 +1,4 @@
-package com.tap.auth;
+package com.tap.security;
 
 public enum Role {
 	SUPER_ADMIN("SUPER_ADMIN"),

@@ -1,7 +1,7 @@
 package com.tap.rest;
 
-import com.tap.auth.Role;
-import com.tap.auth.Secured;
+import com.tap.security.Role;
+import com.tap.security.Secured;
 import com.tap.db.dao.UserDAO;
 import jakarta.inject.Inject;
 import jakarta.json.*;

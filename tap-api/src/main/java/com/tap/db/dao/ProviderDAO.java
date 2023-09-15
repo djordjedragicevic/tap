@@ -2,8 +2,8 @@ package com.tap.db.dao;
 
 import com.tap.appointments.Utils;
 import com.tap.common.Util;
-import com.tap.db.dto.EmployeeDTO;
-import com.tap.db.dto.ServiceDTO;
+import com.tap.db.dto.EmployeeDto;
+import com.tap.db.dto.ServiceDto;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.Json;
@@ -154,7 +154,7 @@ public class ProviderDAO {
 //				.getResultList();
 //	}
 
-	public Map<ServiceDTO, List<EmployeeDTO>> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
+	public Map<ServiceDto, List<EmployeeDto>> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
 		String query = """
 				SELECT DISTINCT
 				se, s, e, g, u
@@ -174,8 +174,8 @@ public class ProviderDAO {
 				.setParameter("pId", pId)
 				.getResultList();
 
-		Map<ServiceDTO, List<EmployeeDTO>> resp = new LinkedHashMap<>();
-		Map<Service, ServiceDTO> sMap = new HashMap<>();
+		Map<ServiceDto, List<EmployeeDto>> resp = new LinkedHashMap<>();
+		Map<Service, ServiceDto> sMap = new HashMap<>();
 
 		for (Object[] r : dbResp) {
 			Service s = (Service) r[1];
@@ -183,7 +183,7 @@ public class ProviderDAO {
 			Group g = (Group) r[3];
 			User u = (User) r[4];
 
-			ServiceDTO sDto = sMap.computeIfAbsent(s, k -> new ServiceDTO(
+			ServiceDto sDto = sMap.computeIfAbsent(s, k -> new ServiceDto(
 					k.getId(),
 					k.getName(),
 					k.getPrice().doubleValue(),
@@ -192,7 +192,7 @@ public class ProviderDAO {
 			));
 
 			resp.computeIfAbsent(sDto, k -> new ArrayList<>())
-					.add(new EmployeeDTO(
+					.add(new EmployeeDto(
 							e.getId(),
 							u.getFirstName(),
 							u.getLastName()

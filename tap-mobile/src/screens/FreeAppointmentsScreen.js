@@ -1,4 +1,4 @@
-import { Button, Dimensions, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
 import { Http } from "../common/Http";
 import Screen from "../components/Screen";
 import XText from "../components/basic/XText";
@@ -46,6 +46,7 @@ const FreeAppIntem = ({ app, onPress = emptyFn }) => {
 const FreeAppointmentDetails = ({ navigation, app }) => {
 	const [appProcessing, setAppProcessing] = useState(false);
 	useLockNavigation(appProcessing, navigation);
+
 	return (
 		<View style={{ flex: 1, padding: 10 }}>
 			<BottomSheetScrollView>

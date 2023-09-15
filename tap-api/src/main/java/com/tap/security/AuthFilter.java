@@ -1,4 +1,4 @@
-package com.tap.auth;
+package com.tap.security;
 
 import com.tap.db.dao.UtilDAO;
 import jakarta.annotation.Priority;
