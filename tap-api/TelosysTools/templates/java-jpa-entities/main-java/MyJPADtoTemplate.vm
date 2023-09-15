@@ -1,0 +1,72 @@
+## --------------------------------------------------
+#if ( $entity.isJoinEntity() )
+	#cancel("No JPA class for join entity")
+#end
+/**
+ * Generated DTO class for "${entity.name}"
+ */
+package ${target.javaPackageFromFolder(${SRC})};
+#foreach( $import in $java.imports($entity) )
+#if(!$import.toString().contains("List"))
+import $import;
+#end
+#end
+public class ${entity.name}Dto {	
+##	//--- ENTITY PRIMARY KEY 
+#foreach( $attribute in $entity.keyAttributes )
+	private $attribute.wrapperType $attribute.name#if($attribute.hasInitialValue())= ${attribute.ini}#end;
+#end
+##	//--- ENTITY DATA FIELDS 
+#foreach( $attribute in $entity.nonKeyAttributes )
+#if(!$attribute.isFK() and $attribute.name != "active")
+	private $attribute.wrapperType $attribute.name#if($attribute.hasInitialValue())= ${attribute.ini} #end;
+#end
+#end
+##	//--- ENTITY LINKS ( RELATIONSHIP )
+#foreach( $link in $entity.links )
+#if($link.isOwningSide())
+	private ${link.formattedFieldType(1)}Dto $link.fieldName; 
+#end
+#end
+##	//--- CONSTRUCTOR
+	public ${entity.name}Dto() {}
+
+##	//--- GETTERS & SETTERS FOR FIELDS
+#foreach( $attribute in $entity.keyAttributes )
+	public ${entity.name}Dto ${attribute.setter}( $attribute.wrapperType $attribute.name ) {
+		this.$attribute.name = $attribute.name;
+		return this;
+	}
+
+	public $attribute.wrapperType ${attribute.getter}() {
+		return this.$attribute.name;
+	}
+
+#end
+#foreach( $attribute in $entity.nonKeyAttributes )
+#if(!$attribute.isFK() and $attribute.name != "active")
+	public ${entity.name}Dto ${attribute.setter}( $attribute.type $attribute.name ) {
+		this.$attribute.name = $attribute.name;
+		return this;
+	}
+
+	public $attribute.type ${attribute.getter}() {
+		return this.$attribute.name;
+	}
+
+#end
+#end
+##	//--- GETTERS FOR LINKS
+#foreach( $link in $entity.selectedLinks )
+#if($link.isOwningSide())
+	public ${link.formattedFieldType(1)}Dto ${link.getter}() {
+		return this.${link.formattedFieldName(1)};
+	}
+
+	public ${entity.name}Dto ${link.setter}(${link.fieldType}Dto $link.fieldName) {
+		this.$link.fieldName = $link.fieldName;
+		return this;
+	}
+#end
+#end
+}

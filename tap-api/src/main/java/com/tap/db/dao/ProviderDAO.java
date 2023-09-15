@@ -3,7 +3,9 @@ package com.tap.db.dao;
 import com.tap.appointments.Utils;
 import com.tap.common.Util;
 import com.tap.db.dto.EmployeeDto;
+import com.tap.db.dto.GroupDto;
 import com.tap.db.dto.ServiceDto;
+import com.tap.db.dto.UserDto;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.Json;
@@ -183,20 +185,23 @@ public class ProviderDAO {
 			Group g = (Group) r[3];
 			User u = (User) r[4];
 
-			ServiceDto sDto = sMap.computeIfAbsent(s, k -> new ServiceDto(
-					k.getId(),
-					k.getName(),
-					k.getPrice().doubleValue(),
-					k.getDuration(),
-					g
-			));
+			ServiceDto sDto = sMap.computeIfAbsent(s, k ->
+					new ServiceDto()
+							.setId(k.getId())
+							.setName(k.getName())
+							.setPrice(k.getPrice())
+							.setDuration(k.getDuration())
+							.setGroup(g != null ? new GroupDto().setName(g.getName()) : null)
+			);
 
 			resp.computeIfAbsent(sDto, k -> new ArrayList<>())
-					.add(new EmployeeDto(
-							e.getId(),
-							u.getFirstName(),
-							u.getLastName()
-					));
+					.add(new EmployeeDto()
+							.setId(e.getId())
+							.setUser(new UserDto()
+									.setFirstName(u.getFirstName())
+									.setLastName(u.getLastName())
+							)
+					);
 		}
 
 		return resp;

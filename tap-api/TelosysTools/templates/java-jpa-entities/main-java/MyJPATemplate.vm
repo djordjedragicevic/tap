@@ -4,8 +4,8 @@
 #end
 ## --------------------------------------------------
 #checkId($entity)
-#parse("include/init_var_entity.vm")
-#parse("include/java_header.vm")
+## #parse("include/init_var_entity.vm")
+##  #parse("include/java_header.vm")
 ##---------------------------------------------------------------------------------------
 ##                 JPA CONFIGURATION
 ##---------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 ## ---------------------------
 ## Set default FETCH-TYPE for each cardinality ( "LAZY" or "EAGER" )
 /**
- * JPA entity class for "${entity.name}"
+ * Generated JPA entity class for "${entity.name}"
  */
 
 #set($jpa.manyToOneFetchType  = "LAZY" )

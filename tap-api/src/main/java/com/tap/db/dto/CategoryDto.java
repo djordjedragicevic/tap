@@ -1,13 +1,13 @@
 /**
- * Generated DTO class for "Group"
+ * Generated DTO class for "Category"
  */
 package com.tap.db.dto;
-public class GroupDto {	
+public class CategoryDto {	
 	private Integer id;
 	private String name;
-	public GroupDto() {}
+	public CategoryDto() {}
 
-	public GroupDto setId( Integer id ) {
+	public CategoryDto setId( Integer id ) {
 		this.id = id;
 		return this;
 	}
@@ -16,7 +16,7 @@ public class GroupDto {
 		return this.id;
 	}
 
-	public GroupDto setName( String name ) {
+	public CategoryDto setName( String name ) {
 		this.name = name;
 		return this;
 	}
