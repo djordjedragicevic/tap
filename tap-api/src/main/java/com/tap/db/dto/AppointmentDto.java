@@ -8,6 +8,7 @@ public class AppointmentDto {
 	private LocalDateTime start;
 	private LocalDateTime end;
 	private LocalDateTime createDate;
+	private String joinId;
 	private LocalDateTime statusResponseDate;
 	private String comment;
 	private AppointmentStatusDto appointmentstatus; 
@@ -51,6 +52,15 @@ public class AppointmentDto {
 
 	public LocalDateTime getCreateDate() {
 		return this.createDate;
+	}
+
+	public AppointmentDto setJoinId( String joinId ) {
+		this.joinId = joinId;
+		return this;
+	}
+
+	public String getJoinId() {
+		return this.joinId;
 	}
 
 	public AppointmentDto setStatusResponseDate( LocalDateTime statusResponseDate ) {

@@ -29,6 +29,9 @@ public class Appointment implements Serializable {
     @Column(name="create_date", nullable=false)
 	private LocalDateTime createDate;
 
+    @Column(name="join_id", length=64)
+	private String joinId;
+
     @Column(name="status_response_date")
 	private LocalDateTime statusResponseDate;
 
@@ -90,6 +93,14 @@ public class Appointment implements Serializable {
 
 	public LocalDateTime getCreateDate() {
 		return this.createDate;
+	}
+
+	public void setJoinId( String joinId ) {
+		this.joinId = joinId ;
+	}
+
+	public String getJoinId() {
+		return this.joinId;
 	}
 
 	public void setStatusResponseDate( LocalDateTime statusResponseDate ) {

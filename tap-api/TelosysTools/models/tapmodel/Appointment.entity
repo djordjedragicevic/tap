@@ -11,6 +11,7 @@ Appointment {
   createDate : timestamp { @DbName(create_date) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
   createdById : int { @DbName(created_by_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_user2, User.id) };
   appointmentStatusId : int { @DbName(appointment_status_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_appointment_status1, AppointmentStatus.id) };
+  joinId : string { @DbName(join_id) @DbType("VARCHAR(64)") @Size(64) @MaxLen(64) };
   statusResponseDate : timestamp { @DbName(status_response_date) @DbType(DATETIME) };
   comment : string { @DbName(comment) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
   // links
