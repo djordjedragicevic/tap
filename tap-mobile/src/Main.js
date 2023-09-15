@@ -2,10 +2,11 @@ import React, { useMemo } from 'react';
 import { DarkTheme, DefaultTheme, NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { THEME } from './style/themes';
 import { useTheme } from './style/ThemeContext';
-import { StatusBar } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import AppNavigator from './navigators/AppNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import XOverlay from './components/basic/XOverlay';
 
 const Main = () => {
 
@@ -51,6 +52,8 @@ const Main = () => {
 					</NavigationContainer>
 				</BottomSheetModalProvider>
 			</SafeAreaProvider>
+
+			<XOverlay />
 		</>
 	);
 };

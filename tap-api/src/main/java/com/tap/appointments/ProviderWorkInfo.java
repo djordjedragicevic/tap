@@ -122,15 +122,6 @@ public class ProviderWorkInfo {
 		return null;
 	}
 
-	public LocalTime getOpenTime() {
-		return this.getWorkPeriods().get(0).getStart();
-	}
-
-	public LocalTime getCloseTime() {
-		return this.getWorkPeriods().get(this.getWorkPeriods().size() - 1).getEnd();
-	}
-
-
 	public int getProviderId() {
 		return providerId;
 	}

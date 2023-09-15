@@ -1,5 +1,8 @@
 package com.tap.appointments;
 
+import com.tap.db.dto.EmployeeDTO;
+import com.tap.db.dto.ServiceDTO;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -8,43 +11,31 @@ import java.util.List;
 public class FreeAppointment {
 
 	public static class Service {
-		private int serviceId;
-		private String serviceName;
-		private int employeeId;
 		private LocalTime time;
-		private int duration;
 		private String joinId;
+		private ServiceDTO service;
+		private EmployeeDTO employee;
 
-		public Service(int serviceId, String serviceName, int employeeId, LocalTime time, int duration) {
-			this.serviceId = serviceId;
-			this.serviceName = serviceName;
-			this.employeeId = employeeId;
+		public Service(LocalTime time, ServiceDTO service, EmployeeDTO employee) {
 			this.time = time;
-			this.duration = duration;
-		}
-
-		public int getServiceId() {
-			return serviceId;
-		}
-
-		public String getServiceName() {
-			return serviceName;
-		}
-
-		public int getEmployeeId() {
-			return employeeId;
+			this.service = service;
+			this.employee = employee;
 		}
 
 		public LocalTime getTime() {
 			return time;
 		}
 
-		public int getDuration() {
-			return duration;
-		}
-
 		public String getJoinId() {
 			return joinId;
+		}
+
+		public ServiceDTO getService() {
+			return service;
+		}
+
+		public EmployeeDTO getEmployee() {
+			return employee;
 		}
 	}
 

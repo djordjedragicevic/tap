@@ -17,9 +17,9 @@ const XSelectField = ({
 
 	const T = useMemo(() => {
 		if (title != null)
-			return <XText size={18} ellipsizeMode={'tail'} numberOfLines={1}>{title}</XText>
+			return <XText ellipsizeMode={'tail'} numberOfLines={1}>{title}</XText>
 		else if (placeholder != null)
-			return <XText size={18} tertiary ellipsizeMode={'tail'} numberOfLines={1}>{placeholder}</XText>
+			return <XText tertiary ellipsizeMode={'tail'} numberOfLines={1}>{placeholder}</XText>
 		else
 			return null;
 	}, [title, placeholder]);
@@ -27,9 +27,9 @@ const XSelectField = ({
 	return (
 		<XFieldContainer pressable={pressable} iconRight={iconRight} meta={meta} {...rest}>
 			<View style={styles.textContainer}>
-				<View style={{ flex: 2, paddingEnd: 5 }}>{T}</View>
-				<View style={{ flex: 1, alignItems: 'flex-end' }}>
-					{!!value && <XText secondary size={18} ellipsizeMode={'tail'} numberOfLines={1}>{value}</XText>}
+				<View style={styles.textTitle}>{T}</View>
+				<View style={styles.textValue}>
+					{!!value && <XText secondary ellipsizeMode={'tail'} numberOfLines={1}>{value}</XText>}
 				</View>
 			</View>
 		</XFieldContainer >
@@ -39,8 +39,16 @@ const XSelectField = ({
 const styles = StyleSheet.create({
 	textContainer: {
 		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between'
+		alignItems: 'center'
+	},
+	textTitle: {
+		paddingEnd: 5,
+		flex: 1
+	},
+	textValue: {
+		maxWidth: 150,
+		minWidth: 80,
+		alignItems: 'flex-end'
 	}
 })
 

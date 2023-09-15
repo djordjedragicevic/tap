@@ -92,7 +92,12 @@ export class Http {
 			qParams = tmpQP;
 		}
 
-		let _url = qParams ? url + '?' + new URLSearchParams(qParams) : url;
+		let _url = qParams ? url + '?' + Object.keys(qParams).map(k => {
+			if (Array.isArray(qParams[k]))
+				return qParams[k].map(empV => `${k}=${encodeURIComponent(empV)}`).join('&');
+			else
+				return `${k}=${encodeURIComponent(qParams[k])}`;
+		}).join('&') : url;
 
 		const resp = await Http.send(_url, {
 			method: 'GET',

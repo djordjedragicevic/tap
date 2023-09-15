@@ -54,6 +54,12 @@ export const useTranslation = () => {
 	return t;
 };
 
+export const useDateCode = () => {
+	const { lng } = useContext(I18nContext);
+
+	return lng.dateCode;
+}
+
 export const useCurrency = () => {
 
 };

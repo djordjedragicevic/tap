@@ -3,7 +3,7 @@ package com.tap.db.dao;
 import com.tap.appointments.Utils;
 import com.tap.common.Util;
 import com.tap.db.dto.EmployeeDTO;
-import com.tap.db.dto.ServiceEmployeesDTO;
+import com.tap.db.dto.ServiceDTO;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.Json;
@@ -154,7 +154,7 @@ public class ProviderDAO {
 //				.getResultList();
 //	}
 
-	public Map<Integer, ServiceEmployeesDTO> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
+	public Map<ServiceDTO, List<EmployeeDTO>> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
 		String query = """
 				SELECT DISTINCT
 				se, s, e, g, u
@@ -174,8 +174,8 @@ public class ProviderDAO {
 				.setParameter("pId", pId)
 				.getResultList();
 
-		Map<Integer, ServiceEmployeesDTO> resp = new LinkedHashMap<>();
-
+		Map<ServiceDTO, List<EmployeeDTO>> resp = new LinkedHashMap<>();
+		Map<Service, ServiceDTO> sMap = new HashMap<>();
 
 		for (Object[] r : dbResp) {
 			Service s = (Service) r[1];
@@ -183,20 +183,21 @@ public class ProviderDAO {
 			Group g = (Group) r[3];
 			User u = (User) r[4];
 
-			ServiceEmployeesDTO sEDTO = resp.computeIfAbsent(s.getId(), k -> new ServiceEmployeesDTO(k, s.getName(), s.getDuration()));
-			if (g != null)
-				sEDTO.setGroupId(g.getId()).setGroupName(g.getName());
+			ServiceDTO sDto = sMap.computeIfAbsent(s, k -> new ServiceDTO(
+					k.getId(),
+					k.getName(),
+					k.getPrice().doubleValue(),
+					k.getDuration(),
+					g
+			));
 
-			if (!sEDTO.getEmployeeIds().contains(e.getId())) {
-				sEDTO.getEmployees().add(new EmployeeDTO(e.getId(), u.getFirstName(), u.getLastName()));
-				sEDTO.getEmployeeIds().add(e.getId());
-			}
+			resp.computeIfAbsent(sDto, k -> new ArrayList<>())
+					.add(new EmployeeDTO(
+							e.getId(),
+							u.getFirstName(),
+							u.getLastName()
+					));
 		}
-
-		resp.values().forEach(se -> {
-			se.getEmployees().sort(Comparator.comparing(EmployeeDTO::getId));
-			se.getEmployeeIds().sort(Integer::compareTo);
-		});
 
 		return resp;
 
@@ -241,7 +242,7 @@ public class ProviderDAO {
 
 	}
 
-	public List<WorkPeriod> getWorkPeriodsAtDay(Set<Integer> eIds, int pId, LocalDate date) {
+	public List<WorkPeriod> getWorkPeriodsAtDay(List<Integer> eIds, int pId, LocalDate date) {
 		int day = date.getDayOfWeek().getValue();
 		String query = """
 				SELECT wp FROM WorkPeriod wp WHERE
@@ -257,11 +258,11 @@ public class ProviderDAO {
 
 	}
 
-	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, Set<Integer> eIds, LocalDate date) {
+	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, List<Integer> eIds, LocalDate date) {
 		return getBusyPeriodsAtDay(pId, eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
 	}
 
-	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, Set<Integer> eIds, LocalDateTime from, LocalDateTime to) {
+	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 
 		String fromDate = from.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
 		String toDate = to.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -333,11 +334,11 @@ public class ProviderDAO {
 		return q.getResultList();
 	}
 
-	public List<Appointment> getAppointmentsAtDay(Set<Integer> eIds, LocalDate date) {
+	public List<Appointment> getAppointmentsAtDay(List<Integer> eIds, LocalDate date) {
 		return getAppointmentsAtDay(eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
 	}
 
-	public List<Appointment> getAppointmentsAtDay(Set<Integer> eIds, LocalDateTime from, LocalDateTime to) {
+	public List<Appointment> getAppointmentsAtDay(List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 
 		String query = """
 				SELECT a FROM Appointment a

@@ -44,6 +44,13 @@ public class Utils {
 		return new TimePeriod(newStart, newEnd);
 	}
 
+	public static Optional<TimePeriod> findCoverTime(List<TimePeriod> timePeriods, TimePeriod target) {
+		return timePeriods
+				.stream()
+				.filter(tP -> tP.getStart().isBefore(target.getStart()) && tP.getEnd().isAfter(target.getEnd()))
+				.min(Comparator.comparing(TimePeriod::getStart));
+	}
+
 	public static LocalTime roundUpToXMin(LocalTime time, int min) {
 		int m = time.getMinute();
 		while (m % min != 0)
@@ -61,20 +68,18 @@ public class Utils {
 
 		return times.stream()
 				.flatMap(Collection::stream)
-				.sorted(Comparator.comparing(TimePeriod::getStart))
-				.toList()
-				.get(0)
-				.getStart();
+				.map(TimePeriod::getStart)
+				.min(LocalTime::compareTo)
+				.orElse(LocalTime.MAX);
 	}
 
 	public static LocalTime getLatestEndTime(Collection<List<TimePeriod>> times) {
 
 		return times.stream()
 				.flatMap(Collection::stream)
-				.sorted(Comparator.comparing(TimePeriod::getEnd).reversed())
-				.findFirst()
-				.get()
-				.getEnd();
+				.map(TimePeriod::getEnd)
+				.min(Collections.reverseOrder(LocalTime::compareTo))
+				.orElse(LocalTime.MIN);
 
 	}
 }

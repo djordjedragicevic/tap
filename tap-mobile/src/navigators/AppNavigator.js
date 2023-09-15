@@ -159,7 +159,7 @@ const AppNavigator = () => {
 				name={FREE_APPOINTMENTS_SCREEN}
 				component={FreeAppointmentsScreen}
 				options={{
-					title: t('Choose appointment')
+					title: t('Free appointments')
 				}}
 			/>
 		</NativeStack.Navigator>

@@ -48,4 +48,10 @@ export const usePrimaryColor = () => {
 	return theme.colors.primary;
 };
 
+export const useIsDarkTheme = () => {
+	const theme = useTheme();
+
+	return theme.id === THEME.DARK;
+}
+
 export default ThemeContext;

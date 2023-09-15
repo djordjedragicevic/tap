@@ -7,12 +7,14 @@ export const languages = {
 		id: 'en_US',
 		code: 'en-US',
 		name: 'English',
+		dateCode: 'en',
 		strings: en
 	},
 	sr_SP: {
 		id: 'sr_SP',
 		code: 'sr-SP',
 		name: 'Serbian',
+		dateCode: 'sr-Latn-ba',
 		strings: sr
 	}
 };

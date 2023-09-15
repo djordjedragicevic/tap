@@ -9,6 +9,7 @@ const XFieldContainer = ({
 	iconRight = false,
 	iconLeft = false,
 	style = {},
+	styleCenterContainer = {},
 	disabled = false,
 	onPress = emptyFn,
 	children,
@@ -23,16 +24,16 @@ const XFieldContainer = ({
 			{
 				!!iconLeft &&
 				<View style={styles.icon}>
-					{iconLeft({ size: 22, color: styles.iconColor })}
+					{iconLeft({ size: 18, color: styles.iconColor })}
 				</View>
 			}
-			<View style={styles.centerContainer}>
+			<View style={[styles.centerContainer, styleCenterContainer]}>
 				{children}
 			</View>
 			{
 				!!iconRight &&
 				<View style={styles.icon}>
-					{iconRight({ size: 22, color: styles.iconRightColor })}
+					{iconRight({ size: 18, color: styles.iconRightColor })}
 				</View>
 			}
 			{disabled && <XMask />}
@@ -45,7 +46,7 @@ const createStyle = (theme) => StyleSheet.create({
 		borderRadius: Theme.values.borderRadius,
 		flexDirection: 'row',
 		backgroundColor: theme.colors.backgroundElement,
-		height: 55
+		height: 45
 	},
 	icon: {
 		paddingHorizontal: 8,

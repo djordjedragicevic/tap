@@ -21,11 +21,18 @@ export const appStore = (initD = {}) => ({
 				...appStore,
 				font
 			}
+		},
+		'app.mask': (appStore, isMasked) => {
+			return {
+				...appStore,
+				isMasked
+			}
 		}
 	},
 	initData: {
 		httpLoading: false,
 		font: '',
+		isMasked: false,
 		...initD
 	}
 });

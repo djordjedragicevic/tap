@@ -15,7 +15,11 @@ const sr_SP = {
 	"Language": "Jezik",
 	"English": "Engleski",
 	"Serbian": "Srpski",
-	"Choose appointment": "Izaberite termin"
+
+	"First free": "Prvi slobodan",
+	"Free appointments": "Slobodni termini",
+	"Today": "Danas",
+	"Tomorow": "Sutra"
 };
 
 export default sr_SP;

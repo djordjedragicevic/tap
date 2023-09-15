@@ -6,7 +6,8 @@ import com.tap.appointments.Utils;
 import com.tap.auth.Public;
 import com.tap.common.*;
 import com.tap.db.dao.ProviderDAO;
-import com.tap.db.dto.ServiceEmployeesDTO;
+import com.tap.db.dto.EmployeeDTO;
+import com.tap.db.dto.ServiceDTO;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -14,8 +15,6 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
 import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,31 +31,29 @@ public class AppointmentsREST {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getFreeAppointments(
 			@QueryParam("p") Integer pId,
-			@QueryParam("s") String s,
 			@QueryParam("d") String d,
-			@QueryParam("emps") String emps
+			@QueryParam("s") List<Integer> sIds,
+			@QueryParam("emps") List<Integer> sEIds
 	) {
 
-		System.out.println("EMPS " + emps);
 		List<FreeAppointment> apps = new ArrayList<>();
 		Map<String, Object> resp = new HashMap<>();
 		resp.put("apps", apps);
 
-		List<Integer> sIds = Arrays.stream(s.split(",")).map(Integer::parseInt).toList();
 		LocalDate date = Utils.parseDate(d).orElse(LocalDate.now());
 
-		Map<Integer, ServiceEmployeesDTO> serEmpsMap = providerDAO.getActiveServiceEmployees(sIds, pId);
-		resp.put("serEmps", serEmpsMap.values());
+		Map<ServiceDTO, List<EmployeeDTO>> serEmpsMap = providerDAO.getActiveServiceEmployees(sIds, pId);
+		resp.put("serEmps", serEmpsMap
+				.keySet()
+				.stream()
+				.map(s -> Map.of("ser", s, "emps", serEmpsMap.get(s)))
+				.toList()
+		);
 
-		if (serEmpsMap.isEmpty())
-			return resp;
-
-		Set<Integer> eIds = new HashSet<>();
-		serEmpsMap.values().forEach(sE -> eIds.addAll(sE.getEmployeeIds()));
+		List<Integer> eIds = serEmpsMap.values().stream().flatMap(Collection::stream).mapToInt(EmployeeDTO::getId).distinct().boxed().toList();
 
 		ProviderWorkInfo pWI = getProviderWorkInfoAtDay(pId, eIds, date);
 		resp.put("pwi", pWI);
-
 
 		//------------------------ CALCULATE FREE APPOINTMENTS -------------------------
 
@@ -64,62 +61,64 @@ public class AppointmentsREST {
 		pWI.getEmployees().forEach(e -> eFreePeriods.computeIfAbsent(e.getEmployeeId(), k -> new ArrayList<>()).addAll(e.getFreePeriods()));
 
 		LocalTime end = Utils.getLatestEndTime(eFreePeriods.values());
-		LocalTime currentTime = LocalDate.now().equals(date) ? LocalTime.now() : Utils.getEarliestStartTime(eFreePeriods.values());
-		currentTime = Utils.roundUpToXMin(currentTime, FREE_APP_CREATING_STEP);
+		LocalTime currentTime = Utils.roundUpToXMin(LocalDate.now().equals(date) ? LocalTime.now() : Utils.getEarliestStartTime(eFreePeriods.values()), FREE_APP_CREATING_STEP);
+
+		Map<Integer, Integer> empFilterMap = new HashMap<>();
+		for(int i = 0, s = sIds.size(); i < s; i++)
+			empFilterMap.put(sIds.get(0), sEIds.get(0));
 
 		while (currentTime.isBefore(end)) {
-			//System.out.println("-- CURRENT: " + currentTime);
-
-			Optional<FreeAppointment> app = tryToCreateFreeAppointment(serEmpsMap, currentTime, eFreePeriods);
+			Optional<FreeAppointment> app = tryToCreateFreeAppointment(empFilterMap, serEmpsMap, currentTime, eFreePeriods);
 			if (app.isPresent()) {
 				String id = LocalDateTime.of(date, currentTime).toEpochSecond(ZoneOffset.UTC) + "S" + sIds.stream().map(String::valueOf).collect(Collectors.joining("_")) + "P" + pId;
 				app.get().finalize(id);
 				apps.add(app.get());
 			}
-
 			currentTime = currentTime.plusMinutes(FREE_APP_CREATING_STEP);
-
 		}
 
-		System.out.println("----------------------");
 		return resp;
 	}
 
-	private Optional<FreeAppointment> tryToCreateFreeAppointment(Map<Integer, ServiceEmployeesDTO> serEmpsMap, LocalTime startTime, Map<Integer, List<TimePeriod>> empFPs) {
+	private Optional<FreeAppointment> tryToCreateFreeAppointment(Map<Integer, Integer> empFilterMap, Map<ServiceDTO, List<EmployeeDTO>> serEmpsMap, LocalTime startTime, Map<Integer, List<TimePeriod>> empFPs) {
 
-		Deque<Integer> serIds = new ArrayDeque<>(serEmpsMap.keySet());
 		FreeAppointment fApp = new FreeAppointment();
 		LocalTime startOS;
 		LocalTime endOS;
 		boolean found;
+		int filerEId;
+		ServiceDTO ser;
 
-		for (Integer serId : serIds) {
-			startOS = fApp.getServices().isEmpty() ? startTime : fApp.getServices().get(fApp.getServices().size() - 1).getTime().plusMinutes(fApp.getServices().get(fApp.getServices().size() - 1).getDuration());
-			endOS = startOS.plusMinutes(serEmpsMap.get(serId).getDuration());
+		for (Map.Entry<ServiceDTO, List<EmployeeDTO>> en : serEmpsMap.entrySet()) {
+			ser = en.getKey();
+			filerEId = empFilterMap != null && !empFilterMap.isEmpty() && empFilterMap.containsKey(ser.getId()) ? ser.getId() : -1;
+			startOS = fApp.getServices().isEmpty() ? startTime : fApp.getServices().get(fApp.getServices().size() - 1).getTime().plusMinutes(fApp.getServices().get(fApp.getServices().size() - 1).getService().getDuration());
+			endOS = startOS.plusMinutes(ser.getDuration());
 			found = false;
-			for (Integer serEmp : serEmpsMap.get(serId).getEmployeeIds()) {
-				for (TimePeriod tmpFP : empFPs.get(serEmp)) {
-					if (startOS.isAfter(tmpFP.getStart()) && endOS.isBefore(tmpFP.getEnd())) {
-						fApp.getServices().add(
-								new FreeAppointment.Service(
-										serId,
-										serEmpsMap.get(serId).getServiceName(),
-										serEmp,
-										startOS,
-										serEmpsMap.get(serId).getDuration()
-								)
-						);
 
-						fApp.setDurationSum(fApp.getDurationSum() + serEmpsMap.get(serId).getDuration());
+			for (EmployeeDTO emp : en.getValue()) {
+				if (filerEId == -1 || emp.getId() == filerEId) {
+					for (TimePeriod tmpFP : empFPs.get(emp.getId())) {
+						if (startOS.isAfter(tmpFP.getStart()) && endOS.isBefore(tmpFP.getEnd())) {
+							fApp.getServices().add(
+									new FreeAppointment.Service(
+											startOS,
+											ser,
+											emp
+									)
+							);
 
-						found = true;
-						break;
-					} else if (endOS.isAfter(tmpFP.getEnd())) {
-						//empFPs.get(serEmp).remove(tmpFP);
+							fApp.setDurationSum(fApp.getDurationSum() + ser.getDuration());
+
+							found = true;
+							break;
+						} else if (endOS.isAfter(tmpFP.getEnd())) {
+							//empFPs.get(serEmp).remove(tmpFP);
+						}
 					}
+					if (found)
+						break;
 				}
-				if (found)
-					break;
 			}
 
 			if (!found)
@@ -127,7 +126,7 @@ public class AppointmentsREST {
 		}
 
 
-		if (fApp.getServices().size() == serIds.size()) {
+		if (fApp.getServices().size() == serEmpsMap.size()) {
 			fApp.setStartAt(fApp.getServices().get(0).getTime());
 			return Optional.of(fApp);
 		} else {
@@ -234,7 +233,7 @@ public class AppointmentsREST {
 		}
 	}
 
-	private ProviderWorkInfo getProviderWorkInfoAtDay(Integer pId, Set<Integer> eIds, LocalDate date) {
+	private ProviderWorkInfo getProviderWorkInfoAtDay(Integer pId, List<Integer> eIds, LocalDate date) {
 
 		ProviderWorkInfo pWI = new ProviderWorkInfo(pId, date);
 

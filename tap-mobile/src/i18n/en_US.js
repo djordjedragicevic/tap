@@ -52,7 +52,10 @@ const en_US = {
 	"Serbian": "Serbian",
 	"Language": "Language",
 
-	"Choose appointment": "Choose appointment"
+	"First free": "First free",
+	"Free appointments": "Free appointments",
+	"Today": "Today",
+	"Tomorow": "Tomorow"
 };
 
 export default en_US;
