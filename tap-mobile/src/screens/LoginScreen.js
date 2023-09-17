@@ -20,7 +20,7 @@ const LoginScreen = ({ navigation }) => {
 	const doLogin = async () => {
 
 		try {
-			const resp = await Http.post('/auth/login', { username: userName, password });
+			const resp = await Http.post('/auth/login', { userName, password });
 			if (resp && resp.token) {
 				await Http.setToken(resp.token);
 

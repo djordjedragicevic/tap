@@ -19,7 +19,8 @@ const sr_SP = {
 	"First free": "Prvi slobodan",
 	"Free appointments": "Slobodni termini",
 	"Today": "Danas",
-	"Tomorow": "Sutra"
+	"Tomorow": "Sutra",
+	"Book appointment": "Rezerviši termin"
 };
 
 export default sr_SP;

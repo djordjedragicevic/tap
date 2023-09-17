@@ -3,6 +3,7 @@ import { API_URL, HTTP_TIMEOUT } from './config';
 import { S_KEY, SecureStorage } from '../store/deviceStorage';
 import { storeDispatch, storeGetValue } from '../store/store';
 import { ERR } from './err';
+import XAlert from '../components/basic/XAlert';
 
 let _token = null;
 
@@ -71,12 +72,18 @@ export class Http {
 				console.log('HTTP ERROR: ' + errName + ' (' + (new Date().getTime() - d) / 1000 + 's)');
 
 			if (errName && !silent) {
-				const e = new Error();
-				e.name = errName;
-				throw e;
+				if (errName === ERR.UNAUTHENTICATE)
+					XAlert.show('Not logged', 'Have to log in!')
+				else if (errName === ERR.FORBIDEN)
+					XAlert.show('Forbiden', 'Don\'t have right for acction!')
+				else {
+					const e = new Error();
+					e.name = errName;
+					throw e;
+				}
 			}
 
-			console.log('HTTP SUCCESS: ' + '(' + (new Date().getTime() - d) / 1000 + 's)');
+			console.log(`HTTP ${errName ? 'NOT ' : ''}SUCCESS: (${(new Date().getTime() - d) / 1000}s)`);
 			return data;
 
 		}
@@ -127,14 +134,14 @@ export class Http {
 	static async post(url, data, silent = false) {
 		const resp = await Http.send(url, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-			},
-			body: Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&')
 			// headers: {
-			// 	'Content-Type': 'application/json'
+			// 	'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			// },
-			//body: JSON.stringify(data)
+			//body: Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&')
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
 		}, silent);
 
 		return resp;

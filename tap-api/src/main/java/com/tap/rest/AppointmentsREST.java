@@ -9,10 +9,16 @@ import com.tap.db.dao.ProviderDAO;
 import com.tap.db.dto.EmployeeDto;
 import com.tap.db.dto.ServiceDto;
 import com.tap.db.entity.*;
+import com.tap.security.Role;
+import com.tap.security.Secured;
+import com.tap.security.Security;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import java.time.*;
 import java.util.*;
@@ -21,6 +27,9 @@ import java.util.stream.Collectors;
 @Path("appointments")
 @RequestScoped
 public class AppointmentsREST {
+	public static String A_STATUS_WAITING = "WAITING";
+	public static String A_STATUS_ACCEPTED = "ACCEPTED";
+	public static String A_STATUS_REJECTED = "REJECTED";
 	private static final int FREE_APP_CREATING_STEP = 15;
 	@Inject
 	private ProviderDAO providerDAO;
@@ -60,6 +69,20 @@ public class AppointmentsREST {
 		return resp;
 	}
 
+	@POST
+	@Path("book")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	public Response bookAppointment(@Context SecurityContext sC, FreeAppointment app) {
+
+		int userId = Security.getUserId(sC);
+
+		boolean success = providerDAO.saveAppointment(app, userId);
+
+		return Response.ok(success).build();
+	}
+
 	private List<FreeAppointment> getFreeAppointments(List<Integer> sIds, List<Integer> sEIds, ProviderWorkInfo pWI, Map<ServiceDto, List<EmployeeDto>> serEmpsMap) {
 		List<FreeAppointment> apps = new ArrayList<>();
 		int pId = pWI.getProviderId();
@@ -69,20 +92,21 @@ public class AppointmentsREST {
 
 		LocalTime end = Utils.getLatestEndTime(eFreePeriods.values());
 		LocalTime currentTime = Utils.roundUpToXMin(LocalDate.now().equals(date) ? LocalTime.now() : Utils.getEarliestStartTime(eFreePeriods.values()), FREE_APP_CREATING_STEP);
-
 		Map<Integer, Integer> empFilterMap = new HashMap<>();
 		for (int i = 0, s = sIds.size(); i < s; i++)
-			empFilterMap.put(sIds.get(0), sEIds.get(0));
+			empFilterMap.put(sIds.get(i), sEIds.get(i));
 
 		while (currentTime.isBefore(end)) {
 			Optional<FreeAppointment> app = tryToCreateFreeAppointment(empFilterMap, serEmpsMap, currentTime, eFreePeriods);
 			if (app.isPresent()) {
 				String id = LocalDateTime.of(date, currentTime).toEpochSecond(ZoneOffset.UTC) + "S" + sIds.stream().map(String::valueOf).collect(Collectors.joining("_")) + "P" + pId;
-				app.get().finalize(id);
+				app.get().finalize(id, pId, date);
 				apps.add(app.get());
 			}
+
 			currentTime = currentTime.plusMinutes(FREE_APP_CREATING_STEP);
 		}
+
 		return apps;
 	}
 
@@ -95,13 +119,14 @@ public class AppointmentsREST {
 		boolean found;
 		int filerEId;
 		ServiceDto ser;
-
 		for (Map.Entry<ServiceDto, List<EmployeeDto>> en : serEmpsMap.entrySet()) {
+
 			ser = en.getKey();
-			filerEId = empFilterMap != null && !empFilterMap.isEmpty() && empFilterMap.containsKey(ser.getId()) ? ser.getId() : -1;
+			filerEId = empFilterMap.get(ser.getId());
 			startOS = fApp.getServices().isEmpty() ? startTime : fApp.getServices().get(fApp.getServices().size() - 1).getTime().plusMinutes(fApp.getServices().get(fApp.getServices().size() - 1).getService().getDuration());
 			endOS = startOS.plusMinutes(ser.getDuration());
 			found = false;
+
 
 			for (EmployeeDto emp : en.getValue()) {
 				if (filerEId == -1 || emp.getId() == filerEId) {
@@ -120,7 +145,7 @@ public class AppointmentsREST {
 							found = true;
 							break;
 
-						//TODO: Implement clearing mechanism
+							//TODO: Implement clearing mechanism
 						} else if (endOS.isAfter(tmpFP.getEnd())) {
 
 						}
@@ -136,7 +161,6 @@ public class AppointmentsREST {
 
 
 		if (fApp.getServices().size() == serEmpsMap.size()) {
-			fApp.setStartAt(fApp.getServices().get(0).getTime());
 			return Optional.of(fApp);
 		} else {
 			return Optional.empty();

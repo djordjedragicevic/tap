@@ -11,17 +11,19 @@ const XFieldDatePicker = ({
 	onConfirm = emptyFn,
 	onCancel = emptyFn,
 	fieldStyle = {},
+	initDate = new Date(),
 	...rest
 }) => {
 	const [visible, setVisible] = useState(false);
-	const [dateTime, setDateTime] = useState(new Date());
+	const [dateTime, setDateTime] = useState(initDate);
 
 	const isDark = useIsDarkTheme();
 	const dCode = useDateCode();
 	const t = useTranslation();
 
 	const displayDate = useMemo(() => {
-		const d = Math.floor((dateTime.getTime() - new Date().getTime()) / (1000 * 3600 * 24));
+		const d = Math.ceil((dateTime.getTime() - new Date().getTime()) / (1000 * 3600 * 24));
+		console.log(d, (dateTime.getTime() - new Date().getTime()) / (1000 * 3600 * 24));
 		if (d === 0)
 			return t('Today');
 		else if (d === 1)

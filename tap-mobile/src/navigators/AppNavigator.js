@@ -1,5 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { FREE_APPOINTMENTS_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
+import { BOOK_APPOINTMENT_SCREEN, FREE_APPOINTMENTS_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
 import { useStore } from '../store/store';
@@ -16,6 +16,7 @@ import LoginScreen from '../screens/LoginScreen';
 import { useIsUserLogged } from '../store/concreteStores';
 import XAvatar from '../components/basic/XAvatar';
 import FreeAppointmentsScreen from '../screens/FreeAppointmentsScreen';
+import BookAppointmentScreen from '../screens/BookAppointmentScreen';
 
 
 
@@ -160,6 +161,13 @@ const AppNavigator = () => {
 				component={FreeAppointmentsScreen}
 				options={{
 					title: t('Free appointments')
+				}}
+			/>
+			<NativeStack.Screen
+				name={BOOK_APPOINTMENT_SCREEN}
+				component={BookAppointmentScreen}
+				options={{
+					title: t('Book appointment')
 				}}
 			/>
 		</NativeStack.Navigator>

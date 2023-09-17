@@ -9,6 +9,7 @@ import com.tap.db.entity.Role;
 import com.tap.db.entity.User;
 import com.tap.db.dao.UserDAO;
 import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
@@ -29,16 +30,14 @@ public class AuthREST {
 	@POST
 	@Path("login")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Public
 	public Response login(
-			@FormParam("username") String username,
-			@FormParam("password") String password,
-			@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer) {
-
+			@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer,
+			Credentials credentials) {
 
 		//Get user by credentials
-		Optional<User> user = userDAO.getUserByCredentials(username, password);
+		Optional<User> user = userDAO.getUserByCredentials(credentials.getUserName(), credentials.getPassword());
 		if (user.isEmpty())
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
@@ -74,7 +73,7 @@ public class AuthREST {
 	@GET
 	@Path("check")
 	@Secured
-	public Response check(){
+	public Response check() {
 		return Response.ok(true).build();
 	}
 }

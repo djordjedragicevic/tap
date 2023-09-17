@@ -1,12 +1,15 @@
 package com.tap.db.dao;
 
+import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.Utils;
+import com.tap.common.TimePeriod;
 import com.tap.common.Util;
 import com.tap.db.dto.EmployeeDto;
 import com.tap.db.dto.GroupDto;
 import com.tap.db.dto.ServiceDto;
 import com.tap.db.dto.UserDto;
 import com.tap.db.entity.*;
+import com.tap.rest.AppointmentsREST;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
@@ -15,7 +18,10 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -137,24 +143,64 @@ public class ProviderDAO {
 
 	}
 
-//	public List<ServiceEmployee> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
-//		String query = """
-//				SELECT DISTINCT
-//				se
-//				FROM ServiceEmployee se
-//				JOIN se.service s
-//				JOIN se.employee e
-//				WHERE
-//				s.active = 1 AND
-//				e.active = 1 AND
-//				se.service.id IN :sIds AND e.provider.id = :pId
-//				""";
-//
-//		return em.createQuery(query, ServiceEmployee.class)
-//				.setParameter("sIds", sIds)
-//				.setParameter("pId", pId)
-//				.getResultList();
-//	}
+	public boolean checkFreeTimeForAppointment(FreeAppointment app) {
+
+		String query = """
+				SELECT app.id FROM Appointment app
+				""";
+
+		return em.createQuery(query).getResultList().isEmpty();
+
+	}
+
+	@Transactional
+	public boolean saveAppointment(FreeAppointment app, int userId) {
+
+		List<Integer> eIds = app.getServices().stream().mapToInt(s -> s.getEmployee().getId()).boxed().toList();
+		LocalDateTime from = LocalDateTime.of(app.getDate(), app.getServices().get(0).getTime());
+		LocalDateTime to = from.plusMinutes(app.getDurationSum());
+
+		boolean isFree = getAppointmentsAtDay(eIds, from, to).isEmpty()
+						 &&
+						 getBusyPeriodsAtDay(app.getProviderId(), eIds, from, to).isEmpty();
+
+		if (isFree) {
+			AppointmentStatus aS = getAppointmentStatus(AppointmentsREST.A_STATUS_WAITING);
+			User u = em.find(User.class, userId);
+			app.getServices().sort(Comparator.comparing(FreeAppointment.Service::getTime));
+
+			for (FreeAppointment.Service ser : app.getServices()) {
+				Appointment fApp = new Appointment();
+				Service s = em.find(Service.class, ser.getService().getId());
+				Employee e = em.find(Employee.class, ser.getEmployee().getId());
+				LocalDateTime start = LocalDateTime.of(app.getDate(), ser.getTime());
+				LocalDateTime end = start.plusMinutes(ser.getService().getDuration());
+
+				fApp.setStart(start);
+				fApp.setEnd(end);
+				fApp.setAppointmentstatus(aS);
+				fApp.setEmployee(e);
+				fApp.setService(s);
+				fApp.setUser(u);
+				fApp.setUser2(u);
+				fApp.setCreateDate(LocalDateTime.now());
+				if (app.getServices().size() > 1)
+					fApp.setJoinId(ser.getJoinId());
+
+				em.persist(fApp);
+			}
+			em.flush();
+
+			return true;
+		}
+		return false;
+	}
+
+	public AppointmentStatus getAppointmentStatus(String name) {
+		return em.createQuery("SELECT a FROM AppointmentStatus a WHERE a.name = :name", AppointmentStatus.class)
+				.setParameter("name", name)
+				.getSingleResult();
+	}
 
 	public Map<ServiceDto, List<EmployeeDto>> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
 		String query = """

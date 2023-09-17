@@ -2,6 +2,7 @@ export const PROVIDERS_SCREEN = 'ProvidersScreen';
 
 export const PROVIDER_SCREEN = 'ProviderScreen';
 export const FREE_APPOINTMENTS_SCREEN = 'FreeAppoinmentsScreen';
+export const BOOK_APPOINTMENT_SCREEN = 'BookAppoinmentScreen';
 
 export const MAIN_TAB_HOME = 'MAIN_TAB_HOME';
 export const MAIN_TAB_FIND = 'MAIN_TAB_FIND';

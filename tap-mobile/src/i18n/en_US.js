@@ -55,7 +55,8 @@ const en_US = {
 	"First free": "First free",
 	"Free appointments": "Free appointments",
 	"Today": "Today",
-	"Tomorow": "Tomorow"
+	"Tomorow": "Tomorow",
+	"Book appointment": "Book appointment"
 };
 
 export default en_US;

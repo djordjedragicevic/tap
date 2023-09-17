@@ -17,7 +17,7 @@ import { useLockNavigation } from "../common/useLockNavigation";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 
-const FREE_APP_WIDTH = 60;
+const FREE_APP_WIDTH = 56;
 const FREE_APP_COL_GAP = 6;
 
 const getEmptyApps = (appLength, width) => {
@@ -38,23 +38,30 @@ const FreeAppIntem = ({ app, onPress = emptyFn }) => {
 			style={styles.freeAppointment}
 			onPress={() => onPress(app)}
 		>
-			<XText light>{app.startAt}</XText>
+			<XText light>{app.services[0].time}</XText>
 		</Pressable>
 	)
 };
 
-const FreeAppointmentDetails = ({ navigation, app }) => {
+const FreeAppointmentDetails = ({ navigation, app, date }) => {
 	const [appProcessing, setAppProcessing] = useState(false);
 	useLockNavigation(appProcessing, navigation);
+
+	const bookAppointment = () => {
+		Http.post('/appointments/book', app)
+			.catch(err => {
+				console.log(err)
+			})
+	};
 
 	return (
 		<View style={{ flex: 1, padding: 10 }}>
 			<BottomSheetScrollView>
 				<View style={{ marginBottom: 10 }}>
-					<XText>Start at: {app.startAt}</XText>
+					<XText>Start at: {app.services[0]?.time}</XText>
 				</View>
 				{app.services.map((s, idx) => (
-					<XText key={s.joinId + idx}>{`${s.time} - ${s.service.name} - (${s.service.duration})min - ${s.employee.firstName}`}</XText>
+					<XText key={s.joinId + idx}>{`${s.time} - ${s.service.name} - (${s.service.duration})min - ${s.employee.user.firstName}`}</XText>
 				))}
 			</BottomSheetScrollView>
 
@@ -66,6 +73,8 @@ const FreeAppointmentDetails = ({ navigation, app }) => {
 					setTimeout(() => {
 						setAppProcessing(false);
 						storeDispatch('app.mask', false)
+						bookAppointment(app);
+						navigation.goBack();
 					}, 2000);
 				}} />
 		</View>
@@ -78,7 +87,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 	const [loading, setLoading] = useState(true);
 	const [selectedEmps, setSelectedEmps] = useState({});
 	const [bottomSheetData, setBottomSheetData] = useState({ data: [], currentSerId: -1 });
-	const [date, setDate] = useState(new Date());
+	const [date, setDate] = useState(new Date(2023, 8, 18, 10, 0, 0));
 	const [app, setApp] = useState({});
 
 	const bottomSheetRef = useRef(null);
@@ -87,18 +96,13 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 	const styles = useThemedStyle(styleCreator);
 	const { width } = useWindowDimensions();
 
-
-	const onAppPress = (app) => {
-		setApp(app);
-		confirmBSRef?.current.present();
-	};
-
-
 	useEffect(() => {
 
 		setLoading(true);
 
 		let finish = true;
+
+		console.log(selectedEmps, services.map(s => selectedEmps[s]?.id || -1));
 
 		Http.get('/appointments/free/', {
 			s: services,
@@ -117,6 +121,11 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 		return () => setLoading(false);
 	}, []);
 
+	const onAppPress = (app) => {
+		setApp(app);
+		confirmBSRef?.current.present();
+	};
+
 	if (!data)
 		return null;
 
@@ -126,6 +135,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 			<XFieldDatePicker
 				fieldStyle={styles.datePicker}
 				onConfirm={setDate}
+				initDate={date}
 			/>
 
 			{
@@ -166,7 +176,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 							const employees = emps
 								.map(e => ({
 									id: e.id,
-									title: e.firstName + ' ' + e.lastName,
+									title: e.user.firstName + ' ' + e.user.lastName,
 									serviceId: ser.id
 								}));
 
@@ -202,7 +212,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 				snapPoints={['75%']}
 				ref={confirmBSRef}
 			>
-				<FreeAppointmentDetails navigation={navigation} app={app} />
+				<FreeAppointmentDetails navigation={navigation} app={app} date={date} />
 			</XBottomSheetModal>
 		</Screen>
 	);
