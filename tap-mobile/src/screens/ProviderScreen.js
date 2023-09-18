@@ -296,16 +296,9 @@ const ProviderScreen = ({ navigation, route }) => {
 								<Pressable
 									onPress={() => setSelectedCatIdx(idx)}
 									key={c.id}
-									style={{
-										backgroundColor: idx === selectedCatIdx ? '#ffe8cc' : 'white',
-										borderRadius: Theme.values.borderRadius,
-										padding: 8,
-										marginRight: 5,
-										borderColor: idx === selectedCatIdx ? 'darkorange' : 'white',
-										borderWidth: Theme.values.borderWidth
-									}}
+									style={[styles.category, idx === selectedCatIdx ? styles.categorySelected : {}]}
 								>
-									<XText style={idx === selectedCatIdx ? { color: 'darkorange' } : {}}>{c.name}</XText>
+									<XText>{c.name}</XText>
 								</Pressable>
 							))}
 						</ScrollView>
@@ -358,6 +351,18 @@ const providerStyle = (theme) => StyleSheet.create({
 	sContentContainerStyle: {
 		padding: 5,
 		backgroundColor: theme.colors.backgroundColor,
+	},
+	category: {
+		backgroundColor: theme.colors.backgroundElement,
+		borderRadius: Theme.values.borderRadius,
+		padding: 8,
+		marginRight: 5,
+		borderColor: theme.colors.backgroundElement,
+		borderWidth: Theme.values.borderWidth
+	},
+	categorySelected: {
+		backgroundColor: theme.colors.primary,
+
 	}
 });
 

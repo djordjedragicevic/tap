@@ -56,6 +56,7 @@ const en_US = {
 	"Free appointments": "Free appointments",
 	"Today": "Today",
 	"Tomorow": "Tomorow",
+	"Yesterday": "Yesterday",
 	"Book appointment": "Book appointment"
 };
 

@@ -17,6 +17,7 @@ import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
@@ -295,17 +296,28 @@ public class ProviderDAO {
 
 	public List<WorkPeriod> getWorkPeriodsAtDay(List<Integer> eIds, int pId, LocalDate date) {
 		int day = date.getDayOfWeek().getValue();
+		boolean hasEIds = eIds != null && !eIds.isEmpty();
+
 		String query = """
 				SELECT wp FROM WorkPeriod wp WHERE
 				:day >= wp.startDay AND :day <= wp.endDay AND
-				(wp.provider.id = :pId OR wp.employee IN :eIds)
+				(wp.provider.id = :pId
 				""";
 
-		return em.createQuery(query, WorkPeriod.class)
+		if (hasEIds)
+			query = query + " OR wp.employee IN :eIds";
+
+		query = query + ")";
+
+		TypedQuery<WorkPeriod> jpaQuery = em.createQuery(query, WorkPeriod.class)
 				.setParameter("day", day)
-				.setParameter("eIds", eIds)
-				.setParameter("pId", pId)
-				.getResultList();
+				.setParameter("pId", pId);
+
+		if (hasEIds)
+			jpaQuery.setParameter("eIds", eIds);
+
+		return jpaQuery.getResultList();
+
 
 	}
 

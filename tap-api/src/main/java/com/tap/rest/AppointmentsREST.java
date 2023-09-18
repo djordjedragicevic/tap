@@ -30,6 +30,7 @@ public class AppointmentsREST {
 	public static String A_STATUS_WAITING = "WAITING";
 	public static String A_STATUS_ACCEPTED = "ACCEPTED";
 	public static String A_STATUS_REJECTED = "REJECTED";
+	public static String A_STATUS_CANCELED = "CANCELED";
 	private static final int FREE_APP_CREATING_STEP = 15;
 	@Inject
 	private ProviderDAO providerDAO;
@@ -50,6 +51,9 @@ public class AppointmentsREST {
 		LocalDate date = Utils.parseDate(d).orElse(LocalDate.now());
 
 		Map<ServiceDto, List<EmployeeDto>> serEmpsMap = providerDAO.getActiveServiceEmployees(sIds, pId);
+		if (serEmpsMap.isEmpty())
+			return Collections.emptyMap();
+
 		resp.put("serEmps", serEmpsMap
 				.keySet()
 				.stream()

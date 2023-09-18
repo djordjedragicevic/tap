@@ -20,6 +20,7 @@ const sr_SP = {
 	"Free appointments": "Slobodni termini",
 	"Today": "Danas",
 	"Tomorow": "Sutra",
+	"Yesterday": "Juče",
 	"Book appointment": "Rezerviši termin"
 };
 

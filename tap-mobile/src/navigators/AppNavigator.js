@@ -4,7 +4,6 @@ import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
 import { useStore } from '../store/store';
 import { useCallback, useEffect } from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import FavoriteButton from '../components/FavoriteButton';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
@@ -19,22 +18,20 @@ import FreeAppointmentsScreen from '../screens/FreeAppointmentsScreen';
 import BookAppointmentScreen from '../screens/BookAppointmentScreen';
 
 
-
-const NativeStack = createNativeStackNavigator();
-
+const stack = createStackNavigator();
 
 const TabFindStackNavigator = ({ navigation }) => {
 	const font = useStore(s => s.app.font);
 	return (
-		<NativeStack.Navigator
+		<stack.Navigator
 			screenOptions={{
 				headerTitleStyle: { fontFamily: font },
 			}}>
-			<NativeStack.Screen
+			<stack.Screen
 				name={PROVIDERS_SCREEN}
 				component={ProvidersScreen}
 			/>
-			<NativeStack.Screen
+			<stack.Screen
 				options={{
 					headerTransparent: true,
 					// headerBackground: () => (
@@ -46,14 +43,14 @@ const TabFindStackNavigator = ({ navigation }) => {
 				name={PROVIDER_SCREEN}
 				component={ProviderScreen}
 			/>
-			{/* <NativeStack.Screen
+			{/* <stack.Screen
 				name={"T2"}
 				component={TryAH}
 				options={{
 					headerTransparent: true
 				}}
 			/> */}
-		</NativeStack.Navigator >
+		</stack.Navigator >
 	)
 };
 
@@ -133,8 +130,8 @@ const AppNavigator = () => {
 	const font = useStore(s => s.app.font);
 	const t = useTranslation();
 	return (
-		<NativeStack.Navigator>
-			<NativeStack.Screen
+		<stack.Navigator>
+			<stack.Screen
 				name={MAIN_STACK}
 				component={MainBottomTabNavigator}
 				options={{
@@ -142,35 +139,35 @@ const AppNavigator = () => {
 					headerTitleStyle: { fontFamily: font }
 				}}
 			/>
-			<NativeStack.Group
+			<stack.Group
 				screenOptions={{
 					presentation: 'containedModal',
 					animation: 'slide_from_bottom',
 					animationDuration: 100
 				}}
 			>
-				<NativeStack.Screen
+				<stack.Screen
 					options={{ headerShown: false }}
 					name={LOGIN_SCREEN}
 					component={LoginScreen}
 				/>
-			</NativeStack.Group>
+			</stack.Group>
 
-			<NativeStack.Screen
+			<stack.Screen
 				name={FREE_APPOINTMENTS_SCREEN}
 				component={FreeAppointmentsScreen}
 				options={{
 					title: t('Free appointments')
 				}}
 			/>
-			<NativeStack.Screen
+			<stack.Screen
 				name={BOOK_APPOINTMENT_SCREEN}
 				component={BookAppointmentScreen}
 				options={{
 					title: t('Book appointment')
 				}}
 			/>
-		</NativeStack.Navigator>
+		</stack.Navigator>
 	);
 };
 

@@ -4,37 +4,46 @@ import { emptyFn } from "../../common/utils";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XMask from "./XMask";
 import { Theme } from "../../style/themes";
+import XButton from "./XButton";
 
 const XFieldContainer = ({
 	iconRight = false,
 	iconLeft = false,
+	iconRightDisabled = false,
+	iconLeftDisabled = false,
+	onIconRightPress,
+	onIconLeftPress,
 	style = {},
 	styleCenterContainer = {},
 	disabled = false,
-	onPress = emptyFn,
+	onPress,
 	children,
+	onCenterPress,
 	meta
 }) => {
 
 	const styles = useThemedStyle(createStyle);
 	const RootCmp = onPress ? TouchableOpacity : View;
+	const IconRightCmp = onIconRightPress ? TouchableOpacity : View;
+	const IconLeftCmp = onIconLeftPress ? TouchableOpacity : View;
+	const CenterCmp = onCenterPress ? TouchableOpacity : View;
 
 	return (
-		<RootCmp style={[styles.container, style]} onPress={() => onPress(meta)}>
+		<RootCmp style={[styles.container, style]} onPress={() => onPress?.(meta)}>
 			{
 				!!iconLeft &&
-				<View style={styles.icon}>
+				<IconLeftCmp disabled={iconLeftDisabled} style={styles.icon} onPress={onIconLeftPress}>
 					{iconLeft({ size: 18, color: styles.iconColor })}
-				</View>
+				</IconLeftCmp>
 			}
-			<View style={[styles.centerContainer, styleCenterContainer]}>
+			<CenterCmp style={[styles.centerContainer, styleCenterContainer]} onPress={() => onCenterPress?.(meta)}>
 				{children}
-			</View>
+			</CenterCmp>
 			{
 				!!iconRight &&
-				<View style={styles.icon}>
+				<IconRightCmp disabled={iconRightDisabled} style={styles.icon} onPress={onIconRightPress}>
 					{iconRight({ size: 18, color: styles.iconRightColor })}
-				</View>
+				</IconRightCmp>
 			}
 			{disabled && <XMask />}
 		</RootCmp>

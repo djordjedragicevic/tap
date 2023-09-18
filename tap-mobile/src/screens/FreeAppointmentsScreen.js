@@ -87,7 +87,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 	const [loading, setLoading] = useState(true);
 	const [selectedEmps, setSelectedEmps] = useState({});
 	const [bottomSheetData, setBottomSheetData] = useState({ data: [], currentSerId: -1 });
-	const [date, setDate] = useState(new Date(2023, 8, 18, 10, 0, 0));
+	const [date, setDate] = useState(new Date());
 	const [app, setApp] = useState({});
 
 	const bottomSheetRef = useRef(null);
@@ -126,7 +126,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 		confirmBSRef?.current.present();
 	};
 
-	if (!data)
+	if (!data || !Object.keys(data).length)
 		return null;
 
 	return (
@@ -136,6 +136,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 				fieldStyle={styles.datePicker}
 				onConfirm={setDate}
 				initDate={date}
+				preventPast
 			/>
 
 			{
