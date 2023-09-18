@@ -16,6 +16,7 @@ import ThemeContext from "../style/ThemeContext";
 import { THEME } from "../style/themes";
 import XBottomSheetSelector from "../components/basic/XBottomSheetSelector";
 import { languages } from "../i18n/i18n";
+import XSection from "../components/basic/XSection";
 
 const UserSettingsScreen = ({ navigation }) => {
 	const t = useTranslation();
@@ -51,7 +52,7 @@ const UserSettingsScreen = ({ navigation }) => {
 		<Screen>
 			{isLogged ?
 				<TouchableOpacity>
-					<XContainer style={{ justifyContent: 'center', padding: 10 }}>
+					<XSection style={{ justifyContent: 'center' }}>
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							<XAvatar size={80} />
 							<View style={{ flex: 1, marginLeft: 10 }}>
@@ -60,7 +61,7 @@ const UserSettingsScreen = ({ navigation }) => {
 								<XText secondary>{email}</XText>
 							</View>
 						</View>
-					</XContainer>
+					</XSection>
 				</TouchableOpacity>
 				:
 				<TouchableOpacity onPress={() => navigation.navigate(LOGIN_SCREEN)}>
@@ -74,7 +75,7 @@ const UserSettingsScreen = ({ navigation }) => {
 				title={t('Appearance')}
 				value={t(themeName)}
 				style={{ marginTop: 10 }}
-				iconRight={(props) => <AntDesign name="right" {...props} />}
+				//iconRight={(props) => <AntDesign name="right" {...props} />}
 				onPress={() => themeRef.current?.present()}
 			/>
 
@@ -82,7 +83,7 @@ const UserSettingsScreen = ({ navigation }) => {
 				title={t('Language')}
 				value={t(lng.name)}
 				style={{ marginTop: 10 }}
-				iconRight={(props) => <AntDesign name="right" {...props} />}
+				//iconRight={(props) => <AntDesign name="right" {...props} />}
 				onPress={() => lngRef.current?.present()}
 			/>
 

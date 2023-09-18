@@ -100,6 +100,14 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				}}
 			/>
 			<BottomTab.Screen
+				name={MAIN_TAB_FAVORITES + "S"}
+				component={FavoritesScreen}
+				options={{
+					title: t("Saved"),
+					tabBarIcon: (props) => <AntDesign name="hearto" {...props} />
+				}}
+			/>
+			<BottomTab.Screen
 				name={MAIN_TAB_USER}
 				component={UserSettingsScreen}
 				options={{

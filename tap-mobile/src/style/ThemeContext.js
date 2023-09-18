@@ -35,10 +35,10 @@ export const useTheme = () => {
 	return (themeId === THEME.SYSETM && scheme === 'dark') || themeId === THEME.DARK ? Theme.Dark : Theme.Light;
 };
 
-export const useThemedStyle = (styleSheetCreator, arg1, arg2, arg3) => {
+export const useThemedStyle = (styleSheetCreator, arg1, arg2, arg3, arg4) => {
 	const theme = useTheme();
 
-	const stOb = useMemo(() => styleSheetCreator(theme, arg1, arg2, arg3), [theme, arg1, arg2, arg3]);
+	const stOb = useMemo(() => styleSheetCreator(theme, arg1, arg2, arg3, arg4), [theme, arg1, arg2, arg3, arg4]);
 
 	return stOb;
 };

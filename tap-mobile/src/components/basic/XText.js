@@ -23,6 +23,7 @@ const XText = ({
 	weight,
 	italic,
 	size,
+	color,
 	...rest
 }) => {
 	const textColor = useMemo(() => {
@@ -68,10 +69,9 @@ XText.defaultProps = {
 const createStyle = (theme, textColor, font, size) => {
 	return StyleSheet.create({
 		text: {
-			color: theme.colors[textColor],
-			//fontFamily: 'Montserrat_500Medium'
 			fontFamily: font,
-			fontSize: size
+			fontSize: size,
+			color: theme.colors[textColor]
 		}
 	})
 };

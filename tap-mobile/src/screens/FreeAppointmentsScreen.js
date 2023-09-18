@@ -2,6 +2,7 @@ import { Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "re
 import { Http } from "../common/Http";
 import Screen from "../components/Screen";
 import XText from "../components/basic/XText";
+import XSection from "../components/basic/XSection";
 import { DateUtils, emptyFn } from "../common/utils";
 import { useEffect, useRef, useState } from "react";
 import XBottomSheetSelector from "../components/basic/XBottomSheetSelector";
@@ -164,10 +165,11 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 					</ScrollView>
 			}
 
-			<View style={{
-				rowGap: 3,
-				marginTop: 10
-			}}>
+			<XSection transparent
+				title={t('Services')}
+				style={{ marginTop: 10 }}
+				contentStyle={{ rowGap: 3 }}
+			>
 				{data.serEmps.map(({ ser, emps }) => (
 					<XSelectField
 						title={ser.name}
@@ -194,7 +196,9 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 						}}
 					/>
 				))}
-			</View>
+			</XSection>
+
+			<XButton title={'BOOK'} style={{ marginVertical: 5 }} />
 
 			<XBottomSheetSelector
 				ref={bottomSheetRef}
@@ -215,7 +219,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 			>
 				<FreeAppointmentDetails navigation={navigation} app={app} date={date} />
 			</XBottomSheetModal>
-		</Screen>
+		</Screen >
 	);
 };
 
