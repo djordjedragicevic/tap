@@ -1,24 +1,24 @@
 
-import XText from "../components/basic/XText";
-import XButton from "../components/basic/XButton";
+import XText from "xapp/src/components/basic/XText";
+import XButton from "xapp/src/components/basic/XButton";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Http, useHTTPGet } from "../common/Http";
-import XSection from "../components/basic/XSection";
+import { Http, useHTTPGet } from "xapp/src/common/Http";
+import XSection from "xapp/src/components/basic/XSection";
 import { Animated, Pressable, SectionList, StyleSheet, View } from "react-native"
-import { emptyFn } from '../common/utils';
-import { useTranslation } from "../i18n/I18nContext";
+import { emptyFn } from 'xapp/src/common/utils';
+import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { HOST } from "../common/config";
 import { Image } from "expo-image";
-import XChip from "../components/basic/XChip";
+import XChip from "xapp/src/components/basic/XChip";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
-import XCheckBox from "../components/basic/XCheckBox";
-import { useThemedStyle } from "../style/ThemeContext";
+import XCheckBox from "xapp/src/components/basic/XCheckBox";
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { ScrollView } from "react-native-gesture-handler";
-import { Theme } from "../style/themes";
+import { Theme } from "xapp/src/style/themes";
 import HairSalon from "../components/svg/HairSalon";
 import FavoriteButton from "../components/FavoriteButton";
-import { storeDispatch, useStore } from "../store/store";
+import { storeDispatch, useStore } from "xapp/src/store/store";
 import { FREE_APPOINTMENTS_SCREEN } from "../navigators/routes";
 
 
@@ -95,7 +95,6 @@ const ServiceItem = memo(({
 	id
 }) => {
 
-	const [selected, setSelected] = useState(isSelected);
 	const tStyles = useThemedStyle(serviceItemSC);
 	const t = useTranslation();
 
@@ -103,7 +102,6 @@ const ServiceItem = memo(({
 		onPress(id);
 	};
 
-	console.log("Service ", id)
 	const dur = (durationTo ? duration + ' - ' + durationTo : duration) + ' ' + t('minutes')
 	return (
 		<Pressable

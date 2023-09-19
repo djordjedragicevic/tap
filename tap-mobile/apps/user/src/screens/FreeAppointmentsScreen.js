@@ -1,19 +1,19 @@
 import { Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
-import { Http } from "../common/Http";
-import Screen from "../components/Screen";
-import XText from "../components/basic/XText";
-import XSection from "../components/basic/XSection";
-import { DateUtils, emptyFn } from "../common/utils";
+import { Http } from "xapp/src/common/Http";
+import XScreen from "xapp/src/components/XScreen";
+import XText from "xapp/src/components/basic/XText";
+import XSection from "xapp/src/components/basic/XSection";
+import { DateUtils, emptyFn } from "xapp/src/common/utils";
 import { useEffect, useRef, useState } from "react";
-import XBottomSheetSelector from "../components/basic/XBottomSheetSelector";
-import XSelectField from "../components/basic/XSelectField";
-import { useTranslation } from "../i18n/I18nContext";
-import XFieldDatePicker from "../components/basic/XFieldDataPicker";
-import { useThemedStyle } from "../style/ThemeContext";
-import { Theme } from "../style/themes";
-import XBottomSheetModal from "../components/basic/XBottomSheetModal";
-import XButton from "../components/basic/XButton";
-import { storeDispatch } from "../store/store";
+import XBottomSheetSelector from "xapp/src/components/basic/XBottomSheetSelector";
+import XSelectField from "xapp/src/components/basic/XSelectField";
+import { useTranslation } from "xapp/src/i18n/I18nContext";
+import XFieldDatePicker from "xapp/src/components/basic/XFieldDataPicker";
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
+import { Theme } from "xapp/src/style/themes";
+import XBottomSheetModal from "xapp/src/components/basic/XBottomSheetModal";
+import XButton from "xapp/src/components/basic/XButton";
+import { storeDispatch } from "xapp/src/store/store";
 import { useLockNavigation } from "../common/useLockNavigation";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
@@ -131,7 +131,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 		return null;
 
 	return (
-		<Screen loading={loading}>
+		<XScreen loading={loading}>
 
 			<XFieldDatePicker
 				fieldStyle={styles.datePicker}
@@ -219,7 +219,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 			>
 				<FreeAppointmentDetails navigation={navigation} app={app} date={date} />
 			</XBottomSheetModal>
-		</Screen >
+		</XScreen >
 	);
 };
 

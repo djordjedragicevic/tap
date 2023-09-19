@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { useHTTPGet } from "../common/Http";
-import XText from "../components/basic/XText";
-import Screen from "../components/Screen";
+import { useHTTPGet } from "xapp/src/common/Http";
+import XText from "xapp/src/components/basic/XText";
+import XScreen from "xapp/src/components/XScreen";
 import { PROVIDER_SCREEN } from "../navigators/routes";
-import XSection from "../components/basic/XSection";
-import { Theme } from "../style/themes";
+import XSection from "xapp/src/components/basic/XSection";
+import { Theme } from "xapp/src/style/themes";
 import { Image } from 'expo-image';
 import { HOST } from "../common/config";
 import HairSalon from "../components/svg/HairSalon";
@@ -77,13 +77,13 @@ const ProvidersScreen = ({ navigation }) => {
 	}, []);
 
 	return (
-		<Screen flat>
+		<XScreen flat>
 			<FlatList
 				style={{ paddingHorizontal: Theme.values.mainPaddingHorizontal }}
 				data={providers}
 				renderItem={renderCompany}
 			/>
-		</Screen>
+		</XScreen>
 	);
 };
 

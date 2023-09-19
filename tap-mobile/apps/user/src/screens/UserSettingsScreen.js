@@ -1,22 +1,20 @@
-import Screen from "../components/Screen";
-import I18nContext, { useTranslation } from "../i18n/I18nContext";
-import XButton from "../components/basic/XButton";
+import XScreen from "xapp/src/components/XScreen";
+import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
+import XButton from "xapp/src/components/basic/XButton";
 import { LOGIN_SCREEN } from "../navigators/routes";
 import { useContext, useMemo, useRef } from "react";
-import { Http } from "../common/Http";
-import { storeDispatch, useStore } from "../store/store";
-import XAvatar from "../components/basic/XAvatar";
-import XContainer from "../components/basic/XContainer";
-import XText from "../components/basic/XText";
+import { Http } from "xapp/src/common/Http";
+import { storeDispatch, useStore } from "xapp/src/store/store";
+import XAvatar from "xapp/src/components/basic/XAvatar";
+import XContainer from "xapp/src/components/basic/XContainer";
+import XText from "xapp/src/components/basic/XText";
 import { Appearance, TouchableOpacity, View } from "react-native";
 import { useIsUserLogged, useUserName } from "../store/concreteStores";
-import XSelectField from "../components/basic/XSelectField";
-import { AntDesign } from '@expo/vector-icons';
-import ThemeContext from "../style/ThemeContext";
-import { THEME } from "../style/themes";
-import XBottomSheetSelector from "../components/basic/XBottomSheetSelector";
-import { languages } from "../i18n/i18n";
-import XSection from "../components/basic/XSection";
+import XSelectField from "xapp/src/components/basic/XSelectField";
+import ThemeContext from "xapp/src/style/ThemeContext";
+import XBottomSheetSelector from "xapp/src/components/basic/XBottomSheetSelector";
+import XSection from "xapp/src/components/basic/XSection";
+import { Theme } from "xapp/src/style/themes";
 
 const UserSettingsScreen = ({ navigation }) => {
 	const t = useTranslation();
@@ -26,7 +24,7 @@ const UserSettingsScreen = ({ navigation }) => {
 	const isLogged = useIsUserLogged();
 
 	const { themeId, setThemeId } = useContext(ThemeContext);
-	const themeName = (themeId === THEME.SYSETM && Appearance.getColorScheme() === 'dark') || themeId === THEME.DARK ? 'Dark' : 'Light'
+	const themeName = (themeId === Theme.SYSETM && Appearance.getColorScheme() === 'dark') || themeId === Theme.DARK ? 'Dark' : 'Light'
 
 	const { lng, setLanguage } = useContext(I18nContext);
 
@@ -49,7 +47,7 @@ const UserSettingsScreen = ({ navigation }) => {
 		storeDispatch('user.log_out');
 	};
 	return (
-		<Screen>
+		<XScreen>
 			{isLogged ?
 				<TouchableOpacity>
 					<XSection style={{ justifyContent: 'center' }}>
@@ -102,9 +100,9 @@ const UserSettingsScreen = ({ navigation }) => {
 				title={t('Language')}
 				data={LANGS}
 				selectedId={lng.id}
-				onItemSelect={(item) => setLanguage(() => languages[item.id])}
+				onItemSelect={(item) => setLanguage(item.id)}
 			/>
-		</Screen >
+		</XScreen>
 
 	);
 }

@@ -1,21 +1,21 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { BOOK_APPOINTMENT_SCREEN, FREE_APPOINTMENTS_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
+import { BOOK_APPOINTMENT_SCREEN, FREE_APPOINTMENTS_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_MY_APPOINTMENTS, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
-import { useStore } from '../store/store';
-import { useCallback, useEffect } from 'react';
+import { useStore } from 'xapp/src/store/store';
+import { useCallback } from 'react';
 import FavoriteButton from '../components/FavoriteButton';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import UserSettingsScreen from '../screens/UserSettingsScreen';
-import { useTranslation } from '../i18n/I18nContext';
+import { useTranslation } from 'xapp/src/i18n/I18nContext';
 import { AntDesign } from '@expo/vector-icons';
 import LoginScreen from '../screens/LoginScreen';
 import { useIsUserLogged } from '../store/concreteStores';
-import XAvatar from '../components/basic/XAvatar';
+import XAvatar from 'xapp/src/components/basic/XAvatar';
 import FreeAppointmentsScreen from '../screens/FreeAppointmentsScreen';
-import BookAppointmentScreen from '../screens/BookAppointmentScreen';
+import MyAppointmentsScreen from '../screens/MyAppointmentsScreen';
 
 
 const stack = createStackNavigator();
@@ -96,15 +96,15 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				component={FavoritesScreen}
 				options={{
 					title: t("Saved"),
-					tabBarIcon: (props) => <AntDesign name="hearto" {...props} />
+					tabBarIcon: (props) => <AntDesign name="staro" {...props} />
 				}}
 			/>
 			<BottomTab.Screen
-				name={MAIN_TAB_FAVORITES + "S"}
-				component={FavoritesScreen}
+				name={MAIN_TAB_MY_APPOINTMENTS}
+				component={MyAppointmentsScreen}
 				options={{
-					title: t("Saved"),
-					tabBarIcon: (props) => <AntDesign name="hearto" {...props} />
+					title: t("Appointments"),
+					tabBarIcon: (props) => <AntDesign name="calendar" {...props} />
 				}}
 			/>
 			<BottomTab.Screen
@@ -120,17 +120,6 @@ const MainBottomTabNavigator = ({ navigation }) => {
 		</BottomTab.Navigator>
 	)
 }
-// const Drawer = createDrawerNavigator();
-// const DrawerNavigator = () => {
-// 	const font = useStore(s => s.app.font);
-// 	const t = useTranslation();
-// 	return (
-// 		<Drawer.Navigator screenOptions={{ headerShown: false, drawerLabelStyle: { fontFamily: font } }}>
-// 			<Drawer.Screen name={DRAWER_HOME} component={HomeStackNavigator} options={{ title: t("Home") }} />
-// 			<Drawer.Screen name={'TRY'} component={Try} />
-// 		</Drawer.Navigator>
-// 	)
-// };
 
 
 const MainStack = createStackNavigator();
@@ -166,13 +155,6 @@ const AppNavigator = () => {
 				component={FreeAppointmentsScreen}
 				options={{
 					title: t('Free appointments')
-				}}
-			/>
-			<stack.Screen
-				name={BOOK_APPOINTMENT_SCREEN}
-				component={BookAppointmentScreen}
-				options={{
-					title: t('Book appointment')
 				}}
 			/>
 		</stack.Navigator>

@@ -1,13 +1,13 @@
-import Screen from "../components/Screen";
-import { useTranslation } from "../i18n/I18nContext";
-import XText from "../components/basic/XText";
+import XScreen from "xapp/src/components/XScreen";
+import { useTranslation } from "xapp/src/i18n/I18nContext";
+import XText from "xapp/src/components/basic/XText";
 
 const FavoritesScreen = ({ }) => {
 	const t = useTranslation();
 	return (
-		<Screen center>
+		<XScreen center>
 			<XText>FAVORITES SCREEN</XText>
-		</Screen>
+		</XScreen>
 	);
 }
 

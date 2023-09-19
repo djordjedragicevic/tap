@@ -1,10 +1,10 @@
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { HOUR_HEIGHT } from "../../common/general";
-import { DateUtils } from "../../common/utils";
-import { useThemedStyle } from "../../style/ThemeContext";
-
+import { DateUtils } from "xapp/src/common/utils";
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import XText from '../basic/XText';
+
+const HOUR_HEIGHT = 60;
 
 const getDateState = () => {
 	//const d = new Date('2020-05-12T09:49:00.000Z');

@@ -1,7 +1,7 @@
 import React from "react";
-import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
-import { emptyFn } from "../../common/utils";
-import { useThemedStyle } from "../../style/ThemeContext";
+import { Pressable, StyleSheet } from "react-native";
+import { emptyFn } from "xapp/src/common/utils";
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import XCheckBox from "../basic/XCheckBox";
 
 const ListItemBasic = ({ children, id, onPress = emptyFn, selected = false }) => {

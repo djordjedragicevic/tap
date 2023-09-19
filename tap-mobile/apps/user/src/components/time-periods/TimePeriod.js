@@ -1,10 +1,11 @@
 import React, { useCallback, useContext, useMemo } from "react";
 import { StyleSheet, TouchableOpacity, } from "react-native";
-import { HOUR_HEIGHT } from "../../common/general";
-import { calculateHeightFromDate, calculateTopFromDate, emptyFn, getUserDisplayName } from "../../common/utils";
-import { useThemedStyle } from "../../style/ThemeContext";
+import { calculateHeightFromDate, calculateTopFromDate, emptyFn, getUserDisplayName } from "xapp/src/common/utils";
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import XText from "../basic/XText";
 import I18nContext from "../../i18n/I18nContext";
+
+const HOUR_HEIGHT = 60;
 
 
 const formatTime = (dtString, loc) => {

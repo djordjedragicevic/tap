@@ -1,7 +1,7 @@
 import { Pressable } from "react-native";
-import { emptyFn } from "../common/utils";
+import { emptyFn } from "xapp/src/common/utils";
 import { Ionicons } from '@expo/vector-icons';
-import { Theme } from "../style/themes";
+import { Theme } from "xapp/src/style/themes";
 
 
 const FavoriteButton = ({ favorit = false, onPress = emptyFn, color }) => {

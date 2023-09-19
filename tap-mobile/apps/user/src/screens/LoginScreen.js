@@ -1,19 +1,16 @@
-import Screen from "../components/Screen";
-import { useTranslation } from "../i18n/I18nContext";
-import XButton from "../components/basic/XButton";
-import XTextInput from "../components/basic/XTextInput";
-import XAlert from "../components/basic/XAlert";
+import XScreen from "xapp/src/components/XScreen";
+import XButton from "xapp/src/components/basic/XButton";
+import XTextInput from "xapp/src/components/basic/XTextInput";
+import XAlert from "xapp/src/components/basic/XAlert";
 import { useState } from "react";
 import { useLockNavigation } from "../common/useLockNavigation";
-import { Http } from "../common/Http";
-import { ERR } from "../common/err";
-import { storeDispatch } from "../store/store";
+import { storeDispatch } from "xapp/src/store/store";
+import { Http } from "xapp/src/common/Http";
 
 const LoginScreen = ({ navigation }) => {
-	const t = useTranslation();
 	const [userName, setUserName] = useState('gazdadjoka');
 	const [password, setPassword] = useState('admin');
-	const [loading, setLoading] = useState(false);
+	const [loading] = useState(false);
 
 	useLockNavigation(loading, navigation);
 
@@ -31,7 +28,7 @@ const LoginScreen = ({ navigation }) => {
 			}
 
 		} catch (err) {
-			const msg = err.name === ERR.UNAUTHENTICATE ? 'Invalid username/email or password' : 'Unexpected error occurred'
+			const msg = err.name === Http.ERR.UNAUTHENTICATE ? 'Invalid username/email or password' : 'Unexpected error occurred'
 			XAlert.show('Login error', msg)
 		}
 
@@ -39,7 +36,7 @@ const LoginScreen = ({ navigation }) => {
 
 	};
 	return (
-		<Screen style={{ justifyContent: 'center' }} loading={loading}>
+		<XScreen style={{ justifyContent: 'center' }} loading={loading}>
 			<XTextInput
 				value={userName}
 				placeholder={'User name'}
@@ -66,7 +63,7 @@ const LoginScreen = ({ navigation }) => {
 				onPress={doLogin}
 				disabled={loading}
 			/>
-		</Screen>
+		</XScreen>
 	);
 }
 

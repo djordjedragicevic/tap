@@ -1,27 +1,9 @@
-import { getInitials } from "../common/utils";
-import { useStore } from "./store";
+import { getInitials } from "xapp/src/common/utils";
+import { useStore } from "xapp/src/store/store";
 
 export const appStore = (initD = {}) => ({
 	name: 'app',
 	actions: {
-		'app.http_loading_on': (appStore) => {
-			return {
-				...appStore,
-				httpLoading: true
-			};
-		},
-		'app.http_loading_off': (appStore) => {
-			return {
-				...appStore,
-				httpLoading: false
-			}
-		},
-		'app.set_font': (appStore, font) => {
-			return {
-				...appStore,
-				font
-			}
-		},
 		'app.mask': (appStore, isMasked) => {
 			return {
 				...appStore,

@@ -1,23 +1,22 @@
-import Screen from '../components/Screen';
-import XText from '../components/basic/XText';
-import XSection from '../components/basic/XSection';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { Http } from '../common/Http';
+import XScreen from '../components/XScreen';
+import XText from 'xapp/src/components/basic/XText';
+import XSection from 'xapp/src/components/basic/XSection';
+import { useCallback, useEffect, useState } from 'react';
+import { Http } from 'xapp/src/common/Http';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { DateUtils } from '../common/utils';
+import { DateUtils, getUserDisplayName } from 'xapp/src/common/utils';
 import TimePeriod from '../components/time-periods/TimePeriod';
 import TimePeriodsPanel from '../components/time-periods/TimePeriodPanel';
-import { getUserDisplayName } from '../common/utils';
 import { CalendarProvider, ExpandableCalendar } from 'react-native-calendars';
-import { useThemedStyle } from '../style/ThemeContext';
+import { useThemedStyle } from 'xapp/src/style/ThemeContext';
 
 
 
 const CalendarScreen = ({ route }) => {
 
-	const [sizeCoef, setSizeCoef] = useState(2);
+	const [sizeCoef] = useState(2);
 	const [data, setData] = useState();
-	const [fromDate, setFromDate] = useState(new Date());
+	const [fromDate] = useState(new Date());
 	const [employeeData, setEmployeeData] = useState(null);
 	const [currentDate, setCurrentDate] = useState(DateUtils.dateToString(new Date()));
 
@@ -51,7 +50,7 @@ const CalendarScreen = ({ route }) => {
 
 
 
-		<Screen style={{ paddingBottom: 10 }}>
+		<XScreen style={{ paddingBottom: 10 }}>
 
 			<CalendarProvider
 				date={fromDate}
@@ -96,7 +95,7 @@ const CalendarScreen = ({ route }) => {
 					</TimePeriodsPanel>
 				</ScrollView>
 			</CalendarProvider>
-		</Screen>
+		</XScreen>
 	);
 };
 

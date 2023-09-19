@@ -1,13 +1,13 @@
-import Screen from "../components/Screen";
+import XScreen from "xapp/src/components/XScreen";
 import { useTranslation } from "../i18n/I18nContext";
-import XText from "../components/basic/XText";
+import XText from "xapp/src/components/basic/XText";
 
 const SelectAppearanceScreen = ({ }) => {
 	const t = useTranslation();
 	return (
-		<Screen center>
+		<XScreen center>
 			<XText>SelectApperienceScreen</XText>
-		</Screen>
+		</XScreen>
 	);
 }
 

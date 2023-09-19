@@ -1,13 +1,12 @@
 import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 
-const HomeScreen = () => {
-	console.log('HOEM SCREEN RENDER');
+const MyAppointmentsScreen = () => {
 	return (
 		<XScreen center>
-			<XText>HOME SCREEN</XText>
+			<XText>MY APPOINTMENTS</XText>
 		</XScreen>
-	);
-}
+	)
+};
 
-export default HomeScreen;
+export default MyAppointmentsScreen;

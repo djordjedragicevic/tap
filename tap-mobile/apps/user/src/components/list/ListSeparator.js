@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { useThemedStyle } from "../../style/ThemeContext";
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
 
 const ListSeparator = () => {
 	const styles = useThemedStyle(createStyle);
