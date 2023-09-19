@@ -1,0 +1,8 @@
+{
+  "name": "xapp",
+  "version": "1.0.0",
+  "description": "Common things for mobile app",
+  "main": "index.js",
+  "author": "Djordje Dragicevic",
+  "license": "MIT"
+}

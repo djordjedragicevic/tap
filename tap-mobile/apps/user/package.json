@@ -1,7 +1,7 @@
 {
   "name": "tap",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "xapp": "*",
     "@expo-google-fonts/inter": "^0.2.3",
     "@expo-google-fonts/montserrat": "^0.2.3",
     "@expo-google-fonts/open-sans": "^0.2.3",
