@@ -49,7 +49,7 @@ const XFieldDatePicker = ({
 		else if (isYesterday(dateTime))
 			return t('Yesterday')
 		else
-			return dateTime.toLocaleDateString(dCode, { day: 'numeric', month: 'short', weekday: 'long' });;
+			return dateTime.toLocaleDateString(dCode, { day: 'numeric', month: 'short', weekday: 'long' });
 
 	}, [dateTime, dCode, t]);
 

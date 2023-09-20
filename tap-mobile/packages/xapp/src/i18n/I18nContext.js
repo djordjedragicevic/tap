@@ -62,7 +62,9 @@ export const useDateCode = () => {
 	const { lng } = useContext(I18nContext);
 
 	return lng.dateCode;
-}
+};
+
+export const useCurrency = ()
 
 
 export default I18nContext;

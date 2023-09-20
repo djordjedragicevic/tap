@@ -9,7 +9,16 @@ export const languages = {
 };
 
 /**
- * @param {Array} langs [{en_US: {id: 'en_US',code: 'en-US',name: 'English',dateCode: 'en',strings: {}}}]
+ * @param {Array} langs 
+ * [{
+ * 	en_US: {
+ * 		id: 'en_US',
+ * 		code: 'en-US',
+ * 		name: 'English',
+ * 		dateCode: 'en',
+ * 		strings: {}
+ * 	}
+ * }]
  */
 export const initLangs = (langs) => {
 	Object.entries(langs).forEach(([k, v]) => languages[k] = v);

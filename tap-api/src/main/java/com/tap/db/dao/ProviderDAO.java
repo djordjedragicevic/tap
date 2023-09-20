@@ -4,10 +4,7 @@ import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.Utils;
 import com.tap.common.TimePeriod;
 import com.tap.common.Util;
-import com.tap.db.dto.EmployeeDto;
-import com.tap.db.dto.GroupDto;
-import com.tap.db.dto.ServiceDto;
-import com.tap.db.dto.UserDto;
+import com.tap.db.dto.*;
 import com.tap.db.entity.*;
 import com.tap.rest.AppointmentsREST;
 import jakarta.enterprise.context.RequestScoped;
@@ -26,6 +23,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -137,23 +135,6 @@ public class ProviderDAO {
 		);
 	}
 
-	public List<Service> getServices(List<Integer> sIds) {
-		return em.createQuery("SELECT s FROM Service s WHERE s.active = 1 AND s.id IN :sIds", Service.class)
-				.setParameter("sIds", sIds)
-				.getResultList();
-
-	}
-
-	public boolean checkFreeTimeForAppointment(FreeAppointment app) {
-
-		String query = """
-				SELECT app.id FROM Appointment app
-				""";
-
-		return em.createQuery(query).getResultList().isEmpty();
-
-	}
-
 	@Transactional
 	public boolean saveAppointment(FreeAppointment app, int userId) {
 
@@ -252,46 +233,6 @@ public class ProviderDAO {
 		}
 
 		return resp;
-
-	}
-
-	public JsonArray getEmployeesOnServices(List<Integer> sIds, Integer pId) {
-
-		JsonObjectBuilder jOB = Json.createObjectBuilder();
-		JsonArrayBuilder jLB = Json.createArrayBuilder();
-		String query = """
-				SELECT
-				se.service.id AS sId,
-				s.active AS sActive,
-				e.active AS eActive,
-				s.name AS sName,
-				e.id AS eId,
-				s.duration AS dur
-				FROM ServiceEmployee se
-				JOIN se.service s
-				JOIN se.employee e
-				WHERE
-				sActive = 1 AND
-				eActive = 1 AND
-				sId IN :sIds AND e.provider.id = :pId
-				""";
-
-		List<Object[]> dbResp = em.createQuery(query, Object[].class)
-				.setParameter("sIds", sIds)
-				.setParameter("pId", pId)
-				.getResultList();
-		for (Object[] r : dbResp) {
-			jLB.add(
-					jOB.add("sId", (int) r[0])
-							.add("sName", (String) r[3])
-							.add("eId", (int) r[4])
-							.add("dur", (short) r[5])
-							.build()
-			);
-		}
-
-		return jLB.build();
-
 	}
 
 	public List<WorkPeriod> getWorkPeriodsAtDay(List<Integer> eIds, int pId, LocalDate date) {
@@ -418,4 +359,68 @@ public class ProviderDAO {
 				.getResultList();
 	}
 
+	public List<Map<String, Object>> getUserAppointments(Integer uId, boolean history) {
+
+		String query = """
+				SELECT
+				a.id,
+				a.joinId,
+				a.start,
+				a.end,
+				s.id,
+				s.name,
+				s.duration,
+				s.price,
+				e.id,
+				u.firstName,
+				u.lastName,
+				u.username,
+				p.id AS pId,
+				p.name,
+				pT.name AS pTName,
+				add.address1,
+				c.name AS cName,
+				c.postCode AS cPC
+				FROM Appointment a
+				JOIN a.service s
+				JOIN a.employee e
+				JOIN e.user u
+				JOIN e.provider p
+				JOIN p.address add
+				JOIN add.city c
+				JOIN p.providertype pT
+				WHERE a.user.id = :uId
+				AND a.end
+				""";
+		query = query
+				+ (history ? " < " : " > ") + ":curr "
+				+ "ORDER BY a.start, a.joinId";
+
+		List<Object[]> apps = em.createQuery(query, Object[].class)
+				.setParameter("uId", uId)
+				.setParameter("curr", LocalDateTime.now(ZoneOffset.UTC))
+				.getResultList();
+
+		return Util.convertToListOfMap(apps, List.of(
+				"id",
+				"joinId",
+				"start",
+				"end",
+				"service.id",
+				"service.name",
+				"service.duration",
+				"service.price",
+				"employee.id",
+				"employee.firstName",
+				"employee.lastName",
+				"employee.userName",
+				"provider.id",
+				"provider.name",
+				"provider.type",
+				"provider.address1",
+				"provider.city",
+				"provider.postCode"
+		));
+
+	}
 }

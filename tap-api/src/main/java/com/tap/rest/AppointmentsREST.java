@@ -3,6 +3,7 @@ package com.tap.rest;
 import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
+import com.tap.db.dto.AppointmentDto;
 import com.tap.security.Public;
 import com.tap.common.*;
 import com.tap.db.dao.ProviderDAO;
@@ -36,7 +37,27 @@ public class AppointmentsREST {
 	private ProviderDAO providerDAO;
 
 	@GET
-	@Path("free")
+	@Path("/my-appointments")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	public Map<String, Object> getMyAppointments(
+			@Context SecurityContext sC,
+			@QueryParam("f") @DefaultValue("") String filter
+	) {
+		Map<String, Object> resp = new HashMap<>();
+		int userId = Security.getUserId(sC);
+
+		if (filter.isEmpty() || filter.equals("coming"))
+			resp.put("comingApps", providerDAO.getUserAppointments(userId, false));
+
+		if (filter.isEmpty() || filter.equals("history"))
+			resp.put("historyApps", providerDAO.getUserAppointments(userId, true));
+
+		return resp;
+	}
+
+	@GET
+	@Path("/free")
 	@Public
 	@Produces(MediaType.APPLICATION_JSON)
 	public Map<String, Object> getFreeAppointments(

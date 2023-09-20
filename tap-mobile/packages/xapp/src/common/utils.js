@@ -39,6 +39,10 @@ export const DateUtils = {
 	stringToTimeString: (s) => {
 		return DateUtils.dateToTimeString(new Date(s))
 	},
+	formatStringToDateTime: (dT, locale) => {
+		const d = new Date(dT);
+		return d.toLocaleDateString(locale, { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+	},
 	getDayHours: (from, to) => {
 		if (from == null)
 			from = 0;
@@ -63,6 +67,12 @@ export const DateUtils = {
 		return resp;
 	}
 };
+
+export const CurrencyUtils = {
+	convert: (v) => {
+		return v + ' KM';
+	}
+}
 
 export const findFirstUpperLetter = (text) => {
 	for (let i = 0, s = text.length; i < s; i++)

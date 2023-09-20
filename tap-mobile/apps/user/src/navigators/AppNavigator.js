@@ -71,9 +71,9 @@ const MainBottomTabNavigator = ({ navigation }) => {
 	return (
 		<BottomTab.Navigator
 			screenListeners={{
-				tabPress: onTabPress,
+				tabPress: onTabPress
 			}}
-			initialRouteName={MAIN_TAB_FIND}
+			initialRouteName={MAIN_TAB_MY_APPOINTMENTS}
 		>
 			<BottomTab.Screen
 				name={MAIN_TAB_HOME}
