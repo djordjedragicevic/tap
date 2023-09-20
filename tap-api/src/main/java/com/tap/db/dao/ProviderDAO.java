@@ -2,24 +2,16 @@ package com.tap.db.dao;
 
 import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.Utils;
-import com.tap.common.TimePeriod;
 import com.tap.common.Util;
 import com.tap.db.dto.*;
 import com.tap.db.entity.*;
 import com.tap.rest.AppointmentsREST;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.json.Json;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonArrayBuilder;
-import jakarta.json.JsonObjectBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -187,12 +179,11 @@ public class ProviderDAO {
 	public Map<ServiceDto, List<EmployeeDto>> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
 		String query = """
 				SELECT DISTINCT
-				se, s, e, g, u
+				se, s, e, g
 				FROM ServiceEmployee se
 				JOIN se.service s
 				JOIN se.employee e
 				JOIN s.group g
-				JOIN e.user u
 				WHERE
 				s.active = 1 AND
 				e.active = 1 AND
@@ -211,7 +202,6 @@ public class ProviderDAO {
 			Service s = (Service) r[1];
 			Employee e = (Employee) r[2];
 			Group g = (Group) r[3];
-			User u = (User) r[4];
 
 			ServiceDto sDto = sMap.computeIfAbsent(s, k ->
 					new ServiceDto()
@@ -225,10 +215,7 @@ public class ProviderDAO {
 			resp.computeIfAbsent(sDto, k -> new ArrayList<>())
 					.add(new EmployeeDto()
 							.setId(e.getId())
-							.setUser(new UserDto()
-									.setFirstName(u.getFirstName())
-									.setLastName(u.getLastName())
-							)
+							.setName(e.getName())
 					);
 		}
 

@@ -41,28 +41,28 @@ public class Appointment implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="appointment_status_id", referencedColumnName="id")
-	private AppointmentStatus appointmentstatus;
+	private AppointmentStatus appointmentstatus ; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="employee_id", referencedColumnName="id")
-	private Employee employee ;
+	private Employee employee ; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="service_id", referencedColumnName="id")
-	private Service service ;
+	private Service service ; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", referencedColumnName="id")
-	private User user ;
+	private User user ; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="created_by_id", referencedColumnName="id")
-	private User user2 ;
+	private User user2 ; 
 
 	public Appointment() {
 		super();
 	}
-
+	
 	public void setId( long id ) {
 		this.id = id ;
 	}
@@ -122,35 +122,35 @@ public class Appointment implements Serializable {
 	public AppointmentStatus getAppointmentstatus() {
 		return this.appointmentstatus;
 	}
-
+	
 	public void setAppointmentstatus(AppointmentStatus appointmentstatus) {
 		this.appointmentstatus = appointmentstatus;
 	}
 	public Employee getEmployee() {
 		return this.employee;
 	}
-
+	
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
 	}
 	public Service getService() {
 		return this.service;
 	}
-
+	
 	public void setService(Service service) {
 		this.service = service;
 	}
 	public User getUser() {
 		return this.user;
 	}
-
+	
 	public void setUser(User user) {
 		this.user = user;
 	}
 	public User getUser2() {
 		return this.user2;
 	}
-
+	
 	public void setUser2(User user2) {
 		this.user2 = user2;
 	}

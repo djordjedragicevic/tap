@@ -19,6 +19,9 @@ public class Employee implements Serializable {
     @Column(name="id", nullable=false)
 	private int id;
 
+    @Column(name="name", nullable=false, length=32)
+	private String name;
+
     @Column(name="active", nullable=false)
 	private byte active;
 
@@ -41,6 +44,14 @@ public class Employee implements Serializable {
 
 	public int getId() {
 		return this.id;
+	}
+
+	public void setName( String name ) {
+		this.name = name ;
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 	public void setActive( byte active ) {

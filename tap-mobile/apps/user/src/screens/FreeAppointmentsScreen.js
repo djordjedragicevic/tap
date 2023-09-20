@@ -44,7 +44,7 @@ const FreeAppIntem = ({ app, onPress = emptyFn }) => {
 	)
 };
 
-const FreeAppointmentDetails = ({ navigation, app, date }) => {
+const FreeAppointmentDetails = ({ navigation, app }) => {
 	const [appProcessing, setAppProcessing] = useState(false);
 	useLockNavigation(appProcessing, navigation);
 
@@ -62,7 +62,7 @@ const FreeAppointmentDetails = ({ navigation, app, date }) => {
 					<XText>Start at: {app.services[0]?.time}</XText>
 				</View>
 				{app.services.map((s, idx) => (
-					<XText key={s.joinId + idx}>{`${s.time} - ${s.service.name} - (${s.service.duration})min - ${s.employee.user.firstName}`}</XText>
+					<XText key={s.joinId + idx}>{`${s.time} - ${s.service.name} - (${s.service.duration})min - ${s.employee.name}`}</XText>
 				))}
 			</BottomSheetScrollView>
 
@@ -74,7 +74,7 @@ const FreeAppointmentDetails = ({ navigation, app, date }) => {
 					setTimeout(() => {
 						setAppProcessing(false);
 						storeDispatch('app.mask', false)
-						bookAppointment(app);
+						bookAppointment();
 						navigation.goBack();
 					}, 2000);
 				}} />
@@ -179,7 +179,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 							const employees = emps
 								.map(e => ({
 									id: e.id,
-									title: e.user.firstName + ' ' + e.user.lastName,
+									title: e.name,
 									serviceId: ser.id
 								}));
 

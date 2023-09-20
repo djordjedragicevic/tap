@@ -4,6 +4,7 @@
 package com.tap.db.dto;
 public class EmployeeDto {	
 	private Integer id;
+	private String name;
 	private ProviderDto provider; 
 	private UserDto user; 
 	public EmployeeDto() {}
@@ -15,6 +16,15 @@ public class EmployeeDto {
 
 	public Integer getId() {
 		return this.id;
+	}
+
+	public EmployeeDto setName( String name ) {
+		this.name = name;
+		return this;
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 	public ProviderDto getProvider() {
