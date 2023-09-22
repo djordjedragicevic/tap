@@ -150,7 +150,7 @@ const ProviderScreen = ({ navigation, route }) => {
 
 	const t = useTranslation();
 
-	const provider = useHTTPGet(`/provider/${providerId}`, undefined, lastP[providerId]);
+	const [provider] = useHTTPGet(`/provider/${providerId}`, undefined, lastP[providerId]);
 	lastP[providerId] = provider;
 
 	const [selected, setSelected] = useState([]);

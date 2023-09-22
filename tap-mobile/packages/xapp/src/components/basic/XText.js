@@ -8,7 +8,9 @@ const fontWeights = {
 	300: 'Light',
 	400: 'Regular',
 	500: 'Medium',
+	600: 'SemiBold',
 	700: 'Bold',
+	800: 'ExtraBold',
 	900: 'Black'
 }
 
@@ -24,6 +26,7 @@ const XText = ({
 	italic,
 	size,
 	color,
+	bold,
 	...rest
 }) => {
 	const textColor = useMemo(() => {
@@ -39,21 +42,8 @@ const XText = ({
 	}, [primary, secondary, light]);
 
 	const appFont = useStore(state => state.app.font);
+	const styles = useThemedStyle(createStyle, textColor, appFont, { weight: bold ? 700 : weight, italic, size });
 
-	const fontFamily = useMemo(() => {
-		if (!appFont)
-			return undefined;
-
-		if (!weight && !italic)
-			return appFont;
-
-		const fSplit = appFont.split('_');
-		const w = weight ? weight + fontWeights[weight] : fSplit[1];
-
-		return fSplit[0] + '_' + w + (italic ? '_Italic' : '');
-	}, [weight, italic, appFont]);
-
-	const styles = useThemedStyle(createStyle, textColor, fontFamily, size, weight);
 	return (
 		<Text style={[styles.text, style]} {...rest}>{children}</Text>
 	);
@@ -69,14 +59,28 @@ XText.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme, textColor, font, size, weight) => {
+const createStyle = (theme, textColor, appFont, { weight, italic, size }) => {
+	const style = {
+		color: theme.colors[textColor]
+	};
+
+	if (appFont) {
+		const fSplit = appFont.split('_');
+		const w = weight ? weight + fontWeights[weight] : fSplit[1];
+		style.fontFamily = fSplit[0] + '_' + w;
+		//style.fontFamily = fSplit[0] + '_' + w + (italic ? '_Italic' : '');
+	}
+	else if (weight) {
+		style.fontWeight = weight;
+	}
+
+	if (size)
+		style.fontSize = size;
+
+
+
 	return StyleSheet.create({
-		text: {
-			fontFamily: font,
-			fontSize: size,
-			fontWeight: weight || undefined,
-			color: theme.colors[textColor]
-		}
+		text: style
 	})
 };
 

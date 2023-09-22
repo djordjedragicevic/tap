@@ -1,10 +1,10 @@
 import { StyleSheet, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 
-const XSeparator = ({ vertical = false, margin = 5, color }) => {
+const XSeparator = ({ vertical = false, margin = 0, color, style }) => {
 	const styles = useThemedStyle(createStyle, vertical, margin, color);
 	return (
-		<View style={styles.separator} />
+		<View style={[styles.separator, style]} />
 	);
 };
 

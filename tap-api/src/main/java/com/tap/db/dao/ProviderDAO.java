@@ -354,22 +354,22 @@ public class ProviderDAO {
 				a.joinId,
 				a.start,
 				a.end,
+				status.name,
 				s.id,
 				s.name,
 				s.duration,
 				s.price,
 				e.id,
-				u.firstName,
-				u.lastName,
-				u.username,
+				e.name,
 				p.id AS pId,
 				p.name,
-				pT.name AS pTName,
+				pT.name,
 				add.address1,
-				c.name AS cName,
-				c.postCode AS cPC
+				c.name,
+				c.postCode
 				FROM Appointment a
 				JOIN a.service s
+				JOIN a.appointmentstatus status
 				JOIN a.employee e
 				JOIN e.user u
 				JOIN e.provider p
@@ -393,14 +393,13 @@ public class ProviderDAO {
 				"joinId",
 				"start",
 				"end",
+				"status",
 				"service.id",
 				"service.name",
 				"service.duration",
 				"service.price",
 				"employee.id",
-				"employee.firstName",
-				"employee.lastName",
-				"employee.userName",
+				"employee.name",
 				"provider.id",
 				"provider.name",
 				"provider.type",
@@ -408,6 +407,16 @@ public class ProviderDAO {
 				"provider.city",
 				"provider.postCode"
 		));
+	}
 
+
+	@Transactional
+	public void changeAppointmentStatus(List<Long> serId, String statusName) {
+		AppointmentStatus s = getAppointmentStatus(statusName);
+		for (Long sId : serId) {
+			Appointment a = em.find(Appointment.class, sId);
+			a.setAppointmentstatus(s);
+		}
+		em.flush();
 	}
 }

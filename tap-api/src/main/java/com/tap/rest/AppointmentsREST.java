@@ -15,6 +15,8 @@ import com.tap.security.Secured;
 import com.tap.security.Security;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -37,7 +39,7 @@ public class AppointmentsREST {
 	private ProviderDAO providerDAO;
 
 	@GET
-	@Path("/my-appointments")
+	@Path("my-appointments")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
 	public Map<String, Object> getMyAppointments(
@@ -57,7 +59,7 @@ public class AppointmentsREST {
 	}
 
 	@GET
-	@Path("/free")
+	@Path("free")
 	@Public
 	@Produces(MediaType.APPLICATION_JSON)
 	public Map<String, Object> getFreeAppointments(
@@ -106,6 +108,20 @@ public class AppointmentsREST {
 		boolean success = providerDAO.saveAppointment(app, userId);
 
 		return Response.ok(success).build();
+	}
+
+	@POST
+	@Path("my-appointments/status")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	public Response setAppointmentStatus(JsonObject params) {
+
+		List<Long> serIds = params.getJsonArray("services").stream().mapToLong(s -> Long.parseLong(s.toString())).boxed().toList();
+		String status = params.getString("status");
+		providerDAO.changeAppointmentStatus(serIds, status);
+
+		return Response.ok(true).build();
 	}
 
 	private List<FreeAppointment> getFreeAppointments(List<Integer> sIds, List<Integer> sEIds, ProviderWorkInfo pWI, Map<ServiceDto, List<EmployeeDto>> serEmpsMap) {

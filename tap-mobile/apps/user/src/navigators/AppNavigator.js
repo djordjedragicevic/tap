@@ -1,9 +1,19 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { BOOK_APPOINTMENT_SCREEN, FREE_APPOINTMENTS_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_FAVORITES, MAIN_TAB_FIND, MAIN_TAB_HOME, MAIN_TAB_MY_APPOINTMENTS, MAIN_TAB_USER, PROVIDERS_SCREEN, PROVIDER_SCREEN, SELECT_APPEARANCE_SCREEN, SELECT_LANGUAGE_SCREEN } from './routes';
+import {
+	FREE_APPOINTMENTS_SCREEN,
+	LOGIN_SCREEN,
+	MAIN_STACK,
+	FAVORITE_PROVIDERS_SCREEN,
+	MAIN_TAB_FIND,
+	MAIN_TAB_HOME,
+	MAIN_TAB_MY_APPOINTMENTS,
+	MAIN_TAB_USER,
+	PROVIDERS_SCREEN,
+	PROVIDER_SCREEN
+} from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
 import { useStore } from 'xapp/src/store/store';
-import { useCallback } from 'react';
 import FavoriteButton from '../components/FavoriteButton';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
@@ -60,18 +70,10 @@ const MainBottomTabNavigator = ({ navigation }) => {
 	const t = useTranslation();
 	const logged = useIsUserLogged();
 
-
-	const onTabPress = useCallback((e) => {
-		if (!logged && (e.target.startsWith(MAIN_TAB_FAVORITES))) {
-			e.preventDefault();
-			navigation.navigate(LOGIN_SCREEN);
-		}
-	}, [logged, navigation]);
-
 	return (
 		<BottomTab.Navigator
 			screenListeners={{
-				tabPress: onTabPress
+				//tabPress: onTabPress
 			}}
 			initialRouteName={MAIN_TAB_MY_APPOINTMENTS}
 		>
@@ -89,14 +91,6 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				options={{
 					title: t("Find"), headerShown: false,
 					tabBarIcon: (props) => <AntDesign name="search1" {...props} />
-				}}
-			/>
-			<BottomTab.Screen
-				name={MAIN_TAB_FAVORITES}
-				component={FavoritesScreen}
-				options={{
-					title: t("Saved"),
-					tabBarIcon: (props) => <AntDesign name="staro" {...props} />
 				}}
 			/>
 			<BottomTab.Screen
@@ -155,6 +149,13 @@ const AppNavigator = () => {
 				component={FreeAppointmentsScreen}
 				options={{
 					title: t('Free appointments')
+				}}
+			/>
+			<stack.Screen
+				name={FAVORITE_PROVIDERS_SCREEN}
+				component={FavoritesScreen}
+				options={{
+					title: t('Saved')
 				}}
 			/>
 		</stack.Navigator>

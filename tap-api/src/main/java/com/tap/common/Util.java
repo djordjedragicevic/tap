@@ -2,10 +2,7 @@ package com.tap.common;
 
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
-import jakarta.ws.rs.core.SecurityContext;
-
 import java.nio.charset.StandardCharsets;
-import java.security.Principal;
 import java.security.SecureRandom;
 import java.util.*;
 

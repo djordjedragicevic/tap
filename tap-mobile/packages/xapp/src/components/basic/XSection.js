@@ -24,7 +24,7 @@ const XSection = ({
 			{!!title && <View style={styles.title}>
 				<XText size={18} weight={500}>{title}</XText>
 			</View>}
-			<RootCmp style={[styles.card, contentStyle]} onPress={onPress}>
+			<RootCmp style={[styles.content, contentStyle]} onPress={onPress}>
 				{children}
 				{disabled && <XMask opacity={disabledOpacity} />}
 			</RootCmp>
@@ -43,7 +43,7 @@ const createStyle = (theme, transparent) => StyleSheet.create({
 		paddingHorizontal: 8,
 		justifyContent: 'flex-end'
 	},
-	card: {
+	content: {
 		padding: 8,
 		overflow: 'hidden',
 		borderRadius: Theme.values.borderRadius,

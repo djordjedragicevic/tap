@@ -1,12 +1,12 @@
 import XScreen from "xapp/src/components/XScreen";
+import { AntDesign } from '@expo/vector-icons';
 import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
 import XButton from "xapp/src/components/basic/XButton";
-import { LOGIN_SCREEN } from "../navigators/routes";
+import { LOGIN_SCREEN, FAVORITE_PROVIDERS_SCREEN } from "../navigators/routes";
 import { useContext, useMemo, useRef } from "react";
 import { Http } from "xapp/src/common/Http";
 import { storeDispatch, useStore } from "xapp/src/store/store";
 import XAvatar from "xapp/src/components/basic/XAvatar";
-import XContainer from "xapp/src/components/basic/XContainer";
 import XText from "xapp/src/components/basic/XText";
 import { Appearance, TouchableOpacity, View } from "react-native";
 import { useIsUserLogged, useUserName } from "../store/concreteStores";
@@ -63,9 +63,9 @@ const UserSettingsScreen = ({ navigation }) => {
 				</TouchableOpacity>
 				:
 				<TouchableOpacity onPress={() => navigation.navigate(LOGIN_SCREEN)}>
-					<XContainer style={{ justifyContent: 'center', padding: 10, height: 100, alignItems: 'center' }}>
+					<XSection style={{ justifyContent: 'center', padding: 10, height: 100, alignItems: 'center' }}>
 						<XText adjustsFontSizeToFit numberOfLines={1} size={25}>{'Sign in'}</XText>
-					</XContainer>
+					</XSection>
 				</TouchableOpacity>
 			}
 
@@ -84,6 +84,16 @@ const UserSettingsScreen = ({ navigation }) => {
 				//iconRight={(props) => <AntDesign name="right" {...props} />}
 				onPress={() => lngRef.current?.present()}
 			/>
+
+			{
+				isLogged &&
+				<XSelectField
+					title={t('Saved')}
+					style={{ marginTop: 10 }}
+					iconRight={(props) => <AntDesign name="right" {...props} />}
+					onPress={() => navigation.navigate(FAVORITE_PROVIDERS_SCREEN)}
+				/>
+			}
 
 			{isLogged && <XButton bottom title={"Log out"} style={{ margin: 5, marginTop: 15 }} onPress={() => doLogout()} />}
 

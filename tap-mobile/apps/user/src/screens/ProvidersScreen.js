@@ -12,7 +12,7 @@ import HairSalon from "../components/svg/HairSalon";
 
 const ProvidersScreen = ({ navigation }) => {
 
-	const providers = useHTTPGet('/provider/list', { cId: 1 }, []);
+	const [providers] = useHTTPGet('/provider/list', { cId: 1 }, []);
 
 	const renderCompany = useCallback(({ item, index }) => {
 

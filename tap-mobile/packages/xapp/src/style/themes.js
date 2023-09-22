@@ -15,8 +15,9 @@ export const Theme = {
 		id: 'Light',
 		colors: {
 
-			primary: 'cornflowerblue', //#ff8c00
-			background: 'hsl(0, 0%, 90%)',
+			primary: '#3271e7',
+			primaryLight: 'hsl(219, 79%, 92%)',
+			background: 'hsl(0, 0%, 95%)',
 			backgroundElement: 'white',
 
 			textPrimary: 'hsl(0, 0%, 25%)',
@@ -38,7 +39,8 @@ export const Theme = {
 	Dark: {
 		id: 'Dark',
 		colors: {
-			primary: 'cornflowerblue',
+			primary: '#3271e7',
+			primaryLight: 'hsl(219, 50%, 25%)',
 			background: 'black',
 			backgroundElement: 'hsl(0, 0%, 10%)',
 

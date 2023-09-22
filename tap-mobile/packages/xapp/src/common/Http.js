@@ -161,19 +161,26 @@ export class Http {
 export function useHTTPGet(url, params, initData) {
 
 	const [data, setData] = useState(initData);
+	const [refreshId, setRefreshId] = useState(1);
+	const [refreshing, setRefreshing] = useState(false);
 
 	useEffect(() => {
+		setRefreshing(true);
 		let doSetState = true;
+		Http.get(url, params)
+			.then(d => {
+				if (doSetState)
+					setData(d);
+			})
+			.finally(() => {
+				setRefreshing(false);
+			});
 
-		const asyncWrap = async () => {
-			const d = await Http.get(url, params);
-			if (doSetState)
-				setData(d);
+		return () => {
+			doSetState = false;
+			setRefreshing(false);
 		};
-		asyncWrap();
+	}, [refreshId, setRefreshing]);
 
-		return () => doSetState = false;
-	}, []);
-
-	return data;
+	return [data, () => setRefreshId(refreshId + 1), refreshing];
 };

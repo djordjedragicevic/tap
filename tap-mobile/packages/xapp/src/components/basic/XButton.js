@@ -4,8 +4,25 @@ import { Theme } from "../../style/themes";
 import XText from "./XText";
 import { useThemedStyle } from "../../style/ThemeContext";
 
-const XButton = ({ title, onPress, disabled, style, children, bottom = false, flat = false, round = false }) => {
-	const styles = useThemedStyle(createStyle, flat);
+const XButton = ({
+	title,
+	onPress,
+	disabled,
+	style,
+	children,
+	bottom = false,
+	flat = false,
+	round = false,
+	small = false,
+	outline = false
+}) => {
+
+	const styles = useThemedStyle(createStyle, {
+		flat,
+		round,
+		small,
+		outline
+	});
 
 	const dinStyle = useMemo(() => {
 		if (disabled)
@@ -17,7 +34,6 @@ const XButton = ({ title, onPress, disabled, style, children, bottom = false, fl
 
 	return (
 		<>
-			{bottom && <View style={styles.flexView} />}
 			<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
 				{!!title && <XText style={styles.text} secondary>{title}</XText>}
 				{children}
@@ -31,25 +47,47 @@ XButton.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme, flat, round) => {
+const createStyle = (theme, params) => {
 	let rad = Theme.values.borderRadius;
-	if (flat)
+	let padding = 12;
+	let textColor = theme.colors.textLight;
+	let fontSize;
+
+	if (params.flat)
 		rad = 0;
-	if (round)
-		rad = 50;
+	if (params.round)
+		rad = 100;
+
+	if (params.small) {
+		padding = 6;
+		fontSize = 12;
+	}
+
+	let outline = {};
+
+	if (params.outline) {
+		outline.borderWidth = 1;
+		outline.borderColor = theme.colors.primary;
+		outline.backgroundColor = theme.colors.backgroundElement;
+		textColor = theme.colors.primary;
+
+	};
+
 
 	return StyleSheet.create({
 		button: {
-			height: 42,
-			paddingHorizontal: 10,
-			backgroundColor: theme.colors.primary,
 			borderRadius: rad,
+			backgroundColor: theme.colors.primary,
+			padding: padding,
 			alignItems: 'center',
-			justifyContent: 'center'
+			justifyContent: 'center',
+			...outline
 		},
 		text: {
 			textTransform: 'uppercase',
-			color: theme.colors.textLight
+			color: textColor,
+			fontSize: fontSize,
+			fontWeight: 700
 		},
 		flexView: {
 			flex: 1
