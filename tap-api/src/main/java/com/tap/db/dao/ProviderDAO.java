@@ -24,6 +24,48 @@ public class ProviderDAO {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
 
+	@Transactional
+	public boolean cancelAppointments(List<Long> aIds) {
+		List<Appointment> apps = this.getAppointmentsById(aIds);
+
+		if (apps.size() != aIds.size())
+			return false;
+
+		for (Appointment a : apps)
+			if (a.getAppointmentstatus().getName().equals(AppointmentsREST.A_STATUS_REJECTED))
+				return false;
+
+
+		AppointmentStatus status = this.getAppointmentStatus(AppointmentsREST.A_STATUS_CANCELED);
+		for (Appointment a : apps)
+			a.setAppointmentstatus(status);
+
+		em.flush();
+
+		return true;
+	}
+
+	@Transactional
+	public boolean rebookAppointments(List<Long> aIds) {
+		List<Appointment> apps = this.getAppointmentsById(aIds);
+		if (apps.size() != aIds.size())
+			return false;
+
+		Integer pId = apps.get(0).getEmployee().getProvider().getId();
+		for (Appointment a : apps)
+			if (!this.isFreeTime(pId, List.of(a.getEmployee().getId()), a.getStart(), a.getEnd()))
+				return false;
+
+
+		AppointmentStatus status = this.getAppointmentStatus(AppointmentsREST.A_STATUS_WAITING);
+		for (Appointment a : apps)
+			a.setAppointmentstatus(status);
+
+		em.flush();
+
+		return true;
+	}
+
 	public Object getProviders(long cityId) {
 		String qS = """
 				SELECT
@@ -134,9 +176,7 @@ public class ProviderDAO {
 		LocalDateTime from = LocalDateTime.of(app.getDate(), app.getServices().get(0).getTime());
 		LocalDateTime to = from.plusMinutes(app.getDurationSum());
 
-		boolean isFree = getAppointmentsAtDay(eIds, from, to).isEmpty()
-						 &&
-						 getBusyPeriodsAtDay(app.getProviderId(), eIds, from, to).isEmpty();
+		boolean isFree = isFreeTime(app.getProviderId(), eIds, from, to);
 
 		if (isFree) {
 			AppointmentStatus aS = getAppointmentStatus(AppointmentsREST.A_STATUS_WAITING);
@@ -149,6 +189,8 @@ public class ProviderDAO {
 				Employee e = em.find(Employee.class, ser.getEmployee().getId());
 				LocalDateTime start = LocalDateTime.of(app.getDate(), ser.getTime());
 				LocalDateTime end = start.plusMinutes(ser.getService().getDuration());
+
+				System.out.println(app.getDate() + "  ---  " + end);
 
 				fApp.setStart(start);
 				fApp.setEnd(end);
@@ -332,15 +374,20 @@ public class ProviderDAO {
 	public List<Appointment> getAppointmentsAtDay(List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 
 		String query = """
-				SELECT a FROM Appointment a
+				SELECT a FROM Appointment a JOIN FETCH a.appointmentstatus status
 				WHERE
 				a.employee.id IN :eIds
 				AND
+				(status.name = :waiting OR status.name = :accepted)
+				AND
 				((a.start BETWEEN :from AND :to) OR (a.end BETWEEN :from AND :to) OR (a.start <= :from AND a.end >= :to))
+				ORDER BY a.employee.id, a.start
 				""";
 
 		return em.createQuery(query, Appointment.class)
 				.setParameter("eIds", eIds)
+				.setParameter("waiting", AppointmentsREST.A_STATUS_WAITING)
+				.setParameter("accepted", AppointmentsREST.A_STATUS_ACCEPTED)
 				.setParameter("from", from)
 				.setParameter("to", to)
 				.getResultList();
@@ -410,13 +457,18 @@ public class ProviderDAO {
 	}
 
 
-	@Transactional
-	public void changeAppointmentStatus(List<Long> serId, String statusName) {
-		AppointmentStatus s = getAppointmentStatus(statusName);
-		for (Long sId : serId) {
-			Appointment a = em.find(Appointment.class, sId);
-			a.setAppointmentstatus(s);
-		}
-		em.flush();
+	public List<Appointment> getAppointmentsById(List<Long> aIds) {
+
+		String query = "SELECT a FROM Appointment a WHERE a.id IN :ids ORDER BY a.start";
+
+		return em.createQuery(query, Appointment.class)
+				.setParameter("ids", aIds)
+				.getResultList();
+	}
+
+	private boolean isFreeTime(Integer pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
+		return getAppointmentsAtDay(eIds, from, to).isEmpty()
+			   &&
+			   getBusyPeriodsAtDay(pId, eIds, from, to).isEmpty();
 	}
 }

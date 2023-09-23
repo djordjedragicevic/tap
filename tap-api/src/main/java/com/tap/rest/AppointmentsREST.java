@@ -3,7 +3,7 @@ package com.tap.rest;
 import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
-import com.tap.db.dto.AppointmentDto;
+import com.tap.db.dao.UtilDAO;
 import com.tap.security.Public;
 import com.tap.common.*;
 import com.tap.db.dao.ProviderDAO;
@@ -15,7 +15,6 @@ import com.tap.security.Secured;
 import com.tap.security.Security;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -37,6 +36,8 @@ public class AppointmentsREST {
 	private static final int FREE_APP_CREATING_STEP = 15;
 	@Inject
 	private ProviderDAO providerDAO;
+	@Inject
+	private UtilDAO utilDao;
 
 	@GET
 	@Path("my-appointments")
@@ -56,6 +57,42 @@ public class AppointmentsREST {
 			resp.put("historyApps", providerDAO.getUserAppointments(userId, true));
 
 		return resp;
+	}
+
+	@POST
+	@Path("my-appointments/cancel")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	public Response cancelAppointment(JsonObject params) {
+
+		List<Long> aIds = params.getJsonArray("appIds")
+				.stream()
+				.mapToLong(s -> Long.parseLong(s.toString()))
+				.boxed()
+				.toList();
+
+		boolean success = providerDAO.cancelAppointments(aIds);
+
+		return Response.ok(success).build();
+	}
+
+	@POST
+	@Path("my-appointments/rebook")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	public Response rebookAppointment(JsonObject params) {
+
+		List<Long> aIds = params.getJsonArray("appIds")
+				.stream()
+				.mapToLong(s -> Long.parseLong(s.toString()))
+				.boxed()
+				.toList();
+
+		boolean success = providerDAO.rebookAppointments(aIds);
+
+		return Response.ok(success).build();
 	}
 
 	@GET
@@ -108,20 +145,6 @@ public class AppointmentsREST {
 		boolean success = providerDAO.saveAppointment(app, userId);
 
 		return Response.ok(success).build();
-	}
-
-	@POST
-	@Path("my-appointments/status")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured({Role.USER})
-	public Response setAppointmentStatus(JsonObject params) {
-
-		List<Long> serIds = params.getJsonArray("services").stream().mapToLong(s -> Long.parseLong(s.toString())).boxed().toList();
-		String status = params.getString("status");
-		providerDAO.changeAppointmentStatus(serIds, status);
-
-		return Response.ok(true).build();
 	}
 
 	private List<FreeAppointment> getFreeAppointments(List<Integer> sIds, List<Integer> sEIds, ProviderWorkInfo pWI, Map<ServiceDto, List<EmployeeDto>> serEmpsMap) {

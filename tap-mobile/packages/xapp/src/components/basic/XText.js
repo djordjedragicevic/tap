@@ -42,7 +42,7 @@ const XText = ({
 	}, [primary, secondary, light]);
 
 	const appFont = useStore(state => state.app.font);
-	const styles = useThemedStyle(createStyle, textColor, appFont, { weight: bold ? 700 : weight, italic, size });
+	const styles = useThemedStyle(createStyle, textColor, appFont, { weight: bold ? 600 : weight, italic, size });
 
 	return (
 		<Text style={[styles.text, style]} {...rest}>{children}</Text>

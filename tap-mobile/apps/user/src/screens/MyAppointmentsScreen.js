@@ -11,6 +11,7 @@ import { Theme } from "xapp/src/style/themes";
 import XSegmentedButton from "xapp/src/components/basic/XSegmentedButton";
 import XSection from "xapp/src/components/basic/XSection";
 import XAlert from "xapp/src/components/basic/XAlert";
+import { usePrimaryColor } from "xapp/src/style/ThemeContext";
 
 const groupLinked = (apps = []) => {
 	const g = {};
@@ -28,27 +29,52 @@ const groupLinked = (apps = []) => {
 	});
 
 	return newApps;
-}
+};
+
+const STATUS = {
+	WAITING: 'WAITING',
+	CANCELED: 'CANCELED',
+	ACCEPTED: 'ACCEPTED',
+	REJECTED: 'REJECTED'
+};
+
+const COLORS = {
+	WAITING: 'gold',
+	CANCELED: 'orange',
+	ACCEPTED: 'lightgreen',
+	REJECTED: 'red'
+};
+
+const getStatus = (apps) => {
+	if (!Array.isArray(apps))
+		return apps.status;
+	if (apps.filter(a => a.status === STATUS.ACCEPTED).length === apps.length)
+		return STATUS.ACCEPTED;
+	else if (apps.filter(a => a.status === STATUS.REJECTED).length > 0)
+		return STATUS.REJECTED;
+	else if (apps.filter(a => a.status === STATUS.CANCELED).length > 0)
+		return STATUS.CANCELED;
+	else
+		return STATUS.WAITING;
+
+};
 
 const AppService = ({ item }) => {
 	return (
 		<View style={{ flexDirection: 'row', columnGap: 5 }}>
 			<XText>{item.sTime}</XText>
 			<XText>{item.service.name}</XText>
-			<XText>{item.employee.name}</XText>
+			<XText secondary>{item.employee.name}</XText>
 		</View>
 	)
 };
 
-const STATUS = {
-	WAITING: 'WAITING',
-	CANCELED: 'CANCELED'
-}
 
 const Appointment = ({ item, reload }) => {
 
 	const isMulti = Array.isArray(item);
 	const t = useTranslation();
+	const pColor = usePrimaryColor();
 
 	const price = isMulti ?
 		item.map(i => i.service.price).reduce((a, curr) => a + curr)
@@ -56,6 +82,8 @@ const Appointment = ({ item, reload }) => {
 		item.service.price;
 
 	const provider = (isMulti ? item[0] : item).provider;
+
+	const status = getStatus(item);
 
 	return (
 		<XSection contentStyle={{ padding: 10 }}>
@@ -66,14 +94,14 @@ const Appointment = ({ item, reload }) => {
 				<View style={{
 					justifyContent: 'center'
 				}}>
-					<XText bold style={{ color: item.status === STATUS.WAITING ? 'gold' : 'salmon' }} >{item.status}</XText>
+					<XText bold style={{ color: COLORS[status] }} >{status}</XText>
 				</View>
 			</View>
 
 			<XSeparator style={{ marginVertical: 10 }} />
 
 			<View>
-				<XText >{provider.name} - {provider.type}</XText>
+				<XText bold style={{ color: pColor }}>{provider.name} - {provider.type}</XText>
 			</View>
 
 			<View style={{ marginVertical: 15 }}>
@@ -93,16 +121,15 @@ const Appointment = ({ item, reload }) => {
 						<XButton
 							style={{ flex: 1 }}
 							title='otkazi'
-							outline
+							secondary
 							small
 							onPress={() => {
 								XAlert.show('Otkazivanje rezervacije', 'Da li ste sigurni da zelite da otkazete rezervaciju', [
 									{ text: 'Odustani' },
 									{
 										text: 'Otkazi', onPress: () => {
-											Http.post('/appointments/my-appointments/status', {
-												services: isMulti ? item.map(i => i.id) : [item.id],
-												status: STATUS.CANCELED
+											Http.post('/appointments/my-appointments/cancel', {
+												appIds: isMulti ? item.map(i => i.id) : [item.id]
 											})
 												.then(resp => {
 													reload()
@@ -122,9 +149,8 @@ const Appointment = ({ item, reload }) => {
 									{ text: 'Odustani' },
 									{
 										text: 'Zakazi', onPress: () => {
-											Http.post('/appointments/my-appointments/status', {
-												services: isMulti ? item.map(i => i.id) : [item.id],
-												status: STATUS.WAITING
+											Http.post('/appointments/my-appointments/rebook', {
+												appIds: isMulti ? item.map(i => i.id) : [item.id]
 											})
 												.then(resp => {
 													reload()
@@ -168,7 +194,7 @@ const MyAppointmentsScreen = () => {
 	}, [data, history, dateCode]);
 
 	return (
-		<XScreen loading={refreshing} flat>
+		<XScreen loading={refreshing}>
 
 			<XSegmentedButton
 				options={[
@@ -176,9 +202,10 @@ const MyAppointmentsScreen = () => {
 					{ id: 2, text: 'Finished' }
 				]}
 				onSelect={(o) => setHistory(o.id === 2)}
-				style={{ margin: 5 }}
+				style={{ margin: 10 }}
 				initialIndex={0}
 			/>
+
 
 			<FlatList
 				data={apps}

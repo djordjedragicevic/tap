@@ -26,6 +26,7 @@ import { useIsUserLogged } from '../store/concreteStores';
 import XAvatar from 'xapp/src/components/basic/XAvatar';
 import FreeAppointmentsScreen from '../screens/FreeAppointmentsScreen';
 import MyAppointmentsScreen from '../screens/MyAppointmentsScreen';
+import { Theme } from 'xapp/src/style/themes';
 
 
 const stack = createStackNavigator();
@@ -75,7 +76,15 @@ const MainBottomTabNavigator = ({ navigation }) => {
 			screenListeners={{
 				//tabPress: onTabPress
 			}}
+			screenOptions={{
+				tabBarStyle: {
+					backgroundColor: Theme.Light.colors.secondary,
+					borderTopLeftRadius: 10,
+					borderTopRightRadius: 10
+				}
+			}}
 			initialRouteName={MAIN_TAB_MY_APPOINTMENTS}
+			tabBarStyle={{ backgroundColor: 'red' }}
 		>
 			<BottomTab.Screen
 				name={MAIN_TAB_HOME}

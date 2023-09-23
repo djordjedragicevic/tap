@@ -49,6 +49,7 @@ const FreeAppointmentDetails = ({ navigation, app }) => {
 	useLockNavigation(appProcessing, navigation);
 
 	const bookAppointment = () => {
+		console.log(app)
 		Http.post('/appointments/book', app)
 			.catch(err => {
 				console.log(err)
@@ -109,8 +110,9 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 			s: services,
 			emps: services.map(s => selectedEmps[s]?.id || -1),
 			p: providerId,
-			d: DateUtils.dateToString(date),
+			d: DateUtils.dateToString(date)
 		}).then(resp => {
+			console.log("AASD", resp.apps[0].date)
 			if (finish)
 				setData(resp);
 		}).finally(() => setLoading(false));
@@ -217,7 +219,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 				snapPoints={['75%']}
 				ref={confirmBSRef}
 			>
-				<FreeAppointmentDetails navigation={navigation} app={app} date={date} />
+				<FreeAppointmentDetails navigation={navigation} app={app} />
 			</XBottomSheetModal>
 		</XScreen >
 	);

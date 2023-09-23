@@ -18,7 +18,7 @@ const CalendarScreen = ({ route }) => {
 	const [data, setData] = useState();
 	const [fromDate] = useState(new Date());
 	const [employeeData, setEmployeeData] = useState(null);
-	const [currentDate, setCurrentDate] = useState(DateUtils.dateToString(new Date()));
+	const [currentDate, setCurrentDate] = useState(new Date());
 
 	const styles = useThemedStyle(createEmplStyles);
 

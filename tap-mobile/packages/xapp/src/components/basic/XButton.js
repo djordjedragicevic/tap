@@ -10,11 +10,12 @@ const XButton = ({
 	disabled,
 	style,
 	children,
-	bottom = false,
 	flat = false,
 	round = false,
 	small = false,
-	outline = false
+	outline = false,
+	primary = true,
+	secondary = false
 }) => {
 
 	const styles = useThemedStyle(createStyle, {
@@ -22,7 +23,7 @@ const XButton = ({
 		round,
 		small,
 		outline
-	});
+	}, primary, secondary);
 
 	const dinStyle = useMemo(() => {
 		if (disabled)
@@ -47,7 +48,7 @@ XButton.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme, params) => {
+const createStyle = (theme, params, primary, secondary) => {
 	let rad = Theme.values.borderRadius;
 	let padding = 12;
 	let textColor = theme.colors.textLight;
@@ -65,10 +66,11 @@ const createStyle = (theme, params) => {
 
 	let outline = {};
 
-	if (params.outline) {
+	if (params.outline || secondary) {
 		outline.borderWidth = 1;
 		outline.borderColor = theme.colors.primary;
-		outline.backgroundColor = theme.colors.backgroundElement;
+		//outline.backgroundColor = theme.colors.primaryLight;
+		outline.backgroundColor = 'transparent';
 		textColor = theme.colors.primary;
 
 	};
