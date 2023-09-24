@@ -55,7 +55,8 @@ const en_US = {
 	"Today": "Today",
 	"Tomorow": "Tomorow",
 	"Yesterday": "Yesterday",
-	"Book appointment": "Book appointment"
+	"Book appointment": "Book appointment",
+	"Book": "Book"
 };
 
 export default en_US;

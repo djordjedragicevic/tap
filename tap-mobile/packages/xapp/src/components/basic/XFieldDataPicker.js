@@ -4,7 +4,7 @@ import XText from "./XText";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useMemo, useState } from "react";
 import { emptyFn } from "../../common/utils";
-import { useIsDarkTheme, useThemedStyle } from "../../style/ThemeContext";
+import { useIsDarkTheme, usePrimaryColor, useThemedStyle } from "../../style/ThemeContext";
 import { useDateCode, useTranslation } from "../../i18n/I18nContext";
 import { AntDesign } from '@expo/vector-icons';
 
@@ -31,6 +31,7 @@ const XFieldDatePicker = ({
 	fieldStyle = {},
 	initDate = new Date(),
 	preventPast = false,
+	style,
 	...rest
 }) => {
 	const [visible, setVisible] = useState(false);
@@ -40,6 +41,7 @@ const XFieldDatePicker = ({
 	const dCode = useDateCode();
 	const t = useTranslation();
 	const styles = useThemedStyle(styleCreator);
+	const pColor = usePrimaryColor();
 
 	const displayDate = useMemo(() => {
 		if (isToday(dateTime))
@@ -64,7 +66,7 @@ const XFieldDatePicker = ({
 	}
 
 	return (
-		<View>
+		<View style={style}>
 			<XFieldContainer
 				styleCenterContainer={{ alignItems: 'center' }}
 				style={[fieldStyle]}
@@ -87,8 +89,9 @@ const XFieldDatePicker = ({
 					setDateTime(newDate)
 				}}
 			>
-				<View>
-					<XText size={18} style={{ textTransform: 'capitalize' }}>{displayDate}</XText>
+				<View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+					<AntDesign name="calendar" size={23} style={{ marginEnd: 10, marginStart: -5 }} color={pColor} />
+					<XText bold size={16} style={styles.dateText}>{displayDate}</XText>
 				</View>
 			</XFieldContainer>
 
@@ -111,7 +114,11 @@ const XFieldDatePicker = ({
 };
 
 const styleCreator = (theme) => StyleSheet.create({
-	iconColor: theme.colors.primary
+	iconColor: theme.colors.primary,
+	dateText: {
+		textTransform: 'capitalize',
+		color: theme.colors.textPrimary
+	}
 });
 
 export default XFieldDatePicker;

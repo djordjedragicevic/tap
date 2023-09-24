@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import { Theme } from "../style/themes";
+import { emptyFn } from "../common/utils";
 
 const XScreen = ({
 	children,
@@ -11,7 +12,8 @@ const XScreen = ({
 	flat = false,
 	marginTop = Theme.values.mainPaddingHorizontal,
 	loading = false,
-	scroll = false
+	scroll = false,
+	Footer
 }) => {
 
 	const dynStyle = useMemo(() => {
@@ -39,6 +41,7 @@ const XScreen = ({
 				{children}
 			</VCmp>
 			{loading && <View style={{ backgroundColor: 'red', position: 'absolute', height: 3, width: '100%' }}></View>}
+			{Footer}
 		</SafeAreaView>
 	);
 };

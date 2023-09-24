@@ -8,7 +8,6 @@ import {
 	MAIN_TAB_HOME,
 	MAIN_TAB_MY_APPOINTMENTS,
 	MAIN_TAB_USER,
-	PROVIDERS_SCREEN,
 	PROVIDER_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
@@ -27,63 +26,25 @@ import XAvatar from 'xapp/src/components/basic/XAvatar';
 import FreeAppointmentsScreen from '../screens/FreeAppointmentsScreen';
 import MyAppointmentsScreen from '../screens/MyAppointmentsScreen';
 import { Theme } from 'xapp/src/style/themes';
-
-
-const stack = createStackNavigator();
-
-const TabFindStackNavigator = ({ navigation }) => {
-	const font = useStore(s => s.app.font);
-	return (
-		<stack.Navigator
-			screenOptions={{
-				headerTitleStyle: { fontFamily: font },
-			}}>
-			<stack.Screen
-				name={PROVIDERS_SCREEN}
-				component={ProvidersScreen}
-			/>
-			<stack.Screen
-				options={{
-					headerTransparent: true,
-					// headerBackground: () => (
-					// 	<BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
-					// )
-					//headerShown: false
-					headerRight: (props) => <FavoriteButton color={props.tintColor} />
-				}}
-				name={PROVIDER_SCREEN}
-				component={ProviderScreen}
-			/>
-			{/* <stack.Screen
-				name={"T2"}
-				component={TryAH}
-				options={{
-					headerTransparent: true
-				}}
-			/> */}
-		</stack.Navigator >
-	)
-};
+import { useColor } from 'xapp/src/style/ThemeContext';
 
 const BottomTab = createBottomTabNavigator();
 
 const MainBottomTabNavigator = ({ navigation }) => {
 	const t = useTranslation();
 	const logged = useIsUserLogged();
+	const secondaryColor = useColor('secondary');
 
 	return (
 		<BottomTab.Navigator
-			screenListeners={{
-				//tabPress: onTabPress
-			}}
 			screenOptions={{
 				tabBarStyle: {
-					backgroundColor: Theme.Light.colors.secondary,
+					backgroundColor: secondaryColor,
 					borderTopLeftRadius: 10,
 					borderTopRightRadius: 10
 				}
 			}}
-			initialRouteName={MAIN_TAB_MY_APPOINTMENTS}
+			initialRouteName={MAIN_TAB_FIND}
 			tabBarStyle={{ backgroundColor: 'red' }}
 		>
 			<BottomTab.Screen
@@ -96,7 +57,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 			/>
 			<BottomTab.Screen
 				name={MAIN_TAB_FIND}
-				component={TabFindStackNavigator}
+				component={ProvidersScreen}
 				options={{
 					title: t("Find"), headerShown: false,
 					tabBarIcon: (props) => <AntDesign name="search1" {...props} />
@@ -124,14 +85,14 @@ const MainBottomTabNavigator = ({ navigation }) => {
 	)
 }
 
+const Stack = createStackNavigator();
 
-const MainStack = createStackNavigator();
 const AppNavigator = () => {
 	const font = useStore(s => s.app.font);
 	const t = useTranslation();
 	return (
-		<stack.Navigator>
-			<stack.Screen
+		<Stack.Navigator>
+			<Stack.Screen
 				name={MAIN_STACK}
 				component={MainBottomTabNavigator}
 				options={{
@@ -139,35 +100,48 @@ const AppNavigator = () => {
 					headerTitleStyle: { fontFamily: font }
 				}}
 			/>
-			<stack.Group
+			<Stack.Group
 				screenOptions={{
 					presentation: 'containedModal',
 					animation: 'slide_from_bottom',
 					animationDuration: 100
 				}}
 			>
-				<stack.Screen
+				<Stack.Screen
 					options={{ headerShown: false }}
 					name={LOGIN_SCREEN}
 					component={LoginScreen}
 				/>
-			</stack.Group>
+			</Stack.Group>
 
-			<stack.Screen
+			<Stack.Screen
+				options={{
+					headerTransparent: true,
+					// headerBackground: () => (
+					// 	<BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
+					// )
+					//headerShown: false
+					headerRight: (props) => <FavoriteButton color={props.tintColor} />
+				}}
+				name={PROVIDER_SCREEN}
+				component={ProviderScreen}
+			/>
+			<Stack.Screen
 				name={FREE_APPOINTMENTS_SCREEN}
 				component={FreeAppointmentsScreen}
 				options={{
 					title: t('Free appointments')
 				}}
 			/>
-			<stack.Screen
+
+			<Stack.Screen
 				name={FAVORITE_PROVIDERS_SCREEN}
 				component={FavoritesScreen}
 				options={{
 					title: t('Saved')
 				}}
 			/>
-		</stack.Navigator>
+		</Stack.Navigator>
 	);
 };
 

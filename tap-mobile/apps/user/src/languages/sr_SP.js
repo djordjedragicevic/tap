@@ -21,7 +21,8 @@ const sr_SP = {
 	"Today": "Danas",
 	"Tomorow": "Sutra",
 	"Yesterday": "Juče",
-	"Book appointment": "Rezerviši termin"
+	"Book appointment": "Rezerviši termin",
+	"Book": "Rezerviši"
 };
 
 export default sr_SP;

@@ -101,7 +101,7 @@ public class AppointmentsREST {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Map<String, Object> getFreeAppointments(
 			@QueryParam("p") Integer pId,
-			@QueryParam("d") String d,
+			@QueryParam("d") Date d,
 			@QueryParam("s") List<Integer> sIds,
 			@QueryParam("emps") List<Integer> sEIds
 	) {

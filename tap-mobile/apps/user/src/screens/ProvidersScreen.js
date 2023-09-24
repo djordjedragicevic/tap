@@ -12,7 +12,7 @@ import HairSalon from "../components/svg/HairSalon";
 
 const ProvidersScreen = ({ navigation }) => {
 
-	const [providers] = useHTTPGet('/provider/list', { cId: 1 }, []);
+	const [providers, refresh, refreshing] = useHTTPGet('/provider/list', { cId: 1 }, []);
 
 	const renderCompany = useCallback(({ item, index }) => {
 
@@ -82,6 +82,8 @@ const ProvidersScreen = ({ navigation }) => {
 				style={{ paddingHorizontal: Theme.values.mainPaddingHorizontal }}
 				data={providers}
 				renderItem={renderCompany}
+				refreshing={refreshing}
+				onRefresh={refresh}
 			/>
 		</XScreen>
 	);

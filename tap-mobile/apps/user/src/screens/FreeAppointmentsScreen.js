@@ -3,8 +3,8 @@ import { Http } from "xapp/src/common/Http";
 import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 import XSection from "xapp/src/components/basic/XSection";
-import { DateUtils, emptyFn } from "xapp/src/common/utils";
-import { useEffect, useRef, useState } from "react";
+import { emptyFn } from "xapp/src/common/utils";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import XBottomSheetSelector from "xapp/src/components/basic/XBottomSheetSelector";
 import XSelectField from "xapp/src/components/basic/XSelectField";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
@@ -16,6 +16,8 @@ import XButton from "xapp/src/components/basic/XButton";
 import { storeDispatch } from "xapp/src/store/store";
 import { useLockNavigation } from "../common/useLockNavigation";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import Footer from "../components/Footer";
+import { AntDesign } from '@expo/vector-icons';
 
 
 const FREE_APP_WIDTH = 56;
@@ -31,18 +33,6 @@ const getEmptyApps = (appLength, width) => {
 	return emptyApps;
 };
 
-
-const FreeAppIntem = ({ app, onPress = emptyFn }) => {
-	const styles = useThemedStyle(styleCreator);
-	return (
-		<Pressable
-			style={styles.freeAppointment}
-			onPress={() => onPress(app)}
-		>
-			<XText light>{app.services[0].time}</XText>
-		</Pressable>
-	)
-};
 
 const FreeAppointmentDetails = ({ navigation, app }) => {
 	const [appProcessing, setAppProcessing] = useState(false);
@@ -91,6 +81,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 	const [bottomSheetData, setBottomSheetData] = useState({ data: [], currentSerId: -1 });
 	const [date, setDate] = useState(new Date());
 	const [app, setApp] = useState({});
+	const [selectedApp, setSelectedApp] = useState(null);
 
 	const bottomSheetRef = useRef(null);
 	const confirmBSRef = useRef(null);
@@ -106,13 +97,12 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 
 		console.log(selectedEmps, services.map(s => selectedEmps[s]?.id || -1));
 
-		Http.get('/appointments/free/', {
+		Http.get('/appointments/free', {
 			s: services,
 			emps: services.map(s => selectedEmps[s]?.id || -1),
 			p: providerId,
-			d: DateUtils.dateToString(date)
+			d: date
 		}).then(resp => {
-			console.log("AASD", resp.apps[0].date)
 			if (finish)
 				setData(resp);
 		}).finally(() => setLoading(false));
@@ -123,17 +113,32 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 	useEffect(() => {
 		return () => setLoading(false);
 	}, []);
+	useEffect(() => {
+		setSelectedApp(null);
+	}, [data]);
 
 	const onAppPress = (app) => {
 		setApp(app);
 		confirmBSRef?.current.present();
 	};
 
+	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
 	if (!data || !Object.keys(data).length)
 		return null;
 
+
 	return (
-		<XScreen loading={loading}>
+		<XScreen
+			loading={loading}
+			Footer={(
+				<Footer>
+					<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+						<XText light bold size={16}>{selectedApp?.services[0]?.time || '-'}</XText>
+					</View>
+					<XButton title={t('Book')} style={{ flex: 1 }} disabled={!selectedApp} iconRight={bookBtnRightIcon} />
+				</Footer>
+			)}
+		>
 
 			<XFieldDatePicker
 				fieldStyle={styles.datePicker}
@@ -159,7 +164,18 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 
 						}}>
 							{data.apps
-								.map(a => <FreeAppIntem app={a} key={a.id} onPress={onAppPress} />)
+								.map(a => <XButton
+									key={a.id}
+									title={a.services[0].time}
+									style={styles.freeAppointment}
+									outline={selectedApp?.id !== a.id}
+									onPress={() => setSelectedApp((curr) => {
+										if (curr?.id === a.id)
+											return null;
+										else
+											return a;
+									})}
+								/>)
 								.concat(getEmptyApps(data.apps.length, width))
 							}
 
@@ -200,8 +216,6 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 				))}
 			</XSection>
 
-			<XButton title={'BOOK'} style={{ marginVertical: 5 }} />
-
 			<XBottomSheetSelector
 				ref={bottomSheetRef}
 				data={bottomSheetData.data}
@@ -230,13 +244,8 @@ const styleCreator = (theme) => StyleSheet.create({
 		marginBottom: 10
 	},
 	freeAppointment: {
-		borderRadius: Theme.values.borderRadius,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: theme.colors.primary,
-		flexDirection: 'row',
-		width: FREE_APP_WIDTH,
-		height: 40
+		paddingHorizontal: 5,
+		width: FREE_APP_WIDTH
 	}
 });
 

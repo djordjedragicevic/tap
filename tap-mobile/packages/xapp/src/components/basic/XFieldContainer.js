@@ -32,7 +32,7 @@ const XFieldContainer = ({
 		<RootCmp style={[styles.container, style]} onPress={() => onPress?.(meta)}>
 			{
 				!!iconLeft &&
-				<IconLeftCmp disabled={iconLeftDisabled} style={styles.icon} onPress={onIconLeftPress}>
+				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.icon, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }]} onPress={onIconLeftPress}>
 					{iconLeft({ size: 18, color: iconLeftColor || styles.iconColor })}
 				</IconLeftCmp>
 			}
@@ -41,7 +41,7 @@ const XFieldContainer = ({
 			</CenterCmp>
 			{
 				!!iconRight &&
-				<IconRightCmp disabled={iconRightDisabled} style={styles.icon} onPress={onIconRightPress}>
+				<IconRightCmp disabled={iconRightDisabled} style={[styles.icon, { opacity: iconRightDisabled ? Theme.values.disabledOpacity : 1 }]} onPress={onIconRightPress}>
 					{iconRight({ size: 18, color: iconRightColor || styles.iconRightColor })}
 				</IconRightCmp>
 			}

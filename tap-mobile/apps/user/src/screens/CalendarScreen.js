@@ -4,7 +4,7 @@ import XSection from 'xapp/src/components/basic/XSection';
 import { useCallback, useEffect, useState } from 'react';
 import { Http } from 'xapp/src/common/Http';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { DateUtils, getUserDisplayName } from 'xapp/src/common/utils';
+import { getUserDisplayName } from 'xapp/src/common/utils';
 import TimePeriod from '../components/time-periods/TimePeriod';
 import TimePeriodsPanel from '../components/time-periods/TimePeriodPanel';
 import { CalendarProvider, ExpandableCalendar } from 'react-native-calendars';

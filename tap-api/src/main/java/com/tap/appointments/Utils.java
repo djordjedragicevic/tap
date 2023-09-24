@@ -2,9 +2,7 @@ package com.tap.appointments;
 
 import com.tap.common.TimePeriod;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,8 +20,8 @@ public class Utils {
 		return Optional.ofNullable(dt != null && !dt.isEmpty() ? LocalDateTime.parse(dt, DateTimeFormatter.ISO_DATE_TIME) : null);
 	}
 
-	public static Optional<LocalDate> parseDate(String t) {
-		return Optional.ofNullable(t != null && !t.isEmpty() ? LocalDate.parse(t, DateTimeFormatter.ISO_DATE) : null);
+	public static Optional<LocalDate> parseDate(Date d) {
+		return Optional.ofNullable(d != null ? LocalDate.ofInstant(Instant.ofEpochMilli(d.getTime()), ZoneId.systemDefault()) : null);
 	}
 
 	public static List<Long> parseIDs(String ids) {

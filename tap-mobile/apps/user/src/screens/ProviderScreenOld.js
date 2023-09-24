@@ -5,12 +5,13 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
 import XSection from "xapp/src/components/basic/XSection";
 import { Animated, Pressable, SectionList, StyleSheet, View } from "react-native"
-import { CurrencyUtils, emptyFn } from 'xapp/src/common/utils';
+import { emptyFn } from 'xapp/src/common/utils';
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { HOST } from "../common/config";
 import { Image } from "expo-image";
 import XChip from "xapp/src/components/basic/XChip";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@react-navigation/elements";
 import XCheckBox from "xapp/src/components/basic/XCheckBox";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { ScrollView } from "react-native-gesture-handler";
@@ -19,9 +20,6 @@ import HairSalon from "../components/svg/HairSalon";
 import FavoriteButton from "../components/FavoriteButton";
 import { storeDispatch, useStore } from "xapp/src/store/store";
 import { FREE_APPOINTMENTS_SCREEN } from "../navigators/routes";
-import { AntDesign } from '@expo/vector-icons';
-import Footer from "../components/Footer";
-
 
 
 const getDurationSum = (items) => {
@@ -41,12 +39,10 @@ const groupServices = (sers) => {
 
 	const cats = {};
 	const catList = [];
-	const sMap = {};
 
 	const gMap = {};
 
 	sers.forEach(ser => {
-		sMap[ser.id] = ser;
 		const cId = !ser.c_id ? '__default' : ser.c_id;
 		if (!cats[cId]) {
 			cats[cId] = {
@@ -77,8 +73,7 @@ const groupServices = (sers) => {
 
 	return {
 		categories: cats,
-		categoryList: catList,
-		sMap
+		categoryList: catList
 	};
 };
 
@@ -150,7 +145,7 @@ const serviceItemSC = (theme) => StyleSheet.create({
 });
 
 
-const ProviderScreen = ({ navigation, route }) => {
+const ProviderScreenOld = ({ navigation, route }) => {
 	const providerId = route.params.id;
 
 	const t = useTranslation();
@@ -171,8 +166,6 @@ const ProviderScreen = ({ navigation, route }) => {
 
 	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
 
-	const priceSum = selected.map(sId => services.sMap[sId].price).reduce((accumulator, price) => accumulator + price, 0);
-
 
 	const onFPress = () => {
 		const { state: { favoriteProviders } } = storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId);
@@ -184,9 +177,6 @@ const ProviderScreen = ({ navigation, route }) => {
 			headerRight: ({ tintColor }) => <FavoriteButton color={tintColor} favorit={isFavorite} onPress={onFPress} />
 		});
 	}, [onFPress]);
-
-
-	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
 
 
 	const onItemPress = useCallback((itemId) => {
@@ -222,7 +212,26 @@ const ProviderScreen = ({ navigation, route }) => {
 	}, [styles]);
 
 	const offset = useRef(new Animated.Value(0)).current;
+	const insets = useSafeAreaInsets();
+	const rnHH = useHeaderHeight();
 
+	const anHeaderHeaight = offset.interpolate({
+		inputRange: [0, H_MAX_HEIGHT],
+		outputRange: [H_MAX_HEIGHT, 0 + rnHH],
+		extrapolate: 'clamp'
+	});
+
+	const anHeaderOpacity = offset.interpolate({
+		inputRange: [0, H_MAX_HEIGHT - rnHH],
+		outputRange: [1, 0],
+		extrapolate: 'clamp'
+	});
+
+	const imageOpacity = offset.interpolate({
+		inputRange: [0, H_MAX_HEIGHT],
+		outputRange: [1, 0],
+		extrapolate: 'clamp'
+	});
 
 	if (!provider)
 		return null
@@ -230,36 +239,49 @@ const ProviderScreen = ({ navigation, route }) => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<View style={{ flex: 1 }}>
-				{
+			<Animated.View
+				style={{
+					height: H_MAX_HEIGHT,
+					flex: 1,
+					width: '100%',
+					top: 0,
+					left: 0,
+					opacity: anHeaderOpacity,
+					zIndex: 2
+				}}
+			>
+				<View style={{ flex: 1 }}>
+					{
 
-					provider.image.length ?
-						<Image
-							source={`${HOST}${provider.image[0]}`}
-							cachePolicy={'none'}
-							style={{ flex: 1 }}
-							contentFit="cover"
-						/>
-						:
-						<View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-							<HairSalon height={150} width={150} />
-						</View>
-				}
+						provider.image.length ?
+							<Image
+								source={`${HOST}${provider.image[0]}`}
+								cachePolicy={'none'}
+								style={{ flex: 1 }}
+								contentFit="cover"
+							/>
+							:
+							<View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+								<HairSalon height={150} width={150} />
+							</View>
+					}
 
-			</View>
-			<XSection style={{ flex: 1, maxHeight: 120 }}>
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-
-					<XText style={{ fontSize: 30 }}>{provider.name}</XText>
-
-					<XChip style={{ flexDirection: 'row', alignItems: 'center' }}>
-						<XText light weight={500}>4.9</XText>
-					</XChip>
 				</View>
 
-				<XText style={{ fontSize: 18 }}>{provider.type}</XText>
-				<XText secondary style={{ fontSize: 18 }}>{provider.address}</XText>
-			</XSection>
+				<XSection style={{ flex: 1, maxHeight: 120 }}>
+					<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+
+						<XText style={{ fontSize: 30 }}>{provider.name}</XText>
+
+						<XChip style={{ flexDirection: 'row', alignItems: 'center' }}>
+							<XText light weight={500}>4.9</XText>
+						</XChip>
+					</View>
+
+					<XText style={{ fontSize: 18 }}>{provider.type}</XText>
+					<XText secondary style={{ fontSize: 18 }}>{provider.address}</XText>
+				</XSection>
+			</Animated.View>
 
 
 
@@ -305,28 +327,12 @@ const ProviderScreen = ({ navigation, route }) => {
 				/>
 			</View>
 
-
-
-			<Footer>
-				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-					{
-
-						<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-							<XText light>{selected.length || '-'} servisa</XText>
-							<XText size={16} bold light>{priceSum ? CurrencyUtils.convert(priceSum) : '-'}</XText>
-						</View>
-
-					}
-				</View>
-
-				<XButton
-					title={t('Find appointment')}
-					disabled={selected.length === 0}
-					style={{ margin: 5, flex: 1 }}
-					onPress={() => navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selected], providerId })}
-					iconRight={bookBtnRightIcon}
-				/>
-			</Footer>
+			<XButton
+				title={t('appointments')}
+				disabled={selected.length === 0}
+				style={{ margin: 5 }}
+				onPress={() => navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selected], providerId })}
+			/>
 
 		</SafeAreaView >
 
@@ -359,4 +365,4 @@ const providerStyle = (theme) => StyleSheet.create({
 });
 
 
-export default ProviderScreen;
+export default ProviderScreenOld;
