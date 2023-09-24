@@ -3,7 +3,7 @@ import { AntDesign } from '@expo/vector-icons';
 import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
 import XButton from "xapp/src/components/basic/XButton";
 import { LOGIN_SCREEN, FAVORITE_PROVIDERS_SCREEN } from "../navigators/routes";
-import { useContext, useMemo, useRef } from "react";
+import { useContext, useMemo } from "react";
 import { Http } from "xapp/src/common/Http";
 import { storeDispatch, useStore } from "xapp/src/store/store";
 import XAvatar from "xapp/src/components/basic/XAvatar";
@@ -12,9 +12,9 @@ import { Appearance, TouchableOpacity, View } from "react-native";
 import { useIsUserLogged, useUserName } from "../store/concreteStores";
 import XSelectField from "xapp/src/components/basic/XSelectField";
 import ThemeContext from "xapp/src/style/ThemeContext";
-import XBottomSheetSelector from "xapp/src/components/basic/XBottomSheetSelector";
 import XSection from "xapp/src/components/basic/XSection";
 import { Theme } from "xapp/src/style/themes";
+import XSelector from "xapp/src/components/basic/XSelector";
 
 const UserSettingsScreen = ({ navigation }) => {
 	const t = useTranslation();
@@ -24,9 +24,10 @@ const UserSettingsScreen = ({ navigation }) => {
 	const isLogged = useIsUserLogged();
 
 	const { themeId, setThemeId } = useContext(ThemeContext);
+	const { lng, setLanguage } = useContext(I18nContext);
+
 	const themeName = (themeId === Theme.SYSETM && Appearance.getColorScheme() === 'dark') || themeId === Theme.DARK ? 'Dark' : 'Light'
 
-	const { lng, setLanguage } = useContext(I18nContext);
 
 	const THEMES = useMemo(() => [
 		{ id: 'Light', title: t('Light') },
@@ -37,9 +38,6 @@ const UserSettingsScreen = ({ navigation }) => {
 		{ id: 'en_US', title: t('English') },
 		{ id: 'sr_SP', title: t('Serbian') }
 	], [lng]);
-
-	const themeRef = useRef(null);
-	const lngRef = useRef(null);
 
 
 	const doLogout = () => {
@@ -63,26 +61,34 @@ const UserSettingsScreen = ({ navigation }) => {
 				</TouchableOpacity>
 				:
 				<TouchableOpacity onPress={() => navigation.navigate(LOGIN_SCREEN)}>
-					<XSection style={{ justifyContent: 'center', padding: 10, height: 100, alignItems: 'center' }}>
-						<XText adjustsFontSizeToFit numberOfLines={1} size={25}>{'Sign in'}</XText>
+					<XSection>
+						<View style={{ height: 80, justifyContent: 'center', alignItems: 'center' }}>
+							<XText adjustsFontSizeToFit numberOfLines={1} size={25}>{'Sign in'}</XText>
+						</View>
 					</XSection>
 				</TouchableOpacity>
 			}
 
-			<XSelectField
+			<XSelector
 				title={t('Appearance')}
 				value={t(themeName)}
 				style={{ marginTop: 10 }}
-				//iconRight={(props) => <AntDesign name="right" {...props} />}
-				onPress={() => themeRef.current?.present()}
+				data={THEMES}
+				onItemSelect={(item) => setThemeId(item.id)}
+				selector={{
+					title: t('Appearance')
+				}}
 			/>
 
-			<XSelectField
+			<XSelector
 				title={t('Language')}
 				value={t(lng.name)}
 				style={{ marginTop: 10 }}
-				//iconRight={(props) => <AntDesign name="right" {...props} />}
-				onPress={() => lngRef.current?.present()}
+				data={LANGS}
+				onItemSelect={(item) => setLanguage(item.id)}
+				selector={{
+					title: t('Language')
+				}}
 			/>
 
 			{
@@ -96,22 +102,6 @@ const UserSettingsScreen = ({ navigation }) => {
 			}
 
 			{isLogged && <XButton bottom title={"Log out"} style={{ margin: 5, marginTop: 15 }} onPress={() => doLogout()} />}
-
-			<XBottomSheetSelector
-				ref={themeRef}
-				title={t('Appearance')}
-				data={THEMES}
-				selectedId={themeId}
-				onItemSelect={(item) => setThemeId(item.id)}
-			/>
-
-			<XBottomSheetSelector
-				ref={lngRef}
-				title={t('Language')}
-				data={LANGS}
-				selectedId={lng.id}
-				onItemSelect={(item) => setLanguage(item.id)}
-			/>
 		</XScreen>
 
 	);

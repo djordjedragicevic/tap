@@ -100,6 +100,9 @@ public class ProviderWorkInfo {
 
 	private final int providerId;
 	private String providerName;
+	private String providerType;
+	private String providerAddress;
+	private String providerCity;
 	boolean isWorking;
 	private final List<TimePeriod> workPeriods;
 	private final List<TimePeriod> breakPeriods;
@@ -156,6 +159,33 @@ public class ProviderWorkInfo {
 
 	public ProviderWorkInfo setProviderName(String name) {
 		this.providerName = name;
+		return this;
+	}
+
+	public String getProviderAddress() {
+		return providerAddress;
+	}
+
+	public ProviderWorkInfo setProviderAddress(String providerAddress) {
+		this.providerAddress = providerAddress;
+		return this;
+	}
+
+	public String getProviderCity() {
+		return providerCity;
+	}
+
+	public ProviderWorkInfo setProviderCity(String providerCity) {
+		this.providerCity = providerCity;
+		return this;
+	}
+
+	public String getProviderType() {
+		return providerType;
+	}
+
+	public ProviderWorkInfo setProviderType(String providerType) {
+		this.providerType = providerType;
 		return this;
 	}
 }

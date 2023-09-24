@@ -22,7 +22,10 @@ const sr_SP = {
 	"Tomorow": "Sutra",
 	"Yesterday": "Juče",
 	"Book appointment": "Rezerviši termin",
-	"Book": "Rezerviši"
+	"Book": "Rezerviši",
+	"Select employee": "Izaberite radnika",
+	"Confirm": "Potvrdite",
+	"Appointment review": "Pregled rezervacije"
 };
 
 export default sr_SP;

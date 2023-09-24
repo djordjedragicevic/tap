@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XMask from "./XMask";
 import { Theme } from "../../style/themes";
+import { AntDesign } from "@expo/vector-icons";
 
 const XFieldContainer = ({
 	iconRight = false,
@@ -13,6 +14,7 @@ const XFieldContainer = ({
 	onIconLeftPress,
 	iconRightColor,
 	iconLeftColor,
+	iconLeftSize = 18,
 	style = {},
 	styleCenterContainer = {},
 	disabled = false,
@@ -33,7 +35,11 @@ const XFieldContainer = ({
 			{
 				!!iconLeft &&
 				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.icon, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }]} onPress={onIconLeftPress}>
-					{iconLeft({ size: 18, color: iconLeftColor || styles.iconColor })}
+					{typeof iconLeft === 'string' ?
+						<AntDesign name={iconLeft} size={iconLeftSize} color={iconLeftColor || styles.iconColor} />
+						:
+						iconLeft({ size: iconLeftSize, color: iconLeftColor || styles.iconColor })
+					}
 				</IconLeftCmp>
 			}
 			<CenterCmp style={[styles.centerContainer, styleCenterContainer]} onPress={() => onCenterPress?.(meta)}>
@@ -42,7 +48,11 @@ const XFieldContainer = ({
 			{
 				!!iconRight &&
 				<IconRightCmp disabled={iconRightDisabled} style={[styles.icon, { opacity: iconRightDisabled ? Theme.values.disabledOpacity : 1 }]} onPress={onIconRightPress}>
-					{iconRight({ size: 18, color: iconRightColor || styles.iconRightColor })}
+					{typeof iconRight === 'string' ?
+						<AntDesign name={iconRight} size={20} color={iconRightColor || styles.iconColor} />
+						:
+						iconRight({ size: 20, color: iconLeftColor || styles.iconColor })
+					}
 				</IconRightCmp>
 			}
 			{disabled && <XMask />}

@@ -1,26 +1,21 @@
-import { Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
+import { ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
 import { Http } from "xapp/src/common/Http";
 import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 import XSection from "xapp/src/components/basic/XSection";
-import { emptyFn } from "xapp/src/common/utils";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import XBottomSheetSelector from "xapp/src/components/basic/XBottomSheetSelector";
-import XSelectField from "xapp/src/components/basic/XSelectField";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import XFieldDatePicker from "xapp/src/components/basic/XFieldDataPicker";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
-import XBottomSheetModal from "xapp/src/components/basic/XBottomSheetModal";
 import XButton from "xapp/src/components/basic/XButton";
-import { storeDispatch } from "xapp/src/store/store";
-import { useLockNavigation } from "../common/useLockNavigation";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import XSelector from "xapp/src/components/basic/XSelector";
 import Footer from "../components/Footer";
 import { AntDesign } from '@expo/vector-icons';
+import { BOOK_APPOINTMENT_SCREEN } from "../navigators/routes";
 
 
-const FREE_APP_WIDTH = 56;
+const FREE_APP_WIDTH = 66;
 const FREE_APP_COL_GAP = 6;
 
 const getEmptyApps = (appLength, width) => {
@@ -33,58 +28,13 @@ const getEmptyApps = (appLength, width) => {
 	return emptyApps;
 };
 
-
-const FreeAppointmentDetails = ({ navigation, app }) => {
-	const [appProcessing, setAppProcessing] = useState(false);
-	useLockNavigation(appProcessing, navigation);
-
-	const bookAppointment = () => {
-		console.log(app)
-		Http.post('/appointments/book', app)
-			.catch(err => {
-				console.log(err)
-			})
-	};
-
-	return (
-		<View style={{ flex: 1, padding: 10 }}>
-			<BottomSheetScrollView>
-				<View style={{ marginBottom: 10 }}>
-					<XText>Start at: {app.services[0]?.time}</XText>
-				</View>
-				{app.services.map((s, idx) => (
-					<XText key={s.joinId + idx}>{`${s.time} - ${s.service.name} - (${s.service.duration})min - ${s.employee.name}`}</XText>
-				))}
-			</BottomSheetScrollView>
-
-			<XButton
-				title="Book"
-				onPress={() => {
-					setAppProcessing(true);
-					storeDispatch('app.mask', true);
-					setTimeout(() => {
-						setAppProcessing(false);
-						storeDispatch('app.mask', false)
-						bookAppointment();
-						navigation.goBack();
-					}, 2000);
-				}} />
-		</View>
-	)
-};
-
 const FreeAppointmentsScreen = ({ navigation, route: { params: { services, providerId } } }) => {
 
 	const [data, setData] = useState();
 	const [loading, setLoading] = useState(true);
 	const [selectedEmps, setSelectedEmps] = useState({});
-	const [bottomSheetData, setBottomSheetData] = useState({ data: [], currentSerId: -1 });
 	const [date, setDate] = useState(new Date());
-	const [app, setApp] = useState({});
 	const [selectedApp, setSelectedApp] = useState(null);
-
-	const bottomSheetRef = useRef(null);
-	const confirmBSRef = useRef(null);
 	const t = useTranslation();
 	const styles = useThemedStyle(styleCreator);
 	const { width } = useWindowDimensions();
@@ -94,8 +44,6 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 		setLoading(true);
 
 		let finish = true;
-
-		console.log(selectedEmps, services.map(s => selectedEmps[s]?.id || -1));
 
 		Http.get('/appointments/free', {
 			s: services,
@@ -117,11 +65,6 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 		setSelectedApp(null);
 	}, [data]);
 
-	const onAppPress = (app) => {
-		setApp(app);
-		confirmBSRef?.current.present();
-	};
-
 	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
 	if (!data || !Object.keys(data).length)
 		return null;
@@ -135,7 +78,14 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 					<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 						<XText light bold size={16}>{selectedApp?.services[0]?.time || '-'}</XText>
 					</View>
-					<XButton title={t('Book')} style={{ flex: 1 }} disabled={!selectedApp} iconRight={bookBtnRightIcon} />
+					<XButton
+						title={t('Book')}
+						primary
+						style={{ flex: 1 }}
+						disabled={!selectedApp}
+						iconRight={bookBtnRightIcon}
+						onPress={() => navigation.navigate(BOOK_APPOINTMENT_SCREEN, { app: selectedApp, provider: data.provider })}
+					/>
 				</Footer>
 			)}
 		>
@@ -168,7 +118,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 									key={a.id}
 									title={a.services[0].time}
 									style={styles.freeAppointment}
-									outline={selectedApp?.id !== a.id}
+									primary={selectedApp?.id === a.id}
 									onPress={() => setSelectedApp((curr) => {
 										if (curr?.id === a.id)
 											return null;
@@ -186,55 +136,36 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 			<XSection transparent
 				title={t('Services')}
 				style={{ marginTop: 10 }}
-				contentStyle={{ rowGap: 3 }}
+				styleContent={{ rowGap: 5 }}
 			>
 				{data.serEmps.map(({ ser, emps }) => (
-					<XSelectField
+					<XSelector
 						title={ser.name}
 						value={selectedEmps[ser.id]?.name || t('First free')}
 						key={ser.id}
-						onPress={() => {
-							const employees = emps
-								.map(e => ({
-									id: e.id,
-									title: e.name,
-									serviceId: ser.id
-								}));
-
-							setBottomSheetData({
-								currentSerId: ser.id,
-								data: [{
-									id: -1,
-									title: t('First free'),
-									serviceId: ser.id
-								}].concat(employees)
-							});
-
-							bottomSheetRef.current?.present()
+						selector={{
+							title: t('Select employee')
+						}}
+						data={[{
+							id: -1,
+							title: t('First free'),
+							serviceId: ser.id
+						}].concat(
+							emps.map(e => ({
+								id: e.id,
+								title: e.name,
+								serviceId: ser.id
+							})))
+						}
+						onItemSelect={({ id, serviceId, title }) => {
+							setSelectedEmps(curr => ({
+								...curr,
+								[serviceId]: { id, name: title }
+							}));
 						}}
 					/>
 				))}
 			</XSection>
-
-			<XBottomSheetSelector
-				ref={bottomSheetRef}
-				data={bottomSheetData.data}
-				selectedId={selectedEmps[bottomSheetData.currentSerId]?.id || -1}
-				title={'Select employee'}
-				onItemSelect={({ id, serviceId, title }) => {
-					setSelectedEmps(curr => ({
-						...curr,
-						[serviceId]: { id, name: title }
-					}));
-				}}
-			/>
-
-			<XBottomSheetModal
-				snapPoints={['75%']}
-				ref={confirmBSRef}
-			>
-				<FreeAppointmentDetails navigation={navigation} app={app} />
-			</XBottomSheetModal>
 		</XScreen >
 	);
 };

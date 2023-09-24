@@ -95,7 +95,8 @@ const Appointment = ({ item, reload }) => {
 			return <XButton
 				style={{ flex: 1 }}
 				title='otkazi'
-				color={'red'}
+				//color={'red'}
+				outline
 				secondary
 				small
 				onPress={() => {

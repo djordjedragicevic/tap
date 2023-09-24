@@ -123,12 +123,20 @@ public class AppointmentsREST {
 		List<Integer> eIds = serEmpsMap.values().stream().flatMap(Collection::stream).mapToInt(EmployeeDto::getId).distinct().boxed().toList();
 
 
-		ProviderWorkInfo pWI = getProviderWorkInfoAtDay(pId, eIds, date);
-		resp.put("pwi", pWI);
+		ProviderWorkInfo pWI = this.getProviderWorkInfoAtDay(pId, eIds, date);
+		//resp.put("pwi", pWI);
 
 
 		List<FreeAppointment> apps = getFreeAppointments(sIds, sEIds, pWI, serEmpsMap);
 		resp.put("apps", apps);
+
+		Map<String, Object> provider = new HashMap<>();
+		provider.put("address", pWI.getProviderAddress());
+		provider.put("city", pWI.getProviderCity());
+		provider.put("name", pWI.getProviderName());
+		provider.put("type", pWI.getProviderType());
+
+		resp.put("provider", provider);
 
 		return resp;
 	}
@@ -354,6 +362,9 @@ public class AppointmentsREST {
 					pWI.getBreakPeriods().add(new TimePeriod(start, end));
 
 				pWI.setProviderName(wP.getProvider().getName());
+				pWI.setProviderAddress(wP.getProvider().getAddress().getAddress1());
+				pWI.setProviderCity(wP.getProvider().getAddress().getCity().getName());
+				pWI.setProviderType(wP.getProvider().getProvidertype().getName());
 
 			} else if (wP.getEmployee() != null) {
 				int eId = wP.getEmployee().getId();

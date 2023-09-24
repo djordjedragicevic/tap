@@ -8,7 +8,8 @@ import {
 	MAIN_TAB_HOME,
 	MAIN_TAB_MY_APPOINTMENTS,
 	MAIN_TAB_USER,
-	PROVIDER_SCREEN
+	PROVIDER_SCREEN,
+	BOOK_APPOINTMENT_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
@@ -25,8 +26,8 @@ import { useIsUserLogged } from '../store/concreteStores';
 import XAvatar from 'xapp/src/components/basic/XAvatar';
 import FreeAppointmentsScreen from '../screens/FreeAppointmentsScreen';
 import MyAppointmentsScreen from '../screens/MyAppointmentsScreen';
-import { Theme } from 'xapp/src/style/themes';
 import { useColor } from 'xapp/src/style/ThemeContext';
+import BookAppointmentScreen from '../screens/BookAppointmentScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -34,6 +35,8 @@ const MainBottomTabNavigator = ({ navigation }) => {
 	const t = useTranslation();
 	const logged = useIsUserLogged();
 	const secondaryColor = useColor('secondary');
+	const colorTextLight = useColor('textLight');
+	const colorPrimary = useColor('primary');
 
 	return (
 		<BottomTab.Navigator
@@ -52,7 +55,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				component={HomeScreen}
 				options={{
 					title: t("Home"),
-					tabBarIcon: (props) => <AntDesign name="home" {...props} />
+					tabBarIcon: (props) => <AntDesign name="home" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
 			/>
 			<BottomTab.Screen
@@ -60,7 +63,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				component={ProvidersScreen}
 				options={{
 					title: t("Find"), headerShown: false,
-					tabBarIcon: (props) => <AntDesign name="search1" {...props} />
+					tabBarIcon: (props) => <AntDesign name="search1" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
 			/>
 			<BottomTab.Screen
@@ -68,7 +71,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				component={MyAppointmentsScreen}
 				options={{
 					title: t("Appointments"),
-					tabBarIcon: (props) => <AntDesign name="calendar" {...props} />
+					tabBarIcon: (props) => <AntDesign name="calendar" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
 			/>
 			<BottomTab.Screen
@@ -79,11 +82,11 @@ const MainBottomTabNavigator = ({ navigation }) => {
 					tabBarIcon: (props) => logged ?
 						<XAvatar {...props} />
 						:
-						<AntDesign name="user" {...props} />
+						<AntDesign name="user" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}} />
 		</BottomTab.Navigator>
 	)
-}
+};
 
 const Stack = createStackNavigator();
 
@@ -131,6 +134,13 @@ const AppNavigator = () => {
 				component={FreeAppointmentsScreen}
 				options={{
 					title: t('Free appointments')
+				}}
+			/>
+			<Stack.Screen
+				name={BOOK_APPOINTMENT_SCREEN}
+				component={BookAppointmentScreen}
+				options={{
+					title: t('Book appointment')
 				}}
 			/>
 

@@ -305,22 +305,19 @@ const ProviderScreen = ({ navigation, route }) => {
 				/>
 			</View>
 
-
-
 			<Footer>
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					{
-
 						<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 							<XText light>{selected.length || '-'} servisa</XText>
 							<XText size={16} bold light>{priceSum ? CurrencyUtils.convert(priceSum) : '-'}</XText>
 						</View>
-
 					}
 				</View>
 
 				<XButton
 					title={t('Find appointment')}
+					primary
 					disabled={selected.length === 0}
 					style={{ margin: 5, flex: 1 }}
 					onPress={() => navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selected], providerId })}

@@ -11,7 +11,8 @@ const XSection = ({
 	disabled,
 	onPress,
 	disabledOpacity,
-	contentStyle,
+	styleContent,
+	styleTitle,
 	transparent = false
 }) => {
 
@@ -21,10 +22,11 @@ const XSection = ({
 
 	return (
 		<View style={style}>
-			{!!title && <View style={styles.title}>
+			{!!title && <View style={[styles.title, styleTitle]}>
 				<XText size={18} weight={500}>{title}</XText>
-			</View>}
-			<RootCmp style={[styles.content, contentStyle]} onPress={onPress}>
+			</View>
+			}
+			<RootCmp style={[styles.content, styleContent]} onPress={onPress}>
 				{children}
 				{disabled && <XMask opacity={disabledOpacity} />}
 			</RootCmp>
@@ -40,10 +42,13 @@ XSection.defaultProps = {
 
 const createStyle = (theme, transparent) => StyleSheet.create({
 	title: {
-		paddingHorizontal: 8,
-		justifyContent: 'flex-end'
+		borderWidth: 0,
+		paddingHorizontal: 10,
+		justifyContent: 'center',
+		paddingVertical: 3
 	},
 	content: {
+		borderWidth: 0,
 		padding: 8,
 		overflow: 'hidden',
 		borderRadius: Theme.values.borderRadius,

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Theme } from "../../style/themes";
 import XText from "./XText";
-import { useColor, usePrimaryColor, useThemedStyle } from "../../style/ThemeContext";
+import { useColor, useThemedStyle } from "../../style/ThemeContext";
 
 const XButton = ({
 	title,
@@ -16,7 +16,7 @@ const XButton = ({
 	round = false,
 	small = false,
 	outline = false,
-	primary = true,
+	primary = false,
 	secondary = false,
 	iconRight,
 	iconLeft
@@ -30,7 +30,14 @@ const XButton = ({
 		color
 	}, primary, secondary);
 
-	const c = useColor(outline ? 'primary' : 'textLight');
+	const getTextColor = () => {
+		if (primary)
+			return 'textLight';
+		else
+			return 'textPrimary';
+	}
+
+	const c = useColor(getTextColor());
 
 	const iconColor = color || c;
 
@@ -45,6 +52,11 @@ const XButton = ({
 	return (
 		<>
 			<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
+				{!!iconLeft &&
+					<View style={styles.iconLeft}>
+						{iconRight(iconColor, 17)}
+					</View>
+				}
 				{!!title && <XText style={[styles.text, textStyle]} secondary>{title}</XText>}
 				{!!iconRight &&
 					<View style={styles.iconRight}>
@@ -65,21 +77,18 @@ XButton.defaultProps = {
 const createStyle = (theme, params, primary, secondary) => {
 
 	const btnStyle = {
-
+		backgroundColor: theme.colors.backgroundElement,
 		height: 38,
 		paddingHorizontal: 10,
-		//padding: 12,
 		borderRadius: Theme.values.borderRadius,
 		flexDirection: 'row',
-		backgroundColor: theme.colors.primary,
 		justifyContent: 'center',
 		alignItems: 'center'
-
 	};
 
 	const textStyle = {
 		textTransform: 'uppercase',
-		color: theme.colors.textLight,
+		color: theme.colors.textPrimary,
 		fontSize: undefined,
 		fontWeight: 700,
 		textAlign: 'center'
@@ -87,6 +96,11 @@ const createStyle = (theme, params, primary, secondary) => {
 
 	if (params.round) {
 		btnStyle.borderRadius = 100;
+	}
+
+	if (primary) {
+		textStyle.color = theme.colors.textLight;
+		btnStyle.backgroundColor = theme.colors.primary;
 	}
 
 	if (params.small) {
@@ -115,7 +129,10 @@ const createStyle = (theme, params, primary, secondary) => {
 		button: btnStyle,
 		text: textStyle,
 		iconRight: {
-			marginStart: 5
+			alignContent: 'center',
+			justifyContent: 'center',
+			marginStart: 5,
+			marginEnd: -10
 		}
 	});
 };

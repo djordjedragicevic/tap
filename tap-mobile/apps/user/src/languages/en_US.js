@@ -56,7 +56,10 @@ const en_US = {
 	"Tomorow": "Tomorow",
 	"Yesterday": "Yesterday",
 	"Book appointment": "Book appointment",
-	"Book": "Book"
+	"Book": "Book",
+	"Select employee": "Select employee",
+	"Confirm": "Confirm",
+	"Appointment review": "Appointment review"
 };
 
 export default en_US;
