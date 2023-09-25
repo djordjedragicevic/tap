@@ -230,13 +230,13 @@ const ProviderScreen = ({ navigation, route }) => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<View style={{ flex: 1 }}>
+			<View style={{ height: 200 }}>
 				{
 
 					provider.image.length ?
 						<Image
 							source={`${HOST}${provider.image[0]}`}
-							cachePolicy={'none'}
+							cachePolicy='memory'
 							style={{ flex: 1 }}
 							contentFit="cover"
 						/>
@@ -247,62 +247,65 @@ const ProviderScreen = ({ navigation, route }) => {
 				}
 
 			</View>
-			<XSection style={{ flex: 1, maxHeight: 120 }}>
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 
-					<XText style={{ fontSize: 30 }}>{provider.name}</XText>
+			<View style={{ flex: 1, backgroundColor: 'white', borderRadius: 20, overflow: 'hidden', marginTop: -20 }}>
+				<XSection style={{ flex: 1, maxHeight: 120 }}>
+					<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 
-					<XChip style={{ flexDirection: 'row', alignItems: 'center' }}>
-						<XText light weight={500}>4.9</XText>
-					</XChip>
-				</View>
+						<XText style={{ fontSize: 30 }}>{provider.name}</XText>
 
-				<XText style={{ fontSize: 18 }}>{provider.type}</XText>
-				<XText secondary style={{ fontSize: 18 }}>{provider.address}</XText>
-			</XSection>
-
-
-
-			<View style={{ flex: 1 }}>
-				{
-					hasCats &&
-					<View style={{ padding: 5 }}>
-						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-							{services?.categoryList.map((c, idx) => (
-								<Pressable
-									onPress={() => setSelectedCatIdx(idx)}
-									key={c.id}
-									style={[styles.category, idx === selectedCatIdx ? styles.categorySelected : {}]}
-								>
-									<XText>{c.name}</XText>
-								</Pressable>
-							))}
-						</ScrollView>
+						<XChip style={{ flexDirection: 'row', alignItems: 'center' }}>
+							<XText light weight={500}>4.9</XText>
+						</XChip>
 					</View>
-				}
 
-				<SectionList
-					sections={services.categories[services.categoryList[selectedCatIdx].id].groups}
-					renderItem={renderItem}
-					renderSectionHeader={renderSectionHeader}
-					// style={{
-					// 	flex: 1,
-					// 	zIndex: 1,
-					// 	//marginTop: rnHH
-					// }}
-					contentContainerStyle={styles.sContentContainerStyle}
-					showsVerticalScrollIndicator={true}
-					scrollEventThrottle={16}
-					onScroll={Animated.event([
-						{
-							nativeEvent: {
-								contentOffset: {
-									y: offset,
+					<XText style={{ fontSize: 18 }}>{provider.type}</XText>
+					<XText secondary style={{ fontSize: 18 }}>{provider.address}</XText>
+				</XSection>
+
+
+
+				<View style={{ flex: 1 }}>
+					{
+						hasCats &&
+						<View style={{ padding: 5 }}>
+							<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+								{services?.categoryList.map((c, idx) => (
+									<Pressable
+										onPress={() => setSelectedCatIdx(idx)}
+										key={c.id}
+										style={[styles.category, idx === selectedCatIdx ? styles.categorySelected : {}]}
+									>
+										<XText>{c.name}</XText>
+									</Pressable>
+								))}
+							</ScrollView>
+						</View>
+					}
+
+					<SectionList
+						sections={services.categories[services.categoryList[selectedCatIdx].id].groups}
+						renderItem={renderItem}
+						renderSectionHeader={renderSectionHeader}
+						// style={{
+						// 	flex: 1,
+						// 	zIndex: 1,
+						// 	//marginTop: rnHH
+						// }}
+						contentContainerStyle={styles.sContentContainerStyle}
+						showsVerticalScrollIndicator={true}
+						scrollEventThrottle={16}
+						onScroll={Animated.event([
+							{
+								nativeEvent: {
+									contentOffset: {
+										y: offset,
+									},
 								},
 							},
-						},
-					], { useNativeDriver: false })}
-				/>
+						], { useNativeDriver: false })}
+					/>
+				</View>
 			</View>
 
 			<Footer>

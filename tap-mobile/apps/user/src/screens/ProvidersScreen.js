@@ -42,7 +42,7 @@ const ProvidersScreen = ({ navigation }) => {
 								<Image
 									source={`${HOST}${item.mainImg?.split(',')[0]}`}
 									contentFit='cover'
-									cachePolicy={'none'}
+									cachePolicy='memory'
 									style={{ flex: 1 }}
 								/>
 								:
