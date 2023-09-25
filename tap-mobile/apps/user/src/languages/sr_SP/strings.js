@@ -25,5 +25,6 @@ export const strings = {
 	"Book": "Rezerviši",
 	"Select employee": "Izaberite radnika",
 	"Confirm": "Potvrdite",
-	"Appointment review": "Pregled rezervacije"
+	"Appointment review": "Pregled rezervacije",
+	"reviewes": "ocijena"
 };

@@ -59,6 +59,7 @@ const LoginScreen = ({ navigation }) => {
 			/>
 			<XButton
 				title={"Log in"}
+				primary
 				style={{ margin: 5, marginTop: 15 }}
 				onPress={doLogin}
 				disabled={loading}

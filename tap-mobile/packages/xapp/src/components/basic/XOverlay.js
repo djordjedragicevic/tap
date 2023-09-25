@@ -1,8 +1,10 @@
 import { StyleSheet, View } from "react-native";
 import { useStore } from "../../store/store";
+import { useThemedStyle } from "../../style/ThemeContext";
 
 const XOverlay = () => {
 	const isMaksed = useStore(gS => gS.app.isMasked);
+	const styles = useThemedStyle(styleCreator);
 
 	if (!isMaksed)
 		return null
@@ -12,10 +14,10 @@ const XOverlay = () => {
 	)
 };
 
-const styles = StyleSheet.create({
+const styleCreator = (theme) => StyleSheet.create({
 	mask: {
 		...StyleSheet.absoluteFill,
-		backgroundColor: 'green',
+		backgroundColor: theme.colors.primaryColor,
 		opacity: 0.3
 	}
 })

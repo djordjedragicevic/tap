@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import { Theme } from "../style/themes";
 import { emptyFn } from "../common/utils";
+import XLoadingBar from "./XLoadingBar";
 
 const XScreen = ({
 	children,
@@ -40,7 +41,7 @@ const XScreen = ({
 			<VCmp style={[style, dynStyle]}>
 				{children}
 			</VCmp>
-			{loading && <View style={{ backgroundColor: 'red', position: 'absolute', height: 3, width: '100%' }}></View>}
+			{loading && <XLoadingBar />}
 			{Footer}
 		</SafeAreaView>
 	);

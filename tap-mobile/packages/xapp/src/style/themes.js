@@ -23,7 +23,7 @@ export const Theme = {
 
 			textPrimary: 'hsl(0, 0%, 30%)',
 			textSecondary: 'hsl(0, 0%, 60%)',
-			textTertiary: 'hsl(0, 0%, 80%)',
+			textTertiary: 'hsl(0, 0%, 85%)',
 			textLight: '#f2f2f3',
 
 			borderColor: '#a6a6a6',

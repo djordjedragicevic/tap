@@ -21,7 +21,7 @@ const XSection = ({
 	const RootCmp = onPress instanceof Function ? TouchableOpacity : View;
 
 	return (
-		<View style={style}>
+		<View style={[styles.container, style]}>
 			{!!title && <View style={[styles.title, styleTitle]}>
 				<XText size={18} weight={500}>{title}</XText>
 			</View>
@@ -42,16 +42,17 @@ XSection.defaultProps = {
 
 const createStyle = (theme, transparent) => StyleSheet.create({
 	title: {
-		borderWidth: 0,
 		paddingHorizontal: 10,
 		justifyContent: 'center',
 		paddingVertical: 3
 	},
 	content: {
-		borderWidth: 0,
+		backgroundColor: transparent ? 'transparent' : theme.colors.backgroundElement
+	},
+	container: {
 		padding: 8,
 		overflow: 'hidden',
 		borderRadius: Theme.values.borderRadius,
-		backgroundColor: transparent ? 'transparent' : theme.colors.backgroundElement
+
 	}
 });

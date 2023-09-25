@@ -1,7 +1,9 @@
 import { useMemo } from "react";
-import { StyleSheet, Text } from "react-native";
-import { useThemedStyle } from "../../style/ThemeContext";
+import { StyleSheet, Text, View } from "react-native";
+import { usePrimaryColor, useThemedStyle } from "../../style/ThemeContext";
 import { useStore } from "../../store/store";
+import { AntDesign } from '@expo/vector-icons';
+
 
 const fontWeights = {
 	100: 'Thin',
@@ -27,6 +29,7 @@ const XText = ({
 	size,
 	color,
 	bold,
+	icon,
 	...rest
 }) => {
 	const textColor = useMemo(() => {
@@ -43,10 +46,26 @@ const XText = ({
 
 	const appFont = useStore(state => state.app.font);
 	const styles = useThemedStyle(createStyle, textColor, appFont, { weight: bold ? 600 : weight, italic, size });
+	const pColor = usePrimaryColor();
 
-	return (
-		<Text style={[styles.text, style]} {...rest}>{children}</Text>
-	);
+	if (!icon)
+		return (
+			<Text style={[styles.text, style]} {...rest}>{children}</Text>
+		);
+	else if (typeof icon === 'string')
+		return (
+			<View style={styles.container}>
+				<AntDesign name={icon} size={18} color={pColor} />
+				<Text style={[styles.text, style]} {...rest}>{children}</Text>
+			</View>
+		);
+	else if (typeof icon === 'function')
+		return (
+			<View style={styles.container}>
+				{icon({ size: 18, color: pColor })}
+				<Text style={[styles.text, style]} {...rest}>{children}</Text>
+			</View>
+		);
 };
 
 XText.defaultProps = {
@@ -80,7 +99,11 @@ const createStyle = (theme, textColor, appFont, { weight, italic, size }) => {
 
 
 	return StyleSheet.create({
-		text: style
+		text: style,
+		container: {
+			flexDirection: 'row',
+			alignItems: 'center'
+		}
 	})
 };
 

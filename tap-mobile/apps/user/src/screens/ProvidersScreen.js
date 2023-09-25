@@ -9,10 +9,17 @@ import { Theme } from "xapp/src/style/themes";
 import { Image } from 'expo-image';
 import { HOST } from "../common/config";
 import HairSalon from "../components/svg/HairSalon";
+import XSeparator from "xapp/src/components/basic/XSeparator";
+import XMarkStars from "xapp/src/components/XMarkStars";
+import { useColor, usePrimaryColor } from "xapp/src/style/ThemeContext";
+import FavoriteButton from "../components/FavoriteButton";
+
 
 const ProvidersScreen = ({ navigation }) => {
 
 	const [providers, refresh, refreshing] = useHTTPGet('/provider/list', { cId: 1 }, []);
+	const pColor = usePrimaryColor();
+	const sColor = useColor('secondary');
 
 	const renderCompany = useCallback(({ item, index }) => {
 
@@ -21,38 +28,59 @@ const ProvidersScreen = ({ navigation }) => {
 				onPress={() => navigation.navigate(PROVIDER_SCREEN, { id: item.id })}
 				style={{
 					padding: 0,
-					marginTop: 10,
-					elevation: 2
+					borderColor: 'lightskyblue'
 				}}
+				styleContent={{}}
 			>
-				<View style={{ overflow: 'hidden', height: 200 }}>
-					{
-						item.mainImg ?
 
-							<Image
-								source={`${HOST}${item.mainImg?.split(',')[0]}`}
-								contentFit='cover'
-								cachePolicy={'none'}
-								style={{ flex: 1 }}
-							/>
-							:
-							<View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-								<HairSalon height={100} width={150} />
-							</View>
-					}
 
+
+				<View style={{ height: 150 }}>
+					<View style={{ flex: 1 }}>
+						{
+							item.mainImg ?
+								<Image
+									source={`${HOST}${item.mainImg?.split(',')[0]}`}
+									contentFit='cover'
+									cachePolicy={'none'}
+									style={{ flex: 1 }}
+								/>
+								:
+								<View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+									<HairSalon height={100} width={150} />
+								</View>
+						}
+					</View>
 				</View>
 
-				<View style={{ flex: 1 }}>
+				<View style={{ flex: 1, padding: 8 }}>
 
-					<View style={{ padding: 10 }}>
-						<XText numberOfLines={1} adjustsFontSizeToFit style={styles.title}>{item.name}</XText>
-						<View style={{ alignItems: 'center', flexDirection: 'row' }}>
-							<XText secondary numberOfLines={1} adjustsFontSizeToFit style={{}}>{item.address1 + ', ' + item.city}</XText>
+
+					<View style={{ marginBottom: 5, flexDirection: 'row' }}>
+						<View style={{ flex: 1 }}>
+							<XText style={styles.title} bold>
+								{item.name}
+							</XText>
+							<XText secondary style={styles.titleType}>
+								{item.type}
+							</XText>
 						</View>
+						{/* <View>
+							<FavoriteButton favorit style={{ width: 45 }} />
+						</View> */}
 					</View>
 
-					<View style={{ padding: 10, alignItems: 'flex-end', justifyContent: 'center' }}>
+					<XMarkStars mark={3.6} reviewCound={35} />
+
+					<XSeparator style={{ marginVertical: 10 }} />
+
+					<XText icon='enviroment' secondary style={{ marginStart: 6 }}>
+						{item.address1 + ', ' + item.city}
+					</XText>
+
+
+
+					{/* <View style={{ padding: 10, alignItems: 'flex-end', justifyContent: 'center' }}>
 						{
 							index % 2 > 0 ?
 								<>
@@ -67,9 +95,8 @@ const ProvidersScreen = ({ navigation }) => {
 									<View style={{ width: 10, height: 10, borderRadius: 50, backgroundColor: 'red', marginEnd: 5 }} />
 									<XText style={{ alignSelf: 'flex-end', fontWeight: '500' }}>{'Zatvoreno'}<XText secondary style={{ fontStyle: 'italic', fontSize: 13 }}>{' - otvara sutra u 8:00h'}</XText></XText>
 								</View>
-
 						}
-					</View>
+					</View> */}
 				</View>
 			</XSection>
 
@@ -77,9 +104,14 @@ const ProvidersScreen = ({ navigation }) => {
 	}, []);
 
 	return (
-		<XScreen flat>
+		<XScreen loading={refreshing} flat>
 			<FlatList
-				style={{ paddingHorizontal: Theme.values.mainPaddingHorizontal }}
+				style={{
+					paddingHorizontal: Theme.values.mainPaddingHorizontal
+				}}
+				contentContainerStyle={{
+					rowGap: 10
+				}}
 				data={providers}
 				renderItem={renderCompany}
 				refreshing={refreshing}
@@ -99,12 +131,10 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	titleType: {
-		fontSize: 22,
-		fontStyle: 'italic'
+		//fontSize: 18
 	},
 	title: {
-		fontSize: 25,
-		fontWeight: 'normal'
+		fontSize: 20
 	}
 });
 
