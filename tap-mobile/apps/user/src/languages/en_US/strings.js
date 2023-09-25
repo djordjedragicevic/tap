@@ -1,4 +1,4 @@
-const en_US = {
+export const strings = {
 	'Appointments': 'Appointments',
 	'Test translation': "Test translation on English",
 
@@ -61,5 +61,3 @@ const en_US = {
 	"Confirm": "Confirm",
 	"Appointment review": "Appointment review"
 };
-
-export default en_US;

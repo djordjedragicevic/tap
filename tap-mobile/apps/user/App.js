@@ -32,12 +32,14 @@ import { useEffect, useState } from 'react';
 import { Http } from 'xapp/src/common/Http';
 import { storeDispatch, storeInit } from 'xapp/src/store/store';
 import { appStore, testStore, userStore } from './src/store/concreteStores';
-import en_US from './src/languages/en_US';
-import sr_SP from './src/languages/sr_SP';
 import { I18nContextProvider } from 'xapp/src/i18n/I18nContext';
 import { Theme } from 'xapp/src/style/themes';
 import { Storage } from 'xapp/src/store/deviceStorage';
-import { DarkTheme, DefaultTheme } from '@react-navigation/native';
+
+import { strings as en_US_str } from './src/languages/en_US/strings';
+import { errors as en_US_err } from './src/languages/en_US/errors';
+import { strings as sr_SP_str } from './src/languages/sr_SP/strings';
+import { errors as sr_SP_err } from './src/languages/sr_SP/errors';
 
 storeInit(appStore());
 storeInit(userStore());
@@ -62,14 +64,16 @@ const languages = initLangs({
 		code: 'en-US',
 		name: 'English',
 		dateCode: 'en',
-		strings: en_US
+		strings: en_US_str,
+		errors: en_US_err
 	},
 	[LANGS.sr_SP]: {
 		id: 'sr_SP',
 		code: 'sr-SP',
 		name: 'Serbian',
 		dateCode: 'sr-Latn-ba',
-		strings: sr_SP
+		strings: sr_SP_str,
+		errors: sr_SP_err
 	}
 });
 

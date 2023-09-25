@@ -1,4 +1,4 @@
-const sr_SP = {
+export const strings = {
 	"minutes": "minnuta",
 	"appointments": "termini",
 	"Home": "Početna",
@@ -27,5 +27,3 @@ const sr_SP = {
 	"Confirm": "Potvrdite",
 	"Appointment review": "Pregled rezervacije"
 };
-
-export default sr_SP;
