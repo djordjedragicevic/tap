@@ -26,5 +26,5 @@ export const strings = {
 	"Select employee": "Izaberite radnika",
 	"Confirm": "Potvrdite",
 	"Appointment review": "Pregled rezervacije",
-	"reviewes": "ocijena"
+	"reviews": "ocijena"
 };

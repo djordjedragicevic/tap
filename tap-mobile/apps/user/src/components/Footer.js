@@ -19,7 +19,7 @@ const styleCreator = (theme) => StyleSheet.create({
 		paddingHorizontal: Theme.values.mainPaddingHorizontal,
 		borderTopStartRadius: Theme.values.borderRadius,
 		borderTopEndRadius: Theme.values.borderRadius,
-		height: 52,
+		height: Theme.values.footerHeight,
 		alignItems: 'center',
 		justifyContent: 'center',
 		flexDirection: 'row'

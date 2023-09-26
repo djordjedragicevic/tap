@@ -28,6 +28,7 @@ import FreeAppointmentsScreen from '../screens/FreeAppointmentsScreen';
 import MyAppointmentsScreen from '../screens/MyAppointmentsScreen';
 import { useColor } from 'xapp/src/style/ThemeContext';
 import BookAppointmentScreen from '../screens/BookAppointmentScreen';
+import TryScreen from '../screens/TryScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -72,6 +73,14 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				options={{
 					title: t("Appointments"),
 					tabBarIcon: (props) => <AntDesign name="calendar" {...props} color={props.focused ? colorPrimary : colorTextLight} />
+				}}
+			/>
+			<BottomTab.Screen
+				name={'TRY'}
+				component={TryScreen}
+				options={{
+					title: 'Settings',
+					tabBarIcon: (props) => <AntDesign name="setting" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
 			/>
 			<BottomTab.Screen
