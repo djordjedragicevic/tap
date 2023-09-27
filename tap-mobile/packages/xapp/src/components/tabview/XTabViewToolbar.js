@@ -1,44 +1,35 @@
-import { Dimensions, Pressable, ScrollView, View } from "react-native";
+import { Dimensions, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import XText from "../basic/XText";
 import { useCallback, useMemo } from "react";
-import { useColor } from "../../style/ThemeContext";
+import { useColor, useThemedStyle } from "../../style/ThemeContext";
 
 const MIN_TAB_WIDTH = 100;
 const TAB_BAR_H_PADDING = 0;
 const { width } = Dimensions.get("screen");
 
 
-const XTabViewToolbarItem = ({ title, onPress, selected, selectedColor }) => {
+const XTabViewToolbarItem = ({ title, onPress, selected }) => {
+
+	const styles = useThemedStyle(styleCreator, selected);
+
 	return (
 		<Pressable
 			onPress={onPress}
-			style={{
-				flex: 1,
-				minWidth: MIN_TAB_WIDTH
-			}}
+			style={styles.tabItem}
 		>
-			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-				<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-					<XText bold secondary>{title}</XText>
+			<View style={styles.tabItemContainer}>
+				<View style={styles.tabTextContainer}>
+					<XText bold style={styles.tabText}>{title}</XText>
 				</View>
-				<View
-					style={{
-						backgroundColor: selected ? selectedColor : 'transparent',
-						width: '30%',
-						maxWidth: 20,
-						height: 4,
-						alignSelf: 'center',
-						borderRadius: 7
-					}}
-				/>
+				<View style={styles.tabMarker} />
 			</View>
 		</Pressable>
 	);
 }
 
-const XTabViewToolbar = ({ items, selectedIdx, onItemPress }) => {
+const XTabViewToolbar = ({ items, selectedIdx, onItemPress, style }) => {
 
-	const sColor = useColor('secondary');
+	const styles = useThemedStyle(styleCreator);
 
 	const onItemRender = useCallback((item, index) => {
 		return (
@@ -47,10 +38,9 @@ const XTabViewToolbar = ({ items, selectedIdx, onItemPress }) => {
 				title={item.title}
 				onPress={() => onItemPress(index)}
 				selected={selectedIdx === index}
-				selectedColor={sColor}
 			/>
 		)
-	}, [selectedIdx, sColor]);
+	}, [selectedIdx]);
 
 
 	const useScroll = useMemo(() => {
@@ -64,26 +54,50 @@ const XTabViewToolbar = ({ items, selectedIdx, onItemPress }) => {
 					<ScrollView
 						horizontal
 						showsHorizontalScrollIndicator={false}
-						style={{
-							height: 40,
-							paddingHorizontal: TAB_BAR_H_PADDING,
-							paddingVertical: 3
-						}}>
+						style={[styles.tabBar, style]}>
 						{items.map(onItemRender)}
 					</ScrollView>
 					:
 					<View
-						style={{
-							height: 40,
-							paddingHorizontal: TAB_BAR_H_PADDING,
-							flexDirection: 'row',
-							paddingVertical: 3
-						}}>
+						style={[styles.tabBar, style]}>
 						{items.map(onItemRender)}
 					</View>
 			}
 		</>
 	);
-}
+};
 
+const styleCreator = (theme, selected) => StyleSheet.create({
+	tabBar: {
+		height: 50,
+		paddingHorizontal: TAB_BAR_H_PADDING,
+		paddingVertical: 3,
+		flexDirection: 'row'
+	},
+	tabItem: {
+		flex: 1,
+		minWidth: MIN_TAB_WIDTH
+	},
+	tabText: {
+		color: theme.colors.textPrimary
+	},
+	tabItemContainer: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	tabTextContainer: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	tabMarker: {
+		backgroundColor: selected ? theme.colors.secondary : 'transparent',
+		width: '30%',
+		maxWidth: 20,
+		height: 4,
+		alignSelf: 'center',
+		borderRadius: 7
+	}
+})
 export default XTabViewToolbar;

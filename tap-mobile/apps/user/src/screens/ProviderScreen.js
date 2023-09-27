@@ -1,7 +1,7 @@
 
 import XText from "xapp/src/components/basic/XText";
 import XButton from "xapp/src/components/basic/XButton";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
 import XSection from "xapp/src/components/basic/XSection";
 import { Animated, Pressable, SectionList, StyleSheet, View } from "react-native"
@@ -21,6 +21,8 @@ import { storeDispatch, useStore } from "xapp/src/store/store";
 import { FREE_APPOINTMENTS_SCREEN } from "../navigators/routes";
 import { AntDesign } from '@expo/vector-icons';
 import Footer from "../components/Footer";
+import { XTabView, XTabScreen } from "xapp/src/components/tabview/XTabView";
+import XScreen from "xapp/src/components/XScreen";
 
 
 
@@ -150,43 +152,30 @@ const serviceItemSC = (theme) => StyleSheet.create({
 });
 
 
-const ProviderScreen = ({ navigation, route }) => {
-	const providerId = route.params.id;
-
-	const t = useTranslation();
+const TabServices = ({
+	providerId,
+	selected,
+	setSelected,
+	setPriceSum
+}) => {
 
 	const [provider] = useHTTPGet(`/provider/${providerId}`, undefined, lastP[providerId]);
 	lastP[providerId] = provider;
 
-	const [selected, setSelected] = useState([]);
 	const [selectedCatIdx, setSelectedCatIdx] = useState(0);
 
 	const services = useMemo(() => groupServices(provider?.services), [provider]);
 	const hasCats = services?.categoryList.length > 1;
 
-	const fProviders = useStore(st => st.user.state.favoriteProviders);
-	const userId = useStore(st => st.user.id);
 
-	const styles = useThemedStyle(providerStyle);
+	const styles = useThemedStyle(styleCreator);
 
-	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
-
-	const priceSum = selected.map(sId => services.sMap[sId].price).reduce((accumulator, price) => accumulator + price, 0);
-
-
-	const onFPress = () => {
-		const { state: { favoriteProviders } } = storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId);
-		Http.post(`/user/${userId}/state`, { favoriteProviders });
-	};
 
 	useEffect(() => {
-		navigation.setOptions({
-			headerRight: ({ tintColor }) => <FavoriteButton color={tintColor} favorit={isFavorite} onPress={onFPress} />
-		});
-	}, [onFPress]);
+		const priceSum = selected.map(sId => services.sMap[sId].price).reduce((accumulator, price) => accumulator + price, 0);
+		setPriceSum(priceSum)
+	}, [selected, services, setPriceSum]);
 
-
-	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
 
 
 	const onItemPress = useCallback((itemId) => {
@@ -229,11 +218,102 @@ const ProviderScreen = ({ navigation, route }) => {
 
 
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
-			<View style={{ height: 200 }}>
+		<View style={{ flex: 1 }}>
+			{
+				hasCats &&
+				<View style={{ padding: 5 }}>
+					<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+						{services?.categoryList.map((c, idx) => (
+							<Pressable
+								onPress={() => setSelectedCatIdx(idx)}
+								key={c.id}
+								style={[styles.category, idx === selectedCatIdx ? styles.categorySelected : {}]}
+							>
+								<XText>{c.name}</XText>
+							</Pressable>
+						))}
+					</ScrollView>
+				</View>
+			}
+
+			<SectionList
+				sections={services.categories[services.categoryList[selectedCatIdx].id].groups}
+				renderItem={renderItem}
+				renderSectionHeader={renderSectionHeader}
+				// style={{
+				// 	flex: 1,
+				// 	zIndex: 1,
+				// 	//marginTop: rnHH
+				// }}
+				contentContainerStyle={styles.sContentContainerStyle}
+				showsVerticalScrollIndicator={true}
+				scrollEventThrottle={16}
+				onScroll={Animated.event([
+					{
+						nativeEvent: {
+							contentOffset: {
+								y: offset,
+							},
+						},
+					},
+				], { useNativeDriver: false })}
+			/>
+		</View>
+	);
+
+};
+
+const TabAbout = () => {
+	return (
+		<View flex={1} justifyContent='center' alignItems='center'>
+			<XText>About</XText>
+		</View>
+	)
+};
+
+const TabReviews = () => {
+	return (
+		<View flex={1} justifyContent='center' alignItems='center'>
+			<XText>Reviews</XText>
+		</View>
+	)
+};
+
+
+const HEADER_IMAGE_HEIGHT = 250;
+
+const ProviderScreen = ({ navigation, route }) => {
+
+	const t = useTranslation();
+	const providerId = route.params.id;
+	const [provider] = useHTTPGet(`/provider/${providerId}`);
+
+	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
+	const styles = useThemedStyle(styleCreator)
+
+	const [selectedIds, setSelectedIdxs] = useState([]);
+	const [priceSum, setPriceSum] = useState();
+
+	const userId = useStore(st => st.user.id);
+	const fProviders = useStore(st => st.user.state.favoriteProviders);
+	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
+
+
+	const onFPress = () => {
+		const newFavs = isFavorite ? fProviders.filter(pId => pId !== providerId) : [...(fProviders || []), providerId];
+		Http.post(`/user/${userId}/state`, { favoriteProviders: newFavs })
+			.then(() => {
+				storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId);
+			});
+	};
+
+
+	return (
+		<>
+			<View style={{ height: HEADER_IMAGE_HEIGHT }}>
 				{
 
-					provider.image.length ?
+					provider?.image.length ?
 						<Image
 							source={`${HOST}${provider.image[0]}`}
 							cachePolicy='memory'
@@ -245,75 +325,47 @@ const ProviderScreen = ({ navigation, route }) => {
 							<HairSalon height={150} width={150} />
 						</View>
 				}
-
+				<FavoriteButton
+					style={{
+						position: 'absolute',
+						end: 10,
+						top: 10,
+						backgroundColor: 'hsla(0, 0%, 100%, 0.5)'
+					}}
+					favorit={isFavorite}
+					color='crimson'
+					onPress={onFPress}
+				/>
 			</View>
 
-			<View style={{ flex: 1, backgroundColor: 'white', borderRadius: 20, overflow: 'hidden', marginTop: -20 }}>
-				<XSection style={{ flex: 1, maxHeight: 120 }}>
-					<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-
-						<XText style={{ fontSize: 30 }}>{provider.name}</XText>
-
-						<XChip style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<XText light weight={500}>4.9</XText>
-						</XChip>
-					</View>
-
-					<XText style={{ fontSize: 18 }}>{provider.type}</XText>
-					<XText secondary style={{ fontSize: 18 }}>{provider.address}</XText>
-				</XSection>
-
-
-
-				<View style={{ flex: 1 }}>
-					{
-						hasCats &&
-						<View style={{ padding: 5 }}>
-							<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-								{services?.categoryList.map((c, idx) => (
-									<Pressable
-										onPress={() => setSelectedCatIdx(idx)}
-										key={c.id}
-										style={[styles.category, idx === selectedCatIdx ? styles.categorySelected : {}]}
-									>
-										<XText>{c.name}</XText>
-									</Pressable>
-								))}
-							</ScrollView>
-						</View>
-					}
-
-					<SectionList
-						sections={services.categories[services.categoryList[selectedCatIdx].id].groups}
-						renderItem={renderItem}
-						renderSectionHeader={renderSectionHeader}
-						// style={{
-						// 	flex: 1,
-						// 	zIndex: 1,
-						// 	//marginTop: rnHH
-						// }}
-						contentContainerStyle={styles.sContentContainerStyle}
-						showsVerticalScrollIndicator={true}
-						scrollEventThrottle={16}
-						onScroll={Animated.event([
-							{
-								nativeEvent: {
-									contentOffset: {
-										y: offset,
-									},
-								},
-							},
-						], { useNativeDriver: false })}
-					/>
-				</View>
+			<View style={styles.content}>
+				<XTabView style={styles.tabView} tabBarStyle={styles.tabBar}>
+					<XTabScreen title={t('About')}>
+						<TabAbout />
+					</XTabScreen>
+					<XTabScreen title={t('Services')}>
+						<TabServices
+							navigation={navigation}
+							providerId={providerId}
+							selected={selectedIds}
+							setSelected={setSelectedIdxs}
+							setPriceSum={setPriceSum}
+						/>
+					</XTabScreen>
+					<XTabScreen title={t('Reviews')}>
+						<TabReviews />
+					</XTabScreen>
+				</XTabView>
 			</View>
+
+			<View flex={1} />
 
 			<Footer>
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					{
 						<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-							<XText light>{selected.length || '-'} servisa</XText>
-							<XText size={16} bold light>{priceSum ? CurrencyUtils.convert(priceSum) : '-'}</XText>
+							<XText light>{selectedIds?.length > 0 ? selectedIds.length : '-'} servisa</XText>
+							<XText size={16} bold light>{priceSum || '-'}</XText>
 						</View>
 					}
 				</View>
@@ -321,19 +373,41 @@ const ProviderScreen = ({ navigation, route }) => {
 				<XButton
 					title={t('Find appointment')}
 					primary
-					disabled={selected.length === 0}
+					disabled={!selectedIds?.length}
 					style={{ margin: 5, flex: 1 }}
-					onPress={() => navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selected], providerId })}
+					onPress={() => navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selectedIds], providerId })}
 					iconRight={bookBtnRightIcon}
 				/>
 			</Footer>
 
-		</SafeAreaView >
-
-	);
+		</>
+	)
 };
 
-const providerStyle = (theme) => StyleSheet.create({
+const styleCreator = (theme) => StyleSheet.create({
+	content: {
+		backgroundColor: theme.colors.backgroundElement,
+		position: 'absolute',
+		top: HEADER_IMAGE_HEIGHT - 20,
+		//top: 0,
+		//marginTop: HEADER_IMAGE_HEIGHT - 20,
+		bottom: 0,
+		start: 0,
+		end: 0,
+		borderTopEndRadius: 20,
+		borderTopStartRadius: 20,
+		overflow: 'hidden'
+	},
+
+	tabView: {
+		flex: 1,
+		paddingBottom: Theme.values.footerHeight
+	},
+	tabBar: {
+
+	},
+
+
 	sHeaderContainer: {
 		justifyContent: 'flex-end',
 		padding: 5,
@@ -353,8 +427,7 @@ const providerStyle = (theme) => StyleSheet.create({
 		borderWidth: Theme.values.borderWidth
 	},
 	categorySelected: {
-		backgroundColor: theme.colors.primary,
-
+		backgroundColor: theme.colors.primary
 	}
 });
 

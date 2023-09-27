@@ -39,8 +39,10 @@ const appStore = {
 };
 
 const isValueChanged = (newV, oldV) => {
-
 	if (Array.isArray(newV) && Array.isArray(oldV)) {
+		if (newV.length !== oldV.length)
+			return true;
+
 		for (let i = 0, s = newV.length; i < s; i++)
 			if (newV[i] !== oldV[i])
 				return true;

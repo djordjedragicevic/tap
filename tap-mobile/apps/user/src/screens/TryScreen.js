@@ -1,4 +1,3 @@
-import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 import { XTabScreen, XTabView } from "xapp/src/components/tabview/XTabView";
 import { View } from 'react-native';

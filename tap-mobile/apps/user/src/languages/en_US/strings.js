@@ -60,5 +60,7 @@ export const strings = {
 	"Select employee": "Select employee",
 	"Confirm": "Confirm",
 	"Appointment review": "Appointment review",
-	"reviews": "reviewes"
+	"reviews": "reviewes",
+	"About": "About",
+	"Reviews": "Reviews"
 };

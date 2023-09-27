@@ -5,9 +5,7 @@ import { View } from "react-native";
 
 export const XTabScreen = ({ component = emptyFn }) => null;
 
-const tabType = (<XTabScreen />).type;
-
-export const XTabView = ({ onTabPress = emptyFn, children, ...other }) => {
+export const XTabView = ({ onTabPress = emptyFn, children, tabBarStyle, ...other }) => {
 
 	const [selectedTabIdx, setSelectedTabIdx] = useState(0);
 
@@ -37,10 +35,14 @@ export const XTabView = ({ onTabPress = emptyFn, children, ...other }) => {
 				items={tabsData}
 				onItemPress={onTabPressIntern}
 				selectedIdx={selectedTabIdx}
+				style={tabBarStyle}
 			/>
 			<View
 				{...children[selectedTabIdx].props}
-				style={[children[selectedTabIdx].props.style]}
+				style={[
+					{ flex: 1 },
+					children[selectedTabIdx].props.style
+				]}
 			>
 				{children[selectedTabIdx].props.component?.() || children[selectedTabIdx].props.children}
 			</View>

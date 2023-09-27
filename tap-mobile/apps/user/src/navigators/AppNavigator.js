@@ -128,7 +128,7 @@ const AppNavigator = () => {
 
 			<Stack.Screen
 				options={{
-					headerTransparent: true,
+					headerShown: false,
 					// headerBackground: () => (
 					// 	<BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
 					// )
