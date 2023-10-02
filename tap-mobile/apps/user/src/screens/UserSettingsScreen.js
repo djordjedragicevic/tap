@@ -21,6 +21,8 @@ const UserSettingsScreen = ({ navigation }) => {
 	const userName = useUserName();
 	const roles = useStore(gS => gS.user.roles);
 	const email = useStore(gS => gS.user.email);
+	const initials = useStore(gS => gS.user.initials);
+
 	const isLogged = useIsUserLogged();
 
 	const { themeId, setThemeId } = useContext(ThemeContext);
@@ -50,7 +52,7 @@ const UserSettingsScreen = ({ navigation }) => {
 				<TouchableOpacity>
 					<XSection style={{ justifyContent: 'center' }}>
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<XAvatar size={80} />
+							<XAvatar size={80} initials={initials} />
 							<View style={{ flex: 1, marginLeft: 10 }}>
 								<XText adjustsFontSizeToFit numberOfLines={1} size={25}>{userName}</XText>
 								<XText secondary style={{ color: 'lightgreen' }}>{roles.join(', ')}</XText>

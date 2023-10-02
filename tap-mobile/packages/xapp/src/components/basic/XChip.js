@@ -8,14 +8,14 @@ const XChip = ({ text, style, textStyle, children, primary = true, ...rest }) =>
 
 	return (
 		<View style={[primary && styles.primary, styles.container, style]} {...rest}>
-			{text ? <XText light style={textStyle}>{text}</XText> : children}
+			{text != null ? <XText light style={textStyle}>{text}</XText> : children}
 		</View>
 	)
 };
 
 const createStyle = (theme) => StyleSheet.create({
 	container: {
-		paddingVertical: 2,
+		height: 24,
 		paddingHorizontal: 8,
 		justifyContent: 'center',
 		alignItems: 'center',

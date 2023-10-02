@@ -1,6 +1,6 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { initLangs, LANGS } from 'xapp/src/i18n/i18n';
-import { API_URL, DEFAULT_LANGUAGE, HTTP_TIMEOUT } from './src/common/config';
+import { API_URL, DEFAULT_LANGUAGE, HOST, HTTP_TIMEOUT } from './src/common/config';
 import Main from './src/Main';
 // import {
 // 	useFonts,
@@ -45,7 +45,7 @@ storeInit(appStore());
 storeInit(userStore());
 storeInit(testStore());
 
-Http.init(API_URL, HTTP_TIMEOUT);
+Http.init(HOST, API_URL, HTTP_TIMEOUT);
 
 // Theme.initThemes({
 // 	[Theme.LIGHT]: {

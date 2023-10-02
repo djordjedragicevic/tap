@@ -28,5 +28,6 @@ export const strings = {
 	"Appointment review": "Pregled rezervacije",
 	"reviews": "ocijena",
 	"About": "O nama",
-	"Reviews": "Ocjene"
+	"Reviews": "Ocjene",
+	"min": "min"
 };

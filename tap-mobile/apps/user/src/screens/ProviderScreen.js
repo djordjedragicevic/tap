@@ -1,16 +1,13 @@
 
 import XText from "xapp/src/components/basic/XText";
 import XButton from "xapp/src/components/basic/XButton";
-import { memo, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
-import XSection from "xapp/src/components/basic/XSection";
+import XAvatar from "xapp/src/components/basic/XAvatar";
 import { Animated, Pressable, SectionList, StyleSheet, View } from "react-native"
-import { CurrencyUtils, emptyFn } from 'xapp/src/common/utils';
+import { emptyFn } from 'xapp/src/common/utils';
 import { useTranslation } from "xapp/src/i18n/I18nContext";
-import { HOST } from "../common/config";
-import { Image } from "expo-image";
 import XChip from "xapp/src/components/basic/XChip";
-import { SafeAreaView } from "react-native-safe-area-context";
 import XCheckBox from "xapp/src/components/basic/XCheckBox";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { ScrollView } from "react-native-gesture-handler";
@@ -22,17 +19,10 @@ import { FREE_APPOINTMENTS_SCREEN } from "../navigators/routes";
 import { AntDesign } from '@expo/vector-icons';
 import Footer from "../components/Footer";
 import { XTabView, XTabScreen } from "xapp/src/components/tabview/XTabView";
-import XScreen from "xapp/src/components/XScreen";
-
-
-
-const getDurationSum = (items) => {
-	let d = 0;
-	items.forEach(i => d += i.duration);
-	return d;
-};
-
-const H_MAX_HEIGHT = 350;
+import XImage from "xapp/src/components/basic/XImage";
+import XToolbarContainer from "xapp/src/components/XToolbarContainer";
+import utils from "../common/utils";
+import XSection from "xapp/src/components/basic/XSection";
 
 let lastP = {};
 
@@ -85,10 +75,7 @@ const groupServices = (sers) => {
 };
 
 const areSIEqual = (oldProps, newProps) => {
-	if (oldProps.id === newProps.id && oldProps.isSelected === newProps.isSelected)
-		return true;
-
-	return false;
+	return oldProps.id === newProps.id && oldProps.isSelected === newProps.isSelected;
 };
 
 const ServiceItem = memo(({
@@ -109,7 +96,7 @@ const ServiceItem = memo(({
 		onPress(id);
 	};
 
-	const dur = (durationTo ? duration + ' - ' + durationTo : duration) + ' ' + t('minutes')
+	const dur = (durationTo ? duration + ' - ' + durationTo : duration) + ' ' + t('min') + '.'
 	return (
 		<Pressable
 			onPress={onItemPress}
@@ -123,13 +110,13 @@ const ServiceItem = memo(({
 				<View style={{ flex: 1, paddingStart: 5, flexDirection: 'row', alignItems: 'center' }}>
 
 					<View style={{ flex: 1 }}>
-						<XText >{name}</XText>
+						<XText>{name}</XText>
 						{note && <XText secondary style={{ fontSize: 12 }}>{note}</XText>}
 					</View>
 
 					<View style={{ alignItems: 'flex-end' }}>
 						<XText size={16} style={tStyles.price}>{price} KM</XText>
-						<XText secondary style={{ fontSize: 12 }}>{dur}</XText>
+						<XText size={12} secondary>{dur}</XText>
 					</View>
 				</View>
 			</View>
@@ -210,64 +197,90 @@ const TabServices = ({
 		)
 	}, [styles]);
 
-	const offset = useRef(new Animated.Value(0)).current;
+	// const offset = useRef(new Animated.Value(0)).current;
 
+	const onCategoryRender = useCallback((item, idx, minItemWidth) => {
+		const isSelected = idx === selectedCatIdx;
+
+		return (
+			<Pressable
+				onPress={() => setSelectedCatIdx(idx)}
+				key={item.id}
+				style={[styles.category, { minWidth: minItemWidth }, isSelected && styles.categorySelected]}
+			>
+				<XText light={isSelected}>{item.name}</XText>
+			</Pressable>
+		)
+	}, [setSelectedCatIdx, selectedCatIdx]);
 
 	if (!provider)
-		return null
+		return null;
 
 
 	return (
 		<View style={{ flex: 1 }}>
 			{
 				hasCats &&
-				<View style={{ padding: 5 }}>
-					<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-						{services?.categoryList.map((c, idx) => (
-							<Pressable
-								onPress={() => setSelectedCatIdx(idx)}
-								key={c.id}
-								style={[styles.category, idx === selectedCatIdx ? styles.categorySelected : {}]}
-							>
-								<XText>{c.name}</XText>
-							</Pressable>
-						))}
-					</ScrollView>
-				</View>
+				<XToolbarContainer
+					items={services?.categoryList || []}
+					onItemRender={onCategoryRender}
+					minItemWidth={90}
+					tabBarHPadding={5}
+					barHeight={42}
+				/>
 			}
 
 			<SectionList
 				sections={services.categories[services.categoryList[selectedCatIdx].id].groups}
 				renderItem={renderItem}
 				renderSectionHeader={renderSectionHeader}
-				// style={{
-				// 	flex: 1,
-				// 	zIndex: 1,
-				// 	//marginTop: rnHH
-				// }}
 				contentContainerStyle={styles.sContentContainerStyle}
 				showsVerticalScrollIndicator={true}
 				scrollEventThrottle={16}
-				onScroll={Animated.event([
-					{
-						nativeEvent: {
-							contentOffset: {
-								y: offset,
-							},
-						},
-					},
-				], { useNativeDriver: false })}
 			/>
 		</View>
 	);
 
 };
 
-const TabAbout = () => {
+const TabAbout = ({ data = {} }) => {
+
 	return (
-		<View flex={1} justifyContent='center' alignItems='center'>
-			<XText>About</XText>
-		</View>
+		<ScrollView>
+
+
+			<XSection title={"Work time"}>
+				{data.workPeriods &&
+					<View>
+						{data.workPeriods.map((wP, idx) => <XText key={idx.id}>{wP.startDay + ': ' + wP.startTime + ' - ' + wP.endTime}</XText>)}
+					</View>
+				}
+			</XSection>
+
+			<XSection title={"Our team"}>
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={{
+						columnGap: 15,
+						paddingHorizontal: 5
+					}}
+				>
+					{data.employees?.map(e => {
+						return (
+							<View key={e.id} style={{ alignItems: 'center', justifyContent: 'center' }}>
+								<XAvatar
+									size={50}
+									imgPath={e.imagePath}
+									initials={e.name.substring(0, 1).toUpperCase()}
+								/>
+								<XText>{e.name}</XText>
+							</View>
+						)
+					})}
+				</ScrollView>
+			</XSection>
+		</ScrollView>
 	)
 };
 
@@ -280,31 +293,35 @@ const TabReviews = () => {
 };
 
 
-const HEADER_IMAGE_HEIGHT = 250;
+const HEADER_IMAGE_HEIGHT = 230;
+const CNT_NEG_TOP_MARGIN = -20;
+const CHIP_MARK_TOP_MARGIN = (Theme.values.chipHeight / 2 * -1) - CNT_NEG_TOP_MARGIN;
+
 
 const ProviderScreen = ({ navigation, route }) => {
 
-	const t = useTranslation();
 	const providerId = route.params.id;
-	const [provider] = useHTTPGet(`/provider/${providerId}`);
+	const [{ mainImg, about }] = useHTTPGet(`/provider/${providerId}`, null, {});
 
-	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
+	const t = useTranslation();
 	const styles = useThemedStyle(styleCreator)
 
 	const [selectedIds, setSelectedIdxs] = useState([]);
 	const [priceSum, setPriceSum] = useState();
+	const [favoriteDisabled, setFavoriteDisabled] = useState(false);
 
 	const userId = useStore(st => st.user.id);
 	const fProviders = useStore(st => st.user.state.favoriteProviders);
 	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
 
+	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
 
 	const onFPress = () => {
 		const newFavs = isFavorite ? fProviders.filter(pId => pId !== providerId) : [...(fProviders || []), providerId];
+		setFavoriteDisabled(true);
 		Http.post(`/user/${userId}/state`, { favoriteProviders: newFavs })
-			.then(() => {
-				storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId);
-			});
+			.then(() => storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId))
+			.finally(() => setFavoriteDisabled(false));
 	};
 
 
@@ -312,10 +329,9 @@ const ProviderScreen = ({ navigation, route }) => {
 		<>
 			<View style={{ height: HEADER_IMAGE_HEIGHT }}>
 				{
-
-					provider?.image.length ?
-						<Image
-							source={`${HOST}${provider.image[0]}`}
+					mainImg ?
+						<XImage
+							imgPath={mainImg[0]}
 							cachePolicy='memory'
 							style={{ flex: 1 }}
 							contentFit="cover"
@@ -332,33 +348,61 @@ const ProviderScreen = ({ navigation, route }) => {
 						top: 10,
 						backgroundColor: 'hsla(0, 0%, 100%, 0.5)'
 					}}
+					disabled={favoriteDisabled}
 					favorit={isFavorite}
-					color='crimson'
 					onPress={onFPress}
 				/>
+				<View style={{
+					position: 'absolute',
+					bottom: CHIP_MARK_TOP_MARGIN,
+					zIndex: 10,
+					right: 0,
+					left: 0,
+					alignItems: 'center'
+				}}>
+					<XChip text={utils.generateMarkString(about?.mark, about?.reviewCount)} />
+				</View>
 			</View>
 
 			<View style={styles.content}>
-				<XTabView style={styles.tabView} tabBarStyle={styles.tabBar}>
-					<XTabScreen title={t('About')}>
-						<TabAbout />
-					</XTabScreen>
-					<XTabScreen title={t('Services')}>
-						<TabServices
-							navigation={navigation}
-							providerId={providerId}
-							selected={selectedIds}
-							setSelected={setSelectedIdxs}
-							setPriceSum={setPriceSum}
-						/>
-					</XTabScreen>
-					<XTabScreen title={t('Reviews')}>
-						<TabReviews />
-					</XTabScreen>
-				</XTabView>
-			</View>
+				{
+					!!about
+					&&
+					<>
+						<View style={{
+							height: 45,
+							justifyContent: 'center',
+							alignItems: 'center',
+							paddingTop: CHIP_MARK_TOP_MARGIN
+						}}>
+							<XText bold size={18}>{about.name} - {about.type}</XText>
+						</View>
 
-			<View flex={1} />
+						<XTabView
+							style={styles.tabView}
+							tabBarStyle={styles.tabBar}
+						>
+							<XTabScreen title={t('About')} style={{ flex: 1 }}>
+								<TabAbout
+									data={about}
+								/>
+							</XTabScreen>
+							<XTabScreen title={t('Services')} style={{ flex: 1 }}>
+								<TabServices
+									navigation={navigation}
+									providerId={providerId}
+									selected={selectedIds}
+									setSelected={setSelectedIdxs}
+									setPriceSum={setPriceSum}
+								/>
+							</XTabScreen>
+							<XTabScreen title={t('Reviews')}>
+								<TabReviews />
+							</XTabScreen>
+						</XTabView>
+					</>
+				}
+			</View>
 
 			<Footer>
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -387,24 +431,20 @@ const ProviderScreen = ({ navigation, route }) => {
 const styleCreator = (theme) => StyleSheet.create({
 	content: {
 		backgroundColor: theme.colors.backgroundElement,
-		position: 'absolute',
-		top: HEADER_IMAGE_HEIGHT - 20,
-		//top: 0,
-		//marginTop: HEADER_IMAGE_HEIGHT - 20,
-		bottom: 0,
-		start: 0,
-		end: 0,
+		flex: 1,
+		paddingBottom: 5,
+		marginTop: CNT_NEG_TOP_MARGIN,
 		borderTopEndRadius: 20,
 		borderTopStartRadius: 20,
 		overflow: 'hidden'
 	},
-
 	tabView: {
-		flex: 1,
-		paddingBottom: Theme.values.footerHeight
+		flex: 1
 	},
 	tabBar: {
-
+		borderBottomWidth: Theme.values.borderWidth,
+		borderColor: theme.colors.textTertiary,
+		marginBottom: 8
 	},
 
 
@@ -412,22 +452,20 @@ const styleCreator = (theme) => StyleSheet.create({
 		justifyContent: 'flex-end',
 		padding: 5,
 		backgroundColor: theme.colors.backgroundColor,
-
 	},
 	sContentContainerStyle: {
-		padding: 5,
+		paddingHorizontal: 10,
 		backgroundColor: theme.colors.backgroundColor,
 	},
 	category: {
-		backgroundColor: theme.colors.backgroundElement,
 		borderRadius: Theme.values.borderRadius,
-		padding: 8,
-		marginRight: 5,
-		borderColor: theme.colors.backgroundElement,
-		borderWidth: Theme.values.borderWidth
+		borderColor: theme.colors.primary,
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center'
 	},
 	categorySelected: {
-		backgroundColor: theme.colors.primary
+		backgroundColor: theme.colors.secondary
 	}
 });
 

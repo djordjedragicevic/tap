@@ -35,6 +35,7 @@ const BottomTab = createBottomTabNavigator();
 const MainBottomTabNavigator = ({ navigation }) => {
 	const t = useTranslation();
 	const logged = useIsUserLogged();
+	const initials = useStore(gS => gS.user.initials);
 	const secondaryColor = useColor('secondary');
 	const colorTextLight = useColor('textLight');
 	const colorPrimary = useColor('primary');
@@ -89,7 +90,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				options={{
 					title: logged ? t("Profile") : t("Sign in"),
 					tabBarIcon: (props) => logged ?
-						<XAvatar {...props} />
+						<XAvatar initials={initials} style={props.focused && { borderColor: colorPrimary, borderWidth: 1 }} />
 						:
 						<AntDesign name="user" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}} />

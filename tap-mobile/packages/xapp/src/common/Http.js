@@ -8,6 +8,7 @@ const S_KEY_TOKEN = 'token';
 
 let _token = null;
 let _API_URL = '';
+let _HOST = '';
 let _HTTP_TIMEOUT = 5000;
 
 export class Http {
@@ -20,8 +21,9 @@ export class Http {
 		CONNECTION_TIMEOUT: 'CONNECTION_TIMEOUT'
 	}
 
-	static init(apiUrl, timeout) {
+	static init(host, apiUrl, timeout) {
 		_API_URL = apiUrl;
+		_HOST = host;
 		if (timeout != null)
 			_HTTP_TIMEOUT = timeout;
 	}
@@ -82,8 +84,12 @@ export class Http {
 				console.log('HTTP ERROR: ' + errName + ' (' + (new Date().getTime() - d) / 1000 + 's)');
 
 			if (errName && !silent) {
-				if (errName === Http.ERR.UNAUTHENTICATE)
+				if (errName === Http.ERR.UNAUTHENTICATE) {
 					XAlert.show('Not logged', 'Have to log in!')
+					const e = new Error();
+					e.name = errName;
+					throw e;
+				}
 				else if (errName === Http.ERR.FORBIDEN)
 					XAlert.show('Forbiden', 'Don\'t have right for acction!')
 				else {
@@ -155,6 +161,12 @@ export class Http {
 		}, silent);
 
 		return resp;
+	}
+	static getAPI() {
+		return _API_URL;
+	}
+	static getHOST() {
+		return _HOST;
 	}
 }
 

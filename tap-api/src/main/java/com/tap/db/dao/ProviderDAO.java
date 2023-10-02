@@ -71,6 +71,8 @@ public class ProviderDAO {
 				SELECT
 				p.id,
 				p.name,
+				p.mark,
+				p.reviewCount,
 				pt.name,
 				p.legalEntity,
 				ad.address1,
@@ -96,6 +98,8 @@ public class ProviderDAO {
 		return Util.convertToListOfMap(dbRes,
 				"id",
 				"name",
+				"mark",
+				"reviewCount",
 				"type",
 				"legalEntity",
 				"address1",
@@ -104,35 +108,62 @@ public class ProviderDAO {
 		);
 	}
 
-	public Map<String, Object> getProvider(long id) {
-		Provider p = em.find(Provider.class, (int) id);
-		Map<String, Object> resp = new HashMap<>();
+	public Optional<Provider> getProvider(int id) {
 
-		if (p.getActive() == 1) {
-			resp.put("id", p.getId());
-			resp.put("name", p.getName());
-			resp.put("type", p.getProvidertype().getName());
-			resp.put("address", p.getAddress().getAddress1());
-
-			List<String> mainImg = em
-					.createQuery(
-							"""
-									SELECT a.location AS mainImg
-									FROM Asset a
-									WHERE a.provider.id = :pId
-									""",
-							String.class
-					)
-					.setParameter("pId", id)
-					.getResultList();
-
-			resp.put("image", mainImg);
-		}
-
-		return resp;
+		Provider p = em.find(Provider.class, id);
+		return p.getActive() == 1 ? Optional.of(p) : Optional.empty();
 	}
 
-	public Object getProviderServices(long pId) {
+	public Map<String, Object> getProviderData(int id) {
+		String query = """
+				SELECT
+				p.id,
+				p.name,
+				p.description,
+				p.mark,
+				p.reviewCount,
+				t.name,
+				a.address1,
+				a.phone,
+				a.latitude,
+				a.longitude,
+				c.name,
+				cou.name,
+				cou.code
+								
+				FROM Provider p
+				JOIN p.providertype t
+				JOIN p.address a
+				JOIN a.city c
+				JOIN c.country cou
+								
+				WHERE p.active = 1 AND p.id = :id
+				""";
+
+		Object[] prov = em.createQuery(query, Object[].class)
+				.setParameter("id", id)
+				.getSingleResult();
+
+
+		return Util.convertToMap(prov, "id", "name", "description", "mark", "reviewCount", "type",
+				"address", "phone", "lat", "lon", "city", "country", "countryCode");
+
+	}
+
+	public List<String> getProviderMainImgs(int id) {
+
+		String query = """
+				SELECT a.location AS mainImg
+				FROM Asset a
+				WHERE a.provider.id = :pId
+				""";
+
+		return em.createQuery(query, String.class)
+				.setParameter("pId", id)
+				.getResultList();
+	}
+
+	public List<Map<String, Object>> getProviderServices(long pId) {
 		String query = """
 				SELECT
 				s.id,
@@ -218,6 +249,25 @@ public class ProviderDAO {
 				.getSingleResult();
 	}
 
+	public List<EmployeeDto> getProviderEmployees(int pId) {
+		String query = """
+				SELECT e FROM Employee e
+				WHERE e.active = 1 AND e.provider.id = :pId
+				""";
+
+		List<Employee> resp = em.createQuery(query, Employee.class)
+				.setParameter("pId", pId)
+				.getResultList();
+
+		return resp.stream().map(e ->
+				new EmployeeDto()
+						.setId(e.getId())
+						.setName(e.getName())
+						.setImagePath(e.getImagePath())
+
+		).toList();
+	}
+
 	public Map<ServiceDto, List<EmployeeDto>> getActiveServiceEmployees(List<Integer> sIds, Integer pId) {
 		String query = """
 				SELECT DISTINCT
@@ -264,6 +314,30 @@ public class ProviderDAO {
 		return resp;
 	}
 
+	public List<WorkPeriodDto> getProviderWorkPeriods(int pId) {
+		String query = """
+				SELECT wp FROM WorkPeriod wp WHERE
+				wp.provider.id = :pId
+				ORDER BY wp.startDay, wp.startTime
+				""";
+
+		List<WorkPeriod> wPs = em.createQuery(query, WorkPeriod.class)
+				.setParameter("pId", pId)
+				.getResultList();
+
+		List<WorkPeriodDto> resp = new ArrayList<>();
+		for (WorkPeriod wP : wPs)
+			resp.add(new WorkPeriodDto()
+					.setId(wP.getId())
+					.setStartDay(wP.getStartDay())
+					.setStartTime(wP.getStartTime())
+					.setEndDay(wP.getEndDay())
+					.setEndTime(wP.getEndTime())
+			);
+
+		return resp;
+	}
+
 	public List<WorkPeriod> getWorkPeriodsAtDay(List<Integer> eIds, int pId, LocalDate date) {
 		int day = date.getDayOfWeek().getValue();
 		boolean hasEIds = eIds != null && !eIds.isEmpty();
@@ -287,8 +361,6 @@ public class ProviderDAO {
 			jpaQuery.setParameter("eIds", eIds);
 
 		return jpaQuery.getResultList();
-
-
 	}
 
 	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, List<Integer> eIds, LocalDate date) {

@@ -12,6 +12,8 @@ Provider {
   approved : byte { @DbName(approved) @DbType(TINYINT) @DbDefaultValue(0) @NotNull @NotEmpty };
   approvedDate : timestamp { @DbName(approved_date) @DbType(DATETIME) };
   approvedBy : int { @DbName(approved_by) @DbType(INT) };
+  mark : float { @DbName(mark) @DbType(FLOAT) @DbDefaultValue(0.0) };
+  reviewCount : int { @DbName(review_count) @DbType(INT) @DbDefaultValue(0) };
   active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
   // links
   assetList : Asset[];

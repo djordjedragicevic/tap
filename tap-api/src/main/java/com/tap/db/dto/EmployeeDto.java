@@ -5,6 +5,7 @@ package com.tap.db.dto;
 public class EmployeeDto {	
 	private Integer id;
 	private String name;
+	private String imagePath;
 	private ProviderDto provider; 
 	private UserDto user; 
 	public EmployeeDto() {}
@@ -25,6 +26,15 @@ public class EmployeeDto {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public EmployeeDto setImagePath( String imagePath ) {
+		this.imagePath = imagePath;
+		return this;
+	}
+
+	public String getImagePath() {
+		return this.imagePath;
 	}
 
 	public ProviderDto getProvider() {

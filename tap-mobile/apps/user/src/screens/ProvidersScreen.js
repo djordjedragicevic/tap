@@ -11,16 +11,10 @@ import { HOST } from "../common/config";
 import HairSalon from "../components/svg/HairSalon";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XMarkStars from "xapp/src/components/XMarkStars";
-import { useColor, usePrimaryColor } from "xapp/src/style/ThemeContext";
-import FavoriteButton from "../components/FavoriteButton";
-
 
 const ProvidersScreen = ({ navigation }) => {
 
 	const [providers, refresh, refreshing] = useHTTPGet('/provider/list', { cId: 1 }, []);
-	const pColor = usePrimaryColor();
-	const sColor = useColor('secondary');
-
 	const renderCompany = useCallback(({ item, index }) => {
 
 		return (
@@ -70,7 +64,7 @@ const ProvidersScreen = ({ navigation }) => {
 						</View> */}
 					</View>
 
-					<XMarkStars mark={3.6} reviewCound={35} />
+					<XMarkStars mark={item.mark} reviewCound={item.reviewCount} />
 
 					<XSeparator style={{ marginVertical: 10 }} />
 

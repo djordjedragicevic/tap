@@ -10,5 +10,9 @@ export const errors = {
 	APPO_2: {
 		title: '',
 		message: ''
+	},
+	PROV_1: {
+		title: 'Load provider error',
+		message: 'It is not possible to load provider information'
 	}
 }

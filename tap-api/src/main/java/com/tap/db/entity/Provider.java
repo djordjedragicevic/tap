@@ -41,6 +41,12 @@ public class Provider implements Serializable {
     @Column(name="approved_by")
 	private Integer approvedBy;
 
+    @Column(name="mark")
+	private Float mark;
+
+    @Column(name="review_count")
+	private Integer reviewCount;
+
     @Column(name="active", nullable=false)
 	private byte active;
 
@@ -119,6 +125,22 @@ public class Provider implements Serializable {
 
 	public Integer getApprovedBy() {
 		return this.approvedBy;
+	}
+
+	public void setMark( Float mark ) {
+		this.mark = mark ;
+	}
+
+	public Float getMark() {
+		return this.mark;
+	}
+
+	public void setReviewCount( Integer reviewCount ) {
+		this.reviewCount = reviewCount ;
+	}
+
+	public Integer getReviewCount() {
+		return this.reviewCount;
 	}
 
 	public void setActive( byte active ) {

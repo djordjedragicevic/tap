@@ -22,6 +22,9 @@ public class Employee implements Serializable {
     @Column(name="name", nullable=false, length=32)
 	private String name;
 
+    @Column(name="image_path", length=64)
+	private String imagePath;
+
     @Column(name="active", nullable=false)
 	private byte active;
 
@@ -52,6 +55,14 @@ public class Employee implements Serializable {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public void setImagePath( String imagePath ) {
+		this.imagePath = imagePath ;
+	}
+
+	public String getImagePath() {
+		return this.imagePath;
 	}
 
 	public void setActive( byte active ) {

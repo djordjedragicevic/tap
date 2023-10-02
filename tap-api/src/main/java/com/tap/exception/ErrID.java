@@ -1,6 +1,7 @@
 package com.tap.exception;
 
-public enum TAPEID {
+public enum ErrID {
 	TAP_0,
-	APPO_1
+	APPO_1,
+	PROV_1
 }

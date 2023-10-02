@@ -6,6 +6,7 @@ Employee {
   providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_employee_provider1, Provider.id) };
   userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_employee_user1, User.id) };
   name : string { @DbName(name) @DbType("VARCHAR(32)") @NotNull @NotEmpty @Size(32) @MaxLen(32) };
+  imagePath : string { @DbName(image_path) @DbType("VARCHAR(64)") @Size(64) @MaxLen(64) };
   active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
   // links
   appointmentList : Appointment[];

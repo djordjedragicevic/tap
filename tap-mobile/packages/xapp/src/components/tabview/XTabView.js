@@ -39,10 +39,7 @@ export const XTabView = ({ onTabPress = emptyFn, children, tabBarStyle, ...other
 			/>
 			<View
 				{...children[selectedTabIdx].props}
-				style={[
-					{ flex: 1 },
-					children[selectedTabIdx].props.style
-				]}
+				style={[children[selectedTabIdx].props.style]}
 			>
 				{children[selectedTabIdx].props.component?.() || children[selectedTabIdx].props.children}
 			</View>

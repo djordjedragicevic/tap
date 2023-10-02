@@ -12,6 +12,8 @@ public class ProviderDto {
 	private Byte approved;
 	private LocalDateTime approvedDate;
 	private Integer approvedBy;
+	private Float mark;
+	private Integer reviewCount;
 	private AddressDto address; 
 	private ProviderTypeDto providertype; 
 	public ProviderDto() {}
@@ -86,6 +88,24 @@ public class ProviderDto {
 
 	public Integer getApprovedBy() {
 		return this.approvedBy;
+	}
+
+	public ProviderDto setMark( Float mark ) {
+		this.mark = mark;
+		return this;
+	}
+
+	public Float getMark() {
+		return this.mark;
+	}
+
+	public ProviderDto setReviewCount( Integer reviewCount ) {
+		this.reviewCount = reviewCount;
+		return this;
+	}
+
+	public Integer getReviewCount() {
+		return this.reviewCount;
 	}
 
 	public AddressDto getAddress() {

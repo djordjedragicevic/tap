@@ -62,5 +62,6 @@ export const strings = {
 	"Appointment review": "Appointment review",
 	"reviews": "reviewes",
 	"About": "About",
-	"Reviews": "Reviews"
+	"Reviews": "Reviews",
+	"min": "min"
 };

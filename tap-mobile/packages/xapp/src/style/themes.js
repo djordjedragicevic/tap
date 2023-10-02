@@ -9,7 +9,9 @@ export const Theme = {
 		borderRadius: 5,
 		borderWidth: 0.7,
 		disabledOpacity: 0.3,
-		footerHeight: 52
+
+		footerHeight: 52,
+		chipHeight: 24
 	},
 
 	Light: {
