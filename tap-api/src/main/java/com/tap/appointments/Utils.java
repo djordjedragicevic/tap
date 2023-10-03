@@ -16,17 +16,6 @@ public class Utils {
 	public static final int DAYS_TO_GET = 3;
 	public static final int FREE_APP_DAYS = 10;
 
-	public static Optional<LocalDateTime> parseDT(String dt) {
-		return Optional.ofNullable(dt != null && !dt.isEmpty() ? LocalDateTime.parse(dt, DateTimeFormatter.ISO_DATE_TIME) : null);
-	}
-
-	public static Optional<LocalDate> parseDate(Date d) {
-		return Optional.ofNullable(d != null ? LocalDate.ofInstant(Instant.ofEpochMilli(d.getTime()), ZoneId.systemDefault()) : null);
-	}
-
-	public static List<Long> parseIDs(String ids) {
-		return Arrays.stream(ids.split(",")).map(Long::valueOf).toList();
-	}
 
 	public static boolean isTimeOverlap(TimePeriod time, TimePeriod target) {
 		return (time.getStart().isAfter(target.getStart()) && time.getStart().isBefore(target.getEnd()))
@@ -42,12 +31,6 @@ public class Utils {
 		return new TimePeriod(newStart, newEnd);
 	}
 
-	public static Optional<TimePeriod> findCoverTime(List<TimePeriod> timePeriods, TimePeriod target) {
-		return timePeriods
-				.stream()
-				.filter(tP -> tP.getStart().isBefore(target.getStart()) && tP.getEnd().isAfter(target.getEnd()))
-				.min(Comparator.comparing(TimePeriod::getStart));
-	}
 
 	public static LocalTime roundUpToXMin(LocalTime time, int min) {
 		int m = time.getMinute();

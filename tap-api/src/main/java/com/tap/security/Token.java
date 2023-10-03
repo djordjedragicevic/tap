@@ -1,5 +1,6 @@
 package com.tap.security;
 
+import com.tap.common.Util;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
@@ -13,6 +14,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -43,7 +45,7 @@ public class Token {
 				.add("aud", Json.createArrayBuilder(aud).build())
 				.add("rid", rid)
 				.add("jti", UUID.randomUUID().toString())
-				.add("iat", LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
+				.add("iat", ZonedDateTime.now(Util.zone()).toEpochSecond())
 				.build();
 
 		this.ePayload = encode(payload);

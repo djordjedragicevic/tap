@@ -5,7 +5,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
 import XAvatar from "xapp/src/components/basic/XAvatar";
 import { Animated, Pressable, SectionList, StyleSheet, View } from "react-native"
-import { emptyFn } from 'xapp/src/common/utils';
+import { DateUtils, emptyFn } from 'xapp/src/common/utils';
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import XChip from "xapp/src/components/basic/XChip";
 import XCheckBox from "xapp/src/components/basic/XCheckBox";
@@ -245,17 +245,47 @@ const TabServices = ({
 
 const TabAbout = ({ data = {} }) => {
 
+	const t = useTranslation();
+
+	const wPs = useMemo(() => {
+		const wPMap = {};
+
+		data.workPeriods.forEach(p => {
+			if (!wPMap.hasOwnProperty(p.day))
+				wPMap[p.day] = [];
+
+			wPMap[p.day].push(`${p.startTime} : ${p.endTime}`);
+		});
+
+		return wPMap;
+
+	}, [data?.workPeriods])
+
 	return (
 		<ScrollView>
 
+			<XSection title={"Address"}>
+				<XText>{data.address}, {data.city}</XText>
+				<XText>{data.phone}</XText>
+			</XSection>
 
 			<XSection title={"Work time"}>
-				{data.workPeriods &&
-					<View>
-						{data.workPeriods.map((wP, idx) => <XText key={idx.id}>{wP.startDay + ': ' + wP.startTime + ' - ' + wP.endTime}</XText>)}
+				{wPs &&
+					<View style={{}}>
+						{Object.keys(wPs).map(day => (
+							<View key={day} style={{ flexDirection: 'row' }}>
+								<View style={{ flex: 1 }}>
+									<XText>{t(DateUtils.WEEK_DAY[day])}</XText>
+								</View>
+								<View style={{ flex: 1 }}>
+									<XText>{wPs[day].join(', ')}</XText>
+								</View>
+							</View>
+						)
+						)}
 					</View>
 				}
-			</XSection>
+			</XSection >
 
 			<XSection title={"Our team"}>
 				<ScrollView
@@ -280,7 +310,7 @@ const TabAbout = ({ data = {} }) => {
 					})}
 				</ScrollView>
 			</XSection>
-		</ScrollView>
+		</ScrollView >
 	)
 };
 

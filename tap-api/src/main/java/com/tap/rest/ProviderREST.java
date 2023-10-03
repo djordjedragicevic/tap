@@ -25,20 +25,21 @@ public class ProviderREST {
 	public Object getProviderById(@PathParam("id") int id) {
 
 		Map<String, Object> resp = new HashMap<>();
+		Map<String, Object> about;
 
 		try {
 
-			Map<String, Object> prov = providerDAO.getProviderData(id);
-			resp.put("about", prov);
+			about = providerDAO.getProviderData(id);
+			resp.put("about", about);
+
+			List<EmployeeDto> emps = providerDAO.getProviderEmployees(id);
+			about.put("employees", emps);
 
 			List<WorkPeriodDto> wPs = providerDAO.getProviderWorkPeriods(id);
-			((Map<String, Object>) resp.get("about")).put("workPeriods", wPs);
+			about.put("workPeriods", wPs);
 
 			List<String> imgs = providerDAO.getProviderMainImgs(id);
 			resp.put("mainImg", imgs);
-
-			List<EmployeeDto> emps = providerDAO.getProviderEmployees(id);
-			((Map<String, Object>) resp.get("about")).put("employees", emps);
 
 			Object services = providerDAO.getProviderServices(id);
 			resp.put("services", services);
@@ -56,6 +57,7 @@ public class ProviderREST {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
 	public Object getProviders(@QueryParam("cId") long cityId) {
+
 		return providerDAO.getProviders(cityId);
 	}
 

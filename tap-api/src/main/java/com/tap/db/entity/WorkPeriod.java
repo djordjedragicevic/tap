@@ -20,14 +20,11 @@ public class WorkPeriod implements Serializable {
     @Column(name="id", nullable=false)
 	private int id;
 
-    @Column(name="start_day", nullable=false)
-	private byte startDay;
+    @Column(name="day", nullable=false)
+	private byte day;
 
     @Column(name="start_time", nullable=false)
 	private LocalTime startTime;
-
-    @Column(name="end_day", nullable=false)
-	private byte endDay;
 
     @Column(name="end_time", nullable=false)
 	private LocalTime endTime;
@@ -57,12 +54,12 @@ public class WorkPeriod implements Serializable {
 		return this.id;
 	}
 
-	public void setStartDay( byte startDay ) {
-		this.startDay = startDay ;
+	public void setDay( byte day ) {
+		this.day = day ;
 	}
 
-	public byte getStartDay() {
-		return this.startDay;
+	public byte getDay() {
+		return this.day;
 	}
 
 	public void setStartTime( LocalTime startTime ) {
@@ -71,14 +68,6 @@ public class WorkPeriod implements Serializable {
 
 	public LocalTime getStartTime() {
 		return this.startTime;
-	}
-
-	public void setEndDay( byte endDay ) {
-		this.endDay = endDay ;
-	}
-
-	public byte getEndDay() {
-		return this.endDay;
 	}
 
 	public void setEndTime( LocalTime endTime ) {

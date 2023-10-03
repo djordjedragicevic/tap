@@ -2,12 +2,15 @@
  * Generated DTO class for "WorkPeriod"
  */
 package com.tap.db.dto;
+import jakarta.json.bind.annotation.JsonbDateFormat;
+
 import java.time.LocalTime;
 public class WorkPeriodDto {	
 	private Integer id;
-	private Byte startDay;
+	private Byte day;
+	@JsonbDateFormat("HH:mm")
 	private LocalTime startTime;
-	private Byte endDay;
+	@JsonbDateFormat("HH:mm")
 	private LocalTime endTime;
 	private EmployeeDto employee; 
 	private PeriodTypeDto periodtype; 
@@ -23,13 +26,13 @@ public class WorkPeriodDto {
 		return this.id;
 	}
 
-	public WorkPeriodDto setStartDay( byte startDay ) {
-		this.startDay = startDay;
+	public WorkPeriodDto setDay( byte day ) {
+		this.day = day;
 		return this;
 	}
 
-	public byte getStartDay() {
-		return this.startDay;
+	public byte getDay() {
+		return this.day;
 	}
 
 	public WorkPeriodDto setStartTime( LocalTime startTime ) {
@@ -39,15 +42,6 @@ public class WorkPeriodDto {
 
 	public LocalTime getStartTime() {
 		return this.startTime;
-	}
-
-	public WorkPeriodDto setEndDay( byte endDay ) {
-		this.endDay = endDay;
-		return this;
-	}
-
-	public byte getEndDay() {
-		return this.endDay;
 	}
 
 	public WorkPeriodDto setEndTime( LocalTime endTime ) {

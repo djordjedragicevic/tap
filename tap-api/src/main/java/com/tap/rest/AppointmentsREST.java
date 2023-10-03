@@ -108,7 +108,7 @@ public class AppointmentsREST {
 
 		Map<String, Object> resp = new HashMap<>();
 
-		LocalDate date = Utils.parseDate(d).orElse(LocalDate.now());
+		LocalDate date = d != null ? Util.zonedDT(d).toLocalDate() : LocalDate.now(Util.zone());
 
 		Map<ServiceDto, List<EmployeeDto>> serEmpsMap = providerDAO.getActiveServiceEmployees(sIds, pId);
 		if (serEmpsMap.isEmpty())
@@ -127,7 +127,7 @@ public class AppointmentsREST {
 		//resp.put("pwi", pWI);
 
 
-		List<FreeAppointment> apps = getFreeAppointments(sIds, sEIds, pWI, serEmpsMap);
+		List<FreeAppointment> apps = this.getFreeAppointments(sIds, sEIds, pWI, serEmpsMap);
 		resp.put("apps", apps);
 
 		Map<String, Object> provider = new HashMap<>();
@@ -163,7 +163,7 @@ public class AppointmentsREST {
 		pWI.getEmployees().forEach(e -> eFreePeriods.computeIfAbsent(e.getEmployeeId(), k -> new ArrayList<>()).addAll(e.getFreePeriods()));
 
 		LocalTime end = Utils.getLatestEndTime(eFreePeriods.values());
-		LocalTime currentTime = Utils.roundUpToXMin(LocalDate.now().equals(date) ? LocalTime.now() : Utils.getEarliestStartTime(eFreePeriods.values()), FREE_APP_CREATING_STEP);
+		LocalTime currentTime = Utils.roundUpToXMin(LocalDate.now(Util.zone()).equals(date) ? LocalTime.now(Util.zone()) : Utils.getEarliestStartTime(eFreePeriods.values()), FREE_APP_CREATING_STEP);
 		Map<Integer, Integer> empFilterMap = new HashMap<>();
 		for (int i = 0, s = sIds.size(); i < s; i++)
 			empFilterMap.put(sIds.get(i), sEIds.get(i));
@@ -171,7 +171,7 @@ public class AppointmentsREST {
 		while (currentTime.isBefore(end)) {
 			Optional<FreeAppointment> app = tryToCreateFreeAppointment(empFilterMap, serEmpsMap, currentTime, eFreePeriods);
 			if (app.isPresent()) {
-				String id = LocalDateTime.of(date, currentTime).toEpochSecond(ZoneOffset.UTC) + "S" + sIds.stream().map(String::valueOf).collect(Collectors.joining("_")) + "P" + pId;
+				String id = ZonedDateTime.of(date, currentTime, Util.zone()).toEpochSecond() + "S" + sIds.stream().map(String::valueOf).collect(Collectors.joining("_")) + "P" + pId;
 				app.get().finalize(id, pId, date);
 				apps.add(app.get());
 			}
@@ -299,7 +299,7 @@ public class AppointmentsREST {
 		return freePeriods;
 	}
 
-	private static TimePeriod adjustBusyTimeOneDate(LocalDate atDate, BusyPeriod busyPeriod) {
+	private static TimePeriod adjustBusyTimeToOneDate(LocalDate atDate, BusyPeriod busyPeriod) {
 
 		if (busyPeriod.getRepeattype() == null) {
 			return adjustTimeToOneDate(atDate, busyPeriod.getStart(), busyPeriod.getEnd());
@@ -343,7 +343,7 @@ public class AppointmentsREST {
 		ProviderWorkInfo pWI = new ProviderWorkInfo(pId, date);
 
 		int day = date.getDayOfWeek().getValue();
-		List<WorkPeriod> workPeriod = providerDAO.getWorkPeriodsAtDay(eIds, pId, date);
+		List<WorkPeriod> workPeriod = providerDAO.getWorkPeriodsAtDay(eIds, pId, day);
 
 		if (workPeriod == null || workPeriod.isEmpty())
 			return pWI;
@@ -352,8 +352,8 @@ public class AppointmentsREST {
 		workPeriod.forEach(wP -> {
 
 			boolean isOpen = wP.getPeriodtype().getOpen() == 1;
-			LocalTime start = wP.getStartDay() < day ? LocalTime.MIN : wP.getStartTime();
-			LocalTime end = wP.getEndDay() > day ? LocalTime.MAX : wP.getEndTime();
+			LocalTime start = wP.getStartTime();
+			LocalTime end = wP.getEndTime();
 
 			if (wP.getProvider() != null) {
 				if (isOpen)
@@ -405,7 +405,7 @@ public class AppointmentsREST {
 		List<BusyPeriod> employeeBP = new ArrayList<>();
 		busyPeriods.forEach(bP -> {
 			if (bP.getProvider() != null)
-				providerBTP.add(adjustBusyTimeOneDate(date, bP));
+				providerBTP.add(adjustBusyTimeToOneDate(date, bP));
 			else
 				employeeBP.add(bP);
 		});
@@ -456,7 +456,7 @@ public class AppointmentsREST {
 					.stream()
 					.filter(eBP -> eBP.getEmployee().getId() == eId)
 					.forEach(eBP -> {
-						TimePeriod tP = adjustBusyTimeOneDate(date, eBP);
+						TimePeriod tP = adjustBusyTimeToOneDate(date, eBP);
 						NamedTimePeriod nTP = new NamedTimePeriod(tP.getStart(), tP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_E_BUSY);
 						e.getTimeline().add(nTP);
 					});

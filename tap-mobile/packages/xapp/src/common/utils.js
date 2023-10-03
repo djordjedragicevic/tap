@@ -65,7 +65,8 @@ export const DateUtils = {
 
 		}
 		return resp;
-	}
+	},
+	WEEK_DAY: ["Monday", "Tuesday", "Wednsday", "Thursday", "Friday", "Saturday", "Sunday"]
 };
 
 export const CurrencyUtils = {

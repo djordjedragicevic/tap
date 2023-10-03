@@ -1,6 +1,7 @@
 export const strings = {
 	"minutes": "minnuta",
 	"appointments": "termini",
+	"Appointments": "Termini",
 	"Home": "Početna",
 	"Find": "Pronađi",
 	"Saved": "Sačuvano",
@@ -29,5 +30,12 @@ export const strings = {
 	"reviews": "ocijena",
 	"About": "O nama",
 	"Reviews": "Ocjene",
-	"min": "min"
+	"min": "min",
+	"Monday": "Ponedjeljak",
+	"Tuesday": "Utorak",
+	"Wednsday": "Srijeda",
+	"Thursday": "Četvrtak",
+	"Friday": "Petak",
+	"Saturday": "Subota",
+	"Sunday": "Nedjelja"
 };

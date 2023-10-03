@@ -2,17 +2,28 @@ package com.tap.common;
 
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.time.*;
 import java.util.*;
 
 public class Util {
-
+	private static final String ZONE = "Europe/Sarajevo";
 	private static final Random random = new SecureRandom();
 
 	private Util() {
 
 	}
+
+	public static ZoneId zone() {
+		return ZoneId.of(ZONE);
+	}
+
+	public static LocalDateTime zonedDT(Date date) {
+		return date.toInstant().atZone(Util.zone()).toLocalDateTime();
+	}
+
 
 	public static List<Map<String, Object>> convertToListOfMap(List<Object[]> data, String... keys) {
 		return convertToListOfMap(data, Arrays.asList(keys));
@@ -39,17 +50,24 @@ public class Util {
 
 		Object tmpK;
 		Map<String, Object> tmpV;
+
+		List<Object> lK;
+		Object[] subR;
+		List<Object> subK;
+		String[] keyPath;
+		String key;
+
 		for (int i = 0, s = keys.size(); i < s; i++) {
 			tmpK = keys.get(i);
 
 			if (tmpK instanceof List<?>) {
-				List<Object> lK = (List<Object>) tmpK;
-				Object[] subR = Arrays.copyOfRange(r, i, i + lK.size() - 1);
-				List<Object> subK = lK.subList(1, lK.size());
+				lK = (List<Object>) tmpK;
+				subR = Arrays.copyOfRange(r, i, i + lK.size() - 1);
+				subK = lK.subList(1, lK.size());
 				map.put(lK.get(0).toString(), generateMapForConversion(subR, subK, new LinkedHashMap<>()));
 			} else if (tmpK.toString().contains(".")) {
-				String[] keyPath = tmpK.toString().split("\\.");
-				String key = keyPath[keyPath.length - 1];
+				 keyPath = tmpK.toString().split("\\.");
+				 key = keyPath[keyPath.length - 1];
 
 				tmpV = map;
 				for (int kI = 0; kI < keyPath.length - 1; kI++)

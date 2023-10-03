@@ -230,7 +230,7 @@ public class ProviderDAO {
 				fApp.setService(s);
 				fApp.setUser(u);
 				fApp.setUser2(u);
-				fApp.setCreateDate(LocalDateTime.now());
+				fApp.setCreateDate(LocalDateTime.now(Util.zone()));
 				if (app.getServices().size() > 1)
 					fApp.setJoinId(ser.getJoinId());
 
@@ -318,7 +318,7 @@ public class ProviderDAO {
 		String query = """
 				SELECT wp FROM WorkPeriod wp WHERE
 				wp.provider.id = :pId
-				ORDER BY wp.startDay, wp.startTime
+				ORDER BY wp.day, wp.startTime
 				""";
 
 		List<WorkPeriod> wPs = em.createQuery(query, WorkPeriod.class)
@@ -329,22 +329,21 @@ public class ProviderDAO {
 		for (WorkPeriod wP : wPs)
 			resp.add(new WorkPeriodDto()
 					.setId(wP.getId())
-					.setStartDay(wP.getStartDay())
+					.setDay(wP.getDay())
 					.setStartTime(wP.getStartTime())
-					.setEndDay(wP.getEndDay())
 					.setEndTime(wP.getEndTime())
 			);
 
 		return resp;
 	}
 
-	public List<WorkPeriod> getWorkPeriodsAtDay(List<Integer> eIds, int pId, LocalDate date) {
-		int day = date.getDayOfWeek().getValue();
+	public List<WorkPeriod> getWorkPeriodsAtDay(List<Integer> eIds, int pId, int day) {
+
 		boolean hasEIds = eIds != null && !eIds.isEmpty();
 
 		String query = """
 				SELECT wp FROM WorkPeriod wp WHERE
-				:day >= wp.startDay AND :day <= wp.endDay AND
+				:day = wp.day AND
 				(wp.provider.id = :pId
 				""";
 
@@ -504,7 +503,7 @@ public class ProviderDAO {
 
 		List<Object[]> apps = em.createQuery(query, Object[].class)
 				.setParameter("uId", uId)
-				.setParameter("curr", LocalDateTime.now(ZoneOffset.UTC))
+				.setParameter("curr", LocalDateTime.now(Util.zone()))
 				.getResultList();
 
 		return Util.convertToListOfMap(apps, List.of(

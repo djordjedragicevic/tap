@@ -1,21 +1,4 @@
 export const strings = {
-	'Appointments': 'Appointments',
-	'Test translation': "Test translation on English",
-
-	"January": "January",
-	"February": "February",
-	"March": "March",
-	"April": "April",
-	"May": "May",
-	"June": "June",
-	"July": "July",
-	"August": "August",
-	"September": "September",
-	"October": "October",
-	"November": "November",
-	"December": "December",
-
-	"Search": "Search",
 
 	"City": "City",
 	"Service": "Service",
@@ -31,6 +14,7 @@ export const strings = {
 
 	"----------------------------": "-------------------",
 
+	"Appointments": "Appointments",
 	"minutes": "minutes",
 	"appointments": "appointments",
 	"Home": "Home",
@@ -63,5 +47,12 @@ export const strings = {
 	"reviews": "reviewes",
 	"About": "About",
 	"Reviews": "Reviews",
-	"min": "min"
+	"min": "min",
+	"Monday": "Monday",
+	"Tuesday": "Tuesday",
+	"Wednsday": "Wednsday",
+	"Thursday": "Thursday",
+	"Friday": "Friday",
+	"Saturday": "Saturday",
+	"Sunday": "Sunday"
 };
