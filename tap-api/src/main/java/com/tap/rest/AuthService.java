@@ -1,15 +1,12 @@
 package com.tap.rest;
 
+import com.tap.security.Credentials;
 import com.tap.security.Public;
 import com.tap.security.Secured;
 import com.tap.security.Token;
-import com.tap.db.dao.AuthDAO;
-import com.tap.db.dao.UtilDAO;
 import com.tap.db.entity.Role;
 import com.tap.db.entity.User;
-import com.tap.db.dao.UserDAO;
 import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
@@ -18,13 +15,13 @@ import jakarta.ws.rs.core.Response;
 import java.util.*;
 
 @Path("auth")
-public class AuthREST {
+public class AuthService {
 	@Inject
-	UserDAO userDAO;
+	UserRepository userRepository;
 	@Inject
-	AuthDAO authDao;
+	AuthRepository authRepository;
 	@Inject
-	UtilDAO utilDAO;
+	UtilRepository utilRepository;
 
 
 	@POST
@@ -37,12 +34,12 @@ public class AuthREST {
 			Credentials credentials) {
 
 		//Get user by credentials
-		Optional<User> user = userDAO.getUserByCredentials(credentials.getUserName(), credentials.getPassword());
+		Optional<User> user = userRepository.getUserByCredentials(credentials.getUserName(), credentials.getPassword());
 		if (user.isEmpty())
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 
 		int userId = user.get().getId();
-		List<String> roles = userDAO.getRoles(userId).stream().map(Role::getName).toList();
+		List<String> roles = userRepository.getRoles(userId).stream().map(Role::getName).toList();
 
 
 		//Check does user already has token in db, and replace it if so
@@ -50,19 +47,20 @@ public class AuthREST {
 		com.tap.db.entity.Token tokenRec;
 		try {
 			long rid = new Token(bearer).validate().getRid();
-			tokenRec = utilDAO.getEntity(com.tap.db.entity.Token.class, rid);
+			Optional<com.tap.db.entity.Token> currToken = utilRepository.getEntity(com.tap.db.entity.Token.class, rid);
+			tokenRec = currToken.orElse(null);
 		} catch (Exception e) {
 			tokenRec = null;
 		}
 
 		//If there is no token in DB, create new record
 		if (tokenRec == null)
-			tokenRec = authDao.createTokenRecord(userId);
+			tokenRec = authRepository.createTokenRecord(userId);
 
 		//Generate new token, and save in DB
 		try {
 			Token newToken = new Token(userId, roles, tokenRec.getId());
-			authDao.setTokenJTI(tokenRec.getId(), newToken.getJti());
+			authRepository.setTokenJTI(tokenRec.getId(), newToken.getJti());
 
 			return Response.ok(Map.of("token", newToken.generate())).build();
 		} catch (Exception e) {

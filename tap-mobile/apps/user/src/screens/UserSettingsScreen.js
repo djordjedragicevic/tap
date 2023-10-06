@@ -1,6 +1,5 @@
 import XScreen from "xapp/src/components/XScreen";
 import { AntDesign } from '@expo/vector-icons';
-import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
 import XButton from "xapp/src/components/basic/XButton";
 import { LOGIN_SCREEN, FAVORITE_PROVIDERS_SCREEN } from "../navigators/routes";
 import { useContext, useMemo } from "react";
@@ -15,6 +14,7 @@ import ThemeContext from "xapp/src/style/ThemeContext";
 import XSection from "xapp/src/components/basic/XSection";
 import { Theme } from "xapp/src/style/themes";
 import XSelector from "xapp/src/components/basic/XSelector";
+import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
 
 const UserSettingsScreen = ({ navigation }) => {
 	const t = useTranslation();

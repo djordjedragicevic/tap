@@ -1,8 +1,8 @@
-import { i18n } from "xapp/src/i18n/I18nContext";
+import I18n from "xapp/src/i18n/I18n";
 
 const utils = {
 	generateMarkString: (mark, reviewCont) => {
-		return (mark || '-') + (reviewCont != null ? (' (' + reviewCont + ' ' + i18n.translate('reviews') + ')') : '');
+		return (mark || '-') + (reviewCont != null ? (' (' + reviewCont + ' ' + I18n.translate('reviews') + ')') : '');
 	}
 };
 

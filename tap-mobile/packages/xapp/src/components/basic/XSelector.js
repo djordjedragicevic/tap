@@ -5,7 +5,6 @@ import XText from "./XText";
 import { AntDesign } from '@expo/vector-icons';
 import { usePrimaryColor } from "../../style/ThemeContext";
 import XBottomSheetSelector from "./XBottomSheetSelector";
-import { useTranslation } from "../../i18n/I18nContext";
 import { emptyFn } from "../../common/utils";
 
 

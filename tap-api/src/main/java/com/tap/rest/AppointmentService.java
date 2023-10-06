@@ -3,10 +3,8 @@ package com.tap.rest;
 import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
-import com.tap.db.dao.UtilDAO;
 import com.tap.security.Public;
 import com.tap.common.*;
-import com.tap.db.dao.ProviderDAO;
 import com.tap.db.dto.EmployeeDto;
 import com.tap.db.dto.ServiceDto;
 import com.tap.db.entity.*;
@@ -28,16 +26,19 @@ import java.util.stream.Collectors;
 
 @Path("appointments")
 @RequestScoped
-public class AppointmentsREST {
+public class AppointmentService {
 	public static String A_STATUS_WAITING = "WAITING";
 	public static String A_STATUS_ACCEPTED = "ACCEPTED";
 	public static String A_STATUS_REJECTED = "REJECTED";
 	public static String A_STATUS_CANCELED = "CANCELED";
 	private static final int FREE_APP_CREATING_STEP = 15;
 	@Inject
-	private ProviderDAO providerDAO;
+	private ProviderRepository providerRepository;
 	@Inject
-	private UtilDAO utilDao;
+	private UtilRepository utilRepository;
+
+	@Inject
+	private AppointmentRepository appointmentRep;
 
 	@GET
 	@Path("my-appointments")
@@ -51,10 +52,10 @@ public class AppointmentsREST {
 		int userId = Security.getUserId(sC);
 
 		if (filter.isEmpty() || filter.equals("coming"))
-			resp.put("comingApps", providerDAO.getUserAppointments(userId, false));
+			resp.put("comingApps", appointmentRep.getUserAppointments(userId, false));
 
 		if (filter.isEmpty() || filter.equals("history"))
-			resp.put("historyApps", providerDAO.getUserAppointments(userId, true));
+			resp.put("historyApps", appointmentRep.getUserAppointments(userId, true));
 
 		return resp;
 	}
@@ -72,7 +73,7 @@ public class AppointmentsREST {
 				.boxed()
 				.toList();
 
-		boolean success = providerDAO.cancelAppointments(aIds);
+		boolean success = appointmentRep.cancelAppointments(aIds);
 
 		return Response.ok(success).build();
 	}
@@ -90,7 +91,7 @@ public class AppointmentsREST {
 				.boxed()
 				.toList();
 
-		boolean success = providerDAO.rebookAppointments(aIds);
+		boolean success = appointmentRep.rebookAppointments(aIds);
 
 		return Response.ok(success).build();
 	}
@@ -110,7 +111,7 @@ public class AppointmentsREST {
 
 		LocalDate date = d != null ? Util.zonedDT(d).toLocalDate() : LocalDate.now(Util.zone());
 
-		Map<ServiceDto, List<EmployeeDto>> serEmpsMap = providerDAO.getActiveServiceEmployees(sIds, pId);
+		Map<ServiceDto, List<EmployeeDto>> serEmpsMap = providerRepository.getActiveServiceEmployees(sIds, pId);
 		if (serEmpsMap.isEmpty())
 			return Collections.emptyMap();
 
@@ -150,7 +151,7 @@ public class AppointmentsREST {
 
 		int userId = Security.getUserId(sC);
 
-		boolean success = providerDAO.saveAppointment(app, userId);
+		boolean success = appointmentRep.saveAppointment(app, userId);
 
 		return Response.ok(success).build();
 	}
@@ -343,7 +344,7 @@ public class AppointmentsREST {
 		ProviderWorkInfo pWI = new ProviderWorkInfo(pId, date);
 
 		int day = date.getDayOfWeek().getValue();
-		List<WorkPeriod> workPeriod = providerDAO.getWorkPeriodsAtDay(eIds, pId, day);
+		List<WorkPeriod> workPeriod = providerRepository.getWorkPeriodsAtDay(eIds, pId, day);
 
 		if (workPeriod == null || workPeriod.isEmpty())
 			return pWI;
@@ -398,8 +399,8 @@ public class AppointmentsREST {
 
 		//----------------Create Employee timeline----------------------------------
 
-		List<Appointment> appointments = providerDAO.getAppointmentsAtDay(eIds, date);
-		List<BusyPeriod> busyPeriods = providerDAO.getBusyPeriodsAtDay(pId, eIds, date);
+		List<Appointment> appointments = appointmentRep.getAppointmentsAtDay(eIds, date);
+		List<BusyPeriod> busyPeriods = appointmentRep.getBusyPeriodsAtDay(pId, eIds, date);
 
 		List<TimePeriod> providerBTP = new ArrayList<>();
 		List<BusyPeriod> employeeBP = new ArrayList<>();

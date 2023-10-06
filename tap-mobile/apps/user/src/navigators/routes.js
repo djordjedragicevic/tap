@@ -5,14 +5,15 @@ export const FAVORITE_PROVIDERS_SCREEN = 'FavoriteProvidersScreen';
 export const FREE_APPOINTMENTS_SCREEN = 'FreeAppoinmentsScreen';
 export const BOOK_APPOINTMENT_SCREEN = 'BookAppointmentScreen';
 
-export const MAIN_TAB_HOME = 'MAIN_TAB_HOME';
-export const MAIN_TAB_FIND = 'MAIN_TAB_FIND';
-export const MAIN_TAB_MY_APPOINTMENTS = 'MAIN_TAB_MY_APPOINTMENTS';
-export const MAIN_TAB_USER = 'MAIN_TAB_USER';
+export const MAIN_TAB_HOME = 'MainTabHome';
+export const MAIN_TAB_FIND = 'MainTabFind';
+export const MAIN_TAB_MY_APPOINTMENTS = 'MainTabMyAppointment';
+export const MAIN_TAB_USER = 'MainTabUser';
 
-export const MAIN_STACK = 'MAIN_STACK';
+export const MAIN_STACK = 'MainStack';
 
-export const LOGIN_SCREEN = 'LOGIN_SCREEN';
+export const LOGIN_SCREEN = 'LoginScreen';
+export const CREATE_ACCOUNT_SCREEN = 'CreateAccountScreen';
 
 export const DRAWER_HOME = 'DrowerHome';
 

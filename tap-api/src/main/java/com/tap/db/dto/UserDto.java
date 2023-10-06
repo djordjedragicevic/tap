@@ -8,10 +8,12 @@ public class UserDto {
 	private String username;
 	private String email;
 	private String password;
+	private String salt;
 	private String firstName;
 	private String lastName;
 	private LocalDateTime createDate;
 	private LocalDateTime lastLogin;
+	private Byte verified;
 	private AddressDto address; 
 	private UserStateDto userstate; 
 	public UserDto() {}
@@ -52,6 +54,15 @@ public class UserDto {
 		return this.password;
 	}
 
+	public UserDto setSalt( String salt ) {
+		this.salt = salt;
+		return this;
+	}
+
+	public String getSalt() {
+		return this.salt;
+	}
+
 	public UserDto setFirstName( String firstName ) {
 		this.firstName = firstName;
 		return this;
@@ -86,6 +97,15 @@ public class UserDto {
 
 	public LocalDateTime getLastLogin() {
 		return this.lastLogin;
+	}
+
+	public UserDto setVerified( byte verified ) {
+		this.verified = verified;
+		return this;
+	}
+
+	public byte getVerified() {
+		return this.verified;
 	}
 
 	public AddressDto getAddress() {

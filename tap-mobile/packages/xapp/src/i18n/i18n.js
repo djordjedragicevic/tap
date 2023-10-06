@@ -1,30 +1,41 @@
+import { Storage } from "../store/deviceStorage";
 
-export const LANGS = {
-	en_US: 'en_US',
-	sr_SP: 'sr_SP'
-};
+export default class I18n {
+	static lngs = '';
+	static lng = '';
+	static fallback = '';
+	static fallbackError = '';
+	static STORAGE_HEY = 'lngId'
 
-export const languages = {
+	static translate(text) {
+		if (I18n.lng.strings.hasOwnProperty(text))
+			return I18n.lng.strings[text];
+		else if (I18n.fallback && I18n.lngs[fallback].strings.hasOwnProperty(text))
+			return I18n.lngs[I18n.fallback].strings[text]
+		else
+			return `= LOC MISS [${I18n.lng.code}][${text}] =`;
+	}
 
-};
+	static translateError(errorCode) {
+		const err = I18n.lng.errors[errorCode || I18n.fallbackError] || I18n.lng.errors[I18n.fallbackError];
+		return { ...err };
+	}
 
-/**
- * @param {Array} langs 
- * [{
- * 	en_US: {
- * 		id: 'en_US',
- * 		code: 'en-US',
- * 		name: 'English',
- * 		dateCode: 'en',
- * 		strings: {}
- * 	}
- * }]
- */
-export const initLangs = (langs) => {
-	Object.entries(langs).forEach(([k, v]) => languages[k] = v);
-	return languages;
-};
+	static init({ langs, defautlLng, fallbackLng, fallbackError }) {
+		I18n.langs = langs;
+		I18n.lng = langs[defautlLng];
+		I18n.fallback = !!fallbackLng;
+		I18n.fallbackError = fallbackError;
+	}
 
-export const getLanguage = (lng) => {
-	return languages[lng];
+	static changeLanguageById(lngId) {
+		I18n.lng = I18n.langs[lngId];
+		Storage.set(I18n.STORAGE_HEY, lngId);
+		return I18n.lng;
+	}
+
+	static getLanguage() {
+		return I18n.lng;
+	}
+
 };

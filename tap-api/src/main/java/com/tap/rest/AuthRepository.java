@@ -1,4 +1,4 @@
-package com.tap.db.dao;
+package com.tap.rest;
 
 import com.tap.db.entity.Token;
 import com.tap.db.entity.TokenStatus;
@@ -9,7 +9,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @RequestScoped
-public class AuthDAO {
+public class AuthRepository {
 
 	public static final short TOKEN_VALID = 1;
 	@PersistenceContext(unitName = "tap-pu")

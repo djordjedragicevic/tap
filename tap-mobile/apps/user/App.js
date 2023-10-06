@@ -1,5 +1,4 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { initLangs, LANGS } from 'xapp/src/i18n/i18n';
 import { API_URL, DEFAULT_LANGUAGE, HOST, HTTP_TIMEOUT } from './src/common/config';
 import Main from './src/Main';
 // import {
@@ -40,41 +39,35 @@ import { strings as en_US_str } from './src/languages/en_US/strings';
 import { errors as en_US_err } from './src/languages/en_US/errors';
 import { strings as sr_SP_str } from './src/languages/sr_SP/strings';
 import { errors as sr_SP_err } from './src/languages/sr_SP/errors';
+import I18n from 'xapp/src/i18n/I18n';
 
 storeInit(appStore());
 storeInit(userStore());
 storeInit(testStore());
 
 Http.init(HOST, API_URL, HTTP_TIMEOUT);
-
-// Theme.initThemes({
-// 	[Theme.LIGHT]: {
-// 		background: '#f0f0f5',
-// 		backgroundElement: DefaultTheme.colors.card
-// 	},
-// 	[Theme.LIGHT]: {
-// 		background: DarkTheme.colors.background,
-// 		backgroundElement: DarkTheme.colors.card
-// 	}
-// });
-
-const languages = initLangs({
-	[LANGS.en_US]: {
-		id: 'en_US',
-		code: 'en-US',
-		name: 'English',
-		dateCode: 'en',
-		strings: en_US_str,
-		errors: en_US_err
+I18n.init({
+	langs: {
+		en_US: {
+			id: 'en_US',
+			code: 'en-US',
+			name: 'English',
+			dateCode: 'en',
+			strings: en_US_str,
+			errors: en_US_err
+		},
+		sr_SP: {
+			id: 'sr_SP',
+			code: 'sr-SP',
+			name: 'Serbian',
+			dateCode: 'sr-Latn-ba',
+			strings: sr_SP_str,
+			errors: sr_SP_err
+		}
 	},
-	[LANGS.sr_SP]: {
-		id: 'sr_SP',
-		code: 'sr-SP',
-		name: 'Serbian',
-		dateCode: 'sr-Latn-ba',
-		strings: sr_SP_str,
-		errors: sr_SP_err
-	}
+	defautlLng: DEFAULT_LANGUAGE,
+	fallbackLng: false,
+	fallbackError: 'TAP_0'
 });
 
 export default App = () => {
@@ -87,45 +80,51 @@ export default App = () => {
 		Inter_900Black
 	});
 
-
 	const [initialTheme, setInitialTheme] = useState(null);
+	const [initialLanguage, setInitialLanguage] = useState(null);
+	const [userChecked, setUserChecked] = useState(false);
 
+	//Set language and theme from storage
 	useEffect(() => {
-
-		async function wrap() {
-			const token = await Http.getToken();
-
-			Promise.all([
-				Storage.get(Theme.STORAGE_HEY, Theme.SYSETM),
-				Http.get('/user/by-token', token, false, true)
-			])
-				.then(([themeId, userData]) => {
-					if (userData)
-						storeDispatch('user.set_data', userData);
-
-					setInitialTheme(themeId);
-
-				})
-				.catch(e => console.log("ERR", e))
-		}
-
-		wrap();
-
+		Promise.all([
+			Storage.get(Theme.STORAGE_HEY, Theme.SYSETM),
+			Storage.get(I18n.STORAGE_HEY, DEFAULT_LANGUAGE)
+		]).then(([themeId, langId]) => {
+			setInitialTheme(themeId);
+			if (I18n.getLanguage().id !== langId)
+				I18n.changeLanguageById(langId)
+			setInitialLanguage(langId);
+		});
 	}, []);
 
-
+	//Set font
 	useEffect(() => {
 		if (fontsLoaded)
 			storeDispatch('app.set_font', 'Inter_500Medium');
 	}, [fontsLoaded]);
 
-	if (!fontsLoaded || !initialTheme)
+
+	//Check user token
+	useEffect(() => {
+		if (initialLanguage && initialTheme)
+			Http.get('/user/by-token', Http.getToken(), false, true)
+				.then(userData => {
+					if (userData)
+						storeDispatch('user.set_data', userData);
+				})
+				.finally(() => {
+					setUserChecked(true);
+				})
+	}, [initialLanguage, initialTheme]);
+
+
+	if (!fontsLoaded || !initialTheme || !userChecked)
 		return null;
 
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<ThemeContextProvider initialTheme={initialTheme}>
-				<I18nContextProvider language={DEFAULT_LANGUAGE} languages={languages}>
+				<I18nContextProvider>
 					<Main />
 				</I18nContextProvider>
 			</ThemeContextProvider>

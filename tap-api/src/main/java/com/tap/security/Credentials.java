@@ -1,4 +1,4 @@
-package com.tap.rest;
+package com.tap.security;
 
 public class Credentials {
 	private String userName;

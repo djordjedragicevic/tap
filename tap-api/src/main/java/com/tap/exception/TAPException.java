@@ -7,7 +7,7 @@ import java.util.Map;
 public class TAPException extends WebApplicationException {
 	private ErrID tapEID;
 	private String message;
-	private Map<String, Object> params;
+	private Map<String, String> params;
 
 	public TAPException() {
 		this(ErrID.TAP_0);
@@ -24,7 +24,7 @@ public class TAPException extends WebApplicationException {
 		this.message = message;
 	}
 
-	public TAPException(ErrID tapEID, String message, Map<String, Object> params) {
+	public TAPException(ErrID tapEID, String message, Map<String, String> params) {
 		super();
 		this.tapEID = tapEID;
 		this.message = message;
@@ -40,7 +40,7 @@ public class TAPException extends WebApplicationException {
 		return message;
 	}
 
-	public Map<String, Object> getParams() {
+	public Map<String, String> getParams() {
 		return params;
 	}
 }

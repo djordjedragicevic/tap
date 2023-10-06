@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { storeDispatch } from '../store/store';
 import { SecureStorage } from '../store/deviceStorage';
 import XAlert from '../components/basic/XAlert';
+import I18n from '../i18n/I18n';
 
 
 const S_KEY_TOKEN = 'token';
@@ -16,8 +17,6 @@ export class Http {
 	static ERR = {
 		UNAUTHENTICATE: 'UNAUTHENTICATE',
 		FORBIDEN: 'FORBIDEN',
-		UNEXPECTED: 'UNEXPECTED',
-		INVALID_RESPONSE: 'INVALID_RESPONSE',
 		CONNECTION_TIMEOUT: 'CONNECTION_TIMEOUT'
 	}
 
@@ -33,8 +32,7 @@ export class Http {
 		storeDispatch('app.http_loading_on')
 		const d = new Date().getTime();
 
-		let errName;
-		let data;
+		let err;
 
 		console.log('HTTP START: ' + config.method, ': ', _API_URL.concat(url));
 
@@ -50,59 +48,51 @@ export class Http {
 			const response = await fetch(_API_URL.concat(url), config);
 			clearTimeout(fId);
 
-			if (!response.ok) {
-				if (response.status === 401) {
-					errName = Http.ERR.UNAUTHENTICATE;
-				}
-				else if (response.status === 403) {
-					errName = Http.ERR.FORBIDEN;
-				}
-				else {
-					errName = Http.ERR.UNEXPECTED;
-				}
+			if (response.ok && response.status === 200) {
+				return await response.json();
 			}
 			else {
-				try {
-					data = response.status !== 200 ? null : await response.json();
-				}
-				catch (err) {
-					errName = Http.ERR.INVALID_RESPONSE;
+				switch (response.status) {
+					case 400:
+						const resp = await response.json();
+						err = I18n.translateError(resp.tapEID);
+						if (resp.params) {
+							Object.entries(resp.params).forEach(([k, v]) => {
+								err.message = err.message.replace('{:' + k + '}', v);
+							});
+						}
+						break;
+					case 401:
+						err = I18n.translateError(Http.ERR.UNAUTHENTICATE);
+						break;
+					case 403:
+						err = I18n.translateError(Http.ERR.FORBIDEN);
+						break;
+					default: {
+						err = I18n.translateError();
+					}
 				}
 			}
 
-
-		} catch (err) {
-			if (err?.name === 'AbortError')
-				errName = Http.ERR.CONNECTION_TIMEOUT;
+		} catch (e) {
+			if (e?.name === 'AbortError')
+				err = I18n.translateError(Http.ERR.CONNECTION_TIMEOUT);
 			else
-				errName = Http.ERR.UNEXPECTED;
+				err = I18n.translateError();
 		}
 		finally {
+
+			console.log(`HTTP ${err ? 'NOT ' : ''}SUCCESS: (${(new Date().getTime() - d) / 1000}s)`);
+
 			storeDispatch('app.http_loading_off');
+			if (err) {
+				if (!silent)
+					XAlert.show(err.title, err.message);
 
-			if (errName)
-				console.log('HTTP ERROR: ' + errName + ' (' + (new Date().getTime() - d) / 1000 + 's)');
-
-			if (errName && !silent) {
-				if (errName === Http.ERR.UNAUTHENTICATE) {
-					XAlert.show('Not logged', 'Have to log in!')
-					const e = new Error();
-					e.name = errName;
-					throw e;
-				}
-				else if (errName === Http.ERR.FORBIDEN)
-					XAlert.show('Forbiden', 'Don\'t have right for acction!')
-				else {
-					const e = new Error();
-					e.name = errName;
-					throw e;
-				}
+				//throw new Error();
 			}
-
-			console.log(`HTTP ${errName ? 'NOT ' : ''}SUCCESS: (${(new Date().getTime() - d) / 1000}s)`);
-			return data;
-
 		}
+
 	}
 
 	static async get(url, qParams, validate = false, silent = false) {

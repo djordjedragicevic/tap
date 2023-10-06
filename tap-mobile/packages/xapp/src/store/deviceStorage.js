@@ -8,7 +8,6 @@ export class Storage {
 		key = KEY_PRE + key;
 		try {
 			const v = await AsyncStorage.getItem(key);
-			console.log(v, !!v)
 			return v ? JSON.parse(v) : defValue;
 
 		} catch (err) {

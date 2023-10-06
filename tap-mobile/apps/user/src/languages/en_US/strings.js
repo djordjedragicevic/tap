@@ -4,16 +4,16 @@ export const strings = {
 	"Service": "Service",
 	"Location": "Location",
 	"Service type": "Service type",
-	"Services": "Services",
 	"Provider": "Provider",
 	"Providers": "Providers",
 	"From": "From",
 	"To": "To",
 	"Calendar": "Calendar",
-	"Find appointment": "Find appointment",
 
 	"----------------------------": "-------------------",
 
+	"Services": "Services",
+	"Find appointment": "Find appointment",
 	"Appointments": "Appointments",
 	"minutes": "minutes",
 	"appointments": "appointments",
@@ -48,11 +48,17 @@ export const strings = {
 	"About": "About",
 	"Reviews": "Reviews",
 	"min": "min",
+	"Sing In": "Sing In",
+	"Welcome back": "Welcome back",
+	
 	"Monday": "Monday",
 	"Tuesday": "Tuesday",
 	"Wednsday": "Wednsday",
 	"Thursday": "Thursday",
 	"Friday": "Friday",
 	"Saturday": "Saturday",
-	"Sunday": "Sunday"
+	"Sunday": "Sunday",
+
+	"Password": "Password",
+	"Username or email": "Username or email"
 };

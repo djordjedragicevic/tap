@@ -1,6 +1,7 @@
 export const strings = {
 	"minutes": "minnuta",
 	"appointments": "termini",
+	"Find appointment": "Pronađi termin",
 	"Appointments": "Termini",
 	"Home": "Početna",
 	"Find": "Pronađi",
@@ -17,6 +18,7 @@ export const strings = {
 	"English": "Engleski",
 	"Serbian": "Srpski",
 
+	"Services": "Services",
 	"First free": "Prvi slobodan",
 	"Free appointments": "Slobodni termini",
 	"Today": "Danas",
@@ -31,11 +33,19 @@ export const strings = {
 	"About": "O nama",
 	"Reviews": "Ocjene",
 	"min": "min",
+	"Sing In": "Prijava",
+	"Welcome back": "Dobro došli nazad",
+
 	"Monday": "Ponedjeljak",
 	"Tuesday": "Utorak",
 	"Wednsday": "Srijeda",
 	"Thursday": "Četvrtak",
 	"Friday": "Petak",
 	"Saturday": "Subota",
-	"Sunday": "Nedjelja"
+	"Sunday": "Nedjelja",
+
+	"Password": "Lozinka",
+	"Username or email": "Korisničko ime ili email",
+	"Don't have an account?": "Još uvijek nemate nalog?",
+	"Sing Up": "Kreirajte novi"
 };

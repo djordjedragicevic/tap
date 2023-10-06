@@ -1,10 +1,10 @@
 
 import XText from "xapp/src/components/basic/XText";
 import XButton from "xapp/src/components/basic/XButton";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
 import XAvatar from "xapp/src/components/basic/XAvatar";
-import { Animated, Pressable, SectionList, StyleSheet, View } from "react-native"
+import { Pressable, SectionList, StyleSheet, View } from "react-native"
 import { DateUtils, emptyFn } from 'xapp/src/common/utils';
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import XChip from "xapp/src/components/basic/XChip";

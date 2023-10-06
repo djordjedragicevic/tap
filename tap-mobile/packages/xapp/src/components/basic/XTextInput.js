@@ -1,22 +1,63 @@
-import React from "react";
-import { StyleSheet, TextInput } from "react-native";
+import React, { useCallback, useState } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 import { useStore } from "../../store/store";
 import XFieldContainer from "./XFieldContainer";
+import XText from "./XText";
 
-const XTextInput = React.forwardRef((props, ref) => {
+const XTextInput = React.forwardRef((
+	{
+		title,
+		style,
+		fieldStyle,
+		outline,
+		...rest
+	},
+	ref) => {
 
+	const [focused, setFocused] = useState(false);
 	const appFont = useStore(state => state.app.font);
-	const styles = useThemedStyle(createStyle, appFont);
+	const styles = useThemedStyle(createStyle, appFont, focused);
+
+	const onFocus = useCallback(() => {
+		rest.onFocus?.();
+		setFocused(true);
+	}, [setFocused]);
+
+	const onBlur = useCallback(() => {
+		setFocused(false);
+		rest.onBlur?.();
+	}, [setFocused]);
 
 	return (
-		<XFieldContainer {...props}>
-			<TextInput ref={ref} {...props} style={styles.field} editable={!!props.editable || !props.disabled} />
-		</XFieldContainer>
+		<View style={style}>
+			{!!title &&
+				<View style={styles.titleContainer}>
+					<XText style={styles.title}>{title}</XText>
+				</View>
+			}
+			<XFieldContainer focused={focused} outline={outline}>
+				<TextInput
+					ref={ref}
+					{...rest}
+					style={[styles.field, fieldStyle]}
+					editable={!!rest.editable || !rest.disabled}
+					onFocus={onFocus}
+					onBlur={onBlur}
+				/>
+			</XFieldContainer>
+		</View>
 	);
 });
 
-const createStyle = (_, font) => StyleSheet.create({
+const createStyle = (theme, font, focused) => StyleSheet.create({
+	title: {
+		color: focused ? theme.colors.primary : theme.colors.textSecondary
+	},
+	titleContainer: {
+		paddingHorizontal: 4,
+		paddingVertical: 4
+	},
 	field: {
 		fontFamily: font,
 		fontSize: 15

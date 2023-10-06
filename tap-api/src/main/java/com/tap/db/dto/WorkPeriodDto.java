@@ -2,15 +2,11 @@
  * Generated DTO class for "WorkPeriod"
  */
 package com.tap.db.dto;
-import jakarta.json.bind.annotation.JsonbDateFormat;
-
 import java.time.LocalTime;
 public class WorkPeriodDto {	
 	private Integer id;
 	private Byte day;
-	@JsonbDateFormat("HH:mm")
 	private LocalTime startTime;
-	@JsonbDateFormat("HH:mm")
 	private LocalTime endTime;
 	private EmployeeDto employee; 
 	private PeriodTypeDto periodtype; 

@@ -2,11 +2,9 @@ package com.tap.rest;
 
 import com.tap.db.dto.EmployeeDto;
 import com.tap.db.dto.WorkPeriodDto;
-import com.tap.db.entity.WorkPeriod;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.security.Public;
-import com.tap.db.dao.ProviderDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -14,9 +12,9 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.*;
 
 @Path("provider")
-public class ProviderREST {
+public class ProviderService {
 	@Inject
-	private ProviderDAO providerDAO;
+	private ProviderRepository providerRepository;
 
 	@GET
 	@Path("{id}")
@@ -29,19 +27,19 @@ public class ProviderREST {
 
 		try {
 
-			about = providerDAO.getProviderData(id);
+			about = providerRepository.getProviderData(id);
 			resp.put("about", about);
 
-			List<EmployeeDto> emps = providerDAO.getProviderEmployees(id);
+			List<EmployeeDto> emps = providerRepository.getProviderEmployees(id);
 			about.put("employees", emps);
 
-			List<WorkPeriodDto> wPs = providerDAO.getProviderWorkPeriods(id);
+			List<WorkPeriodDto> wPs = providerRepository.getProviderWorkPeriods(id);
 			about.put("workPeriods", wPs);
 
-			List<String> imgs = providerDAO.getProviderMainImgs(id);
+			List<String> imgs = providerRepository.getProviderMainImgs(id);
 			resp.put("mainImg", imgs);
 
-			Object services = providerDAO.getProviderServices(id);
+			Object services = providerRepository.getProviderServices(id);
 			resp.put("services", services);
 
 		} catch (Exception e) {
@@ -58,7 +56,7 @@ public class ProviderREST {
 	@Public
 	public Object getProviders(@QueryParam("cId") long cityId) {
 
-		return providerDAO.getProviders(cityId);
+		return providerRepository.getProviders(cityId);
 	}
 
 

@@ -17,14 +17,21 @@ public class TAPExceptionMapper implements ExceptionMapper<TAPException> {
 	@Override
 	public Response toResponse(final TAPException exception) {
 
-		Map<String, Object> err = new LinkedHashMap<>();
-		err.put("tapEID", exception.getTapEID().toString());
-		if(exception.getMessage() != null)
-			err.put("message", exception.getMessage());
-		if(exception.getParams() != null)
-			err.put("params", exception.getParams());
+		JsonObjectBuilder err = Json.createObjectBuilder();
+		err.add("tapEID", exception.getTapEID().toString());
 
-		return Response.serverError().status(Response.Status.BAD_REQUEST).entity(err).build();
+		if (exception.getMessage() != null)
+			err.add("message", exception.getMessage());
 
+		if (exception.getParams() != null) {
+			JsonObjectBuilder errParams = Json.createObjectBuilder();
+
+			for (Map.Entry<String, String> entry : exception.getParams().entrySet())
+				errParams.add(entry.getKey(), entry.getValue());
+
+			err.add("params", errParams.build());
+		}
+
+		return Response.status(Response.Status.BAD_REQUEST).entity(err.build()).build();
 	}
 }

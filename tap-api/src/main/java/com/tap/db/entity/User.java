@@ -26,8 +26,11 @@ public class User implements Serializable {
     @Column(name="email", nullable=false, length=128)
 	private String email;
 
-    @Column(name="password", nullable=false, length=128)
+    @Column(name="password", nullable=false, length=65535)
 	private String password;
+
+    @Column(name="salt", nullable=false, length=65535)
+	private String salt;
 
     @Column(name="first_name", length=128)
 	private String firstName;
@@ -40,6 +43,9 @@ public class User implements Serializable {
 
     @Column(name="last_login")
 	private LocalDateTime lastLogin;
+
+    @Column(name="verified", nullable=false)
+	private byte verified;
 
     @Column(name="active", nullable=false)
 	private byte active;
@@ -89,6 +95,14 @@ public class User implements Serializable {
 		return this.password;
 	}
 
+	public void setSalt( String salt ) {
+		this.salt = salt ;
+	}
+
+	public String getSalt() {
+		return this.salt;
+	}
+
 	public void setFirstName( String firstName ) {
 		this.firstName = firstName ;
 	}
@@ -119,6 +133,14 @@ public class User implements Serializable {
 
 	public LocalDateTime getLastLogin() {
 		return this.lastLogin;
+	}
+
+	public void setVerified( byte verified ) {
+		this.verified = verified ;
+	}
+
+	public byte getVerified() {
+		return this.verified;
 	}
 
 	public void setActive( byte active ) {

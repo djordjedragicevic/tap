@@ -21,10 +21,12 @@ const XFieldContainer = ({
 	onPress,
 	children,
 	onCenterPress,
-	meta
+	meta,
+	outline,
+	focused
 }) => {
 
-	const styles = useThemedStyle(createStyle);
+	const styles = useThemedStyle(createStyle, outline, focused);
 	const RootCmp = onPress ? TouchableOpacity : View;
 	const IconRightCmp = onIconRightPress ? TouchableOpacity : View;
 	const IconLeftCmp = onIconLeftPress ? TouchableOpacity : View;
@@ -60,9 +62,11 @@ const XFieldContainer = ({
 	);
 };
 
-const createStyle = (theme) => StyleSheet.create({
+const createStyle = (theme, outline, focused) => StyleSheet.create({
 	container: {
 		borderRadius: Theme.values.borderRadius,
+		borderWidth: outline && Theme.values.borderWidth,
+		borderColor: focused ? theme.colors.primary : theme.colors.borderColor,
 		flexDirection: 'row',
 		backgroundColor: theme.colors.backgroundElement,
 		height: 45

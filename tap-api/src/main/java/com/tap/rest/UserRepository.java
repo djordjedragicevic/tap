@@ -1,24 +1,40 @@
-package com.tap.db.dao;
+package com.tap.rest;
 
 import com.tap.common.Util;
 import com.tap.db.entity.Role;
 import com.tap.db.entity.User;
 import com.tap.db.entity.UserState;
+import com.tap.db.entity.UserValidation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.JsonObject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RequestScoped
-public class UserDAO {
+public class UserRepository {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
+
+	@Transactional
+	public void saveNewUser(User u, String code) {
+
+		em.persist(u);
+
+		UserValidation validation = new UserValidation();
+		validation.setCode(code);
+		validation.setUser(u);
+		validation.setCreateTime(LocalDateTime.now(Util.zone()));
+		em.persist(validation);
+
+		em.flush();
+	}
 
 	public Map<String, Object> getUserData(int userId) {
 

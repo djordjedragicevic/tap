@@ -10,7 +10,6 @@ import java.util.*;
 
 public class Util {
 	private static final String ZONE = "Europe/Sarajevo";
-	private static final Random random = new SecureRandom();
 
 	private Util() {
 
@@ -66,8 +65,8 @@ public class Util {
 				subK = lK.subList(1, lK.size());
 				map.put(lK.get(0).toString(), generateMapForConversion(subR, subK, new LinkedHashMap<>()));
 			} else if (tmpK.toString().contains(".")) {
-				 keyPath = tmpK.toString().split("\\.");
-				 key = keyPath[keyPath.length - 1];
+				keyPath = tmpK.toString().split("\\.");
+				key = keyPath[keyPath.length - 1];
 
 				tmpV = map;
 				for (int kI = 0; kI < keyPath.length - 1; kI++)
@@ -93,15 +92,42 @@ public class Util {
 		}
 	}
 
-
-	public static String getRandomString(byte from, byte to, int length) {
+	public static String getRandomString(int from, int to, int length) {
+		Random random = new SecureRandom();
 		byte[] bytes = new byte[length];
 		for (int i = 0; i < length; i++) {
-			int b = random.nextInt(from, to + 1);
+			int b = random.nextInt(33, 127);
 			bytes[i] = (byte) b;
 		}
 
 		return new String(bytes, StandardCharsets.UTF_8);
+	}
+
+	public static String getRandomString(int length, boolean base64encoded) {
+		return base64encoded ?
+				Base64.getEncoder().encodeToString(getRandomBytes(length))
+				:
+				getRandomString(33, 127, length);
+	}
+
+	public static byte[] getRandomBytes(int length) {
+		Random random = new SecureRandom();
+		byte[] bytes = new byte[length];
+		random.nextBytes(bytes);
+		return bytes;
+	}
+
+	public static String generateVerificationCode(int codeLength) {
+
+		SecureRandom random = new SecureRandom();
+		StringBuilder code = new StringBuilder();
+		String numbers = "0123456789";
+
+		for (int i = 0; i < codeLength; i++)
+			code.append(numbers.charAt(random.nextInt(numbers.length())));
+
+		return code.toString();
+
 	}
 
 }

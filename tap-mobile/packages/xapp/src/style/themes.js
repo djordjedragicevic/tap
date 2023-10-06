@@ -7,7 +7,7 @@ export const Theme = {
 	values: {
 		mainPaddingHorizontal: 8,
 		borderRadius: 5,
-		borderWidth: 0.7,
+		borderWidth: 1,
 		disabledOpacity: 0.3,
 
 		footerHeight: 52,
@@ -29,7 +29,7 @@ export const Theme = {
 			textTertiary: 'hsl(0, 0%, 85%)',
 			textLight: '#f2f2f3',
 
-			borderColor: '#a6a6a6',
+			borderColor: 'hsl(0, 0%, 60%)',
 			red: 'red'
 		},
 		periodColors: {
@@ -54,7 +54,7 @@ export const Theme = {
 			textTertiary: 'hsl(0, 0%, 50%)', //white wariant
 			textLight: '#f2f2f3',
 
-			borderColor: '#595959',
+			borderColor: 'hsl(0, 0%, 70%)',
 			red: 'red'
 		},
 		periodColors: {

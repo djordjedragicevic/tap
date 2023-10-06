@@ -9,7 +9,8 @@ import {
 	MAIN_TAB_MY_APPOINTMENTS,
 	MAIN_TAB_USER,
 	PROVIDER_SCREEN,
-	BOOK_APPOINTMENT_SCREEN
+	BOOK_APPOINTMENT_SCREEN,
+	CREATE_ACCOUNT_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
@@ -29,6 +30,7 @@ import MyAppointmentsScreen from '../screens/MyAppointmentsScreen';
 import { useColor } from 'xapp/src/style/ThemeContext';
 import BookAppointmentScreen from '../screens/BookAppointmentScreen';
 import TryScreen from '../screens/TryScreen';
+import CreateAccountScreen from '../screens/CreateAccountScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -159,6 +161,13 @@ const AppNavigator = () => {
 				component={FavoritesScreen}
 				options={{
 					title: t('Saved')
+				}}
+			/>
+			<Stack.Screen
+				name={CREATE_ACCOUNT_SCREEN}
+				component={CreateAccountScreen}
+				options={{
+					headerShown: false
 				}}
 			/>
 		</Stack.Navigator>
