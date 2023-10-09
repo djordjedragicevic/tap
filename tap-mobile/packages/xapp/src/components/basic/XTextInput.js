@@ -10,6 +10,7 @@ const XTextInput = React.forwardRef((
 		title,
 		style,
 		fieldStyle,
+		fieldContainerStyle,
 		outline,
 		...rest
 	},
@@ -36,7 +37,7 @@ const XTextInput = React.forwardRef((
 					<XText style={styles.title}>{title}</XText>
 				</View>
 			}
-			<XFieldContainer focused={focused} outline={outline}>
+			<XFieldContainer focused={focused} outline={outline} style={fieldContainerStyle}>
 				<TextInput
 					ref={ref}
 					{...rest}

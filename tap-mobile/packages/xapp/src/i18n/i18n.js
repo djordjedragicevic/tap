@@ -7,13 +7,20 @@ export default class I18n {
 	static fallbackError = '';
 	static STORAGE_HEY = 'lngId'
 
-	static translate(text) {
+	static translate(text, params) {
+
+		let s;
 		if (I18n.lng.strings.hasOwnProperty(text))
-			return I18n.lng.strings[text];
+			s = I18n.lng.strings[text];
 		else if (I18n.fallback && I18n.lngs[fallback].strings.hasOwnProperty(text))
-			return I18n.lngs[I18n.fallback].strings[text]
+			s = I18n.lngs[I18n.fallback].strings[text]
 		else
 			return `= LOC MISS [${I18n.lng.code}][${text}] =`;
+
+		if (s && params)
+			Object.entries(params).forEach(([k, v]) => s = s.replace('{:' + k + '}', v));
+
+		return s;
 	}
 
 	static translateError(errorCode) {

@@ -14,6 +14,7 @@ export const MAIN_STACK = 'MainStack';
 
 export const LOGIN_SCREEN = 'LoginScreen';
 export const CREATE_ACCOUNT_SCREEN = 'CreateAccountScreen';
+export const VERIFICATION_CODE_SCREEN=  'VerificationCodeScreen';
 
 export const DRAWER_HOME = 'DrowerHome';
 

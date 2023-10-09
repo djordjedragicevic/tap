@@ -11,7 +11,8 @@ export const Theme = {
 		disabledOpacity: 0.3,
 
 		footerHeight: 52,
-		chipHeight: 24
+		chipHeight: 24,
+		bigTitleSize: 26
 	},
 
 	Light: {
@@ -77,5 +78,15 @@ export const Theme = {
 		}
 
 		return this;
+	}
+};
+
+
+export const preStyles = {
+	border: {
+		borderRadius: Theme.values.borderRadius,
+		borderColor: Theme.values.borderColor,
+		borderWidth: Theme.values.borderWidth,
+		overflow: 'hidden'
 	}
 };

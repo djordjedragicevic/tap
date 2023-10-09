@@ -10,12 +10,12 @@ import {
 	MAIN_TAB_USER,
 	PROVIDER_SCREEN,
 	BOOK_APPOINTMENT_SCREEN,
-	CREATE_ACCOUNT_SCREEN
+	CREATE_ACCOUNT_SCREEN,
+	VERIFICATION_CODE_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
 import { useStore } from 'xapp/src/store/store';
-import FavoriteButton from '../components/FavoriteButton';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
@@ -31,6 +31,7 @@ import { useColor } from 'xapp/src/style/ThemeContext';
 import BookAppointmentScreen from '../screens/BookAppointmentScreen';
 import TryScreen from '../screens/TryScreen';
 import CreateAccountScreen from '../screens/CreateAccountScreen';
+import VerificationCodeScreen from '../screens/VerificationCodeScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -102,7 +103,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 
 const Stack = createStackNavigator();
 
-const AppNavigator = () => {
+const AppNavigator = ({ }) => {
 	const font = useStore(s => s.app.font);
 	const t = useTranslation();
 	return (
@@ -115,28 +116,26 @@ const AppNavigator = () => {
 					headerTitleStyle: { fontFamily: font }
 				}}
 			/>
-			<Stack.Group
+			{/* <Stack.Group
 				screenOptions={{
 					presentation: 'containedModal',
 					animation: 'slide_from_bottom',
-					animationDuration: 100
+					//animationDuration: 100
 				}}
 			>
-				<Stack.Screen
-					options={{ headerShown: false }}
-					name={LOGIN_SCREEN}
-					component={LoginScreen}
-				/>
-			</Stack.Group>
+			</Stack.Group> */}
+			<Stack.Screen
+				options={{
+					headerTransparent: true,
+					title: ''
+				}}
+				name={LOGIN_SCREEN}
+				component={LoginScreen}
+			/>
 
 			<Stack.Screen
 				options={{
-					headerShown: false,
-					// headerBackground: () => (
-					// 	<BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
-					// )
-					//headerShown: false
-					headerRight: (props) => <FavoriteButton color={props.tintColor} />
+					headerShown: false
 				}}
 				name={PROVIDER_SCREEN}
 				component={ProviderScreen}
@@ -167,7 +166,18 @@ const AppNavigator = () => {
 				name={CREATE_ACCOUNT_SCREEN}
 				component={CreateAccountScreen}
 				options={{
-					headerShown: false
+					headerShown: true,
+					headerTransparent: true,
+					title: ''
+				}}
+			/>
+			<Stack.Screen
+				name={VERIFICATION_CODE_SCREEN}
+				component={VerificationCodeScreen}
+				options={{
+					headerShown: true,
+					headerTransparent: true,
+					title: ''
 				}}
 			/>
 		</Stack.Navigator>

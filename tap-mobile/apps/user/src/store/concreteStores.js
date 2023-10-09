@@ -4,17 +4,27 @@ import { useStore } from "xapp/src/store/store";
 export const appStore = (initD = {}) => ({
 	name: 'app',
 	actions: {
-		'app.mask': (appStore, isMasked) => {
+		'app.mask': (appStore, maskShown) => {
+			console.log("MASK", maskShown)
+
+			const shown = !!maskShown;
+			let maskText = '';
+			if (maskShown instanceof Object) {
+				maskText = maskShown.maskText;
+			}
+
 			return {
 				...appStore,
-				isMasked
+				maskShown: shown,
+				maskText: shown ? maskText : ''
 			}
 		}
 	},
 	initData: {
 		httpLoading: false,
 		font: '',
-		isMasked: false,
+		maskShown: false,
+		maskText: '',
 		...initD
 	}
 });

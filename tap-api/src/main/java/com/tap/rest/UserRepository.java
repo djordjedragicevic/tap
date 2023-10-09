@@ -4,14 +4,18 @@ import com.tap.common.Util;
 import com.tap.db.entity.Role;
 import com.tap.db.entity.User;
 import com.tap.db.entity.UserState;
-import com.tap.db.entity.UserValidation;
+import com.tap.db.entity.UserVerification;
+import com.tap.exception.ErrID;
+import com.tap.exception.TAPException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.JsonObject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +31,15 @@ public class UserRepository {
 
 		em.persist(u);
 
-		UserValidation validation = new UserValidation();
+		long vCDuration = ConfigProvider.getConfig().getValue("tap.verification.code.duration", Long.class);
+		LocalDateTime vCTime = LocalDateTime.now(Util.zone());
+		LocalDateTime vCExpireTime = vCTime.plusMinutes(vCDuration);
+
+		UserVerification validation = new UserVerification();
 		validation.setCode(code);
 		validation.setUser(u);
-		validation.setCreateTime(LocalDateTime.now(Util.zone()));
+		validation.setCreateTime(vCTime);
+		validation.setExpireTime(vCExpireTime);
 		em.persist(validation);
 
 		em.flush();

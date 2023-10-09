@@ -3,8 +3,8 @@ import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import { Theme } from "../style/themes";
-import { emptyFn } from "../common/utils";
 import XLoadingBar from "./XLoadingBar";
+import XText from "./basic/XText";
 
 const XScreen = ({
 	children,
@@ -14,6 +14,8 @@ const XScreen = ({
 	marginTop = Theme.values.mainPaddingHorizontal,
 	loading = false,
 	scroll = false,
+	bigTitle = null,
+	bigSubTitle = null,
 	Footer
 }) => {
 
@@ -39,6 +41,13 @@ const XScreen = ({
 	return (
 		<SafeAreaView style={styles.safeArea}>
 			<VCmp style={[style, dynStyle]}>
+
+				{!!bigTitle &&
+					<View style={styles.bigTitle}>
+						<XText size={Theme.values.bigTitleSize}>{bigTitle}</XText>
+						{!!bigSubTitle && <XText style={styles.bigSubTitleText}>{bigSubTitle}</XText>}
+					</View>
+				}
 				{children}
 			</VCmp>
 			{loading && <XLoadingBar />}
@@ -51,6 +60,15 @@ const XScreen = ({
 const styles = StyleSheet.create({
 	safeArea: {
 		flex: 1
+	},
+	bigTitle: {
+		marginTop: 45,
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	bigSubTitleText: {
+		marginTop: 20,
+		textAlign: 'center'
 	}
 });
 

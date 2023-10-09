@@ -6,7 +6,7 @@ export function useLockNavigation(condition, navigation) {
 	useEffect(() => {
 
 		const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-			if (!!condition)
+			if (condition)
 				e.preventDefault();
 		});
 

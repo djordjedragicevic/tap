@@ -11,7 +11,7 @@ import { View, StyleSheet } from "react-native";
 import XText from "xapp/src/components/basic/XText";
 import XLink from "xapp/src/components/basic/XLink";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
-import { CREATE_ACCOUNT_SCREEN } from "../navigators/routes";
+import { CREATE_ACCOUNT_SCREEN, VERIFICATION_CODE_SCREEN } from "../navigators/routes";
 
 const LoginScreen = ({ navigation }) => {
 	const [userName, setUserName] = useState('');
@@ -41,53 +41,51 @@ const LoginScreen = ({ navigation }) => {
 	};
 
 	const goToCreateAccount = useCallback(() => {
-		navigation.navigate(CREATE_ACCOUNT_SCREEN);
+		//navigation.navigate(CREATE_ACCOUNT_SCREEN);
+		navigation.navigate(VERIFICATION_CODE_SCREEN, { userId: 8 })
 	}, [navigation])
 
 	return (
-		<XScreen style={styles.screen} loading={loading} flat>
-			<View style={styles.container}>
-
-				<View style={styles.titleContainer}>
-					<XText size={26}>{t('Sing In')}</XText>
-					<XText style={styles.subtitle}>{t('Welcome back')}</XText>
-				</View>
-
-				<View>
-					<XTextInput
-						style={styles.input}
-						value={userName}
-						onChangeText={setUserName}
-						disabled={loading}
-						selectTextOnFocus
-						onSubmitEditing={doLogin}
-						outline
-						title={t('Username or email')}
-					/>
-					<XTextInput
-						value={password}
-						style={styles.input}
-						onChangeText={setPassword}
-						disabled={loading}
-						selectTextOnFocus
-						onSubmitEditing={doLogin}
-						secureTextEntry
-						textContentType='password'
-						outline
-						title={t('Password')}
-					/>
-					<XButton
-						title={t("Sing In")}
-						primary
-						style={styles.button}
-						onPress={doLogin}
-						disabled={loading}
-					/>
-				</View>
+		<XScreen
+			style={styles.screen}
+			loading={loading} flat
+			bigTitle={t('Sing In')}
+			bigSubTitle={t('Welcome back')}
+		>
+			<View>
+				<XTextInput
+					style={styles.input}
+					value={userName}
+					onChangeText={setUserName}
+					disabled={loading}
+					selectTextOnFocus
+					onSubmitEditing={doLogin}
+					outline
+					title={t('Username or email')}
+				/>
+				<XTextInput
+					value={password}
+					style={styles.input}
+					onChangeText={setPassword}
+					disabled={loading}
+					selectTextOnFocus
+					onSubmitEditing={doLogin}
+					secureTextEntry
+					textContentType='password'
+					outline
+					title={t('Password')}
+				/>
+				<XButton
+					title={t("Sing In")}
+					primary
+					style={styles.button}
+					onPress={doLogin}
+					disabled={loading}
+				/>
 
 				<View style={styles.singUpContainer}>
 					<XText>{t("Don't have an account?")}</XText>
-					<XLink onPress={goToCreateAccount}>{t("Sing Up")}</XLink>
+					<XLink style={styles.link} onPress={goToCreateAccount}>{t("Sing Up")}</XLink>
 				</View>
 
 			</View>
@@ -98,15 +96,8 @@ const LoginScreen = ({ navigation }) => {
 const styleCreator = (theme) => StyleSheet.create({
 	screen: {
 		backgroundColor: theme.colors.backgroundElement,
-	},
-	container: {
-		flex: 1,
-		justifyContent: 'space-evenly',
-		marginHorizontal: 25,
+		paddingHorizontal: 30,
 		paddingVertical: 5
-	},
-	titleContainer: {
-		alignItems: 'center'
 	},
 	singUpContainer: {
 		flexDirection: 'row',
@@ -118,11 +109,10 @@ const styleCreator = (theme) => StyleSheet.create({
 		marginTop: 5
 	},
 	button: {
-		margin: 5,
 		marginTop: 45
 	},
-	subtitle: {
-		marginTop: 10
+	link: {
+		marginTop: 20
 	}
 })
 

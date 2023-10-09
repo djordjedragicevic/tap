@@ -34,10 +34,22 @@ export const errors = {
 	},
 	U_CACC_2: {
 		title: 'Create account error',
-		message: 'Email {:email} is already in use'
+		message: 'Email "{:email}" is already in use. Enter another email or use an existing account'
 	},
 	U_CACC_3: {
 		title: 'Create account error',
-		message: 'Username {:username} already exists. Must be unique'
+		message: 'Username "{:username}" already exists. Must be unique'
+	},
+	U_VACC_1: {
+		title: 'Verification error',
+		message: 'Verification code is expired. Please press "Resend" to get new one'
+	},
+	U_VACC_2: {
+		title: 'Verification error',
+		message: 'Wrong verification code.'
+	},
+	INV_EMAIL_1: {
+		title: 'Invalid data',
+		message: 'Invalid email'
 	}
 }

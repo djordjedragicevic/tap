@@ -27,12 +27,12 @@ export class Http {
 			_HTTP_TIMEOUT = timeout;
 	}
 
-	static async send(url, config, silent) {
+	static async send(url, config, hideErrors) {
 
 		storeDispatch('app.http_loading_on')
 		const d = new Date().getTime();
 
-		let err;
+		let err, errId, data;
 
 		console.log('HTTP START: ' + config.method, ': ', _API_URL.concat(url));
 
@@ -49,13 +49,16 @@ export class Http {
 			clearTimeout(fId);
 
 			if (response.ok && response.status === 200) {
-				return await response.json();
+				try {
+					data = await response.json();
+				} catch (_) { }
 			}
 			else {
 				switch (response.status) {
 					case 400:
 						const resp = await response.json();
 						err = I18n.translateError(resp.tapEID);
+						errId = resp.tapEID;
 						if (resp.params) {
 							Object.entries(resp.params).forEach(([k, v]) => {
 								err.message = err.message.replace('{:' + k + '}', v);
@@ -64,12 +67,15 @@ export class Http {
 						break;
 					case 401:
 						err = I18n.translateError(Http.ERR.UNAUTHENTICATE);
+						errId = Http.ERR.UNAUTHENTICATE;
 						break;
 					case 403:
 						err = I18n.translateError(Http.ERR.FORBIDEN);
+						errId = Http.ERR.FORBIDEN;
 						break;
 					default: {
 						err = I18n.translateError();
+						errId = I18n.fallbackError;
 					}
 				}
 			}
@@ -81,21 +87,26 @@ export class Http {
 				err = I18n.translateError();
 		}
 		finally {
-
 			console.log(`HTTP ${err ? 'NOT ' : ''}SUCCESS: (${(new Date().getTime() - d) / 1000}s)`);
 
 			storeDispatch('app.http_loading_off');
-			if (err) {
-				if (!silent)
-					XAlert.show(err.title, err.message);
-
-				//throw new Error();
-			}
 		}
 
+
+
+
+		if (err) {
+			if (hideErrors !== true)
+				XAlert.show(err.title, err.message);
+
+			throw new Error(err.title, { cause: { title: err.title, message: err.message, id: errId } });
+		}
+		else {
+			return data;
+		}
 	}
 
-	static async get(url, qParams, validate = false, silent = false) {
+	static async get(url, qParams, validate = false, hideErrors = false, passMeError = false) {
 
 		if (qParams && validate) {
 			const tmpQP = {};
@@ -117,7 +128,7 @@ export class Http {
 			headers: {
 				'Content-Type': 'application/json',
 			}
-		}, silent);
+		}, hideErrors, passMeError);
 
 		return resp;
 	}
@@ -137,7 +148,7 @@ export class Http {
 	}
 
 
-	static async post(url, data, silent = false) {
+	static async post(url, data, hideErrors = false) {
 		const resp = await Http.send(url, {
 			method: 'POST',
 			// headers: {
@@ -148,7 +159,7 @@ export class Http {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(data)
-		}, silent);
+		}, hideErrors);
 
 		return resp;
 	}

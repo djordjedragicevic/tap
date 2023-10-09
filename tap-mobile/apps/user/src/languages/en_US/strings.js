@@ -50,7 +50,7 @@ export const strings = {
 	"min": "min",
 	"Sing In": "Sing In",
 	"Welcome back": "Welcome back",
-	
+
 	"Monday": "Monday",
 	"Tuesday": "Tuesday",
 	"Wednsday": "Wednsday",
@@ -60,5 +60,17 @@ export const strings = {
 	"Sunday": "Sunday",
 
 	"Password": "Password",
-	"Username or email": "Username or email"
+	"Username or email": "Username or email",
+	"Don't have an account?": "Don't have an account?",
+	"Sing Up": "Sing Up",
+	"Username": "Username",
+	"Email": "Email",
+	"Verify Code": "Verify Code",
+	"verCodeSubTitle": "Enter the code we sent to email",
+	"mail": "{:mail}",
+	"verCodeLast": "The code is valid for another {:min} minutes",
+	"verCodeResend": "Don't receive verification code?",
+	"Resend": "Resend",
+	"Creating account": "Creating account"
+
 };

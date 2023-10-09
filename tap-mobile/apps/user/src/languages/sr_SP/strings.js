@@ -33,7 +33,6 @@ export const strings = {
 	"About": "O nama",
 	"Reviews": "Ocjene",
 	"min": "min",
-	"Sing In": "Prijava",
 	"Welcome back": "Dobro došli nazad",
 
 	"Monday": "Ponedjeljak",
@@ -47,5 +46,15 @@ export const strings = {
 	"Password": "Lozinka",
 	"Username or email": "Korisničko ime ili email",
 	"Don't have an account?": "Još uvijek nemate nalog?",
-	"Sing Up": "Kreirajte novi"
+	"Sing In": "Prijavite se",
+	"Sing Up": "Kreirajte nalog",
+	"Username": "Korisničko ime",
+	"Email": "Email",
+	"Verify Code": "Verifikujte se",
+	"verCodeSubTitle": "Unesiti verifikacijski kod koji smo poslali na email",
+	"mail": "{:mail}",
+	"verCodeLast": "Trenutni kod je validan još {:min} minuta",
+	"verCodeResend": "Niste primili kod za verifikaciju?",
+	"Resend": "Ponovo pošalji",
+	"Creating account": "Kreiranje naloga"
 };

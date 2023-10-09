@@ -15,6 +15,10 @@ public class Util {
 
 	}
 
+	public static LocalDateTime zonedNow() {
+		return LocalDateTime.now(Util.zone());
+	}
+
 	public static ZoneId zone() {
 		return ZoneId.of(ZONE);
 	}

@@ -31,6 +31,7 @@ public class TAPException extends WebApplicationException {
 		this.params = params;
 	}
 
+
 	public ErrID getTapEID() {
 		return tapEID;
 	}
@@ -38,6 +39,11 @@ public class TAPException extends WebApplicationException {
 	@Override
 	public String getMessage() {
 		return message;
+	}
+
+	public String toString(){
+
+		return this.getTapEID().toString() + " - " + this.getMessage();
 	}
 
 	public Map<String, String> getParams() {

@@ -1,15 +1,15 @@
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import XText from "./XText";
 import { useThemedStyle } from "../../style/ThemeContext";
 
-const XLink = ({ onPress, children, style, ...rest }) => {
+const XLink = ({ onPress, disabled, children, style, ...rest }) => {
 
 	const styles = useThemedStyle(styleCreator);
 
 	return (
-		<Pressable onPress={onPress}>
+		<TouchableOpacity onPress={onPress} disabled={disabled}>
 			<XText style={[styles.text, style]} {...rest}>{children}</XText>
-		</Pressable>
+		</TouchableOpacity>
 	);
 }
 

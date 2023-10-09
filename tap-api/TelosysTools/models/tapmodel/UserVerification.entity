@@ -1,0 +1,14 @@
+@DbTable(user_verification)
+@DbCatalog(tap)
+UserVerification {
+  // attributes
+  id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
+  userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_user_verification_user1, User.id) };
+  code : string { @DbName(code) @DbType("VARCHAR(8)") @NotNull @NotEmpty @Size(8) @MaxLen(8) };
+  createTime : timestamp { @DbName(create_time) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
+  expireTime : timestamp { @DbName(expire_time) @DbType(DATETIME) @NotNull @NotEmpty };
+  validateTime : timestamp { @DbName(validate_time) @DbType(DATETIME) };
+  codeVersion : byte { @DbName(code_version) @DbType(TINYINT UNSIGNED) @DbDefaultValue(1) @NotNull @NotEmpty };
+  // links
+  user : User { @LinkByFK(fk_user_verification_user1) };
+}

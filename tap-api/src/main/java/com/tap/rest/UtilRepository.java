@@ -40,12 +40,4 @@ public class UtilRepository {
 		}
 	}
 
-	public Optional<String> getConfig(String name) {
-
-		String res = em.createQuery("SELECT c.value FROM AppConfig c WHERE c.name = :name", String.class)
-				.setParameter("name", name)
-				.getSingleResult();
-		return Optional.ofNullable(res);
-	}
-
 }

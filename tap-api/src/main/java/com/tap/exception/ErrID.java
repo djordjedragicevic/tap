@@ -10,4 +10,9 @@ public enum ErrID {
 	U_CACC_2,
 	U_CACC_3,
 	U_CACC_4,
+	U_VACC_1,
+	U_VACC_2,
+
+	//Invalid data
+	INV_EMAIL_1
 }

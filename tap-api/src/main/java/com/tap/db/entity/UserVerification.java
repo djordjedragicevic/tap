@@ -1,5 +1,5 @@
 /**
- * Generated JPA entity class for "UserValidation"
+ * Generated JPA entity class for "UserVerification"
  */
 
 package com.tap.db.entity;
@@ -10,8 +10,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="user_validation", catalog="tap" )
-public class UserValidation implements Serializable {
+@Table(name="user_verification", catalog="tap" )
+public class UserVerification implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
@@ -26,15 +26,21 @@ public class UserValidation implements Serializable {
     @Column(name="create_time", nullable=false)
 	private LocalDateTime createTime;
 
-    @Column(name="expire_time")
+    @Column(name="expire_time", nullable=false)
 	private LocalDateTime expireTime;
+
+    @Column(name="validate_time")
+	private LocalDateTime validateTime;
+
+    @Column(name="code_version", nullable=false)
+	private byte codeVersion;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", referencedColumnName="id")
 	private User user ; 
 
-	public UserValidation() {
+	public UserVerification() {
 		super();
 	}
 	
@@ -68,6 +74,22 @@ public class UserValidation implements Serializable {
 
 	public LocalDateTime getExpireTime() {
 		return this.expireTime;
+	}
+
+	public void setValidateTime( LocalDateTime validateTime ) {
+		this.validateTime = validateTime ;
+	}
+
+	public LocalDateTime getValidateTime() {
+		return this.validateTime;
+	}
+
+	public void setCodeVersion( byte codeVersion ) {
+		this.codeVersion = codeVersion ;
+	}
+
+	public byte getCodeVersion() {
+		return this.codeVersion;
 	}
 
 	public User getUser() {

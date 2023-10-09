@@ -3,6 +3,7 @@ package com.tap.rest;
 import com.tap.common.Mail;
 import com.tap.common.Util;
 import com.tap.db.entity.User;
+import com.tap.db.entity.UserVerification;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.security.Public;
@@ -16,11 +17,10 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import org.eclipse.microprofile.config.ConfigProvider;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Path("user")
 public class UserService {
@@ -32,23 +32,26 @@ public class UserService {
 
 	@Path("create-account")
 	@POST
-	@Public
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Public
 	public Response createAccount(JsonObject params) {
-
 
 		String userName = params.getString("username");
 		String email = params.getString("email");
 		String password = params.getString("password");
-
-		if (userName.isEmpty() || password.isEmpty() || email.isEmpty() || !Util.isMail(email))
+		System.out.println(userName + " " + email + " " + password);
+		if (userName.isEmpty() || password.isEmpty() || email.isEmpty())
 			throw new TAPException(ErrID.U_CACC_1);
+
+		if (!Util.isMail(email))
+			throw new TAPException(ErrID.INV_EMAIL_1);
 
 		if (utilRepository.getSingleEntityBy(User.class, "email", email).isPresent())
 			throw new TAPException(ErrID.U_CACC_2, null, Map.of("email", email));
 
 		if (utilRepository.getSingleEntityBy(User.class, "username", userName).isPresent())
-			throw new TAPException(ErrID.U_CACC_3,  null, Map.of("username", userName));
+			throw new TAPException(ErrID.U_CACC_3, null, Map.of("username", userName));
 
 		try {
 			String salt = Util.getRandomString(16, true);
@@ -61,20 +64,21 @@ public class UserService {
 			newUser.setSalt(salt);
 			newUser.setCreateDate(LocalDateTime.now(Util.zone()));
 
-			String codeLength = utilRepository.getConfig("app#user_vc_length").orElseThrow();
-			String code = Util.generateVerificationCode(Integer.parseInt(codeLength));
+			int codeLength = ConfigProvider.getConfig().getValue("tap.verification.code.length", Integer.class);
+			String code = Util.generateVerificationCode(codeLength);
 
 			userRepository.saveNewUser(newUser, code);
 
 			Mail.sendCode(code, email);
 
+			return Response.ok(newUser.getId()).build();
+
 		} catch (Exception c) {
 			System.out.println(c);
 			throw new TAPException(ErrID.U_CACC_1);
 		}
-
-		return Response.ok().build();
 	}
+
 
 	@Path("by-token")
 	@GET

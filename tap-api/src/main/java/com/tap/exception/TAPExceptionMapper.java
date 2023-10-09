@@ -12,10 +12,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Provider
-public class TAPExceptionMapper implements ExceptionMapper<TAPException> {
+public class TAPExceptionMapper implements ExceptionMapper<Exception> {
 
 	@Override
-	public Response toResponse(final TAPException exception) {
+	public Response toResponse(final Exception ex) {
+
+		System.err.println(ex);
+
+		TAPException exception = ex instanceof TAPException e ? e : new TAPException(ErrID.TAP_0);
 
 		JsonObjectBuilder err = Json.createObjectBuilder();
 		err.add("tapEID", exception.getTapEID().toString());

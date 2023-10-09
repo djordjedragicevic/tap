@@ -40,6 +40,7 @@ import { errors as en_US_err } from './src/languages/en_US/errors';
 import { strings as sr_SP_str } from './src/languages/sr_SP/strings';
 import { errors as sr_SP_err } from './src/languages/sr_SP/errors';
 import I18n from 'xapp/src/i18n/I18n';
+import { emptyFn } from 'xapp/src/common/utils';
 
 storeInit(appStore());
 storeInit(userStore());
@@ -106,15 +107,19 @@ export default App = () => {
 
 	//Check user token
 	useEffect(() => {
-		if (initialLanguage && initialTheme)
-			Http.get('/user/by-token', Http.getToken(), false, true)
-				.then(userData => {
-					if (userData)
-						storeDispatch('user.set_data', userData);
-				})
-				.finally(() => {
-					setUserChecked(true);
-				})
+		if (initialLanguage && initialTheme) {
+			Http.getToken().then(t => {
+				Http.get('/user/by-token', t, false, true)
+					.then(userData => {
+						if (userData)
+							storeDispatch('user.set_data', userData);
+					})
+					.catch(emptyFn)
+					.finally(() => {
+						setUserChecked(true);
+					})
+			});
+		}
 	}, [initialLanguage, initialTheme]);
 
 
