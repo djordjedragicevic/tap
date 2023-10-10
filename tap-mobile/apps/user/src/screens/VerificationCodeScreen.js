@@ -10,9 +10,8 @@ import XTextInput from "xapp/src/components/basic/XTextInput";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { MAIN_TAB_HOME } from "../navigators/routes";
-import XAlert from "xapp/src/components/basic/XAlert";
-import I18n from "xapp/src/i18n/I18n";
 import { throwUnexpected } from "../common/general";
+import { storeDispatch } from "xapp/src/store/store";
 
 
 const VerificationCodeScreen = ({ navigation, route }) => {
@@ -62,7 +61,7 @@ const VerificationCodeScreen = ({ navigation, route }) => {
 
 	const onVerify = useCallback(() => {
 		setLoading(true);
-		console.log(code, code.join(''))
+		storeDispatch('app.mask', { maskText: t('Verifying') + '...' })
 		Http.post('/verification/verify', { userId: userId, code: code.join('') })
 			.then(async () => {
 				if (userName && password) {
@@ -84,14 +83,18 @@ const VerificationCodeScreen = ({ navigation, route }) => {
 					navigation.goBack();
 			})
 			.catch(emptyFn)
-			.finally(() => setLoading(false));
-	}, [setLoading, code, userId]);
+			.finally(() => {
+				setLoading(false);
+				storeDispatch('app.mask', false);
+			});
+	}, [setLoading, code, userId, navigation, userName, password]);
 
 	return (
 		<XScreen
 			flat
 			style={styles.screen}
 			bigTitle={t('Verify Code')}
+			loading={loading}
 		>
 			<View>
 				<View style={styles.subtitleCnt}>
@@ -147,7 +150,7 @@ const VerificationCodeScreen = ({ navigation, route }) => {
 
 const styleCreator = (theme) => StyleSheet.create({
 	screen: {
-		backgroundColor: theme.colors.backgroundElement,
+		//backgroundColor: theme.colors.backgroundElement,
 		paddingHorizontal: 30,
 		paddingVertical: 5,
 		rowGap: 10

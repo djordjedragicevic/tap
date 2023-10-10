@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RequestScoped
@@ -208,7 +209,7 @@ public class ProviderRepository {
 		return resp;
 	}
 
-	public List<WorkPeriodDto> getProviderWorkPeriods(int pId) {
+	public List<Map<String, Object>> getProviderWorkPeriods(int pId) {
 		String query = """
 				SELECT wp FROM WorkPeriod wp WHERE
 				wp.provider.id = :pId
@@ -219,14 +220,20 @@ public class ProviderRepository {
 				.setParameter("pId", pId)
 				.getResultList();
 
-		List<WorkPeriodDto> resp = new ArrayList<>();
+		List<Map<String, Object>> resp = new ArrayList<>();
 		for (WorkPeriod wP : wPs)
-			resp.add(new WorkPeriodDto()
-					.setId(wP.getId())
-					.setDay(wP.getDay())
-					.setStartTime(wP.getStartTime())
-					.setEndTime(wP.getEndTime())
-			);
+			resp.add(Map.of(
+					"id", wP.getId(),
+					"day", wP.getDay(),
+					"startTime", wP.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+					"endTime", wP.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+			));
+		//			resp.add(new WorkPeriodDto()
+//					.setId(wP.getId())
+//					.setDay(wP.getDay())
+//					.setStartTime(wP.getStartTime())
+//					.setEndTime(wP.getEndTime())
+//			);
 
 		return resp;
 	}

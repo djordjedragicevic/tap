@@ -8,12 +8,14 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useCallback } from "react";
 import { Http } from "xapp/src/common/Http";
 import XAlert from "xapp/src/components/basic/XAlert";
-import { storeDispatch } from "xapp/src/store/store";
+import { storeDispatch, useStore } from "xapp/src/store/store";
 import { MAIN_TAB_MY_APPOINTMENTS } from "../navigators/routes";
+import Footer from "../components/Footer";
 
 const BookAppointmentScreen = ({ navigation, route }) => {
 	const t = useTranslation();
 	const dCode = useDateCode();
+	const mask = useStore(gS => gS.app.maskShown);
 
 	const app = route.params.app;
 	const provider = route.params.provider;
@@ -25,16 +27,13 @@ const BookAppointmentScreen = ({ navigation, route }) => {
 	const dTFormated = date.toLocaleDateString(dCode, { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
 
 	const onBookPress = useCallback(() => {
-		storeDispatch('app.mask', true);
+		storeDispatch('app.mask', { maskText: t('Booking') + '...' });
 		Http.post('/appointments/book', app)
 			.then(succes => {
-				XAlert.show("Rezervacija termina", succes ? "USPJESNO" : "NEUSPJESNO", [{
-					onPress: () => {
-						storeDispatch('app.mask', false);
-						if (succes)
-							navigation.navigate(MAIN_TAB_MY_APPOINTMENTS);
-					}
-				}]);
+				if (succes) {
+					storeDispatch('app.mask', false);
+					navigation.navigate(MAIN_TAB_MY_APPOINTMENTS);
+				}
 			})
 			.catch(() => storeDispatch('app.mask', false));
 
@@ -45,13 +44,16 @@ const BookAppointmentScreen = ({ navigation, route }) => {
 	return (
 		<XScreen
 			scroll
+			loading={mask}
 			Footer={(
-				<XButton
-					primary
-					title={t('Confirm')}
-					style={{ margin: 8 }}
-					onPress={onBookPress}
-				/>
+				<Footer>
+					<XButton
+						primary
+						title={t('Confirm')}
+						style={{ flex: 1 }}
+						onPress={onBookPress}
+					/>
+				</Footer>
 			)}>
 			<XSection
 				title={t('Appointment review')}
@@ -84,7 +86,19 @@ const BookAppointmentScreen = ({ navigation, route }) => {
 					value={provider.address + ', ' + provider.city}
 					valueParams={{ bold: true }}
 				/>
-				{app.services.map(({ time, service, employee }, idx) => (
+				<XSelectField
+					pressable={false}
+					iconRight={null}
+					vertical
+					iconLeft='clockcircleo'
+					iconLeftSize={24}
+					style={{ height: 55 }}
+					title='Vrijeme termina'
+					titleParams={{ secondary: true }}
+					value={dTFormated}
+					valueParams={{ bold: true }}
+				/>
+				{app.services.map(({ time, service, employee }) => (
 					<XSelectField
 						key={service.id}
 						iconLeft='info'
@@ -100,18 +114,6 @@ const BookAppointmentScreen = ({ navigation, route }) => {
 						valueParams={{ bold: true }}
 					/>
 				))}
-				<XSelectField
-					pressable={false}
-					iconRight={null}
-					vertical
-					iconLeft='clockcircleo'
-					iconLeftSize={24}
-					style={{ height: 55 }}
-					title='Vrijeme termina'
-					titleParams={{ secondary: true }}
-					value={dTFormated}
-					valueParams={{ bold: true }}
-				/>
 				<XSelectField
 					pressable={false}
 					vertical

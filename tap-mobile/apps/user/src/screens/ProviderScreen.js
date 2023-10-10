@@ -248,13 +248,21 @@ const TabAbout = ({ data = {} }) => {
 	const t = useTranslation();
 
 	const wPs = useMemo(() => {
-		const wPMap = {};
+		const wPMap = {
+			0: false,
+			1: false,
+			2: false,
+			3: false,
+			4: false,
+			5: false,
+			6: false
+		};
 
 		data.workPeriods.forEach(p => {
-			if (!wPMap.hasOwnProperty(p.day))
+			if (!wPMap[p.day])
 				wPMap[p.day] = [];
 
-			wPMap[p.day].push(`${p.startTime} : ${p.endTime}`);
+			wPMap[p.day].push(`${p.startTime}-${p.endTime}`);
 		});
 
 		return wPMap;
@@ -268,24 +276,6 @@ const TabAbout = ({ data = {} }) => {
 				<XText>{data.address}, {data.city}</XText>
 				<XText>{data.phone}</XText>
 			</XSection>
-
-			<XSection title={"Work time"}>
-				{wPs &&
-					<View style={{}}>
-						{Object.keys(wPs).map(day => (
-							<View key={day} style={{ flexDirection: 'row' }}>
-								<View style={{ flex: 1 }}>
-									<XText>{t(DateUtils.WEEK_DAY[day])}</XText>
-								</View>
-								<View style={{ flex: 1 }}>
-									<XText>{wPs[day].join(', ')}</XText>
-								</View>
-							</View>
-						)
-						)}
-					</View>
-				}
-			</XSection >
 
 			<XSection title={"Our team"}>
 				<ScrollView
@@ -309,6 +299,24 @@ const TabAbout = ({ data = {} }) => {
 						)
 					})}
 				</ScrollView>
+			</XSection>
+
+			<XSection title={"Work time"}>
+				{wPs &&
+					<View style={{}}>
+						{Object.keys(wPs).map(day => (
+							<View key={day} style={{ flexDirection: 'row' }}>
+								<View style={{ flex: 1 }}>
+									<XText>{t(DateUtils.WEEK_DAY[day])}</XText>
+								</View>
+								<View style={{ flex: 1 }}>
+									<XText>{wPs[day] ? wPs[day].join(', ') : t('Closed')}</XText>
+								</View>
+							</View>
+						)
+						)}
+					</View>
+				}
 			</XSection>
 		</ScrollView >
 	)

@@ -27,8 +27,6 @@ const ProvidersScreen = ({ navigation }) => {
 				styleContent={{}}
 			>
 
-
-
 				<View style={{ height: 150 }}>
 					<View style={{ flex: 1 }}>
 						{
@@ -98,13 +96,13 @@ const ProvidersScreen = ({ navigation }) => {
 	}, []);
 
 	return (
-		<XScreen loading={refreshing} flat>
+		<XScreen loading={refreshing}>
 			<FlatList
 				style={{
 					paddingHorizontal: Theme.values.mainPaddingHorizontal
 				}}
 				contentContainerStyle={{
-					rowGap: 10
+					rowGap: 20
 				}}
 				data={providers}
 				renderItem={renderCompany}

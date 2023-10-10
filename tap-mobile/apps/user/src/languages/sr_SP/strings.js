@@ -57,5 +57,8 @@ export const strings = {
 	"verCodeLast": "Trenutni kod je validan još {:min} minuta",
 	"verCodeResend": "Niste primili kod za verifikaciju?",
 	"Resend": "Ponovo pošalji",
-	"Creating account": "Kreiranje naloga"
+	"Creating account": "Kreiranje naloga",
+	"Closed": "Zatvoreno",
+	"Verifying": "Verifikacija",
+	"Booking": "Rezervisanje"
 };

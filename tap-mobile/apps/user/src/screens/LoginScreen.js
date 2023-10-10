@@ -9,8 +9,9 @@ import { View, StyleSheet } from "react-native";
 import XText from "xapp/src/components/basic/XText";
 import XLink from "xapp/src/components/basic/XLink";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
-import { CREATE_ACCOUNT_SCREEN } from "../navigators/routes";
+import { CREATE_ACCOUNT_SCREEN, VERIFICATION_CODE_SCREEN } from "../navigators/routes";
 import { Http } from 'xapp/src/common/Http';
+import { throwUnexpected } from "../common/general";
 
 const LoginScreen = ({ navigation }) => {
 	const [userName, setUserName] = useState('');
@@ -39,9 +40,7 @@ const LoginScreen = ({ navigation }) => {
 			}
 
 		}
-		catch (err) {
-
-		}
+		catch (err) { }
 		finally {
 			setLoading(false);
 		}
@@ -111,7 +110,7 @@ const LoginScreen = ({ navigation }) => {
 
 const styleCreator = (theme) => StyleSheet.create({
 	screen: {
-		backgroundColor: theme.colors.backgroundElement,
+		//backgroundColor: theme.colors.backgroundElement,
 		paddingHorizontal: 30,
 		paddingVertical: 5
 	},

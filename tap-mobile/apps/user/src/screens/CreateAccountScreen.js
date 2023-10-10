@@ -30,7 +30,7 @@ const CreateAccountScreen = ({ navigation }) => {
 			})
 				.then(userId => {
 					if (userId != null)
-						navigation.navigate(VERIFICATION_CODE_SCREEN, { userId });
+						navigation.navigate(VERIFICATION_CODE_SCREEN, { userId, userName, password });
 
 				})
 				.catch(emptyFn)
@@ -44,6 +44,7 @@ const CreateAccountScreen = ({ navigation }) => {
 			flat
 			style={styles.screen}
 			bigTitle={t('Sing Up')}
+			loading={loading}
 		>
 			<XTextInput
 				style={styles.input}
@@ -90,7 +91,7 @@ const CreateAccountScreen = ({ navigation }) => {
 
 const styleCreator = (theme) => StyleSheet.create({
 	screen: {
-		backgroundColor: theme.colors.backgroundElement,
+		//backgroundColor: theme.colors.backgroundElement,
 		paddingHorizontal: 30,
 		paddingVertical: 5,
 		rowGap: 10

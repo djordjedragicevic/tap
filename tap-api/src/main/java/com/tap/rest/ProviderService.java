@@ -33,7 +33,7 @@ public class ProviderService {
 			List<EmployeeDto> emps = providerRepository.getProviderEmployees(id);
 			about.put("employees", emps);
 
-			List<WorkPeriodDto> wPs = providerRepository.getProviderWorkPeriods(id);
+			List<Map<String, Object>> wPs = providerRepository.getProviderWorkPeriods(id);
 			about.put("workPeriods", wPs);
 
 			List<String> imgs = providerRepository.getProviderMainImgs(id);

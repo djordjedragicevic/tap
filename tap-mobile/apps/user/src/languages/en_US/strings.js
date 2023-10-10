@@ -72,6 +72,9 @@ export const strings = {
 	"verCodeLast": "The code is valid for another {:min} minutes",
 	"verCodeResend": "Don't receive verification code?",
 	"Resend": "Resend",
-	"Creating account": "Creating account"
+	"Creating account": "Creating account",
+	"Closed": "Closed",
+	"Verifying": "Verifying",
+	"Booking": "Booking"
 
 };

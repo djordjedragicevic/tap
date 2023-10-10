@@ -37,7 +37,6 @@ public class UserVerificationService {
 		if (userVerification.isEmpty())
 			throw new TAPException(ErrID.TAP_0);
 
-
 		UserVerification uV = userVerification.get();
 		LocalDateTime cT = Util.zonedNow();
 		LocalDateTime cE = uV.getExpireTime();
@@ -47,7 +46,7 @@ public class UserVerificationService {
 
 		return Response.ok(Map.of(
 				"length", uV.getCode().length(),
-				"time", cExpired ? 0 : ChronoUnit.MINUTES.between(cT, cE),
+				"time", cExpired ? 0 : ChronoUnit.SECONDS.between(cT, cE) / 60,
 				"mail", u.getEmail()
 		)).build();
 	}
