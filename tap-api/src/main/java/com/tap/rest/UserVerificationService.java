@@ -86,6 +86,6 @@ public class UserVerificationService {
 
 		userVerificationRepository.verify(userId, code);
 
-		return Response.ok(true).build();
+		return Response.ok().build();
 	}
 }

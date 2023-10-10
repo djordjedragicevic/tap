@@ -30,7 +30,6 @@ const styleCreator = (theme, color) => StyleSheet.create({
 		justifyContent: 'center',
 		backgroundColor: 'lightcoral',
 		flex: 1,
-		//margin: 2,
 		borderRadius: Theme.values.borderRadius
 	},
 	avatar: {

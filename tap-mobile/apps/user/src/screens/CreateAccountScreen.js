@@ -11,9 +11,9 @@ import { useLockNavigation } from "../common/useLockNavigation";
 import { emptyFn } from 'xapp/src/common/utils';
 
 const CreateAccountScreen = ({ navigation }) => {
-	const [userName, setUserName] = useState('asdfdssss');
+	const [userName, setUserName] = useState('djoka');
 	const [email, setEmail] = useState('djordje.dragicevic89@gmail.com');
-	const [password, setPassword] = useState('asdfdasf');
+	const [password, setPassword] = useState('djoka');
 	const [loading, setLoading] = useState(false);
 
 	const styles = useThemedStyle(styleCreator);

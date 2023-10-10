@@ -8,11 +8,15 @@ import XLink from "xapp/src/components/basic/XLink";
 import XText from "xapp/src/components/basic/XText";
 import XTextInput from "xapp/src/components/basic/XTextInput";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
-import { useColor, usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
+import { MAIN_TAB_HOME } from "../navigators/routes";
+import XAlert from "xapp/src/components/basic/XAlert";
+import I18n from "xapp/src/i18n/I18n";
+import { throwUnexpected } from "../common/general";
 
 
-const VerificationCodeScreen = ({ route }) => {
-	const userId = route.params.userId;
+const VerificationCodeScreen = ({ navigation, route }) => {
+	const { userId, userName, password } = route.params;
 
 	const styles = useThemedStyle(styleCreator);
 	const t = useTranslation();
@@ -22,9 +26,6 @@ const VerificationCodeScreen = ({ route }) => {
 	const [loading, setLoading] = useState(true);
 	const btnDisabled = code.filter(c => c === '')?.length > 0;
 
-
-	const pColor = usePrimaryColor();
-	const pLColor = useColor('primaryLight');
 
 	const codeRef = useRef([]);
 
@@ -44,7 +45,7 @@ const VerificationCodeScreen = ({ route }) => {
 			finish = false;
 			setLoading(false);
 		};
-	}, [setLoading]);
+	}, [setLoading, userId]);
 
 	const onResend = useCallback(() => {
 		setLoading(true);
@@ -57,18 +58,34 @@ const VerificationCodeScreen = ({ route }) => {
 			.finally(() => {
 				setLoading(false);
 			})
-	}, [setLoading]);
+	}, [setLoading, userId]);
 
 	const onVerify = useCallback(() => {
 		setLoading(true);
 		console.log(code, code.join(''))
 		Http.post('/verification/verify', { userId: userId, code: code.join('') })
-			.then((success) => {
-				console.log("VERIFIED", success);
+			.then(async () => {
+				if (userName && password) {
+					const resp = await Http.post('/auth/login', { userName, password });
+					if (resp.token) {
+						await Http.setToken(resp.token);
+
+						const user = await Http.get('/user/by-token');
+
+						storeDispatch('user.set_data', user);
+
+						navigation.navigate(MAIN_TAB_HOME);
+					}
+					else {
+						throwUnexpected()
+					}
+				}
+				else
+					navigation.goBack();
 			})
 			.catch(emptyFn)
 			.finally(() => setLoading(false));
-	}, [setLoading]);
+	}, [setLoading, code, userId]);
 
 	return (
 		<XScreen

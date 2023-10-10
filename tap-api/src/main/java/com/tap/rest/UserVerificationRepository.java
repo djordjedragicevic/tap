@@ -13,6 +13,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 @RequestScoped
 public class UserVerificationRepository {
 	@PersistenceContext(unitName = "tap-pu")
@@ -58,7 +59,7 @@ public class UserVerificationRepository {
 
 		User u = verification.getUser();
 
-		if (u.getVerified() == 0) {
+		if (u.getVerified() != 1) {
 			LocalDateTime now = Util.zonedNow();
 			LocalDateTime codeExpire = verification.getExpireTime();
 
@@ -67,6 +68,7 @@ public class UserVerificationRepository {
 
 			if (!code.isEmpty() && verification.getCode().equals(code)) {
 				u.setVerified((byte) 1);
+				u.setActive((byte) 1);
 				verification.setValidateTime(Util.zonedNow());
 				em.flush();
 			} else

@@ -1,55 +1,58 @@
 import XScreen from "xapp/src/components/XScreen";
 import XButton from "xapp/src/components/basic/XButton";
 import XTextInput from "xapp/src/components/basic/XTextInput";
-import XAlert from "xapp/src/components/basic/XAlert";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLockNavigation } from "../common/useLockNavigation";
 import { storeDispatch } from "xapp/src/store/store";
-import { Http } from "xapp/src/common/Http";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { View, StyleSheet } from "react-native";
 import XText from "xapp/src/components/basic/XText";
 import XLink from "xapp/src/components/basic/XLink";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
-import { CREATE_ACCOUNT_SCREEN, VERIFICATION_CODE_SCREEN } from "../navigators/routes";
+import { CREATE_ACCOUNT_SCREEN } from "../navigators/routes";
+import { Http } from 'xapp/src/common/Http';
 
 const LoginScreen = ({ navigation }) => {
 	const [userName, setUserName] = useState('');
 	const [password, setPassword] = useState('');
-	const [loading] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	const t = useTranslation();
 	const styles = useThemedStyle(styleCreator);
-	useLockNavigation(loading, navigation);
 
 	const doLogin = async () => {
 
+		setLoading(true);
 		try {
 			const resp = await Http.post('/auth/login', { userName, password });
 			if (resp?.token) {
 				await Http.setToken(resp.token);
 
 				const user = await Http.get('/user/by-token');
+
 				storeDispatch('user.set_data', user);
 
 				navigation.goBack();
 			}
 			else if (resp?.unverified) {
-				XAlert.show(title, message, [
-					{
-						text: t("Cancel")
-					},
-					{
-						text: t("Verify account"),
-						onPress: () => {
-							navigation.navigate(VERIFICATION_CODE_SCREEN, { userId: resp.userId });
-						}
-					}
-				]);
+				navigation.navigate(VERIFICATION_CODE_SCREEN, { userId: resp.userId, userName, password });
 			}
 
-		} catch (err) { }
+		}
+		catch (err) {
+
+		}
+		finally {
+			setLoading(false);
+		}
 	};
+
+	useEffect(() => {
+		return () => {
+			if (loading)
+				setLoading(false);
+		}
+	}, [loading])
 
 	const goToCreateAccount = useCallback(() => {
 		navigation.navigate(CREATE_ACCOUNT_SCREEN);
@@ -58,7 +61,8 @@ const LoginScreen = ({ navigation }) => {
 	return (
 		<XScreen
 			style={styles.screen}
-			loading={loading} flat
+			loading={loading}
+			flat
 			bigTitle={t('Sing In')}
 		>
 			<View style={{

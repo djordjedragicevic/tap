@@ -2,6 +2,7 @@ package com.tap.common;
 
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -119,6 +120,13 @@ public class Util {
 		byte[] bytes = new byte[length];
 		random.nextBytes(bytes);
 		return bytes;
+	}
+
+	public static String generateVerificationCode() {
+
+		int codeLength =  ConfigProvider.getConfig().getValue("tap.verification.code.length", Integer.class);
+		return Util.generateVerificationCode(codeLength);
+
 	}
 
 	public static String generateVerificationCode(int codeLength) {

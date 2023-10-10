@@ -71,29 +71,32 @@ const MainBottomTabNavigator = ({ navigation }) => {
 					tabBarIcon: (props) => <AntDesign name="search1" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
 			/>
-			<BottomTab.Screen
-				name={MAIN_TAB_MY_APPOINTMENTS}
-				component={MyAppointmentsScreen}
-				options={{
-					title: t("Appointments"),
-					tabBarIcon: (props) => <AntDesign name="calendar" {...props} color={props.focused ? colorPrimary : colorTextLight} />
-				}}
-			/>
-			<BottomTab.Screen
+
+			{logged &&
+				<BottomTab.Screen
+					name={MAIN_TAB_MY_APPOINTMENTS}
+					component={MyAppointmentsScreen}
+					options={{
+						title: t("Appointments"),
+						tabBarIcon: (props) => <AntDesign name="calendar" {...props} color={props.focused ? colorPrimary : colorTextLight} />
+					}}
+				/>
+			}
+			{/* <BottomTab.Screen
 				name={'TRY'}
 				component={TryScreen}
 				options={{
 					title: 'Settings',
 					tabBarIcon: (props) => <AntDesign name="setting" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
-			/>
+			/> */}
 			<BottomTab.Screen
 				name={MAIN_TAB_USER}
 				component={UserSettingsScreen}
 				options={{
 					title: logged ? t("Profile") : t("Sign in"),
 					tabBarIcon: (props) => logged ?
-						<XAvatar initials={initials} style={props.focused && { borderColor: colorPrimary, borderWidth: 1 }} />
+						<XAvatar initials={initials} size={props.size} style={props.focused && { borderColor: colorPrimary, borderWidth: 1 }} />
 						:
 						<AntDesign name="user" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}} />
@@ -116,14 +119,7 @@ const AppNavigator = ({ }) => {
 					headerTitleStyle: { fontFamily: font }
 				}}
 			/>
-			{/* <Stack.Group
-				screenOptions={{
-					presentation: 'containedModal',
-					animation: 'slide_from_bottom',
-					//animationDuration: 100
-				}}
-			>
-			</Stack.Group> */}
+
 			<Stack.Screen
 				options={{
 					headerTransparent: true,
@@ -131,6 +127,24 @@ const AppNavigator = ({ }) => {
 				}}
 				name={LOGIN_SCREEN}
 				component={LoginScreen}
+			/>
+			<Stack.Screen
+				name={CREATE_ACCOUNT_SCREEN}
+				component={CreateAccountScreen}
+				options={{
+					headerShown: true,
+					headerTransparent: true,
+					title: ''
+				}}
+			/>
+			<Stack.Screen
+				name={VERIFICATION_CODE_SCREEN}
+				component={VerificationCodeScreen}
+				options={{
+					headerShown: true,
+					headerTransparent: true,
+					title: ''
+				}}
 			/>
 
 			<Stack.Screen
@@ -155,6 +169,8 @@ const AppNavigator = ({ }) => {
 				}}
 			/>
 
+
+
 			<Stack.Screen
 				name={FAVORITE_PROVIDERS_SCREEN}
 				component={FavoritesScreen}
@@ -162,24 +178,7 @@ const AppNavigator = ({ }) => {
 					title: t('Saved')
 				}}
 			/>
-			<Stack.Screen
-				name={CREATE_ACCOUNT_SCREEN}
-				component={CreateAccountScreen}
-				options={{
-					headerShown: true,
-					headerTransparent: true,
-					title: ''
-				}}
-			/>
-			<Stack.Screen
-				name={VERIFICATION_CODE_SCREEN}
-				component={VerificationCodeScreen}
-				options={{
-					headerShown: true,
-					headerTransparent: true,
-					title: ''
-				}}
-			/>
+
 		</Stack.Navigator>
 	);
 };

@@ -3,7 +3,7 @@ package com.tap.rest;
 import com.tap.common.Mail;
 import com.tap.common.Util;
 import com.tap.db.entity.User;
-import com.tap.db.entity.UserVerification;
+import com.tap.db.entity.UserRole;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.security.Public;
@@ -19,7 +19,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.config.ConfigProvider;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Path("user")
@@ -54,24 +53,14 @@ public class UserService {
 			throw new TAPException(ErrID.U_CACC_3, null, Map.of("username", userName));
 
 		try {
-			String salt = Util.getRandomString(16, true);
-			String encryptedPass = Security.encryptPassword(password, salt);
 
-			User newUser = new User();
-			newUser.setUsername(userName);
-			newUser.setEmail(email);
-			newUser.setPassword(encryptedPass);
-			newUser.setSalt(salt);
-			newUser.setCreateDate(Util.zonedNow());
+			String code = Util.generateVerificationCode();
 
-			int codeLength = ConfigProvider.getConfig().getValue("tap.verification.code.length", Integer.class);
-			String code = Util.generateVerificationCode(codeLength);
-
-			userRepository.saveNewUser(newUser, code);
+			int uId = userRepository.saveNewUser(userName, email, password, Role.USER, code);
 
 			Mail.sendCode(code, email);
 
-			return Response.ok(newUser.getId()).build();
+			return Response.ok(uId).build();
 
 		} catch (Exception c) {
 			throw new TAPException(ErrID.U_CACC_1);

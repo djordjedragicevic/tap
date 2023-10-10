@@ -1,12 +1,7 @@
 package com.tap.rest;
 
 import com.tap.common.Util;
-import com.tap.db.entity.Role;
-import com.tap.db.entity.User;
-import com.tap.db.entity.UserState;
-import com.tap.db.entity.UserVerification;
-import com.tap.exception.ErrID;
-import com.tap.exception.TAPException;
+import com.tap.db.entity.*;
 import com.tap.security.Security;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.JsonObject;
@@ -15,8 +10,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.config.ConfigProvider;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +24,17 @@ public class UserRepository {
 	private EntityManager em;
 
 	@Transactional
-	public void saveNewUser(User u, String code) {
+	public int saveNewUser(String userName, String email, String password, com.tap.security.Role r, String code) throws InvalidKeySpecException, NoSuchAlgorithmException {
 
-		em.persist(u);
+		String salt = Util.getRandomString(16, true);
+		String encryptedPass = Security.encryptPassword(password, salt);
+
+		User u = new User();
+		u.setUsername(userName);
+		u.setEmail(email);
+		u.setPassword(encryptedPass);
+		u.setSalt(salt);
+		u.setCreateDate(Util.zonedNow());
 
 		long vCDuration = ConfigProvider.getConfig().getValue("tap.verification.code.duration", Long.class);
 		LocalDateTime vCTime = LocalDateTime.now(Util.zone());
@@ -41,9 +45,18 @@ public class UserRepository {
 		validation.setUser(u);
 		validation.setCreateTime(vCTime);
 		validation.setExpireTime(vCExpireTime);
-		em.persist(validation);
 
+		Role role = this.getRole(r);
+		UserRole uR = new UserRole();
+		uR.setUser(u);
+		uR.setRole(role);
+
+		em.persist(u);
+		em.persist(validation);
+		em.persist(uR);
 		em.flush();
+
+		return u.getId();
 	}
 
 	public Map<String, Object> getUserData(int userId) {
@@ -69,8 +82,7 @@ public class UserRepository {
 
 		boolean byMail = Util.isMail(username);
 
-		String query = "SELECT u FROM User u WHERE u.active = 1 "
-					   + (byMail ? "AND u.email = :username" : "AND u.username = :username");
+		String query = "SELECT u FROM User u WHERE " + (byMail ? " u.email = :username" : " u.username = :username");
 
 		try {
 			User u = em.createQuery(query, User.class)
@@ -118,5 +130,11 @@ public class UserRepository {
 			if (state.containsKey("favoriteProviders"))
 				userState.setFavoriteProviders(state.getJsonArray("favoriteProviders").toString());
 		}
+	}
+
+	public Role getRole(com.tap.security.Role r) {
+		return em.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class)
+				.setParameter("name", r.getName())
+				.getSingleResult();
 	}
 }
