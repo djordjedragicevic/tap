@@ -7,7 +7,6 @@ import XButton from "xapp/src/components/basic/XButton";
 import XTextInput from "xapp/src/components/basic/XTextInput";
 import { Http } from "xapp/src/common/Http";
 import { VERIFICATION_CODE_SCREEN } from "../navigators/routes";
-import { storeDispatch } from "xapp/src/store/store";
 import { useLockNavigation } from "../common/useLockNavigation";
 import { emptyFn } from 'xapp/src/common/utils';
 

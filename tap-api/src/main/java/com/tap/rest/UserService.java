@@ -40,7 +40,7 @@ public class UserService {
 		String userName = params.getString("username");
 		String email = params.getString("email");
 		String password = params.getString("password");
-		System.out.println(userName + " " + email + " " + password);
+
 		if (userName.isEmpty() || password.isEmpty() || email.isEmpty())
 			throw new TAPException(ErrID.U_CACC_1);
 
@@ -62,7 +62,7 @@ public class UserService {
 			newUser.setEmail(email);
 			newUser.setPassword(encryptedPass);
 			newUser.setSalt(salt);
-			newUser.setCreateDate(LocalDateTime.now(Util.zone()));
+			newUser.setCreateDate(Util.zonedNow());
 
 			int codeLength = ConfigProvider.getConfig().getValue("tap.verification.code.length", Integer.class);
 			String code = Util.generateVerificationCode(codeLength);
@@ -74,7 +74,6 @@ public class UserService {
 			return Response.ok(newUser.getId()).build();
 
 		} catch (Exception c) {
-			System.out.println(c);
 			throw new TAPException(ErrID.U_CACC_1);
 		}
 	}

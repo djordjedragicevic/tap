@@ -48,8 +48,16 @@ export const errors = {
 		title: 'Verification error',
 		message: 'Wrong verification code.'
 	},
+	U_UVFY_1: {
+		title: 'Unverified account',
+		message: 'Your account in not verified'
+	},
 	INV_EMAIL_1: {
 		title: 'Invalid data',
 		message: 'Invalid email'
+	},
+	SIGN_IN_1: {
+		title: 'Sign In error',
+		message: 'Invalide username/email or password'
 	}
 }

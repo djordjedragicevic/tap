@@ -76,32 +76,22 @@ const VerificationCodeScreen = ({ route }) => {
 			style={styles.screen}
 			bigTitle={t('Verify Code')}
 		>
-			<View style={{
-				flex: 1
-			}}>
-				<View style={{ alignItems: 'center', textAlign: 'center', rowGap: 5, marginBottom: 50 }}>
-					<XText style={{ textAlign: 'center' }}>{t('verCodeSubTitle')}</XText>
-					<XText style={{ textAlign: 'center', color: pColor }}>{t('mail', { mail: data.mail })}</XText>
+			<View>
+				<View style={styles.subtitleCnt}>
+					<XText style={styles.subtitleText}>{t('verCodeSubTitle')}</XText>
+					<XText style={styles.subtitleMail}>{t('mail', { mail: data.mail })}</XText>
 				</View>
 
-				<View style={[styles.partWrap, {
-					justifyContent: 'space-evenly',
-					flexDirection: 'row',
-					minHeight: 60
-				}]}>
+				<View style={styles.codeCnt}>
 					{code.map((val, idx) => {
 						return (
 							<View key={(val + idx).toString()}>
 								<XTextInput
 									ref={(elem) => (codeRef.current[idx] = elem)}
 
-									style={{ width: 45 }}
-									fieldStyle={{
-										textAlign: 'center'
-									}}
-									fieldContainerStyle={{
-										backgroundColor: pLColor
-									}}
+									style={styles.codeInput}
+									fieldStyle={styles.codeInputField}
+									fieldContainerStyle={styles.codeInputFieldCnt}
 									disabled={loading}
 									outline
 									maxLength={1}
@@ -122,15 +112,15 @@ const VerificationCodeScreen = ({ route }) => {
 					})}
 				</View>
 
-				<View style={[styles.partWrap, { marginTop: 5 }]}>
+				<View style={styles.codeLastCnt}>
 					<XText secondary >{t('verCodeLast', { min: data.time })}</XText>
 				</View>
 
-				<XButton primary title={t("Verify Code")} style={{ marginTop: 50 }} disabled={btnDisabled || loading} onPress={onVerify} />
+				<XButton primary title={t("Verify Code")} style={styles.verifyBtn} disabled={btnDisabled || loading} onPress={onVerify} />
 
-				<View style={[styles.partWrap, { marginTop: 30 }]}>
+				<View style={styles.resendCnt}>
 					<XText>{t('verCodeResend')}</XText>
-					<XLink disabled={loading} style={{ paddingVertical: 5 }} onPress={onResend}>{t('Resend')}</XLink>
+					<XLink disabled={loading} style={styles.resendLink} onPress={onResend}>{t('Resend')}</XLink>
 				</View>
 
 			</View>
@@ -147,6 +137,44 @@ const styleCreator = (theme) => StyleSheet.create({
 	},
 	partWrap: {
 		alignItems: 'center'
+	},
+	subtitleCnt: {
+		alignItems: 'center', textAlign: 'center', rowGap: 5, marginBottom: 50
+	},
+	subtitleText: {
+		textAlign: 'center'
+	},
+	subtitleMail: {
+		textAlign: 'center', color: theme.colors.primary
+	},
+	codeCnt: {
+		alignItems: 'center',
+		justifyContent: 'space-evenly',
+		flexDirection: 'row',
+		minHeight: 60
+	},
+	codeInput: {
+		width: 45
+	},
+	codeInputField: {
+		textAlign: 'center'
+	},
+	codeInputFieldCnt: {
+		backgroundColor: theme.colors.primaryLight
+	},
+	codeLastCnt: {
+		marginTop: 5,
+		alignItems: 'center'
+	},
+	verifyBtn: {
+		marginTop: 50
+	},
+	resendCnt: {
+		marginTop: 30,
+		alignItems: 'center'
+	},
+	resendLink: {
+		paddingVertical: 5
 	}
 });
 

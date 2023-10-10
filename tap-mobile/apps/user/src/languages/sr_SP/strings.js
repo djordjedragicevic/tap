@@ -51,6 +51,7 @@ export const strings = {
 	"Username": "Korisničko ime",
 	"Email": "Email",
 	"Verify Code": "Verifikujte se",
+	"Verify account": "Verifikujte nalog",
 	"verCodeSubTitle": "Unesiti verifikacijski kod koji smo poslali na email",
 	"mail": "{:mail}",
 	"verCodeLast": "Trenutni kod je validan još {:min} minuta",

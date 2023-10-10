@@ -66,6 +66,7 @@ export const strings = {
 	"Username": "Username",
 	"Email": "Email",
 	"Verify Code": "Verify Code",
+	"Verify account": "Verify account",
 	"verCodeSubTitle": "Enter the code we sent to email",
 	"mail": "{:mail}",
 	"verCodeLast": "The code is valid for another {:min} minutes",

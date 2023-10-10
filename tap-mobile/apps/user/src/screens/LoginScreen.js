@@ -34,15 +34,25 @@ const LoginScreen = ({ navigation }) => {
 
 				navigation.goBack();
 			}
-		} catch (err) {
-			const msg = err.name === Http.ERR.UNAUTHENTICATE ? 'Invalid username/email or password' : 'Unexpected error occurred'
-			XAlert.show('Login error', msg)
-		}
+			else if (resp?.unverified) {
+				XAlert.show(title, message, [
+					{
+						text: t("Cancel")
+					},
+					{
+						text: t("Verify account"),
+						onPress: () => {
+							navigation.navigate(VERIFICATION_CODE_SCREEN, { userId: resp.userId });
+						}
+					}
+				]);
+			}
+
+		} catch (err) { }
 	};
 
 	const goToCreateAccount = useCallback(() => {
-		//navigation.navigate(CREATE_ACCOUNT_SCREEN);
-		navigation.navigate(VERIFICATION_CODE_SCREEN, { userId: 8 })
+		navigation.navigate(CREATE_ACCOUNT_SCREEN);
 	}, [navigation])
 
 	return (
@@ -50,9 +60,11 @@ const LoginScreen = ({ navigation }) => {
 			style={styles.screen}
 			loading={loading} flat
 			bigTitle={t('Sing In')}
-			bigSubTitle={t('Welcome back')}
 		>
-			<View>
+			<View style={{
+				rowGap: 10,
+				paddingTop: 20
+			}}>
 				<XTextInput
 					style={styles.input}
 					value={userName}
@@ -106,7 +118,7 @@ const styleCreator = (theme) => StyleSheet.create({
 		columnGap: 5
 	},
 	input: {
-		marginTop: 5
+		//marginTop: 5
 	},
 	button: {
 		marginTop: 45

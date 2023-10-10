@@ -49,8 +49,16 @@ export const errors = {
 		title: 'Greška pri verifikaciji',
 		message: 'Pogrešan verifikacioni kod'
 	},
+	U_UVFY_1: {
+		title: 'Neverifikovan nalog',
+		message: 'Vaš nalog nije verifikovan'
+	},
 	INV_EMAIL_1: {
 		title: 'Neodgovarajući podaci',
 		message: 'Neispravan email'
+	},
+	SIGN_IN_1: {
+		title: 'Greška pri prijavi',
+		message: 'Neispravano korisničko ime/email ili lozinka'
 	}
 }

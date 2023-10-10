@@ -1,5 +1,7 @@
 package com.tap.rest;
 
+import com.tap.exception.ErrID;
+import com.tap.exception.TAPException;
 import com.tap.security.Credentials;
 import com.tap.security.Public;
 import com.tap.security.Secured;
@@ -33,12 +35,22 @@ public class AuthService {
 			@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer,
 			Credentials credentials) {
 
+
+		if (credentials == null || credentials.getPassword() == null || credentials.getUserName() == null || credentials.getPassword().isEmpty() || credentials.getUserName().isEmpty())
+			throw new TAPException(ErrID.SIGN_IN_1);
+
 		//Get user by credentials
 		Optional<User> user = userRepository.getUserByCredentials(credentials.getUserName(), credentials.getPassword());
 		if (user.isEmpty())
-			return Response.status(Response.Status.UNAUTHORIZED).build();
+			throw new TAPException(ErrID.SIGN_IN_1);
 
-		int userId = user.get().getId();
+		User u = user.get();
+		int userId = u.getId();
+
+		if (u.getVerified() != 1)
+			return Response.ok(Map.of("unverified", true, "userId", userId)).build();
+
+
 		List<String> roles = userRepository.getRoles(userId).stream().map(Role::getName).toList();
 
 

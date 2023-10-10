@@ -7,6 +7,7 @@ import com.tap.db.entity.UserState;
 import com.tap.db.entity.UserVerification;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
+import com.tap.security.Security;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.json.JsonObject;
 import jakarta.persistence.EntityManager;
@@ -68,17 +69,24 @@ public class UserRepository {
 
 		boolean byMail = Util.isMail(username);
 
-		String query = "SELECT u FROM User u WHERE u.active = 1 AND u.password = :pass "
+		String query = "SELECT u FROM User u WHERE u.active = 1 "
 					   + (byMail ? "AND u.email = :username" : "AND u.username = :username");
 
 		try {
-
 			User u = em.createQuery(query, User.class)
-					.setParameter("pass", password)
 					.setParameter("username", username)
 					.getSingleResult();
 
-			return Optional.of(u);
+			if (u != null) {
+				String pass = u.getPassword();
+				String salt = u.getSalt();
+				String encryptedPass = Security.encryptPassword(password, salt);
+
+				if (encryptedPass.equals(pass))
+					return Optional.of(u);
+			}
+
+			return Optional.empty();
 
 		} catch (Exception e) {
 			return Optional.empty();
