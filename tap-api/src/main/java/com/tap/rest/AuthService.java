@@ -33,14 +33,14 @@ public class AuthService {
 	@Public
 	public Response login(
 			@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer,
-			Credentials credentials) {
+			Credentials credentials
+	) {
 
-
-		if (credentials == null || credentials.getPassword() == null || credentials.getUserName() == null || credentials.getPassword().isEmpty() || credentials.getUserName().isEmpty())
+		if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null || credentials.getPassword().isEmpty() || credentials.getUsername().isEmpty())
 			throw new TAPException(ErrID.SIGN_IN_1);
 
 		//Get user by credentials
-		Optional<User> user = userRepository.getUserByCredentials(credentials.getUserName(), credentials.getPassword());
+		Optional<User> user = userRepository.getUserByCredentials(credentials.getUsername(), credentials.getPassword());
 		if (user.isEmpty())
 			throw new TAPException(ErrID.SIGN_IN_1);
 

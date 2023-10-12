@@ -1,24 +1,24 @@
 package com.tap.security;
 
 public class Credentials {
-	private String userName;
+	private String username;
 	private String password;
 
 	public Credentials() {
 
 	}
 
-	public Credentials(String userName, String password) {
-		this.userName = userName;
+	public Credentials(String username, String password) {
+		this.username = username;
 		this.password = password;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public Credentials setUserName(String userName) {
-		this.userName = userName;
+	public Credentials setUsername(String userName) {
+		this.username = userName;
 		return this;
 	}
 

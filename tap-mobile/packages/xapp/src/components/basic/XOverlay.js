@@ -8,8 +8,6 @@ const XOverlay = () => {
 	const [isMaksed, maskText] = useStore(gS => [gS.app.maskShown, gS.app.maskText]);
 	const styles = useThemedStyle(styleCreator);
 
-	console.log("ASDSAD", isMaksed, maskText);
-
 	if (!isMaksed)
 		return null
 

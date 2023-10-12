@@ -45,8 +45,8 @@ export const Theme = {
 		id: 'Dark',
 		colors: {
 			primary: '#2E8BC0',
-			primaryLight: '#B1D4E0',
-			secondary: '',
+			primaryLight: 'hsl(195, 100%, 13%)',
+			secondary: '#042C4E',
 			background: 'black',
 			backgroundElement: 'hsl(0, 0%, 10%)',
 

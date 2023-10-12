@@ -46,7 +46,7 @@ public class UserVerificationService {
 
 		return Response.ok(Map.of(
 				"length", uV.getCode().length(),
-				"time", cExpired ? 0 : ChronoUnit.SECONDS.between(cT, cE) / 60,
+				"time", cExpired ? 0 : Math.ceil(ChronoUnit.SECONDS.between(cT, cE) / (double) 60),
 				"mail", u.getEmail()
 		)).build();
 	}
@@ -67,7 +67,7 @@ public class UserVerificationService {
 
 			long lastSec = ChronoUnit.SECONDS.between(verification.getCreateTime(), verification.getExpireTime());
 
-			return Response.ok(lastSec / 60).build();
+			return Response.ok(Math.ceil(lastSec / (double) 60)).build();
 		}
 
 		return Response.ok().build();

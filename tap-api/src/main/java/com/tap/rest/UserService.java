@@ -36,11 +36,11 @@ public class UserService {
 	@Public
 	public Response createAccount(JsonObject params) {
 
-		String userName = params.getString("username");
+		String username = params.getString("username");
 		String email = params.getString("email");
 		String password = params.getString("password");
 
-		if (userName.isEmpty() || password.isEmpty() || email.isEmpty())
+		if (username.isEmpty() || password.isEmpty() || email.isEmpty())
 			throw new TAPException(ErrID.U_CACC_1);
 
 		if (!Util.isMail(email))
@@ -49,14 +49,14 @@ public class UserService {
 		if (utilRepository.getSingleEntityBy(User.class, "email", email).isPresent())
 			throw new TAPException(ErrID.U_CACC_2, null, Map.of("email", email));
 
-		if (utilRepository.getSingleEntityBy(User.class, "username", userName).isPresent())
-			throw new TAPException(ErrID.U_CACC_3, null, Map.of("username", userName));
+		if (utilRepository.getSingleEntityBy(User.class, "username", username).isPresent())
+			throw new TAPException(ErrID.U_CACC_3, null, Map.of("username", username));
 
 		try {
 
 			String code = Util.generateVerificationCode();
 
-			int uId = userRepository.saveNewUser(userName, email, password, Role.USER, code);
+			int uId = userRepository.saveNewUser(username, email, password, Role.USER, code);
 
 			Mail.sendCode(code, email);
 
@@ -86,7 +86,8 @@ public class UserService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
-	public void changeUserState(@PathParam("id") int userId, JsonObject userState) {
+	public Response changeUserState(@PathParam("id") int userId, JsonObject userState) {
 		userRepository.updateState(userId, userState);
+		return Response.ok().build();
 	}
 }

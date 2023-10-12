@@ -24,13 +24,13 @@ public class UserRepository {
 	private EntityManager em;
 
 	@Transactional
-	public int saveNewUser(String userName, String email, String password, com.tap.security.Role r, String code) throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public int saveNewUser(String username, String email, String password, com.tap.security.Role r, String code) throws InvalidKeySpecException, NoSuchAlgorithmException {
 
 		String salt = Util.getRandomString(16, true);
 		String encryptedPass = Security.encryptPassword(password, salt);
 
 		User u = new User();
-		u.setUsername(userName);
+		u.setUsername(username);
 		u.setEmail(email);
 		u.setPassword(encryptedPass);
 		u.setSalt(salt);

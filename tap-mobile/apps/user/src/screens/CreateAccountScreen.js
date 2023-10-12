@@ -11,7 +11,7 @@ import { useLockNavigation } from "../common/useLockNavigation";
 import { emptyFn } from 'xapp/src/common/utils';
 
 const CreateAccountScreen = ({ navigation }) => {
-	const [userName, setUserName] = useState('djoka');
+	const [username, setUsername] = useState('djoka');
 	const [email, setEmail] = useState('djordje.dragicevic89@gmail.com');
 	const [password, setPassword] = useState('djoka');
 	const [loading, setLoading] = useState(false);
@@ -21,16 +21,16 @@ const CreateAccountScreen = ({ navigation }) => {
 	useLockNavigation(loading, navigation);
 
 	const createAccont = () => {
-		if (userName && email && password) {
+		if (username && email && password) {
 			setLoading(true);
 			Http.post('/user/create-account', {
-				username: userName,
+				username,
 				email,
 				password
 			})
 				.then(userId => {
 					if (userId != null)
-						navigation.navigate(VERIFICATION_CODE_SCREEN, { userId, userName, password });
+						navigation.navigate(VERIFICATION_CODE_SCREEN, { userId, username, password });
 
 				})
 				.catch(emptyFn)
@@ -48,8 +48,8 @@ const CreateAccountScreen = ({ navigation }) => {
 		>
 			<XTextInput
 				style={styles.input}
-				value={userName}
-				onChangeText={setUserName}
+				value={username}
+				onChangeText={setUsername}
 				disabled={loading}
 				selectTextOnFocus
 				onSubmitEditing={createAccont}

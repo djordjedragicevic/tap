@@ -143,38 +143,40 @@ const Appointment = ({ item, reload }) => {
 
 
 	return (
-		<XSection contentStyle={{ padding: 10 }}>
-			<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-				<View style={{}}>
-					<XText bold italic>{(isMulti ? item[0] : item).sDate}</XText>
-				</View>
-				<View style={{
-					justifyContent: 'center'
-				}}>
-					<XText bold style={{ color: COLORS[status] }} >{status}</XText>
-				</View>
-			</View>
-
-			<XSeparator style={{ marginVertical: 10 }} />
-
+		<XSection>
 			<View>
-				<XText bold style={{ color: pColor }}>{provider.name} - {provider.type}</XText>
-			</View>
-
-			<View style={{ marginVertical: 15 }}>
-				<View style={{ flex: 1, paddingVertical: 5 }}>
-					{isMulti ?
-						<View>{item.map(i => <AppService key={i.id} item={i} />)}</View>
-						:
-						<AppService item={item} />
-					}
+				<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+					<View style={{}}>
+						<XText bold italic>{(isMulti ? item[0] : item).sDate}</XText>
+					</View>
+					<View style={{
+						justifyContent: 'center'
+					}}>
+						<XText bold style={{ color: COLORS[status] }} >{status}</XText>
+					</View>
 				</View>
-			</View>
 
-			<View style={{ flexDirection: 'row', height: 30 }}>
-				{getButton()}
-				<View style={{ flex: 1 }} />
-				<XText>{CurrencyUtils.convert(price)}</XText>
+				<XSeparator style={{ marginVertical: 10 }} />
+
+				<View>
+					<XText bold style={{ color: pColor }}>{provider.name} - {provider.type}</XText>
+				</View>
+
+				<View style={{ marginVertical: 15 }}>
+					<View style={{ flex: 1, paddingVertical: 5 }}>
+						{isMulti ?
+							<View>{item.map(i => <AppService key={i.id} item={i} />)}</View>
+							:
+							<AppService item={item} />
+						}
+					</View>
+				</View>
+
+				<View style={{ flexDirection: 'row', height: 30 }}>
+					{getButton()}
+					<View style={{ flex: 1 }} />
+					<XText>{CurrencyUtils.convert(price)}</XText>
+				</View>
 			</View>
 		</XSection>
 	)

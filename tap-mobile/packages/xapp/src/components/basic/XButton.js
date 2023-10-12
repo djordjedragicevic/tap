@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Theme } from "../../style/themes";
 import XText from "./XText";
 import { useColor, useThemedStyle } from "../../style/ThemeContext";
+import { AntDesign } from "@expo/vector-icons";
 
 const XButton = ({
 	title,
@@ -12,14 +13,15 @@ const XButton = ({
 	textStyle,
 	children,
 	color,
+	textColor,
+	iconRight,
+	iconLeft,
 	flat = false,
 	round = false,
 	small = false,
 	outline = false,
 	primary = false,
-	secondary = false,
-	iconRight,
-	iconLeft
+	uppercase = true
 }) => {
 
 	const styles = useThemedStyle(createStyle, {
@@ -27,8 +29,10 @@ const XButton = ({
 		round,
 		small,
 		outline,
-		color
-	}, primary, secondary);
+		color,
+		textColor,
+		uppercase
+	}, primary);
 
 	const getTextColor = () => {
 		if (primary)
@@ -39,7 +43,7 @@ const XButton = ({
 
 	const c = useColor(getTextColor());
 
-	const iconColor = color || c;
+	const iconColor = textColor || color || c;
 
 	const dinStyle = useMemo(() => {
 		if (disabled)
@@ -54,13 +58,13 @@ const XButton = ({
 			<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
 				{!!iconLeft &&
 					<View style={styles.iconLeft}>
-						{iconRight(iconColor, 17)}
+						{typeof iconLeft === 'string' ? <AntDesign name={iconLeft} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
 					</View>
 				}
 				{!!title && <XText style={[styles.text, textStyle]} secondary>{title}</XText>}
 				{!!iconRight &&
 					<View style={styles.iconRight}>
-						{iconRight(iconColor, 17)}
+						{typeof iconRight === 'string' ? <AntDesign name={iconRight} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
 					</View>
 				}
 				{children}
@@ -74,7 +78,7 @@ XButton.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme, params, primary, secondary) => {
+const createStyle = (theme, params, primary) => {
 
 	const btnStyle = {
 		backgroundColor: theme.colors.backgroundElement,
@@ -87,12 +91,15 @@ const createStyle = (theme, params, primary, secondary) => {
 	};
 
 	const textStyle = {
-		textTransform: 'uppercase',
 		color: theme.colors.textPrimary,
 		fontSize: undefined,
-		fontWeight: 700,
 		textAlign: 'center'
 	};
+
+	if (params.uppercase) {
+		textStyle.textTransform = 'uppercase';
+		textStyle.fontWeight = 700;
+	}
 
 	if (params.round) {
 		btnStyle.borderRadius = 100;
@@ -112,6 +119,9 @@ const createStyle = (theme, params, primary, secondary) => {
 		btnStyle.backgroundColor = params.color;
 	}
 
+	if (params.textColor)
+		textStyle.color = params.textColor;
+
 	if (params.outline) {
 		btnStyle.borderWidth = 1;
 		btnStyle.borderColor = theme.colors.primary;
@@ -123,8 +133,6 @@ const createStyle = (theme, params, primary, secondary) => {
 		}
 	}
 
-
-
 	return StyleSheet.create({
 		button: btnStyle,
 		text: textStyle,
@@ -133,6 +141,12 @@ const createStyle = (theme, params, primary, secondary) => {
 			justifyContent: 'center',
 			marginStart: 5,
 			marginEnd: -10
+		},
+		iconLeft: {
+			alignContent: 'center',
+			justifyContent: 'center',
+			marginEnd: 5,
+			marginStart: -10
 		}
 	});
 };

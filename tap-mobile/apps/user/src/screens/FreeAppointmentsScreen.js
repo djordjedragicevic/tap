@@ -113,19 +113,23 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 							justifyContent: 'space-around'
 
 						}}>
-							{data.apps
-								.map(a => <XButton
-									key={a.id}
-									title={a.services[0].time}
-									style={styles.freeAppointment}
-									primary={selectedApp?.id === a.id}
-									onPress={() => setSelectedApp((curr) => {
-										if (curr?.id === a.id)
-											return null;
-										else
-											return a;
-									})}
-								/>)
+							{data
+								.apps
+								.map(a =>
+									<XButton
+										key={a.id}
+										title={a.services[0].time}
+										textStyle={selectedApp?.id === a.id ? styles.appTextSelected : styles.appText}
+										style={styles.freeAppointment}
+										primary={selectedApp?.id === a.id}
+										onPress={() => setSelectedApp((curr) => {
+											if (curr?.id === a.id)
+												return null;
+											else
+												return a;
+										})}
+									/>
+								)
 								.concat(getEmptyApps(data.apps.length, width))
 							}
 
@@ -177,6 +181,12 @@ const styleCreator = (theme) => StyleSheet.create({
 	freeAppointment: {
 		paddingHorizontal: 5,
 		width: FREE_APP_WIDTH
+	},
+	appText: {
+		color: theme.colors.textSecondary
+	},
+	appTextSelected: {
+		color: theme.colors.textLight
 	}
 });
 

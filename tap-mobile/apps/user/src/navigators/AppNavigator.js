@@ -14,7 +14,7 @@ import {
 	VERIFICATION_CODE_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
-import ProviderScreen from '../screens/ProviderScreen';
+import ProviderScreen from '../screens/provider/ProviderScreen';
 import { useStore } from 'xapp/src/store/store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
@@ -94,6 +94,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				name={MAIN_TAB_USER}
 				component={UserSettingsScreen}
 				options={{
+					headerShown: false,
 					title: logged ? t("Profile") : t("Sign in"),
 					tabBarIcon: (props) => logged ?
 						<XAvatar initials={initials} size={props.size} style={props.focused && { borderColor: colorPrimary, borderWidth: 1 }} />

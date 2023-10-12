@@ -15,7 +15,7 @@ import { storeDispatch } from "xapp/src/store/store";
 
 
 const VerificationCodeScreen = ({ navigation, route }) => {
-	const { userId, userName, password } = route.params;
+	const { userId, username, password } = route.params;
 
 	const styles = useThemedStyle(styleCreator);
 	const t = useTranslation();
@@ -64,8 +64,8 @@ const VerificationCodeScreen = ({ navigation, route }) => {
 		storeDispatch('app.mask', { maskText: t('Verifying') + '...' })
 		Http.post('/verification/verify', { userId: userId, code: code.join('') })
 			.then(async () => {
-				if (userName && password) {
-					const resp = await Http.post('/auth/login', { userName, password });
+				if (username && password) {
+					const resp = await Http.post('/auth/login', { username, password });
 					if (resp.token) {
 						await Http.setToken(resp.token);
 
@@ -87,7 +87,7 @@ const VerificationCodeScreen = ({ navigation, route }) => {
 				setLoading(false);
 				storeDispatch('app.mask', false);
 			});
-	}, [setLoading, code, userId, navigation, userName, password]);
+	}, [setLoading, code, userId, navigation, username, password]);
 
 	return (
 		<XScreen

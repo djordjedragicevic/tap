@@ -47,9 +47,9 @@ const createStyle = (theme, transparent) => StyleSheet.create({
 		paddingVertical: 3
 	},
 	content: {
-		backgroundColor: transparent ? 'transparent' : theme.colors.backgroundElement
 	},
 	container: {
+		backgroundColor: transparent ? 'transparent' : theme.colors.backgroundElement,
 		padding: 8,
 		overflow: 'hidden',
 		borderRadius: Theme.values.borderRadius,

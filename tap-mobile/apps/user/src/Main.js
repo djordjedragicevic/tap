@@ -28,17 +28,11 @@ const Main = () => {
 
 	return (
 		<>
-			<StatusBar
-				barStyle={theme.id === Theme.DARK ? 'light-content' : 'dark-content'}
-				backgroundColor={theme.colors.backgroundElement}
-			/>
+			<StatusBar barStyle={'light-content'} backgroundColor={theme.colors.secondary} />
+
 			<SafeAreaProvider>
 				<BottomSheetModalProvider>
-					<NavigationContainer
-						theme={navTheme}
-						ref={navRef}
-						onStateChange={state => { }}
-					>
+					<NavigationContainer theme={navTheme} ref={navRef}>
 						<AppNavigator />
 					</NavigationContainer>
 				</BottomSheetModalProvider>

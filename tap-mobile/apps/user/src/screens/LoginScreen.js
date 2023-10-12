@@ -2,7 +2,6 @@ import XScreen from "xapp/src/components/XScreen";
 import XButton from "xapp/src/components/basic/XButton";
 import XTextInput from "xapp/src/components/basic/XTextInput";
 import { useCallback, useEffect, useState } from "react";
-import { useLockNavigation } from "../common/useLockNavigation";
 import { storeDispatch } from "xapp/src/store/store";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { View, StyleSheet } from "react-native";
@@ -11,10 +10,9 @@ import XLink from "xapp/src/components/basic/XLink";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { CREATE_ACCOUNT_SCREEN, VERIFICATION_CODE_SCREEN } from "../navigators/routes";
 import { Http } from 'xapp/src/common/Http';
-import { throwUnexpected } from "../common/general";
 
 const LoginScreen = ({ navigation }) => {
-	const [userName, setUserName] = useState('');
+	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 
@@ -25,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
 
 		setLoading(true);
 		try {
-			const resp = await Http.post('/auth/login', { userName, password });
+			const resp = await Http.post('/auth/login', { username, password });
 			if (resp?.token) {
 				await Http.setToken(resp.token);
 
@@ -36,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
 				navigation.goBack();
 			}
 			else if (resp?.unverified) {
-				navigation.navigate(VERIFICATION_CODE_SCREEN, { userId: resp.userId, userName, password });
+				navigation.navigate(VERIFICATION_CODE_SCREEN, { userId: resp.userId, username, password });
 			}
 
 		}
@@ -70,8 +68,8 @@ const LoginScreen = ({ navigation }) => {
 			}}>
 				<XTextInput
 					style={styles.input}
-					value={userName}
-					onChangeText={setUserName}
+					value={username}
+					onChangeText={setUsername}
 					disabled={loading}
 					selectTextOnFocus
 					onSubmitEditing={doLogin}
