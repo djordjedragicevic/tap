@@ -70,7 +70,7 @@ const styleCreator = (theme, isLast, selected) => {
 			borderColor: theme.colors.borderColor,
 			borderWidth: Theme.values.borderWidth,
 			flexDirection: 'row',
-			height: 38,
+			height: 40,
 			padding: 4,
 			borderRadius: Theme.values.borderRadius,
 			backgroundColor: theme.colors.backgroundElement,
@@ -80,18 +80,18 @@ const styleCreator = (theme, isLast, selected) => {
 		segment: {
 			flex: 1,
 			flexDirection: 'row',
-			borderColor: theme.colors.primary,
+			borderColor: theme.colors.secondary,
 			borderRadius: Theme.values.borderRadius,
 			paddingHorizontal: 8,
 			alignItems: 'center',
 			justifyContent: 'center',
-			backgroundColor: theme.colors[selected ? 'primary' : 'backgroundElement']
+			backgroundColor: theme.colors[selected ? 'secondary' : 'backgroundElement']
 		},
 		segmentText: {
-			color: selected ? theme.colors.textLight : theme.colors.primary
+			color: selected ? theme.colors.textLight : theme.colors.secondary
 		},
 		icon: {
-			color: theme.colors.primary,
+			color: theme.colors.secondary,
 		}
 	})
 };

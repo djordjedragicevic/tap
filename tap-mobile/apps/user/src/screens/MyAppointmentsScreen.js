@@ -12,6 +12,7 @@ import XSegmentedButton from "xapp/src/components/basic/XSegmentedButton";
 import XSection from "xapp/src/components/basic/XSection";
 import XAlert from "xapp/src/components/basic/XAlert";
 import { usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import XChip from "xapp/src/components/basic/XChip";
 
 const groupLinked = (apps = []) => {
 	const g = {};
@@ -39,9 +40,9 @@ const STATUS = {
 };
 
 const COLORS = {
-	WAITING: 'gold',
-	CANCELED: '#FFDAB9',
-	ACCEPTED: 'lightgreen',
+	WAITING: 'yellow',
+	CANCELED: 'orange',
+	ACCEPTED: 'green',
 	REJECTED: 'red'
 };
 
@@ -92,8 +93,7 @@ const Appointment = ({ item, reload }) => {
 			(isMulti ? item[0] : item).provider,
 			isMulti ? item[0].history : item.history,
 			isMulti ? item.map(i => i.id) : [item.id],
-			// getStatus(item),
-			STATUS.CANCELED,
+			getStatus(item),
 			(isMulti ? item[0] : item).sDate,
 			(isMulti ? item[0] : item).sTime
 		];
@@ -106,7 +106,6 @@ const Appointment = ({ item, reload }) => {
 			case STATUS.ACCEPTED:
 				return (
 					<XButton
-						//style={{ flex: 1 }}
 						title={t('Cancel')}
 						secondary
 						small
@@ -127,7 +126,6 @@ const Appointment = ({ item, reload }) => {
 			case STATUS.CANCELED:
 				return (
 					<XButton
-						//style={{ flex: 1 }}
 						title='Ponovo zakazi'
 						small
 						primary
@@ -138,7 +136,7 @@ const Appointment = ({ item, reload }) => {
 								{
 									text: 'Zakazi', onPress: () => {
 										Http.post('/appointments/my-appointments/rebook', { appIds: itemIds })
-											.then(reload)
+											.finally(reload)
 									}
 								}
 							])
@@ -156,35 +154,22 @@ const Appointment = ({ item, reload }) => {
 		<XSection
 			style={styles.appContainer}
 			styleContent={{
-				padding: 10,
-
+				padding: 10
 			}}
 			title={`${sDate} - ${sTime}`}
 			styleTitle={styles.appTitle}
 		>
-
-			{/* <View style={{
-				flexDirection: 'row',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				paddingHorizontal: 8,
-				backgroundColor: COLORS[status]
-			}}>
-				<View style={{}}>
-					<XText bold italic>{sDate} - {sTime}</XText>
-				</View>
-				<View style={{
-					justifyContent: 'center'
-				}}>
-					<XText bold style={{ color: COLORS[status] }} >{status}</XText>
-				</View>
-			</View>
-
-			<XSeparator style={{ marginVertical: 10 }} /> */}
-
-			<View>
+			<View style={{ flexDirection: 'row', columnGap: 10 }}>
 				<XText bold style={{}}>{provider.name} - {provider.type}</XText>
+				<XChip
+					text={status}
+					color={COLORS[status]}
+					//style={{ alignSelf: 'flex-end' }}
+					textStyle={{ textTransform: 'capitalize' }}
+				>
+				</XChip>
 			</View>
+
 
 			<View style={{ marginVertical: 10 }}>
 				<View style={{ flex: 1, paddingVertical: 5 }}>
@@ -211,6 +196,7 @@ const MyAppointmentsScreen = () => {
 	const [history, setHistory] = useState(false);
 
 	const dateCode = useDateCode();
+	const t = useTranslation();
 	const [data, refresh, refreshing] = useHTTPGet('/appointments/my-appointments');
 
 	const itemRenderer = useCallback((param) => (
@@ -234,15 +220,18 @@ const MyAppointmentsScreen = () => {
 	}, [data, history, dateCode]);
 
 	return (
-		<XScreen loading={refreshing}>
+		<XScreen loading={refreshing} flat>
 
 			<XSegmentedButton
 				options={[
-					{ id: 1, text: 'Upcoming' },
-					{ id: 2, text: 'Finished' }
+					{ id: 1, text: t('Upcoming') },
+					{ id: 2, text: t('History') }
 				]}
 				onSelect={(o) => setHistory(o.id === 2)}
-				style={{ marginBottom: Theme.values.mainPaddingHorizontal }}
+				style={{
+					marginBottom: Theme.values.mainPaddingHorizontal,
+					borderRadius: 0
+				}}
 				initialIndex={0}
 			/>
 
@@ -254,7 +243,7 @@ const MyAppointmentsScreen = () => {
 				ListEmptyComponent={(<View><XText>NEMA</XText></View>)}
 				contentContainerStyle={{
 					rowGap: Theme.values.mainPaddingHorizontal,
-					//paddingHorizontal: Theme.values.mainPaddingHorizontal
+					paddingHorizontal: Theme.values.mainPaddingHorizontal
 				}}
 				refreshing={refreshing}
 				onRefresh={refresh}

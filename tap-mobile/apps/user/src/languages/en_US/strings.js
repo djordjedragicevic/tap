@@ -78,6 +78,8 @@ export const strings = {
 	"Booking": "Booking",
 	"Saved providers": "Saved providers",
 	"Manage account": "Manage account",
-	"User account": "User account"
+	"User account": "User account",
+	"Upcoming": "Upcoming",
+	"History": "History"
 
 };

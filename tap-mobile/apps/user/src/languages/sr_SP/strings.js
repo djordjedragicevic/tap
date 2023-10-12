@@ -63,5 +63,7 @@ export const strings = {
 	"Booking": "Rezervisanje",
 	"Saved providers": "Sačuvani davaoci usluga",
 	"Manage account": "Upravljanje profilom",
-	"User account": "Korisnički nalog"
+	"User account": "Korisnički nalog",
+	"Upcoming": "Predstojeći",
+	"History": "Istorija"
 };

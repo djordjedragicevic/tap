@@ -11,22 +11,20 @@ import { HOST } from "../common/config";
 import HairSalon from "../components/svg/HairSalon";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XMarkStars from "xapp/src/components/XMarkStars";
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
 
 const ProvidersScreen = ({ navigation }) => {
 
 	const [providers, refresh, refreshing] = useHTTPGet('/provider/list', { cId: 1 }, []);
-	const renderCompany = useCallback(({ item, index }) => {
+	const styles = useThemedStyle(styleCreator);
 
+	const renderCompany = useCallback(({ item, index }) => {
 		return (
 			<XSection
 				onPress={() => navigation.navigate(PROVIDER_SCREEN, { id: item.id })}
-				style={{
-					padding: 0,
-					borderColor: 'lightskyblue'
-				}}
-				styleContent={{}}
+				style={styles.section}
+				styleContent={styles.sectionContainer}
 			>
-
 				<View style={{ height: 150 }}>
 					<View style={{ flex: 1 }}>
 						{
@@ -45,8 +43,7 @@ const ProvidersScreen = ({ navigation }) => {
 					</View>
 				</View>
 
-				<View style={{ flex: 1, padding: 8 }}>
-
+				<View style={{ flex: 1, padding: 10 }}>
 
 					<View style={{ marginBottom: 5, flexDirection: 'row' }}>
 						<View style={{ flex: 1 }}>
@@ -57,9 +54,6 @@ const ProvidersScreen = ({ navigation }) => {
 								{item.type}
 							</XText>
 						</View>
-						{/* <View>
-							<FavoriteButton favorit style={{ width: 45 }} />
-						</View> */}
 					</View>
 
 					<XMarkStars mark={item.mark} reviewCound={item.reviewCount} />
@@ -69,7 +63,6 @@ const ProvidersScreen = ({ navigation }) => {
 					<XText icon='enviroment' secondary style={{ marginStart: 6 }}>
 						{item.address1 + ', ' + item.city}
 					</XText>
-
 
 
 					{/* <View style={{ padding: 10, alignItems: 'flex-end', justifyContent: 'center' }}>
@@ -96,13 +89,12 @@ const ProvidersScreen = ({ navigation }) => {
 	}, []);
 
 	return (
-		<XScreen loading={refreshing}>
+		<XScreen loading={refreshing} flat>
 			<FlatList
-				style={{
-					paddingHorizontal: Theme.values.mainPaddingHorizontal
-				}}
 				contentContainerStyle={{
-					rowGap: 20
+					paddingHorizontal: Theme.values.mainPaddingHorizontal,
+					marginTop: Theme.values.mainPaddingHorizontal,
+					rowGap: Theme.values.mainPaddingHorizontal
 				}}
 				data={providers}
 				renderItem={renderCompany}
@@ -113,7 +105,7 @@ const ProvidersScreen = ({ navigation }) => {
 	);
 };
 
-const styles = StyleSheet.create({
+const styleCreator = (theme) => StyleSheet.create({
 	card: {
 		height: 160,
 		marginHorizontal: Theme.values.mainPaddingHorizontal,
@@ -127,6 +119,13 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		fontSize: 20
+	},
+	section: {
+		borderColor: theme.colors.borderColor,
+		borderWidth: Theme.values.borderWidth
+	},
+	sectionContainer: {
+		padding: 0
 	}
 });
 

@@ -7,7 +7,6 @@ import XSelectField from "xapp/src/components/basic/XSelectField";
 import { FontAwesome } from '@expo/vector-icons';
 import { useCallback } from "react";
 import { Http } from "xapp/src/common/Http";
-import XAlert from "xapp/src/components/basic/XAlert";
 import { storeDispatch, useStore } from "xapp/src/store/store";
 import { MAIN_TAB_MY_APPOINTMENTS } from "../navigators/routes";
 import Footer from "../components/Footer";

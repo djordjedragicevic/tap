@@ -30,9 +30,20 @@ export const Theme = {
 			textTertiary: 'hsl(0, 0%, 85%)',
 			//textLight: '#f2f2f3',
 			textLight: 'white',
-			
+
 			borderColor: 'hsl(0, 0%, 85%)',
-			red: 'red'
+
+			red: 'red',
+			redLight: 'hsl(0, 100%, 95%)',
+
+			green: 'hsl(177, 70%, 41%)',
+			greenLight: 'hsl(177, 70%, 92%)',
+
+			yellow: 'hsl(51, 100%, 40%)',
+			yellowLight: 'hsl(51, 100%, 95%)',
+
+			orange: 'hsl(28, 100%, 50%)',
+			orangeLight: 'hsl(28, 100%, 95%)'
 		},
 		periodColors: {
 			'FREE_APPOINTMENT': '#3399ff',
@@ -41,7 +52,7 @@ export const Theme = {
 			'BUSY_BREAK': 'orange'
 		}
 	},
-	
+
 	Dark: {
 		id: 'Dark',
 		colors: {
@@ -50,7 +61,7 @@ export const Theme = {
 			secondary: '#042C4E',
 			background: 'black',
 			backgroundElement: 'hsl(0, 0%, 10%)',
-			
+
 			textPrimary: 'hsl(0, 0%, 95%)',  //white wariant
 			textSecondary: 'hsl(0, 0%, 70%)',//white wariant
 			textTertiary: 'hsl(0, 0%, 50%)', //white wariant
@@ -58,7 +69,7 @@ export const Theme = {
 			textLight: 'white',
 
 			borderColor: 'hsl(0, 0%, 50%)',
-			red: 'red'
+			red: 'red',
 		},
 		periodColors: {
 			'FREE_APPOINTMENT': '#46b7d7',
