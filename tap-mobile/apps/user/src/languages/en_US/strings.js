@@ -75,6 +75,9 @@ export const strings = {
 	"Creating account": "Creating account",
 	"Closed": "Closed",
 	"Verifying": "Verifying",
-	"Booking": "Booking"
+	"Booking": "Booking",
+	"Saved providers": "Saved providers",
+	"Manage account": "Manage account",
+	"User account": "User account"
 
 };

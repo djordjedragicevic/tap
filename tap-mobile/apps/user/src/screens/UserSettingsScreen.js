@@ -2,7 +2,7 @@ import XScreen from "xapp/src/components/XScreen";
 import { AntDesign } from '@expo/vector-icons';
 import XButton from "xapp/src/components/basic/XButton";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
-import { LOGIN_SCREEN, FAVORITE_PROVIDERS_SCREEN } from "../navigators/routes";
+import { LOGIN_SCREEN, FAVORITE_PROVIDERS_SCREEN, MANAGE_ACCOUNT_SCREEN } from "../navigators/routes";
 import { useContext, useMemo } from "react";
 import { Http } from "xapp/src/common/Http";
 import { storeDispatch, useStore } from "xapp/src/store/store";
@@ -16,6 +16,7 @@ import XSection from "xapp/src/components/basic/XSection";
 import { Theme } from "xapp/src/style/themes";
 import XSelector from "xapp/src/components/basic/XSelector";
 import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
+import XSeparator from "xapp/src/components/basic/XSeparator";
 
 const UserSettingsScreen = ({ navigation }) => {
 	const t = useTranslation();
@@ -51,7 +52,7 @@ const UserSettingsScreen = ({ navigation }) => {
 
 	const pLColor = useColor('secondary');
 	return (
-		<XScreen flat>
+		<XScreen flat scroll>
 			<View style={{ height: 200, justifyContent: 'center', alignItems: 'center', rowGap: 15, backgroundColor: pLColor }}>
 				{
 					isLogged ?
@@ -85,40 +86,48 @@ const UserSettingsScreen = ({ navigation }) => {
 				}
 			</View>
 
-			<ScrollView contentContainerStyle={{ padding: 10, rowGap: 2 }}>
-				<XSelector
-					title={t('Appearance')}
-					iconLeft='bulb1'
-					value={t(themeName)}
-					data={THEMES}
-					initSelectedIdx={selectedThemeIdx}
-					onItemSelect={(item) => setThemeId(item.id)}
-					selector={{
-						title: t('Appearance')
-					}}
-				/>
-
-				<XSelector
-					title={t('Language')}
-					iconLeft='earth'
-					value={t(lng.name)}
-					initSelectedIdx={selectedLangIdx}
-					data={LANGS}
-					onItemSelect={(item) => setLanguage(item.id)}
-					selector={{
-						title: t('Language')
-					}}
-				/>
-
+			<View style={{ padding: 10, rowGap: 10 }}>
 				{
 					isLogged &&
-					<XSelectField
-						title={t('Saved')}
-						iconLeft='heart'
-						iconRight='right'
-						onPress={() => navigation.navigate(FAVORITE_PROVIDERS_SCREEN)}
-					/>
+					<XSection>
+						<XSelectField
+							title={t('Manage account')}
+							iconLeft='user'
+							iconRight='right'
+							onPress={() => navigation.navigate(MANAGE_ACCOUNT_SCREEN)}
+						/>
+						<XSelectField
+							title={t('Saved providers')}
+							iconLeft='heart'
+							iconRight='right'
+							onPress={() => navigation.navigate(FAVORITE_PROVIDERS_SCREEN)}
+						/>
+					</XSection>
 				}
+				<XSection>
+					<XSelector
+						title={t('Appearance')}
+						iconLeft='bulb1'
+						value={t(themeName)}
+						data={THEMES}
+						initSelectedIdx={selectedThemeIdx}
+						onItemSelect={(item) => setThemeId(item.id)}
+						selector={{
+							title: t('Appearance')
+						}}
+					/>
+					<XSelector
+						title={t('Language')}
+						iconLeft='earth'
+						value={t(lng.name)}
+						initSelectedIdx={selectedLangIdx}
+						data={LANGS}
+						onItemSelect={(item) => setLanguage(item.id)}
+						selector={{
+							title: t('Language')
+						}}
+					/>
+				</XSection>
 
 				{isLogged &&
 					<XButton
@@ -131,7 +140,7 @@ const UserSettingsScreen = ({ navigation }) => {
 						onPress={doLogout}
 					/>
 				}
-			</ScrollView>
+			</View>
 		</XScreen>
 
 	);

@@ -25,12 +25,13 @@ export const Theme = {
 			background: 'hsl(0, 0%, 95%)',
 			backgroundElement: 'white',
 
-			textPrimary: 'hsl(0, 0%, 30%)',
+			textPrimary: 'hsl(0, 0%, 15%)',
 			textSecondary: 'hsl(0, 0%, 60%)',
 			textTertiary: 'hsl(0, 0%, 85%)',
-			textLight: '#f2f2f3',
-
-			borderColor: 'hsl(0, 0%, 60%)',
+			//textLight: '#f2f2f3',
+			textLight: 'white',
+			
+			borderColor: 'hsl(0, 0%, 85%)',
 			red: 'red'
 		},
 		periodColors: {
@@ -40,7 +41,7 @@ export const Theme = {
 			'BUSY_BREAK': 'orange'
 		}
 	},
-
+	
 	Dark: {
 		id: 'Dark',
 		colors: {
@@ -49,13 +50,14 @@ export const Theme = {
 			secondary: '#042C4E',
 			background: 'black',
 			backgroundElement: 'hsl(0, 0%, 10%)',
-
+			
 			textPrimary: 'hsl(0, 0%, 95%)',  //white wariant
 			textSecondary: 'hsl(0, 0%, 70%)',//white wariant
 			textTertiary: 'hsl(0, 0%, 50%)', //white wariant
-			textLight: '#f2f2f3',
+			//textLight: '#f2f2f3',
+			textLight: 'white',
 
-			borderColor: 'hsl(0, 0%, 70%)',
+			borderColor: 'hsl(0, 0%, 50%)',
 			red: 'red'
 		},
 		periodColors: {

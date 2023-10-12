@@ -43,14 +43,16 @@ const XSelectField = ({
 		>
 			<View style={styles.textContainer}>
 				{T}
-				{!!value && <XText
-					secondary
-					ellipsizeMode={'tail'}
-					numberOfLines={1}
-					color={primaryColor}
-					style={{ color: primaryColor }}
-					{...valueParams}
-				>{value}</XText>}
+				{!!value &&
+					<XText
+						secondary
+						ellipsizeMode={'tail'}
+						numberOfLines={1}
+						{...valueParams}
+					>
+						{value}
+					</XText>
+				}
 			</View>
 		</XFieldContainer>
 	);

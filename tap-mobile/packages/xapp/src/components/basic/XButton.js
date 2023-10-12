@@ -21,6 +21,7 @@ const XButton = ({
 	small = false,
 	outline = false,
 	primary = false,
+	secondary = false,
 	uppercase = true
 }) => {
 
@@ -32,7 +33,7 @@ const XButton = ({
 		color,
 		textColor,
 		uppercase
-	}, primary);
+	}, primary, secondary);
 
 	const getTextColor = () => {
 		if (primary)
@@ -78,7 +79,7 @@ XButton.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme, params, primary) => {
+const createStyle = (theme, params, primary, secondary) => {
 
 	const btnStyle = {
 		backgroundColor: theme.colors.backgroundElement,
@@ -93,7 +94,8 @@ const createStyle = (theme, params, primary) => {
 	const textStyle = {
 		color: theme.colors.textPrimary,
 		fontSize: undefined,
-		textAlign: 'center'
+		textAlign: 'center',
+		fontWeight: 600
 	};
 
 	if (params.uppercase) {
@@ -105,10 +107,16 @@ const createStyle = (theme, params, primary) => {
 		btnStyle.borderRadius = 100;
 	}
 
+	if (secondary) {
+		textStyle.color = theme.colors.textLight;
+		btnStyle.backgroundColor = theme.colors.textTertiary;
+	}
+
 	if (primary) {
 		textStyle.color = theme.colors.textLight;
 		btnStyle.backgroundColor = theme.colors.primary;
 	}
+
 
 	if (params.small) {
 		textStyle.fontSize = 12;
@@ -124,9 +132,9 @@ const createStyle = (theme, params, primary) => {
 
 	if (params.outline) {
 		btnStyle.borderWidth = 1;
-		btnStyle.borderColor = theme.colors.primary;
+		btnStyle.borderColor = theme.colors.borderColor;
+		textStyle.color = theme.colors.textSecondary;
 		btnStyle.backgroundColor = 'transparent';
-		textStyle.color = theme.colors.primary;
 		if (params.color) {
 			btnStyle.borderColor = params.color;
 			textStyle.color = params.color;

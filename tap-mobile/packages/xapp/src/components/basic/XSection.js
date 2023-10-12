@@ -16,14 +16,14 @@ const XSection = ({
 	transparent = false
 }) => {
 
-	const styles = useThemedStyle(createStyle, transparent);
+	const styles = useThemedStyle(createStyle, transparent, !!title);
 
 	const RootCmp = onPress instanceof Function ? TouchableOpacity : View;
 
 	return (
 		<View style={[styles.container, style]}>
 			{!!title && <View style={[styles.title, styleTitle]}>
-				<XText size={18} weight={500}>{title}</XText>
+				<XText bold>{title}</XText>
 			</View>
 			}
 			<RootCmp style={[styles.content, styleContent]} onPress={onPress}>
@@ -40,17 +40,21 @@ XSection.defaultProps = {
 	disabledOpacity: 0.5
 };
 
-const createStyle = (theme, transparent) => StyleSheet.create({
+const createStyle = (theme, transparent, hasTitle) => StyleSheet.create({
 	title: {
 		paddingHorizontal: 10,
 		justifyContent: 'center',
 		paddingVertical: 3
 	},
 	content: {
+		padding: 6,
+		backgroundColor: transparent ? 'transparent' : theme.colors.backgroundElement,
+		borderRadius: Theme.values.borderRadius,
+		borderTopEndRadius: hasTitle ? 0 : Theme.values.borderRadius,
+		borderTopStartRadius: hasTitle ? 0 : Theme.values.borderRadius
 	},
 	container: {
-		backgroundColor: transparent ? 'transparent' : theme.colors.backgroundElement,
-		padding: 8,
+		backgroundColor: transparent ? 'transparent' : theme.colors.background,
 		overflow: 'hidden',
 		borderRadius: Theme.values.borderRadius,
 

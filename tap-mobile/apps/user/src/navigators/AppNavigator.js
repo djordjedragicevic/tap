@@ -11,7 +11,8 @@ import {
 	PROVIDER_SCREEN,
 	BOOK_APPOINTMENT_SCREEN,
 	CREATE_ACCOUNT_SCREEN,
-	VERIFICATION_CODE_SCREEN
+	VERIFICATION_CODE_SCREEN,
+	MANAGE_ACCOUNT_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/provider/ProviderScreen';
@@ -29,9 +30,10 @@ import FreeAppointmentsScreen from '../screens/FreeAppointmentsScreen';
 import MyAppointmentsScreen from '../screens/MyAppointmentsScreen';
 import { useColor } from 'xapp/src/style/ThemeContext';
 import BookAppointmentScreen from '../screens/BookAppointmentScreen';
-import TryScreen from '../screens/TryScreen';
 import CreateAccountScreen from '../screens/CreateAccountScreen';
 import VerificationCodeScreen from '../screens/VerificationCodeScreen';
+import TryScreen from '../screens/TryScreen';
+import MenageAccountScreen from '../screens/MenageAccountScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -39,7 +41,6 @@ const MainBottomTabNavigator = ({ navigation }) => {
 	const t = useTranslation();
 	const logged = useIsUserLogged();
 	const initials = useStore(gS => gS.user.initials);
-	const secondaryColor = useColor('secondary');
 	const colorTextLight = useColor('textLight');
 	const colorPrimary = useColor('primary');
 
@@ -47,13 +48,12 @@ const MainBottomTabNavigator = ({ navigation }) => {
 		<BottomTab.Navigator
 			screenOptions={{
 				tabBarStyle: {
-					backgroundColor: secondaryColor,
+					//backgroundColor: secondaryColor,
 					borderTopLeftRadius: 10,
 					borderTopRightRadius: 10
 				}
 			}}
 			initialRouteName={MAIN_TAB_FIND}
-			tabBarStyle={{ backgroundColor: 'red' }}
 		>
 			<BottomTab.Screen
 				name={MAIN_TAB_HOME}
@@ -67,7 +67,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				name={MAIN_TAB_FIND}
 				component={ProvidersScreen}
 				options={{
-					title: t("Find"), headerShown: false,
+					title: t("Find"),
 					tabBarIcon: (props) => <AntDesign name="search1" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
 			/>
@@ -110,6 +110,7 @@ const Stack = createStackNavigator();
 const AppNavigator = ({ }) => {
 	const font = useStore(s => s.app.font);
 	const t = useTranslation();
+	const logged = useIsUserLogged();
 	return (
 		<Stack.Navigator>
 			<Stack.Screen
@@ -155,30 +156,41 @@ const AppNavigator = ({ }) => {
 				name={PROVIDER_SCREEN}
 				component={ProviderScreen}
 			/>
-			<Stack.Screen
-				name={FREE_APPOINTMENTS_SCREEN}
-				component={FreeAppointmentsScreen}
-				options={{
-					title: t('Free appointments')
-				}}
-			/>
-			<Stack.Screen
-				name={BOOK_APPOINTMENT_SCREEN}
-				component={BookAppointmentScreen}
-				options={{
-					title: t('Book appointment')
-				}}
-			/>
 
+			{
+				logged &&
+				<>
+					<Stack.Screen
+						name={MANAGE_ACCOUNT_SCREEN}
+						component={MenageAccountScreen}
+						options={{
+							title: t('User account')
+						}}
+					/>
+					<Stack.Screen
+						name={FAVORITE_PROVIDERS_SCREEN}
+						component={FavoritesScreen}
+						options={{
+							title: t('Saved')
+						}}
+					/>
+					<Stack.Screen
+						name={FREE_APPOINTMENTS_SCREEN}
+						component={FreeAppointmentsScreen}
+						options={{
+							title: t('Free appointments')
+						}}
+					/>
+					<Stack.Screen
+						name={BOOK_APPOINTMENT_SCREEN}
+						component={BookAppointmentScreen}
+						options={{
+							title: t('Book appointment')
+						}}
+					/>
+				</>
+			}
 
-
-			<Stack.Screen
-				name={FAVORITE_PROVIDERS_SCREEN}
-				component={FavoritesScreen}
-				options={{
-					title: t('Saved')
-				}}
-			/>
 
 		</Stack.Navigator>
 	);

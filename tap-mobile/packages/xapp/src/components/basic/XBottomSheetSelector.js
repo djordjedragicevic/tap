@@ -10,23 +10,32 @@ const titleHeight = 40;
 const rowHeight = 40
 const rowVerticalMargin = 5;
 
-const XBottomSheetSelector = forwardRef(({ data = [], onItemSelect, multiselect = false, selectedId = [], closeOnSelect = true, ...rest }, sheetRef) => {
+const XBottomSheetSelector = forwardRef(({
+	data = [],
+	onItemSelect,
+	multiselect = false,
+	selectedId = [],
+	closeOnSelect = true,
+	...rest
+}, sheetRef) => {
 
 	const renderItem = useCallback(({ item }) => {
-		return <XFieldContainer
-			title={item.title}
-			onPress={() => {
-				onItemSelect(item);
-				if (closeOnSelect)
-					sheetRef?.current?.close();
-			}}
-			style={{ height: rowHeight, marginVertical: rowVerticalMargin }}
-			iconLeft={() => <XCheckBox round checked={multiselect ? false : item.id === selectedId} />}
-		>
-			<View style={{ flex: 1, justifyContent: 'center' }}>
-				<XText size={15}>{item.title}</XText>
-			</View>
-		</XFieldContainer>
+		return (
+			<XFieldContainer
+				title={item.title}
+				style={{ height: rowHeight, marginVertical: rowVerticalMargin }}
+				iconLeft={() => <XCheckBox round checked={multiselect ? false : item.id === selectedId} />}
+				onPress={() => {
+					onItemSelect(item);
+					if (closeOnSelect)
+						sheetRef?.current?.close();
+				}}
+			>
+				<View style={{ flex: 1, justifyContent: 'center' }}>
+					<XText>{item.title}</XText>
+				</View>
+			</XFieldContainer>
+		)
 	}, [onItemSelect, selectedId]);
 
 	const keyExtractor = useCallback(i => i.id);

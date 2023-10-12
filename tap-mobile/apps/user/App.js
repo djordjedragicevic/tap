@@ -101,7 +101,7 @@ export default App = () => {
 	//Set font
 	useEffect(() => {
 		if (fontsLoaded)
-			storeDispatch('app.set_font', 'Inter_500Medium');
+			storeDispatch('app.set_font', 'Inter_400Regular');
 	}, [fontsLoaded]);
 
 

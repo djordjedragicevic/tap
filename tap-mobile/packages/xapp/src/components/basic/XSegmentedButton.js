@@ -67,11 +67,11 @@ export default XSegmentedButton;
 const styleCreator = (theme, isLast, selected) => {
 	return StyleSheet.create({
 		container: {
-			borderColor: theme.colors.primary,
-			flexDirection: 'row',
+			borderColor: theme.colors.borderColor,
 			borderWidth: Theme.values.borderWidth,
+			flexDirection: 'row',
 			height: 38,
-			padding: 3,
+			padding: 4,
 			borderRadius: Theme.values.borderRadius,
 			backgroundColor: theme.colors.backgroundElement,
 			overflow: 'hidden'

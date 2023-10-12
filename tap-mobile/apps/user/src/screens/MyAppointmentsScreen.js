@@ -11,7 +11,7 @@ import { Theme } from "xapp/src/style/themes";
 import XSegmentedButton from "xapp/src/components/basic/XSegmentedButton";
 import XSection from "xapp/src/components/basic/XSection";
 import XAlert from "xapp/src/components/basic/XAlert";
-import { usePrimaryColor } from "xapp/src/style/ThemeContext";
+import { usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 
 const groupLinked = (apps = []) => {
 	const g = {};
@@ -40,7 +40,7 @@ const STATUS = {
 
 const COLORS = {
 	WAITING: 'gold',
-	CANCELED: 'orange',
+	CANCELED: '#FFDAB9',
 	ACCEPTED: 'lightgreen',
 	REJECTED: 'red'
 };
@@ -77,108 +77,132 @@ const Appointment = ({ item, reload }) => {
 	const isMulti = Array.isArray(item);
 	const t = useTranslation();
 	const pColor = usePrimaryColor();
-
-	const price = isMulti ?
-		item.map(i => i.service.price).reduce((a, curr) => a + curr)
-		:
-		item.service.price;
-
-	const provider = (isMulti ? item[0] : item).provider;
-
-	const status = getStatus(item);
+	const styles = useThemedStyle(styleCreator);
 
 
-	const getButton = () => {
-		if (item.history)
-			return null;
-		else if (status === STATUS.WAITING)
-			return <XButton
-				style={{ flex: 1 }}
-				title='otkazi'
-				//color={'red'}
-				outline
-				secondary
-				small
-				onPress={() => {
-					XAlert.show('Otkazivanje rezervacije', 'Da li ste sigurni da zelite da otkazete rezervaciju', [
-						{ text: 'Odustani' },
-						{
-							text: 'Otkazi', onPress: () => {
-								Http.post('/appointments/my-appointments/cancel', {
-									appIds: isMulti ? item.map(i => i.id) : [item.id]
-								})
-									.then(resp => {
-										reload()
-									})
-							}
-						}
-					])
-				}}
-			/>
-		else if (status === STATUS.CANCELED)
-			return <XButton
-				style={{ flex: 1 }}
-				title='Ponovo zakazi'
-				small
-				onPress={() => {
-					XAlert.show('Otkazivanje rezervacije', 'Da li ste sigurni da zelite da otkazete rezervaciju', [
-						{ text: 'Odustani' },
-						{
-							text: 'Zakazi', onPress: () => {
-								Http.post('/appointments/my-appointments/rebook', {
-									appIds: isMulti ? item.map(i => i.id) : [item.id]
-								})
-									.then(resp => {
-										reload()
-									})
-							}
-						}
-					])
-				}}
-			/>
 
-		else
-			return null;
-	}
+	const [price, provider, isHistory, itemIds, status, sDate, sTime] = useMemo(() => {
+		const price = isMulti ?
+			item.map(i => i.service.price).reduce((a, curr) => a + curr)
+			:
+			item.service.price;
+
+		return [
+			price,
+			(isMulti ? item[0] : item).provider,
+			isMulti ? item[0].history : item.history,
+			isMulti ? item.map(i => i.id) : [item.id],
+			// getStatus(item),
+			STATUS.CANCELED,
+			(isMulti ? item[0] : item).sDate,
+			(isMulti ? item[0] : item).sTime
+		];
+
+	}, [item, reload]);
+
+	const ActButton = useMemo(() => {
+		switch (status) {
+			case STATUS.WAITING:
+			case STATUS.ACCEPTED:
+				return (
+					<XButton
+						//style={{ flex: 1 }}
+						title={t('Cancel')}
+						secondary
+						small
+						onPress={() => {
+							XAlert.show('Otkazivanje rezervacije', 'Da li ste sigurni da zelite da otkazete rezervaciju', [
+								{ text: 'Odustani' },
+								{
+									text: 'Otkazi', onPress: () => {
+										Http.post('/appointments/my-appointments/cancel', { appIds: itemIds })
+											.then(reload)
+									}
+								}
+							])
+						}}
+					/>
+				);
+
+			case STATUS.CANCELED:
+				return (
+					<XButton
+						//style={{ flex: 1 }}
+						title='Ponovo zakazi'
+						small
+						primary
+						uppercase={true}
+						onPress={() => {
+							XAlert.show('Otkazivanje rezervacije', 'Da li ste sigurni da zelite da otkazete rezervaciju', [
+								{ text: 'Odustani' },
+								{
+									text: 'Zakazi', onPress: () => {
+										Http.post('/appointments/my-appointments/rebook', { appIds: itemIds })
+											.then(reload)
+									}
+								}
+							])
+						}}
+					/>
+				);
+
+			default:
+				return null;
+		}
+	}, [status, reload])
 
 
 	return (
-		<XSection>
-			<View>
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-					<View style={{}}>
-						<XText bold italic>{(isMulti ? item[0] : item).sDate}</XText>
-					</View>
-					<View style={{
-						justifyContent: 'center'
-					}}>
-						<XText bold style={{ color: COLORS[status] }} >{status}</XText>
-					</View>
+		<XSection
+			style={styles.appContainer}
+			styleContent={{
+				padding: 10,
+
+			}}
+			title={`${sDate} - ${sTime}`}
+			styleTitle={styles.appTitle}
+		>
+
+			{/* <View style={{
+				flexDirection: 'row',
+				justifyContent: 'space-between',
+				alignItems: 'center',
+				paddingHorizontal: 8,
+				backgroundColor: COLORS[status]
+			}}>
+				<View style={{}}>
+					<XText bold italic>{sDate} - {sTime}</XText>
 				</View>
-
-				<XSeparator style={{ marginVertical: 10 }} />
-
-				<View>
-					<XText bold style={{ color: pColor }}>{provider.name} - {provider.type}</XText>
-				</View>
-
-				<View style={{ marginVertical: 15 }}>
-					<View style={{ flex: 1, paddingVertical: 5 }}>
-						{isMulti ?
-							<View>{item.map(i => <AppService key={i.id} item={i} />)}</View>
-							:
-							<AppService item={item} />
-						}
-					</View>
-				</View>
-
-				<View style={{ flexDirection: 'row', height: 30 }}>
-					{getButton()}
-					<View style={{ flex: 1 }} />
-					<XText>{CurrencyUtils.convert(price)}</XText>
+				<View style={{
+					justifyContent: 'center'
+				}}>
+					<XText bold style={{ color: COLORS[status] }} >{status}</XText>
 				</View>
 			</View>
-		</XSection>
+
+			<XSeparator style={{ marginVertical: 10 }} /> */}
+
+			<View>
+				<XText bold style={{}}>{provider.name} - {provider.type}</XText>
+			</View>
+
+			<View style={{ marginVertical: 10 }}>
+				<View style={{ flex: 1, paddingVertical: 5 }}>
+					{isMulti ?
+						<View>{item.map(i => <AppService key={i.id} item={i} />)}</View>
+						:
+						<AppService item={item} />
+					}
+				</View>
+			</View>
+
+			<View style={{ flexDirection: 'row' }}>
+				{/* {!isHistory && ActButton} */}
+				<View style={{ flex: 1 }} />
+				{!isHistory && ActButton}
+				{/* <XText>{CurrencyUtils.convert(price)}</XText> */}
+			</View>
+		</XSection >
 	)
 };
 
@@ -203,7 +227,7 @@ const MyAppointmentsScreen = () => {
 			data.historyApps.concat(data.comingApps).forEach(a => {
 				const date = new Date(a.start)
 				a.sTime = date.toLocaleTimeString(dateCode, { hour: '2-digit', minute: '2-digit', hour12: false });
-				a.sDate = date.toLocaleDateString(dateCode, { weekday: 'short', day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+				a.sDate = date.toLocaleDateString(dateCode, { day: 'numeric', month: 'long', year: 'numeric' });
 			});
 		}
 		return groupLinked(data?.[history ? 'historyApps' : 'comingApps'])
@@ -218,7 +242,7 @@ const MyAppointmentsScreen = () => {
 					{ id: 2, text: 'Finished' }
 				]}
 				onSelect={(o) => setHistory(o.id === 2)}
-				style={{ margin: 10 }}
+				style={{ marginBottom: Theme.values.mainPaddingHorizontal }}
 				initialIndex={0}
 			/>
 
@@ -229,8 +253,8 @@ const MyAppointmentsScreen = () => {
 				keyExtractor={(item) => Array.isArray(item) ? item[0].joinId : item.id}
 				ListEmptyComponent={(<View><XText>NEMA</XText></View>)}
 				contentContainerStyle={{
-					rowGap: 8,
-					marginHorizontal: Theme.values.mainPaddingHorizontal
+					rowGap: Theme.values.mainPaddingHorizontal,
+					//paddingHorizontal: Theme.values.mainPaddingHorizontal
 				}}
 				refreshing={refreshing}
 				onRefresh={refresh}
@@ -240,6 +264,17 @@ const MyAppointmentsScreen = () => {
 };
 
 const styleCreator = (theme) => StyleSheet.create({
+	appTitle: {
+		backgroundColor: theme.colors.backgroundElement,
+		//backgroundColor: COLORS.CANCELED,
+		paddingVertical: 10,
+		borderBottomWidth: 1,
+		borderColor: theme.colors.borderColor
+	},
+	appContainer: {
+		borderWidth: Theme.values.borderWidth,
+		borderColor: theme.colors.borderColor
+	},
 	container: {
 
 	}

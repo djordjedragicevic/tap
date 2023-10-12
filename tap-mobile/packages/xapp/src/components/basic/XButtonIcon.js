@@ -9,12 +9,12 @@ const ButtonIcon = ({
 	style,
 	color,
 	primary,
-	size = 40,
+	size = 36,
 	onPress = emptyFn,
 	...rest
 }) => {
 
-	const iconColor = color || useColor(primary ? 'primary' : 'textSecondary');
+	const iconColor = color || useColor(primary ? 'primary' : 'textPrimary');
 	const styles = useThemedStyle(styleCreator);
 	const iconSize = Math.round(size * 0.6);
 

@@ -19,8 +19,8 @@ const Main = () => {
 			colors: {
 				...navigationTheme.colors,
 				background: theme.colors.background,
-				card: theme.colors.backgroundElement,
-				text: theme.colors.textPrimary,
+				card: theme.colors.secondary,
+				text: theme.colors.textLight,
 				primary: theme.colors.primary
 			}
 		}

@@ -60,5 +60,8 @@ export const strings = {
 	"Creating account": "Kreiranje naloga",
 	"Closed": "Zatvoreno",
 	"Verifying": "Verifikacija",
-	"Booking": "Rezervisanje"
+	"Booking": "Rezervisanje",
+	"Saved providers": "Sačuvani davaoci usluga",
+	"Manage account": "Upravljanje profilom",
+	"User account": "Korisnički nalog"
 };
