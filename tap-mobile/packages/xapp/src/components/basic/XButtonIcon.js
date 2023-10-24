@@ -9,13 +9,14 @@ const ButtonIcon = ({
 	style,
 	color,
 	primary,
+	backgroundColor,
 	size = 36,
 	onPress = emptyFn,
 	...rest
 }) => {
 
 	const iconColor = color || useColor(primary ? 'primary' : 'textPrimary');
-	const styles = useThemedStyle(styleCreator);
+	const styles = useThemedStyle(styleCreator, size, backgroundColor);
 	const iconSize = Math.round(size * 0.6);
 
 	return (
@@ -32,11 +33,11 @@ const ButtonIcon = ({
 	)
 };
 
-const styleCreator = (theme, size) => StyleSheet.create({
+const styleCreator = (theme, size, backgroundColor) => StyleSheet.create({
 	btn: {
 		borderRadius: Theme.values.borderRadius,
 		padding: 7,
-		backgroundColor: theme.colors.backgroundElement,
+		backgroundColor: backgroundColor || theme.colors.backgroundElement,
 		width: size,
 		height: size,
 		alignItems: 'center',

@@ -79,11 +79,4 @@ public class AuthService {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 	}
-
-	@GET
-	@Path("check")
-	@Secured
-	public Response check() {
-		return Response.ok(true).build();
-	}
 }

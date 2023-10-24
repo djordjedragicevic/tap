@@ -13,7 +13,8 @@ const XSection = ({
 	disabledOpacity,
 	styleContent,
 	styleTitle,
-	transparent = false
+	transparent = false,
+	titleRight = null
 }) => {
 
 	const styles = useThemedStyle(createStyle, transparent, !!title);
@@ -22,9 +23,11 @@ const XSection = ({
 
 	return (
 		<View style={[styles.container, style]}>
-			{!!title && <View style={[styles.title, styleTitle]}>
-				<XText bold>{title}</XText>
-			</View>
+			{!!(title || titleRight) &&
+				<View style={[styles.title, styleTitle]}>
+					{!!title && <XText bold>{title}</XText>}
+					{!!titleRight && titleRight}
+				</View>
 			}
 			<RootCmp style={[styles.content, styleContent]} onPress={onPress}>
 				{children}
@@ -42,8 +45,11 @@ XSection.defaultProps = {
 
 const createStyle = (theme, transparent, hasTitle) => StyleSheet.create({
 	title: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 		paddingHorizontal: 10,
-		justifyContent: 'center',
 		paddingVertical: 3
 	},
 	content: {

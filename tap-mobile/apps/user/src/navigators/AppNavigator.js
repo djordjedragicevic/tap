@@ -12,7 +12,8 @@ import {
 	BOOK_APPOINTMENT_SCREEN,
 	CREATE_ACCOUNT_SCREEN,
 	VERIFICATION_CODE_SCREEN,
-	MANAGE_ACCOUNT_SCREEN
+	MANAGE_ACCOUNT_SCREEN,
+	MAP_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/provider/ProviderScreen';
@@ -34,6 +35,7 @@ import CreateAccountScreen from '../screens/CreateAccountScreen';
 import VerificationCodeScreen from '../screens/VerificationCodeScreen';
 import TryScreen from '../screens/TryScreen';
 import MenageAccountScreen from '../screens/MenageAccountScreen';
+import MapScreen from '../screens/MapScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -155,6 +157,14 @@ const AppNavigator = ({ }) => {
 				}}
 				name={PROVIDER_SCREEN}
 				component={ProviderScreen}
+			/>
+
+			<Stack.Screen
+				options={{
+					headerShown: false
+				}}
+				name={MAP_SCREEN}
+				component={MapScreen}
 			/>
 
 			{

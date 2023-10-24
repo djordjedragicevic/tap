@@ -3,15 +3,14 @@ import XText from "xapp/src/components/basic/XText";
 import XButton from "xapp/src/components/basic/XButton";
 import { useCallback, useState } from "react";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
-import { StyleSheet, View } from "react-native"
+import { Pressable, StyleSheet, View } from "react-native"
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import XChip from "xapp/src/components/basic/XChip";
-import { useColor, usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import { usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 import HairSalon from "../../components/svg/HairSalon";
-import FavoriteButton from "../../components/FavoriteButton";
 import { storeDispatch, useStore } from "xapp/src/store/store";
-import { FREE_APPOINTMENTS_SCREEN } from "../../navigators/routes";
+import { FREE_APPOINTMENTS_SCREEN, MAP_SCREEN } from "../../navigators/routes";
 import { AntDesign } from '@expo/vector-icons';
 import Footer from "../../components/Footer";
 import { XTabView, XTabScreen } from "xapp/src/components/tabview/XTabView";
@@ -19,8 +18,8 @@ import XImage from "xapp/src/components/basic/XImage";
 import utils from "../../common/utils";
 import TabAbout from "./TabAbout";
 import TabServices from "./TabServices";
-import { HeaderBackButton } from "@react-navigation/elements";
 import ButtonIcon from "xapp/src/components/basic/XButtonIcon";
+import { CurrencyUtils } from "xapp/src/common/utils";
 
 const TabReviews = () => {
 	return (
@@ -110,7 +109,7 @@ const ProviderScreen = ({ navigation, route }) => {
 					left: 0,
 					alignItems: 'center'
 				}}>
-					<XChip text={utils.generateMarkString(about?.mark, about?.reviewCount)} />
+					<XChip primary text={utils.generateMarkString(about?.mark, about?.reviewCount)} />
 				</View>
 			</View>
 
@@ -125,7 +124,13 @@ const ProviderScreen = ({ navigation, route }) => {
 							alignItems: 'center',
 							paddingTop: CHIP_MARK_TOP_MARGIN
 						}}>
-							<XText bold size={18}>{about.name} - {about.type}</XText>
+							<View style={{ flexDirection: 'row', alignItems: 'center', columnGap: 5 }}>
+								<XText bold size={18}>{about.name} - {about.type}</XText>
+								{
+									!!(about.lat && about.lng) &&
+									<XButtonIcon icon='enviroment' primary onPress={(navigation.navigate(MAP_SCREEN, { lat: about.lan, lng: about.lng }))} />
+								}
+							</View>
 						</View>
 
 						<XTabView
@@ -159,7 +164,7 @@ const ProviderScreen = ({ navigation, route }) => {
 					{
 						<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 							<XText light>{selectedIds?.length > 0 ? selectedIds.length : '-'} servisa</XText>
-							<XText size={16} bold light>{priceSum || '-'}</XText>
+							<XText size={16} bold light>{priceSum ? CurrencyUtils.convert(priceSum) : '-'}</XText>
 						</View>
 					}
 				</View>

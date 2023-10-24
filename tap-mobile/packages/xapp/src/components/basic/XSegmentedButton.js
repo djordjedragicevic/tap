@@ -5,8 +5,8 @@ import { useState } from "react";
 import { emptyFn } from "../../common/utils";
 import { Theme } from "../../style/themes";
 
-const XSegment = ({ item, onPress, selected, isLast }) => {
-	const styles = useThemedStyle(styleCreator, isLast, selected);
+const XSegment = ({ item, onPress, selected }) => {
+	const styles = useThemedStyle(styleCreator, selected);
 	return (
 		<Pressable style={styles.segment} onPress={onPress}>
 			<XText light={selected} bold numberOfLines={1} style={styles.segmentText}>
@@ -64,7 +64,7 @@ const XSegmentedButton = ({
 
 export default XSegmentedButton;
 
-const styleCreator = (theme, isLast, selected) => {
+const styleCreator = (theme, selected) => {
 	return StyleSheet.create({
 		container: {
 			borderColor: theme.colors.borderColor,
@@ -88,7 +88,7 @@ const styleCreator = (theme, isLast, selected) => {
 			backgroundColor: theme.colors[selected ? 'secondary' : 'backgroundElement']
 		},
 		segmentText: {
-			color: selected ? theme.colors.textLight : theme.colors.secondary
+			color: selected ? theme.colors.textLight : theme.colors.textPrimary
 		},
 		icon: {
 			color: theme.colors.secondary,

@@ -1,11 +1,9 @@
 import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
-import XSeparator from "xapp/src/components/basic/XSeparator";
 import { useCallback, useMemo, useState } from "react";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
 import { FlatList, StyleSheet, View } from "react-native";
 import { useDateCode, useTranslation } from "xapp/src/i18n/I18nContext";
-import { CurrencyUtils } from "xapp/src/common/utils";
 import XButton from "xapp/src/components/basic/XButton";
 import { Theme } from "xapp/src/style/themes";
 import XSegmentedButton from "xapp/src/components/basic/XSegmentedButton";
@@ -13,6 +11,7 @@ import XSection from "xapp/src/components/basic/XSection";
 import XAlert from "xapp/src/components/basic/XAlert";
 import { usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import XChip from "xapp/src/components/basic/XChip";
+import XIcon from "xapp/src/components/basic/XIcon";
 
 const groupLinked = (apps = []) => {
 	const g = {};
@@ -40,10 +39,10 @@ const STATUS = {
 };
 
 const COLORS = {
-	WAITING: 'yellow',
-	CANCELED: 'orange',
-	ACCEPTED: 'green',
-	REJECTED: 'red'
+	WAITING: Theme.vars.purple,
+	CANCELED: Theme.vars.blue,
+	ACCEPTED: Theme.vars.green,
+	REJECTED: Theme.vars.red
 };
 
 const getStatus = (apps) => {
@@ -78,7 +77,6 @@ const Appointment = ({ item, reload }) => {
 	const isMulti = Array.isArray(item);
 	const t = useTranslation();
 	const pColor = usePrimaryColor();
-	const styles = useThemedStyle(styleCreator);
 
 
 
@@ -99,6 +97,8 @@ const Appointment = ({ item, reload }) => {
 		];
 
 	}, [item, reload]);
+
+	const styles = useThemedStyle(styleCreator);
 
 	const ActButton = useMemo(() => {
 		switch (status) {
@@ -153,23 +153,21 @@ const Appointment = ({ item, reload }) => {
 	return (
 		<XSection
 			style={styles.appContainer}
-			styleContent={{
-				padding: 10
-			}}
+			styleContent={styles.appContent}
 			title={`${sDate} - ${sTime}`}
+			titleRight={(
+				<XChip
+					text={status}
+					color={isHistory ? Theme.vars.gray : COLORS[status]}
+					icon={<XIcon icon='user' size={16} />}
+					textStyle={{ textTransform: 'capitalize' }}
+				/>
+			)}
 			styleTitle={styles.appTitle}
 		>
 			<View style={{ flexDirection: 'row', columnGap: 10 }}>
-				<XText bold style={{}}>{provider.name} - {provider.type}</XText>
-				<XChip
-					text={status}
-					color={COLORS[status]}
-					//style={{ alignSelf: 'flex-end' }}
-					textStyle={{ textTransform: 'capitalize' }}
-				>
-				</XChip>
+				<XText bold style={{ flex: 1 }}>{provider.name} - {provider.type}</XText>
 			</View>
-
 
 			<View style={{ marginVertical: 10 }}>
 				<View style={{ flex: 1, paddingVertical: 5 }}>
@@ -182,7 +180,6 @@ const Appointment = ({ item, reload }) => {
 			</View>
 
 			<View style={{ flexDirection: 'row' }}>
-				{/* {!isHistory && ActButton} */}
 				<View style={{ flex: 1 }} />
 				{!isHistory && ActButton}
 				{/* <XText>{CurrencyUtils.convert(price)}</XText> */}
@@ -229,8 +226,9 @@ const MyAppointmentsScreen = () => {
 				]}
 				onSelect={(o) => setHistory(o.id === 2)}
 				style={{
-					marginBottom: Theme.values.mainPaddingHorizontal,
-					borderRadius: 0
+					borderRadius: 0,
+					borderEndWidth: 0,
+					borderStartWidth: 0
 				}}
 				initialIndex={0}
 			/>
@@ -243,7 +241,7 @@ const MyAppointmentsScreen = () => {
 				ListEmptyComponent={(<View><XText>NEMA</XText></View>)}
 				contentContainerStyle={{
 					rowGap: Theme.values.mainPaddingHorizontal,
-					paddingHorizontal: Theme.values.mainPaddingHorizontal
+					padding: Theme.values.mainPaddingHorizontal
 				}}
 				refreshing={refreshing}
 				onRefresh={refresh}
@@ -255,17 +253,16 @@ const MyAppointmentsScreen = () => {
 const styleCreator = (theme) => StyleSheet.create({
 	appTitle: {
 		backgroundColor: theme.colors.backgroundElement,
-		//backgroundColor: COLORS.CANCELED,
 		paddingVertical: 10,
 		borderBottomWidth: 1,
 		borderColor: theme.colors.borderColor
 	},
 	appContainer: {
 		borderWidth: Theme.values.borderWidth,
-		borderColor: theme.colors.borderColor
+		borderColor: theme.colors.borderColor,
 	},
-	container: {
-
+	appContent: {
+		padding: 10,
 	}
 })
 

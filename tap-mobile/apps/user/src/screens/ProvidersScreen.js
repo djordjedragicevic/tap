@@ -106,14 +106,6 @@ const ProvidersScreen = ({ navigation }) => {
 };
 
 const styleCreator = (theme) => StyleSheet.create({
-	card: {
-		height: 160,
-		marginHorizontal: Theme.values.mainPaddingHorizontal,
-		marginTop: 6,
-		alignItems: 'center',
-		justifyContent: 'space-evenly',
-		flex: 1
-	},
 	titleType: {
 		//fontSize: 18
 	},
@@ -121,6 +113,7 @@ const styleCreator = (theme) => StyleSheet.create({
 		fontSize: 20
 	},
 	section: {
+		padding: 0,
 		borderColor: theme.colors.borderColor,
 		borderWidth: Theme.values.borderWidth
 	},

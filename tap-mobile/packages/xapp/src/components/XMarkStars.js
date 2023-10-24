@@ -15,7 +15,7 @@ const XMarkStars = ({ mark, reviewCound, style }) => {
 
 	return (
 		<View style={[styles.cnt, style]}>
-			<XChip text={mark?.toFixed(1)} />
+			<XChip primary text={mark?.toFixed(1)} />
 			<View style={styles.markCnt}>
 				{stars.map(c => (
 					<View key={c}>
