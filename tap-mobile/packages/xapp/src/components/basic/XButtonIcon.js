@@ -11,12 +11,14 @@ const ButtonIcon = ({
 	primary,
 	backgroundColor,
 	size = 36,
+	disabled = false,
 	onPress = emptyFn,
 	...rest
 }) => {
 
-	const iconColor = color || useColor(primary ? 'primary' : 'textPrimary');
-	const styles = useThemedStyle(styleCreator, size, backgroundColor);
+	const pColor = useColor('textPrimary');
+	const iconColor = color || pColor;
+	const styles = useThemedStyle(styleCreator, size, backgroundColor, primary, disabled);
 	const iconSize = Math.round(size * 0.6);
 
 	return (
@@ -33,17 +35,28 @@ const ButtonIcon = ({
 	)
 };
 
-const styleCreator = (theme, size, backgroundColor) => StyleSheet.create({
-	btn: {
-		borderRadius: Theme.values.borderRadius,
-		padding: 7,
-		backgroundColor: backgroundColor || theme.colors.backgroundElement,
-		width: size,
-		height: size,
-		alignItems: 'center',
-		justifyContent: 'center'
-	}
-});
+const styleCreator = (theme, size, backgroundColor, primary, disabled) => {
+	let bgColor = theme.colors.backgroundElement;
+	if (backgroundColor)
+		bgColor = backgroundColor;
+	if (primary)
+		bgColor = theme.colors.primary;
+
+
+
+	return StyleSheet.create({
+		btn: {
+			borderRadius: Theme.values.borderRadius,
+			padding: 7,
+			backgroundColor: bgColor,
+			width: size,
+			height: size,
+			alignItems: 'center',
+			justifyContent: 'center',
+			opacity: disabled ? Theme.values.disabledOpacity : 1
+		}
+	});
+}
 
 
 export default ButtonIcon;

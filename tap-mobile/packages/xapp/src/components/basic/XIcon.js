@@ -15,7 +15,7 @@ const XIcon = ({ icon, children, color, size = 23 }) => {
 			return icon({ size, color: iconColor })
 		else if (React.isValidElement(children))
 			return children;
-	}, [icon, children, size])
+	}, [icon, children, size, color])
 
 	return (
 		<>

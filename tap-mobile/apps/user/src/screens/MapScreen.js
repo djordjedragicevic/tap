@@ -2,9 +2,11 @@ import XScreen from "xapp/src/components/XScreen";
 import MapView, { Marker } from 'react-native-maps';
 import { useState } from "react";
 
-const MapScreen = () => {
-	const [latD, setLatD] = useState(0.0035);
-	const [lonD, setLonD] = useState(0.0035);
+const MapScreen = ({ route }) => {
+	const [latD] = useState(0.0055);
+	const [lonD] = useState(0.0035);
+	const { lat, lon, title, description } = route.params;
+
 	return (
 		<XScreen flat>
 			<MapView
@@ -13,19 +15,19 @@ const MapScreen = () => {
 					height: '100%'
 				}}
 				initialRegion={{
-					latitude: 44.7728626,
-					longitude: 17.1931324,
+					latitude: lat,
+					longitude: lon,
 					latitudeDelta: latD,
 					longitudeDelta: lonD
 				}}
 			>
 				<Marker
 					key={1}
-					coordinate={{ latitude: 44.7728626, longitude: 17.1931324 }}
+					coordinate={{ latitude: lat, longitude: lon }}
 					//image={'../../assets/favicon.png'}
-					title={'Đole'}
+					title={title}
 					pinColor="blue"
-					description={'Frizerski salon'}
+					description={description}
 					isPreselected={true}
 				/>
 			</MapView>

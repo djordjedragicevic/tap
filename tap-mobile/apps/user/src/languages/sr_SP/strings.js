@@ -65,5 +65,7 @@ export const strings = {
 	"Manage account": "Upravljanje profilom",
 	"User account": "Korisnički nalog",
 	"Upcoming": "Predstojeći",
-	"History": "Istorija"
+	"History": "Istorija",
+	"Working hours": "Radno vrijeme",
+	"Our team": "Naš tim"
 };

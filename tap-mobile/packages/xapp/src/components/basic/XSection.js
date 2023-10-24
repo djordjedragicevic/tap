@@ -60,7 +60,7 @@ const createStyle = (theme, transparent, hasTitle) => StyleSheet.create({
 		borderTopStartRadius: hasTitle ? 0 : Theme.values.borderRadius
 	},
 	container: {
-		backgroundColor: transparent ? 'transparent' : theme.colors.background,
+		//backgroundColor: transparent ? 'transparent' : theme.colors.background,
 		overflow: 'hidden',
 		borderRadius: Theme.values.borderRadius,
 

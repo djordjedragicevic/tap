@@ -9,7 +9,7 @@ import { Theme } from "xapp/src/style/themes";
 import XSegmentedButton from "xapp/src/components/basic/XSegmentedButton";
 import XSection from "xapp/src/components/basic/XSection";
 import XAlert from "xapp/src/components/basic/XAlert";
-import { usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import { useColor, usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import XChip from "xapp/src/components/basic/XChip";
 import XIcon from "xapp/src/components/basic/XIcon";
 
@@ -38,8 +38,15 @@ const STATUS = {
 	REJECTED: 'REJECTED'
 };
 
+const ICON = {
+	WAITING: 'clockcircleo',
+	CANCELED: 'closecircleo',
+	ACCEPTED: 'checkcircleo',
+	REJECTED: 'warning'
+};
+
 const COLORS = {
-	WAITING: Theme.vars.purple,
+	WAITING: Theme.vars.yellow,
 	CANCELED: Theme.vars.blue,
 	ACCEPTED: Theme.vars.green,
 	REJECTED: Theme.vars.red
@@ -76,9 +83,6 @@ const Appointment = ({ item, reload }) => {
 
 	const isMulti = Array.isArray(item);
 	const t = useTranslation();
-	const pColor = usePrimaryColor();
-
-
 
 	const [price, provider, isHistory, itemIds, status, sDate, sTime] = useMemo(() => {
 		const price = isMulti ?
@@ -97,6 +101,8 @@ const Appointment = ({ item, reload }) => {
 		];
 
 	}, [item, reload]);
+
+	const statusColor = useColor(COLORS[status]);
 
 	const styles = useThemedStyle(styleCreator);
 
@@ -159,7 +165,7 @@ const Appointment = ({ item, reload }) => {
 				<XChip
 					text={status}
 					color={isHistory ? Theme.vars.gray : COLORS[status]}
-					icon={<XIcon icon='user' size={16} />}
+					icon={<XIcon color={isHistory ? undefined : statusColor} icon={ICON[status]} size={16} />}
 					textStyle={{ textTransform: 'capitalize' }}
 				/>
 			)}

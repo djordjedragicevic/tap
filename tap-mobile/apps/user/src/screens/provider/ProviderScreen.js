@@ -3,7 +3,7 @@ import XText from "xapp/src/components/basic/XText";
 import XButton from "xapp/src/components/basic/XButton";
 import { useCallback, useState } from "react";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
-import { Pressable, StyleSheet, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import XChip from "xapp/src/components/basic/XChip";
 import { usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
@@ -18,7 +18,7 @@ import XImage from "xapp/src/components/basic/XImage";
 import utils from "../../common/utils";
 import TabAbout from "./TabAbout";
 import TabServices from "./TabServices";
-import ButtonIcon from "xapp/src/components/basic/XButtonIcon";
+import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import { CurrencyUtils } from "xapp/src/common/utils";
 
 const TabReviews = () => {
@@ -51,6 +51,8 @@ const ProviderScreen = ({ navigation, route }) => {
 	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
 
 	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
+	const onFooterClear = useCallback(() => setSelectedIdxs([]), []);
+
 
 	const onFPress = () => {
 		const newFavs = isFavorite ? fProviders.filter(pId => pId !== providerId) : [...(fProviders || []), providerId];
@@ -80,7 +82,7 @@ const ProviderScreen = ({ navigation, route }) => {
 						</View>
 				}
 
-				<ButtonIcon
+				<XButtonIcon
 					icon='arrowleft'
 					onPress={navigation.goBack}
 					style={{
@@ -89,7 +91,7 @@ const ProviderScreen = ({ navigation, route }) => {
 						top: 10
 					}}
 				/>
-				<ButtonIcon
+				<XButtonIcon
 					icon={isFavorite ? 'hearto' : 'heart'}
 					disabled={favoriteDisabled}
 					color={pColor}
@@ -126,10 +128,6 @@ const ProviderScreen = ({ navigation, route }) => {
 						}}>
 							<View style={{ flexDirection: 'row', alignItems: 'center', columnGap: 5 }}>
 								<XText bold size={18}>{about.name} - {about.type}</XText>
-								{
-									!!(about.lat && about.lng) &&
-									<XButtonIcon icon='enviroment' primary onPress={(navigation.navigate(MAP_SCREEN, { lat: about.lan, lng: about.lng }))} />
-								}
 							</View>
 						</View>
 
@@ -138,7 +136,7 @@ const ProviderScreen = ({ navigation, route }) => {
 							tabBarStyle={styles.tabBar}
 						>
 							<XTabScreen title={t('About')} style={{ flex: 1 }}>
-								<TabAbout data={about} />
+								<TabAbout data={about} navigation={navigation} />
 							</XTabScreen>
 
 							<XTabScreen title={t('Services')} style={{ flex: 1 }}>
@@ -160,6 +158,13 @@ const ProviderScreen = ({ navigation, route }) => {
 			</View>
 
 			<Footer>
+
+				<XButtonIcon
+					disabled={!selectedIds?.length}
+					icon='close'
+					backgroundColor='transparent'
+					onPress={onFooterClear}
+				/>
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					{
 						<View style={{ justifyContent: 'center', alignItems: 'center' }}>

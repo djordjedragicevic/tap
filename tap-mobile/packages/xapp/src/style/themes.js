@@ -99,8 +99,8 @@ export const Theme = {
 			//textLight: '#f2f2f3',
 			textLight: 'white',
 
-			borderColor: 'hsl(0, 0%, 35%)',
-			
+			borderColor: 'hsl(0, 0%, 25%)',
+
 			gray: 'hsl(0, 0%, 90%)',
 			grayLight: 'hsl(0, 0%, 50%)',
 

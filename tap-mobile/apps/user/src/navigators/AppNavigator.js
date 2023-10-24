@@ -99,7 +99,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 					headerShown: false,
 					title: logged ? t("Profile") : t("Sign in"),
 					tabBarIcon: (props) => logged ?
-						<XAvatar initials={initials} size={props.size} style={props.focused && { borderColor: colorPrimary, borderWidth: 1 }} />
+						<XAvatar initials={initials} size={props.size} style={!!props.focused && { borderColor: colorPrimary, borderWidth: 1.5 }} />
 						:
 						<AntDesign name="user" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}} />

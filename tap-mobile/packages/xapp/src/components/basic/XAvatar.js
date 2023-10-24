@@ -29,8 +29,7 @@ const styleCreator = (theme, color) => StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		backgroundColor: 'lightcoral',
-		flex: 1,
-		borderRadius: Theme.values.borderRadius
+		flex: 1
 	},
 	avatar: {
 		borderRadius: Theme.values.borderRadius,

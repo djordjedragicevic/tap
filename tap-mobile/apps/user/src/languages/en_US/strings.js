@@ -80,6 +80,8 @@ export const strings = {
 	"Manage account": "Manage account",
 	"User account": "User account",
 	"Upcoming": "Upcoming",
-	"History": "History"
+	"History": "History",
+	"Working hours": "Working hours",
+	"Our team": "Our team"
 
 };

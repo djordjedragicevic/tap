@@ -5,17 +5,19 @@ import XAvatar from "xapp/src/components/basic/XAvatar";
 import XSection from "xapp/src/components/basic/XSection";
 import XText from "xapp/src/components/basic/XText";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
+import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
+import { MAP_SCREEN } from "../../navigators/routes";
 
 
 const mapWorkPeriods = (workPeriods) => {
 	const wPMap = {
-		0: false,
 		1: false,
 		2: false,
 		3: false,
 		4: false,
 		5: false,
-		6: false
+		6: false,
+		7: false
 	};
 
 	workPeriods.forEach(p => {
@@ -29,20 +31,30 @@ const mapWorkPeriods = (workPeriods) => {
 };
 
 
-const TabAbout = ({ data = {} }) => {
+const TabAbout = ({ data = {}, navigation }) => {
 	const t = useTranslation();
 
 	const wPs = useMemo(() => mapWorkPeriods(data.workPeriods), [data?.workPeriods]);
 
 	return (
-		<ScrollView>
+		<ScrollView contentContainerStyle={{ rowGap: 10 }}>
 
-			<XSection title={"Address"}>
-				<XText>{data.address}, {data.city}</XText>
-				<XText>{data.phone}</XText>
+			<XSection>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<View style={{ flex: 1 }}>
+						<XText>{data.address}, {data.city}</XText>
+						<XText>Tel: {data.phone}</XText>
+					</View>
+					<View>
+						{
+							!!(data.lat && data.lon) &&
+							<XButtonIcon icon='enviroment' primary onPress={() => navigation.navigate(MAP_SCREEN, { lat: data.lat, lon: data.lon, title: data.name, description: data.type })} />
+						}
+					</View>
+				</View>
 			</XSection>
 
-			<XSection title={"Our team"}>
+			<XSection title={t('Our team')}>
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
@@ -66,13 +78,13 @@ const TabAbout = ({ data = {} }) => {
 				</ScrollView>
 			</XSection>
 
-			<XSection title={"Work time"}>
+			<XSection title={t('Working hours')}>
 				{wPs &&
 					<View style={{}}>
 						{Object.keys(wPs).map(day => (
 							<View key={day} style={{ flexDirection: 'row' }}>
 								<View style={{ flex: 1 }}>
-									<XText>{t(DateUtils.WEEK_DAY[day])}</XText>
+									<XText>{t(DateUtils.WEEK_DAY[day - 1])}</XText>
 								</View>
 								<View style={{ flex: 1 }}>
 									<XText>{wPs[day] ? wPs[day].join(', ') : t('Closed')}</XText>
