@@ -3,7 +3,7 @@
 AssetType {
   // attributes
   id : short { @Id @AutoIncremented @DbName(id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty };
-  name : string { @DbName(name) @DbType("VARCHAR(16)") @Size(16) @MaxLen(16) };
+  name : string { @DbName(name) @DbType("VARCHAR(16)") @NotNull @NotEmpty @Size(16) @MaxLen(16) };
   // links
   assetList : Asset[];
 }

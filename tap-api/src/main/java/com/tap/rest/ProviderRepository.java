@@ -1,5 +1,6 @@
 package com.tap.rest;
 
+import com.tap.common.Statics;
 import com.tap.common.Util;
 import com.tap.db.dto.*;
 import com.tap.db.entity.*;
@@ -29,7 +30,8 @@ public class ProviderRepository {
 				c.name,
 				FUNCTION('GROUP_CONCAT', a.location) AS mainImg
 				FROM Provider p
-				LEFT JOIN Asset a ON a.provider = p
+				LEFT JOIN Asset a ON p.id = a.entityIdentifier
+				JOIN a.assettype asType
 				JOIN p.providertype pt
 				JOIN p.address ad
 				JOIN ad.city c
@@ -43,6 +45,7 @@ public class ProviderRepository {
 
 		List<Object[]> dbRes = em.createQuery(qS, Object[].class)
 				.setParameter("cityId", cityId)
+				//.setParameter("asTypeName", Statics.AT_PROVIDER_IMG)
 				.getResultList();
 
 		return Util.convertToListOfMap(dbRes,
@@ -63,12 +66,12 @@ public class ProviderRepository {
 				SELECT
 				p.id,
 				p.name,
+				p.phone,
 				p.description,
 				p.mark,
 				p.reviewCount,
 				t.name,
 				a.address1,
-				a.phone,
 				a.latitude,
 				a.longitude,
 				c.name,
@@ -89,8 +92,7 @@ public class ProviderRepository {
 				.getSingleResult();
 
 
-		return Util.convertToMap(prov, "id", "name", "description", "mark", "reviewCount", "type",
-				"address", "phone", "lat", "lon", "city", "country", "countryCode");
+		return Util.convertToMap(prov, "id", "name", "phone", "description", "mark", "reviewCount", "type", "address", "lat", "lon", "city", "country", "countryCode");
 
 	}
 
@@ -99,11 +101,14 @@ public class ProviderRepository {
 		String query = """
 				SELECT a.location AS mainImg
 				FROM Asset a
-				WHERE a.provider.id = :pId
+				JOIN a.assettype at
+				WHERE a.entityIdentifier = :pId
+				AND at.name = :aTName
 				""";
 
 		return em.createQuery(query, String.class)
 				.setParameter("pId", id)
+				.setParameter("aTName", Statics.AT_PROVIDER_IMG)
 				.getResultList();
 	}
 

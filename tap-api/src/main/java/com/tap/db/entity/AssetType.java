@@ -19,7 +19,7 @@ public class AssetType implements Serializable {
     @Column(name="id", nullable=false)
 	private short id;
 
-    @Column(name="name", length=16)
+    @Column(name="name", nullable=false, length=16)
 	private String name;
 
 

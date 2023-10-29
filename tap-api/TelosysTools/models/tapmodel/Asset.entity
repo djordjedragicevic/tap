@@ -3,10 +3,9 @@
 Asset {
   // attributes
   id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
-  providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_asset_provider1, Provider.id) };
   assetTypeId : short { @DbName(asset_type_id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty @FK(fk_asset_asset_type1, AssetType.id) };
+  entityIdentifier : long { @DbName(entity_identifier) @DbType(BIGINT) @NotNull @NotEmpty };
   location : string { @DbName(location) @DbType("VARCHAR(64)") @NotNull @NotEmpty @Size(64) @MaxLen(64) };
   // links
   assettype : AssetType { @LinkByFK(fk_asset_asset_type1) };
-  provider : Provider { @LinkByFK(fk_asset_provider1) };
 }

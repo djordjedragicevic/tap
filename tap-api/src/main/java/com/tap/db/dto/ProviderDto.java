@@ -7,6 +7,7 @@ public class ProviderDto {
 	private Integer id;
 	private String name;
 	private String description;
+	private String phone;
 	private String idNumber;
 	private Byte legalEntity;
 	private Byte approved;
@@ -43,6 +44,15 @@ public class ProviderDto {
 
 	public String getDescription() {
 		return this.description;
+	}
+
+	public ProviderDto setPhone( String phone ) {
+		this.phone = phone;
+		return this;
+	}
+
+	public String getPhone() {
+		return this.phone;
 	}
 
 	public ProviderDto setIdNumber( String idNumber ) {

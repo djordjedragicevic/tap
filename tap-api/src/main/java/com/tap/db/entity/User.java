@@ -38,6 +38,12 @@ public class User implements Serializable {
     @Column(name="last_name", length=128)
 	private String lastName;
 
+    @Column(name="phone", length=32)
+	private String phone;
+
+    @Column(name="imgPath", length=128)
+	private String imgpath;
+
     @Column(name="create_date", nullable=false)
 	private LocalDateTime createDate;
 
@@ -117,6 +123,22 @@ public class User implements Serializable {
 
 	public String getLastName() {
 		return this.lastName;
+	}
+
+	public void setPhone( String phone ) {
+		this.phone = phone ;
+	}
+
+	public String getPhone() {
+		return this.phone;
+	}
+
+	public void setImgpath( String imgpath ) {
+		this.imgpath = imgpath ;
+	}
+
+	public String getImgpath() {
+		return this.imgpath;
 	}
 
 	public void setCreateDate( LocalDateTime createDate ) {

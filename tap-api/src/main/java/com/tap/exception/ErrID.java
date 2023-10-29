@@ -5,11 +5,12 @@ public enum ErrID {
 	APPO_1,
 	PROV_1,
 
-	//Create account
+	//Create/Edit account
 	U_CACC_1,
 	U_CACC_2,
 	U_CACC_3,
 	U_CACC_4,
+	U_EACC_1,
 	U_VACC_1,
 	U_VACC_2,
 	U_UVFY_1,

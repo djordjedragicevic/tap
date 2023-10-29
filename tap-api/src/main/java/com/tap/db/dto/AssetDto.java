@@ -4,9 +4,9 @@
 package com.tap.db.dto;
 public class AssetDto {	
 	private Integer id;
+	private Long entityIdentifier;
 	private String location;
 	private AssetTypeDto assettype; 
-	private ProviderDto provider; 
 	public AssetDto() {}
 
 	public AssetDto setId( Integer id ) {
@@ -16,6 +16,15 @@ public class AssetDto {
 
 	public Integer getId() {
 		return this.id;
+	}
+
+	public AssetDto setEntityIdentifier( long entityIdentifier ) {
+		this.entityIdentifier = entityIdentifier;
+		return this;
+	}
+
+	public long getEntityIdentifier() {
+		return this.entityIdentifier;
 	}
 
 	public AssetDto setLocation( String location ) {
@@ -33,14 +42,6 @@ public class AssetDto {
 
 	public AssetDto setAssettype(AssetTypeDto assettype) {
 		this.assettype = assettype;
-		return this;
-	}
-	public ProviderDto getProvider() {
-		return this.provider;
-	}
-
-	public AssetDto setProvider(ProviderDto provider) {
-		this.provider = provider;
 		return this;
 	}
 }

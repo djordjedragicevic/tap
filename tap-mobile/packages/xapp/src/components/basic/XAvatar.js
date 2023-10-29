@@ -1,8 +1,9 @@
 import { StyleSheet, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XText from "./XText";
-import XImage from "./XImage";
 import { Theme } from "../../style/themes";
+import { Image } from "expo-image";
+
 
 const XAvatar = ({ size = 30, color, style, imgPath, initials }) => {
 	const styles = useThemedStyle(styleCreator, color, size);
@@ -14,7 +15,10 @@ const XAvatar = ({ size = 30, color, style, imgPath, initials }) => {
 			style={[styles.avatar, style]}
 		>
 			{imgPath ?
-				<XImage imgPath={imgPath} style={styles.img} />
+				<Image
+					source={imgPath}
+					style={styles.img}
+				/>
 				:
 				<View style={styles.text}>
 					<XText light size={Math.floor(size * 0.47)}>{initials}</XText>

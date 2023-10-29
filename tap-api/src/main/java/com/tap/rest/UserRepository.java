@@ -1,6 +1,7 @@
 package com.tap.rest;
 
 import com.tap.common.Util;
+import com.tap.db.dto.UserDto;
 import com.tap.db.entity.*;
 import com.tap.security.Security;
 import jakarta.enterprise.context.RequestScoped;
@@ -67,15 +68,36 @@ public class UserRepository {
 		if (u != null && u.getActive() == 1) {
 			resp.put("id", u.getId());
 			resp.put("username", u.getUsername());
+			resp.put("email", u.getEmail());
+			resp.put("phone", u.getPhone());
+			resp.put("imagePath", u.getImgpath());
 			resp.put("firstName", u.getFirstName());
 			resp.put("lastName", u.getLastName());
-			resp.put("email", u.getEmail());
 			resp.put("state", u.getUserstate());
-
 			resp.put("roles", getRoles(userId).stream().map(Role::getName).toList());
 		}
 
 		return resp;
+	}
+
+	@Transactional
+	public void setUserData(int userId, UserDto userData) {
+		User u = em.find(User.class, userId);
+		if (u != null && u.getActive() == 1) {
+			String username = userData.getUsername();
+			String email = userData.getEmail();
+
+			if (username != null && !username.isEmpty())
+				u.setUsername(userData.getUsername());
+			if (email != null && !email.isEmpty() && Util.isMail(email))
+				u.setEmail(email);
+
+			u.setFirstName(userData.getFirstName());
+			u.setLastName(userData.getLastName());
+			u.setPhone(userData.getPhone());
+
+			em.persist(u);
+		}
 	}
 
 	public Optional<User> getUserByCredentials(String username, String password) {

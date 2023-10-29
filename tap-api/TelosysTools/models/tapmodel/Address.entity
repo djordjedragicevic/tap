@@ -7,7 +7,6 @@ Address {
   number : string { @DbName(number) @DbType("VARCHAR(8)") @NotNull @NotEmpty @Size(8) @MaxLen(8) };
   longitude : float { @DbName(longitude) @DbType(FLOAT) };
   latitude : float { @DbName(latitude) @DbType(FLOAT) };
-  phone : string { @DbName(phone) @DbType("VARCHAR(32)") @Size(32) @MaxLen(32) };
   flatNumber : string { @DbName(flat_number) @DbType("VARCHAR(8)") @Size(8) @MaxLen(8) };
   address1 : string { @DbName(address1) @DbType("VARCHAR(136)") @Size(136) @MaxLen(136) };
   cityId : short { @DbName(city_id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty @FK(fk_address_city1, City.id) };

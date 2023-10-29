@@ -67,5 +67,9 @@ export const strings = {
 	"Upcoming": "Predstojeći",
 	"History": "Istorija",
 	"Working hours": "Radno vrijeme",
-	"Our team": "Naš tim"
+	"Our team": "Naš tim",
+	"First name": "Ime",
+	"Last name": "Prezime",
+	"Phone": "Telefon",
+	"Choose profile image": "Izaberite profilnu sliku"
 };

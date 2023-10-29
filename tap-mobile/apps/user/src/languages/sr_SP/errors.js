@@ -41,6 +41,10 @@ export const errors = {
 		title: 'Greška pri kreiranju naloga',
 		message: 'Korisničko ime "{:username}" trenutno postoje. Ono mora biti jedinstveno'
 	},
+	U_EACC_1: {
+		title: 'Greška pri izmjeni naloga',
+		message: 'Došlo je do greške pri pokušaju izmjene naloga'
+	},
 	U_VACC_1: {
 		title: 'Greška pri verifikaciji',
 		message: 'Trenutni verifikacioni kode je istekao. Pritisnite "Pošalji ponovo" da biste dobili novi kod'

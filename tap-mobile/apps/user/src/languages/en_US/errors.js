@@ -30,7 +30,7 @@ export const errors = {
 	},
 	U_CACC_1: {
 		title: 'Create account error',
-		message: 'Error appears while try to create error'
+		message: 'Error appears while try to create account'
 	},
 	U_CACC_2: {
 		title: 'Create account error',
@@ -39,6 +39,10 @@ export const errors = {
 	U_CACC_3: {
 		title: 'Create account error',
 		message: 'Username "{:username}" already exists. Must be unique'
+	},
+	U_EACC_1: {
+		title: 'Edit account error',
+		message: 'Error appears while try to create account'
 	},
 	U_VACC_1: {
 		title: 'Verification error',

@@ -22,7 +22,7 @@ public class Employee implements Serializable {
     @Column(name="name", nullable=false, length=32)
 	private String name;
 
-    @Column(name="image_path", length=64)
+    @Column(name="image_path", length=128)
 	private String imagePath;
 
     @Column(name="active", nullable=false)

@@ -19,6 +19,7 @@ const XButton = ({
 	flat = false,
 	round = false,
 	small = false,
+	large = false,
 	outline = false,
 	primary = false,
 	secondary = false,
@@ -29,6 +30,7 @@ const XButton = ({
 		flat,
 		round,
 		small,
+		large,
 		outline,
 		color,
 		textColor,
@@ -121,6 +123,10 @@ const createStyle = (theme, params, primary, secondary) => {
 	if (params.small) {
 		textStyle.fontSize = 12;
 		btnStyle.height = 28;
+	}
+
+	if (params.large) {
+		btnStyle.height = 45;
 	}
 
 	if (params.color) {

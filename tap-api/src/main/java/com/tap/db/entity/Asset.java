@@ -19,6 +19,9 @@ public class Asset implements Serializable {
     @Column(name="id", nullable=false)
 	private int id;
 
+    @Column(name="entity_identifier", nullable=false)
+	private long entityIdentifier;
+
     @Column(name="location", nullable=false, length=64)
 	private String location;
 
@@ -26,10 +29,6 @@ public class Asset implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="asset_type_id", referencedColumnName="id")
 	private AssetType assettype ; 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="provider_id", referencedColumnName="id")
-	private Provider provider ; 
 
 	public Asset() {
 		super();
@@ -41,6 +40,14 @@ public class Asset implements Serializable {
 
 	public int getId() {
 		return this.id;
+	}
+
+	public void setEntityIdentifier( long entityIdentifier ) {
+		this.entityIdentifier = entityIdentifier ;
+	}
+
+	public long getEntityIdentifier() {
+		return this.entityIdentifier;
 	}
 
 	public void setLocation( String location ) {
@@ -57,12 +64,5 @@ public class Asset implements Serializable {
 	
 	public void setAssettype(AssetType assettype) {
 		this.assettype = assettype;
-	}
-	public Provider getProvider() {
-		return this.provider;
-	}
-	
-	public void setProvider(Provider provider) {
-		this.provider = provider;
 	}
 }

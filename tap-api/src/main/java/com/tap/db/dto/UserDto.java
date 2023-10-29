@@ -11,6 +11,8 @@ public class UserDto {
 	private String salt;
 	private String firstName;
 	private String lastName;
+	private String phone;
+	private String imgpath;
 	private LocalDateTime createDate;
 	private LocalDateTime lastLogin;
 	private Byte verified;
@@ -79,6 +81,24 @@ public class UserDto {
 
 	public String getLastName() {
 		return this.lastName;
+	}
+
+	public UserDto setPhone( String phone ) {
+		this.phone = phone;
+		return this;
+	}
+
+	public String getPhone() {
+		return this.phone;
+	}
+
+	public UserDto setImgpath( String imgpath ) {
+		this.imgpath = imgpath;
+		return this;
+	}
+
+	public String getImgpath() {
+		return this.imgpath;
 	}
 
 	public UserDto setCreateDate( LocalDateTime createDate ) {

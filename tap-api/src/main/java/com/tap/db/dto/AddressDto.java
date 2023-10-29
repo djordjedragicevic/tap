@@ -8,7 +8,6 @@ public class AddressDto {
 	private String number;
 	private Float longitude;
 	private Float latitude;
-	private String phone;
 	private String flatNumber;
 	private String address1;
 	private CityDto city; 
@@ -57,15 +56,6 @@ public class AddressDto {
 
 	public Float getLatitude() {
 		return this.latitude;
-	}
-
-	public AddressDto setPhone( String phone ) {
-		this.phone = phone;
-		return this;
-	}
-
-	public String getPhone() {
-		return this.phone;
 	}
 
 	public AddressDto setFlatNumber( String flatNumber ) {

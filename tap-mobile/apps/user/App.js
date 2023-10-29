@@ -109,7 +109,7 @@ export default App = () => {
 	useEffect(() => {
 		if (initialLanguage && initialTheme) {
 			Http.getToken().then(t => {
-				Http.get('/user/by-token', t, false, true)
+				Http.get('/user/profile', t, false, true)
 					.then(userData => {
 						if (userData)
 							storeDispatch('user.set_data', userData);

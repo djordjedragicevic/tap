@@ -26,6 +26,9 @@ public class Provider implements Serializable {
     @Column(name="description", length=512)
 	private String description;
 
+    @Column(name="phone", length=32)
+	private String phone;
+
     @Column(name="id_number", nullable=false, length=32)
 	private String idNumber;
 
@@ -85,6 +88,14 @@ public class Provider implements Serializable {
 
 	public String getDescription() {
 		return this.description;
+	}
+
+	public void setPhone( String phone ) {
+		this.phone = phone ;
+	}
+
+	public String getPhone() {
+		return this.phone;
 	}
 
 	public void setIdNumber( String idNumber ) {

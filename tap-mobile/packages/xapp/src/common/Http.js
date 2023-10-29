@@ -53,9 +53,12 @@ export class Http {
 					data = await response.json();
 				} catch (_) { }
 			}
+			else if (response.status === 204) {
+				data = null;
+			}
 			else {
 				switch (response.status) {
-					case 400:
+					case 400: //Bad request, used for custom errors
 						const resp = await response.json();
 						err = I18n.translateError(resp.tapEID);
 						errId = resp.tapEID;

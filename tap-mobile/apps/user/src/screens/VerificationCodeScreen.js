@@ -69,7 +69,7 @@ const VerificationCodeScreen = ({ navigation, route }) => {
 					if (resp.token) {
 						await Http.setToken(resp.token);
 
-						const user = await Http.get('/user/by-token');
+						const user = await Http.get('/user/profile');
 
 						storeDispatch('user.set_data', user);
 

@@ -41,7 +41,9 @@ export const userStore = (initD = {}) => {
 		lastName: '',
 		username: '',
 		email: '',
+		phone: '',
 		initials: '',
+		imagePath: '',
 		roles: [],
 		...initD
 	};

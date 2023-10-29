@@ -31,9 +31,6 @@ public class Address implements Serializable {
     @Column(name="latitude")
 	private Float latitude;
 
-    @Column(name="phone", length=32)
-	private String phone;
-
     @Column(name="flat_number", length=8)
 	private String flatNumber;
 
@@ -87,14 +84,6 @@ public class Address implements Serializable {
 
 	public Float getLatitude() {
 		return this.latitude;
-	}
-
-	public void setPhone( String phone ) {
-		this.phone = phone ;
-	}
-
-	public String getPhone() {
-		return this.phone;
 	}
 
 	public void setFlatNumber( String flatNumber ) {

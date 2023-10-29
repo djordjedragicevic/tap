@@ -9,7 +9,7 @@ import { Theme } from "xapp/src/style/themes";
 import XSegmentedButton from "xapp/src/components/basic/XSegmentedButton";
 import XSection from "xapp/src/components/basic/XSection";
 import XAlert from "xapp/src/components/basic/XAlert";
-import { useColor, usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import XChip from "xapp/src/components/basic/XChip";
 import XIcon from "xapp/src/components/basic/XIcon";
 

@@ -2,8 +2,8 @@ package com.tap.rest;
 
 import com.tap.common.Mail;
 import com.tap.common.Util;
+import com.tap.db.dto.UserDto;
 import com.tap.db.entity.User;
-import com.tap.db.entity.UserRole;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.security.Public;
@@ -17,7 +17,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.util.*;
 
@@ -31,7 +30,6 @@ public class UserService {
 
 	@Path("create-account")
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
 	public Response createAccount(JsonObject params) {
@@ -68,10 +66,10 @@ public class UserService {
 	}
 
 
-	@Path("by-token")
+	@Path("profile")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Secured({Role.ADMIN, Role.PROVIDER_OWNER, Role.EMPLOYEE, Role.USER})
+	@Secured({Role.USER})
 	public Response getUserDataByToken(@Context SecurityContext securityContext) {
 
 		String userId = securityContext.getUserPrincipal().getName();
@@ -82,12 +80,28 @@ public class UserService {
 		return Response.ok(userData).build();
 	}
 
+	@Path("profile")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	public void setUserDataByToken(@Context SecurityContext securityContext, UserDto user) {
+		int userId = Security.getUserId(securityContext);
+
+		String username = user.getUsername();
+		String email = user.getEmail();
+
+		if (username == null || username.isEmpty() || email == null || email.isEmpty() || !Util.isMail(email))
+			throw new TAPException(ErrID.U_EACC_1);
+
+		userRepository.setUserData(userId, user);
+
+	}
+
 	@Path("{id}/state")
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
-	public Response changeUserState(@PathParam("id") int userId, JsonObject userState) {
+	public void changeUserState(@PathParam("id") int userId, JsonObject userState) {
 		userRepository.updateState(userId, userState);
-		return Response.ok().build();
 	}
 }

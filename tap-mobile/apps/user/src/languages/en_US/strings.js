@@ -82,6 +82,10 @@ export const strings = {
 	"Upcoming": "Upcoming",
 	"History": "History",
 	"Working hours": "Working hours",
-	"Our team": "Our team"
+	"Our team": "Our team",
+	"First name": "First name",
+	"Last name": "Lastname",
+	"Phone": "Phone",
+	"Choose profile image": "Choose profile image"
 
 };

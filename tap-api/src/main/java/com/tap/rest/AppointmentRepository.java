@@ -99,7 +99,7 @@ public class AppointmentRepository {
 
 				em.persist(fApp);
 			}
-			
+
 			return true;
 		}
 		return false;

@@ -15,6 +15,7 @@ const XScreen = ({
 	loading = false,
 	scroll = false,
 	bigTitle = null,
+	keyboard = false,
 	bigSubTitle = null,
 	Footer
 }) => {

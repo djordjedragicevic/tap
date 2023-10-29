@@ -9,7 +9,9 @@ User {
   salt : string { @DbName(salt) @DbType("TEXT(65535)") @NotNull @NotEmpty @Size(65535) @MaxLen(65535) @LongText };
   firstName : string { @DbName(first_name) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
   lastName : string { @DbName(last_name) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
+  phone : string { @DbName(phone) @DbType("VARCHAR(32)") @Size(32) @MaxLen(32) };
   addressId : int { @DbName(address_id) @DbType(INT UNSIGNED) @FK(fk_user_address1, Address.id) };
+  imgpath : string { @DbName(imgPath) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
   createDate : timestamp { @DbName(create_date) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
   lastLogin : timestamp { @DbName(last_login) @DbType(DATETIME) };
   userStateId : int { @DbName(user_state_id) @DbType(INT UNSIGNED) @FK(fk_user_user_state1, UserState.id) };
