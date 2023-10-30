@@ -151,22 +151,32 @@ export class Http {
 	}
 
 
-	static async post(url, data, hideErrors = false, config = {}) {
+	static async post(url, data, hideErrors) {
 		const resp = await Http.send(url, {
 			method: 'POST',
-			// headers: {
-			// 	'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-			// },
-			//body: Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&')
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(data),
-			...config
+			body: JSON.stringify(data)
 		}, hideErrors);
 
 		return resp;
 	}
+
+	static async postFormData(url, data, hideErrors) {
+		const form = new FormData();
+		Object.entries(data).forEach(([k, v]) => form.append(k, v))
+		const resp = await Http.send(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			},
+			body: form
+		}, hideErrors);
+
+		return resp;
+	}
+
 	static getAPI() {
 		return _API_URL;
 	}

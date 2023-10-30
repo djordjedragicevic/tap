@@ -25,7 +25,7 @@ const MenageAccountScreen = () => {
 		lastName,
 		phone,
 		initials,
-		imagePath
+		imgPath
 	} = useStore(gs => gs.user);
 
 	const [data, setData] = useState({
@@ -35,17 +35,13 @@ const MenageAccountScreen = () => {
 		firstName: firstName,
 		lastName: lastName,
 		phone: phone,
-		imagePath: imagePath
+		imgPath: imgPath
 	});
 
 	const [loading, setLoading] = useState(false);
 	const [image, setImage] = useState(null);
-	const [selectedImage, setSelectedImage] = useState({
-		uri: '',
-		type: '',
-		name: '',
-		imgType: ''
-	});
+
+	const [selectedImage, setSelectedImage] = useState();
 
 	useEffect(() => {
 		setLoading(true);
@@ -58,29 +54,17 @@ const MenageAccountScreen = () => {
 	const saveProfile = () => {
 		setLoading(true);
 
-		const form = new FormData();
-
-		form.append('image', {
-			uri: selectedImage.uri,
-			name: selectedImage.name,
-			type: selectedImage.type,
-		});
-		form.append('imageType', selectedImage.imgType);
-
-		form.append('username', data.username);
-		form.append('email', data.email);
-		form.append('firstName', data.firstName);
-		form.append('lastName', data.lastName);
-		form.append('phone', data.phone);
-
-
-		Http.post('/user/profile', null, false, {
-			headers: { 'Content-Type': 'multipart/form-data' },
-			body: form
+		Http.postFormData('/user/profile', {
+			image: selectedImage,
+			username: data.username,
+			email: data.email,
+			firstName: data.firstName,
+			lastName: data.lastName,
+			phone: data.phone
 		})
 			.then(_ => storeDispatch('user.set_data', data))
 			.catch(emptyFn)
-			.finally(() => setLoading(false));
+			.finally(() => setLoading(false));;
 	};
 
 	const selectImage = async () => {
@@ -88,8 +72,6 @@ const MenageAccountScreen = () => {
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true
 		});
-
-		console.log(result);
 
 		if (!result.canceled) {
 			const imgUrl = result.assets[0].uri;
@@ -99,8 +81,7 @@ const MenageAccountScreen = () => {
 			setSelectedImage({
 				uri: imgUrl,
 				name: imgName,
-				type: `image/${imgType}`,
-				imgType: imgType
+				type: `image/${imgType}`
 			});
 
 			setImage(result.assets[0].uri);
@@ -115,7 +96,7 @@ const MenageAccountScreen = () => {
 				<Pressable style={{ alignItems: 'center', marginTop: 15 }} onPress={selectImage}>
 					<XAvatar
 						initials={initials}
-						imgPath={image}
+						imgPath={data.imgPath}
 						size={100}
 					/>
 					<View style={{ flexDirection: 'row', paddingVertical: 10, columnGap: 5, alignItems: 'center' }}>

@@ -70,7 +70,7 @@ public class UserRepository {
 			resp.put("username", u.getUsername());
 			resp.put("email", u.getEmail());
 			resp.put("phone", u.getPhone());
-			resp.put("imagePath", u.getImgpath());
+			resp.put("imgPath", u.getImgpath());
 			resp.put("firstName", u.getFirstName());
 			resp.put("lastName", u.getLastName());
 			resp.put("state", u.getUserstate());
@@ -84,17 +84,13 @@ public class UserRepository {
 	public void setUserData(int userId, UserDto userData) {
 		User u = em.find(User.class, userId);
 		if (u != null && u.getActive() == 1) {
-			String username = userData.getUsername();
-			String email = userData.getEmail();
 
-			if (username != null && !username.isEmpty())
-				u.setUsername(userData.getUsername());
-			if (email != null && !email.isEmpty() && Util.isMail(email))
-				u.setEmail(email);
-
+			u.setUsername(userData.getUsername());
+			u.setEmail(userData.getEmail());
 			u.setFirstName(userData.getFirstName());
 			u.setLastName(userData.getLastName());
 			u.setPhone(userData.getPhone());
+			u.setImgpath(userData.getImgpath());
 
 			em.persist(u);
 		}

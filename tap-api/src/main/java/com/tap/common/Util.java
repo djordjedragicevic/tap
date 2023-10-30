@@ -124,7 +124,7 @@ public class Util {
 
 	public static String generateVerificationCode() {
 
-		int codeLength =  ConfigProvider.getConfig().getValue("tap.verification.code.length", Integer.class);
+		int codeLength = ConfigProvider.getConfig().getValue("tap.verification.code.length", Integer.class);
 		return Util.generateVerificationCode(codeLength);
 
 	}
@@ -141,5 +141,6 @@ public class Util {
 		return code.toString();
 
 	}
+
 
 }

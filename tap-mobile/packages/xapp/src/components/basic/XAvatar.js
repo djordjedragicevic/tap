@@ -3,6 +3,7 @@ import { useThemedStyle } from "../../style/ThemeContext";
 import XText from "./XText";
 import { Theme } from "../../style/themes";
 import { Image } from "expo-image";
+import { Http } from "../../common/Http";
 
 
 const XAvatar = ({ size = 30, color, style, imgPath, initials }) => {
@@ -16,8 +17,9 @@ const XAvatar = ({ size = 30, color, style, imgPath, initials }) => {
 		>
 			{imgPath ?
 				<Image
-					source={imgPath}
+					source={{ uri: `${Http.getAPI()}/asset/download?lct=${encodeURIComponent(imgPath)}` }}
 					style={styles.img}
+					cachePolicy={"none"}
 				/>
 				:
 				<View style={styles.text}>

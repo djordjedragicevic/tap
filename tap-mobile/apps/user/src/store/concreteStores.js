@@ -43,7 +43,7 @@ export const userStore = (initD = {}) => {
 		email: '',
 		phone: '',
 		initials: '',
-		imagePath: '',
+		imgPath: '',
 		roles: [],
 		...initD
 	};

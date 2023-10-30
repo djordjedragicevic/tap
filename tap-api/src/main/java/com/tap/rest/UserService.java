@@ -1,5 +1,6 @@
 package com.tap.rest;
 
+import com.tap.common.FSImage;
 import com.tap.common.Mail;
 import com.tap.common.Util;
 import com.tap.db.dto.UserDto;
@@ -12,10 +13,9 @@ import com.tap.security.Secured;
 import com.tap.security.Security;
 import jakarta.inject.Inject;
 import jakarta.json.*;
-import jakarta.servlet.ServletContext;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.*;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.io.*;
 import java.util.*;
@@ -27,9 +27,6 @@ public class UserService {
 	UserRepository userRepository;
 	@Inject
 	UtilRepository utilRepository;
-
-	@Inject
-	ContainerRequestContext crc;
 
 	@Path("create-account")
 	@POST
@@ -89,38 +86,36 @@ public class UserService {
 	@Secured({Role.USER})
 	public void setUserDataByToken(
 			@Context SecurityContext securityContext,
-			@FormParam("image") InputStream image,
-			@FormParam("imageType") String imageType,
+			@FormParam("image") EntityPart image,
 			@FormParam("username") String username,
 			@FormParam("email") String email,
 			@FormParam("firstName") String firstName,
 			@FormParam("lastName") String lastName,
-			@FormParam("phone") String phone,
-			@FormParam("d") jakarta.ws.rs.core.
+			@FormParam("phone") String phone
 	) {
 
 		int userId = Security.getUserId(securityContext);
-		if (imageType != null && !imageType.isEmpty()) {
-			File ff = new File("");
-			System.out.println(ff.getAbsolutePath());
-			File f = new File("src/main/java", "uid_" + userId + "." + imageType);
+
+		if (username == null || username.isEmpty() || email == null || email.isEmpty() || !Util.isMail(email))
+			throw new TAPException(ErrID.U_EACC_1);
+
+		UserDto user = new UserDto()
+				.setUsername(username)
+				.setEmail(email)
+				.setFirstName(firstName)
+				.setLastName(lastName)
+				.setPhone(phone);
+
+		if (image != null) {
 			try {
-				this.writeImage(image, f);
-			} catch (IOException ioe) {
+				String location = FSImage.createUserProfileImage(image.getContent(), image.getMediaType().getSubtype(), userId);
+				user.setImgpath(location);
+			} catch (IOException e) {
 				throw new TAPException(ErrID.U_EACC_1);
 			}
 		}
 
-
-		//System.out.println(b.length);
-
-//		String username = user.getUsername();
-//		String email = user.getEmail();
-//
-//		if (username == null || username.isEmpty() || email == null || email.isEmpty() || !Util.isMail(email))
-//			throw new TAPException(ErrID.U_EACC_1);
-//
-//		userRepository.setUserData(userId, user);
+		userRepository.setUserData(userId, user);
 
 	}
 
@@ -133,15 +128,4 @@ public class UserService {
 	}
 
 
-	private void writeImage(InputStream image, File f) throws IOException {
-
-		try (FileOutputStream fos = new FileOutputStream(f)) {
-			int tmpByte;
-			byte[] bytes = new byte[1024];
-			while ((tmpByte = image.read(bytes)) != -1)
-				fos.write(bytes, 0, tmpByte);
-
-			fos.flush();
-		}
-	}
 }

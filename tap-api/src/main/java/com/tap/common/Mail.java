@@ -34,6 +34,7 @@ public class Mail {
 			</html>
 			""";
 
+
 	private Mail() {
 	}
 
