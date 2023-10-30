@@ -1,17 +1,4 @@
 export const strings = {
-
-	"City": "City",
-	"Service": "Service",
-	"Location": "Location",
-	"Service type": "Service type",
-	"Provider": "Provider",
-	"Providers": "Providers",
-	"From": "From",
-	"To": "To",
-	"Calendar": "Calendar",
-
-	"----------------------------": "-------------------",
-
 	"Services": "Services",
 	"Find appointment": "Find appointment",
 	"Appointments": "Appointments",
@@ -24,6 +11,9 @@ export const strings = {
 	"Sign in": "Sign in",
 	"OK": "OK",
 	"Cancel": "Cancel",
+	"Yes": "Yes",
+	"No": "No",
+	"Quit": "Quit",
 
 	"Appearance": "Appearance",
 	"Dark": "Dark",
@@ -86,6 +76,11 @@ export const strings = {
 	"First name": "First name",
 	"Last name": "Lastname",
 	"Phone": "Phone",
-	"Choose profile image": "Choose profile image"
+	"Choose profile image": "Choose profile image",
+	"Save": "Save",
+	"Reject": "Reject",
+	"Reject appointment": "Reject appointment",
+	"reject_appointment_msg": "Are you sure you want to reject appointment? It may not be possible to book it again!"
+
 
 };

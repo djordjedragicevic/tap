@@ -8,12 +8,12 @@ import { useEffect, useState } from "react";
 import { Http } from "xapp/src/common/Http";
 import { emptyFn } from "xapp/src/common/utils";
 import XSection from "xapp/src/components/basic/XSection";
-import { storeDispatch, useStore } from "xapp/src/store/store";
+import { storeDispatch, storeGetValue } from "xapp/src/store/store";
 import XText from "xapp/src/components/basic/XText";
 import XIcon from "xapp/src/components/basic/XIcon";
 import * as ImagePicker from 'expo-image-picker';
 
-const MenageAccountScreen = () => {
+const MenageAccountScreen = ({ navigation }) => {
 	const t = useTranslation();
 
 	const {
@@ -25,7 +25,7 @@ const MenageAccountScreen = () => {
 		phone,
 		initials,
 		imgPath
-	} = useStore(gs => gs.user);
+	} = storeGetValue(gs => gs.user);
 
 	const [data, setData] = useState({
 		id: id,
@@ -59,7 +59,10 @@ const MenageAccountScreen = () => {
 			lastName: data.lastName,
 			phone: data.phone
 		})
-			.then(resp => storeDispatch('user.set_data', resp))
+			.then(resp => {
+				storeDispatch('user.set_data', resp);
+				navigation.goBack();
+			})
 			.catch(emptyFn)
 			.finally(() => setLoading(false));;
 	};
@@ -134,7 +137,13 @@ const MenageAccountScreen = () => {
 				</XSection>
 
 				<XSection transparent style={{ marginTop: 10 }}>
-					<XButton title='Save' primary large onPress={saveProfile} disabled={loading} />
+					<XButton
+						title={t('Save')}
+						primary
+						large
+						onPress={saveProfile}
+						disabled={loading}
+					/>
 				</XSection>
 			</View>
 

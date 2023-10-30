@@ -116,10 +116,10 @@ const Appointment = ({ item, reload }) => {
 						secondary
 						small
 						onPress={() => {
-							XAlert.show('Otkazivanje rezervacije', 'Da li ste sigurni da zelite da otkazete rezervaciju', [
-								{ text: 'Odustani' },
+							XAlert.show(t('Reject appointment'), t('reject_appointment_msg'), [
+								{ text: t('Quit') },
 								{
-									text: 'Otkazi', onPress: () => {
+									text: t('Reject appointment'), onPress: () => {
 										Http.post('/appointments/my-appointments/cancel', { appIds: itemIds })
 											.then(reload)
 									}

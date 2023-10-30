@@ -10,6 +10,9 @@ export const strings = {
 	"Sign in": "Uloguj se",
 	"OK": "Uredu",
 	"Cancel": "Otkaži",
+	"Yes": "Yes",
+	"No": "No",
+	"Quit": "Odustani",
 	"Use device theme": "Koristi temu telefona",
 	"Appearance": "Teme",
 	"Dark": "Tamna",
@@ -71,5 +74,10 @@ export const strings = {
 	"First name": "Ime",
 	"Last name": "Prezime",
 	"Phone": "Telefon",
-	"Choose profile image": "Izaberite profilnu sliku"
+	"Choose profile image": "Izaberite profilnu sliku",
+	"Save": "Sačuvaj",
+	"Reject": "Otkaži",
+	"Reject appointment": "Otkaži rezervaciju",
+	"reject_appointment_msg": "Da li ste sigurni da želite otkazati rezervaciju? Moguće da nece biti moguće rezervisati je ponovo!"
+
 };

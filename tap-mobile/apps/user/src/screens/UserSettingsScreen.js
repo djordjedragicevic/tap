@@ -1,5 +1,4 @@
 import XScreen from "xapp/src/components/XScreen";
-import { AntDesign } from '@expo/vector-icons';
 import XButton from "xapp/src/components/basic/XButton";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import { LOGIN_SCREEN, FAVORITE_PROVIDERS_SCREEN, MANAGE_ACCOUNT_SCREEN } from "../navigators/routes";
@@ -8,8 +7,8 @@ import { Http } from "xapp/src/common/Http";
 import { storeDispatch, useStore } from "xapp/src/store/store";
 import XAvatar from "xapp/src/components/basic/XAvatar";
 import XText from "xapp/src/components/basic/XText";
-import { Appearance, ScrollView, View } from "react-native";
-import { useIsUserLogged, useUserName } from "../store/concreteStores";
+import { Appearance, View } from "react-native";
+import { useIsUserLogged } from "../store/concreteStores";
 import XSelectField from "xapp/src/components/basic/XSelectField";
 import ThemeContext, { useColor } from "xapp/src/style/ThemeContext";
 import XSection from "xapp/src/components/basic/XSection";
@@ -56,7 +55,7 @@ const UserSettingsScreen = ({ navigation }) => {
 							<XAvatar
 								initials={initials}
 								imgPath={imgPath}
-								size={72}
+								size={82}
 							/>
 							<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 								{/* <XText secondary style={{ color: 'lightgreen' }}>{roles.join(', ')}</XText> */}

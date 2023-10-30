@@ -52,7 +52,6 @@ export const userStore = (initD = {}) => {
 		name: 'user',
 		actions: {
 			'user.set_data': (userStore, userData) => {
-				console.log(userData)
 				const newData = {
 					...userStore,
 					...userData,
