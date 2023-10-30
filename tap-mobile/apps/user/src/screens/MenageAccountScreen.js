@@ -34,11 +34,18 @@ const MenageAccountScreen = () => {
 		email: email,
 		firstName: firstName,
 		lastName: lastName,
-		phone: phone
+		phone: phone,
+		imagePath: imagePath
 	});
 
 	const [loading, setLoading] = useState(false);
 	const [image, setImage] = useState(null);
+	const [selectedImage, setSelectedImage] = useState({
+		uri: '',
+		type: '',
+		name: '',
+		imgType: ''
+	});
 
 	useEffect(() => {
 		setLoading(true);
@@ -50,57 +57,55 @@ const MenageAccountScreen = () => {
 
 	const saveProfile = () => {
 		setLoading(true);
-		Http.post('/user/profile', data)
+
+		const form = new FormData();
+
+		form.append('image', {
+			uri: selectedImage.uri,
+			name: selectedImage.name,
+			type: selectedImage.type,
+		});
+		form.append('imageType', selectedImage.imgType);
+
+		form.append('username', data.username);
+		form.append('email', data.email);
+		form.append('firstName', data.firstName);
+		form.append('lastName', data.lastName);
+		form.append('phone', data.phone);
+
+
+		Http.post('/user/profile', null, false, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+			body: form
+		})
 			.then(_ => storeDispatch('user.set_data', data))
 			.catch(emptyFn)
 			.finally(() => setLoading(false));
 	};
 
-	// const selectImage = async () => {
-	// 	let result = await ImagePicker.launchImageLibraryAsync({
-	// 		mediaTypes: ImagePicker.MediaTypeOptions.All,
-	// 		allowsEditing: true,
-	// 		//aspect: [4, 3],
-	// 		quality: 1,
-	// 	});
-
-	// 	console.log(result);
-
-	// 	if (!result.canceled) {
-	// 		setImage(result.assets[0].uri);
-	// 	}
-	// };
-
 	const selectImage = async () => {
-		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true
+		});
 
-		if (status !== "granted") {
+		console.log(result);
 
-			// If permission is denied, show an alert 
-			XAlert.alert(
-				"Permission Denied",
-				`Sorry, we need camera  
-			 roll permission to upload images.`
-			);
-		} else {
+		if (!result.canceled) {
+			const imgUrl = result.assets[0].uri;
+			const imgName = imgUrl.split('/').pop();
+			const imgType = imgName.split('.').pop();
 
-			// Launch the image library and get 
-			// the selected image 
-			const result = await ImagePicker.launchImageLibraryAsync();
+			setSelectedImage({
+				uri: imgUrl,
+				name: imgName,
+				type: `image/${imgType}`,
+				imgType: imgType
+			});
 
-			if (!result.canceled) {
-
-				// If an image is selected (not cancelled),  
-				// update the file state variable 
-				setImage(result.assets[0]);
-
-				// Clear any previous errors 
-				//setError(null);
-			}
+			setImage(result.assets[0].uri);
 		}
 	};
-
-
 
 
 	return (

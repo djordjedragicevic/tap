@@ -151,7 +151,7 @@ export class Http {
 	}
 
 
-	static async post(url, data, hideErrors = false) {
+	static async post(url, data, hideErrors = false, config = {}) {
 		const resp = await Http.send(url, {
 			method: 'POST',
 			// headers: {
@@ -161,7 +161,8 @@ export class Http {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(data)
+			body: JSON.stringify(data),
+			...config
 		}, hideErrors);
 
 		return resp;

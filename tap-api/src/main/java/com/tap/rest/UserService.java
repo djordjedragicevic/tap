@@ -12,12 +12,12 @@ import com.tap.security.Secured;
 import com.tap.security.Security;
 import jakarta.inject.Inject;
 import jakarta.json.*;
+import jakarta.servlet.ServletContext;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.*;
 
+import java.io.*;
 import java.util.*;
 
 @Path("user")
@@ -27,6 +27,9 @@ public class UserService {
 	UserRepository userRepository;
 	@Inject
 	UtilRepository utilRepository;
+
+	@Inject
+	ContainerRequestContext crc;
 
 	@Path("create-account")
 	@POST
@@ -82,18 +85,42 @@ public class UserService {
 
 	@Path("profile")
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Secured({Role.USER})
-	public void setUserDataByToken(@Context SecurityContext securityContext, UserDto user) {
+	public void setUserDataByToken(
+			@Context SecurityContext securityContext,
+			@FormParam("image") InputStream image,
+			@FormParam("imageType") String imageType,
+			@FormParam("username") String username,
+			@FormParam("email") String email,
+			@FormParam("firstName") String firstName,
+			@FormParam("lastName") String lastName,
+			@FormParam("phone") String phone,
+			@FormParam("d") jakarta.ws.rs.core.
+	) {
+
 		int userId = Security.getUserId(securityContext);
+		if (imageType != null && !imageType.isEmpty()) {
+			File ff = new File("");
+			System.out.println(ff.getAbsolutePath());
+			File f = new File("src/main/java", "uid_" + userId + "." + imageType);
+			try {
+				this.writeImage(image, f);
+			} catch (IOException ioe) {
+				throw new TAPException(ErrID.U_EACC_1);
+			}
+		}
 
-		String username = user.getUsername();
-		String email = user.getEmail();
 
-		if (username == null || username.isEmpty() || email == null || email.isEmpty() || !Util.isMail(email))
-			throw new TAPException(ErrID.U_EACC_1);
+		//System.out.println(b.length);
 
-		userRepository.setUserData(userId, user);
+//		String username = user.getUsername();
+//		String email = user.getEmail();
+//
+//		if (username == null || username.isEmpty() || email == null || email.isEmpty() || !Util.isMail(email))
+//			throw new TAPException(ErrID.U_EACC_1);
+//
+//		userRepository.setUserData(userId, user);
 
 	}
 
@@ -103,5 +130,18 @@ public class UserService {
 	@Secured({Role.USER})
 	public void changeUserState(@PathParam("id") int userId, JsonObject userState) {
 		userRepository.updateState(userId, userState);
+	}
+
+
+	private void writeImage(InputStream image, File f) throws IOException {
+
+		try (FileOutputStream fos = new FileOutputStream(f)) {
+			int tmpByte;
+			byte[] bytes = new byte[1024];
+			while ((tmpByte = image.read(bytes)) != -1)
+				fos.write(bytes, 0, tmpByte);
+
+			fos.flush();
+		}
 	}
 }
