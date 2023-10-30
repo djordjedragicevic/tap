@@ -1,3 +1,5 @@
+import { Http } from "./Http";
+
 export const emptyFn = function () { };
 
 const getMinutesOfDay = (timeString) => {

@@ -1,6 +1,6 @@
 package com.tap.rest;
 
-import com.tap.common.FSImage;
+import com.tap.common.FSAsset;
 import com.tap.common.Mail;
 import com.tap.common.Util;
 import com.tap.db.dto.UserDto;
@@ -15,7 +15,6 @@ import jakarta.inject.Inject;
 import jakarta.json.*;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.io.*;
 import java.util.*;
@@ -83,8 +82,9 @@ public class UserService {
 	@Path("profile")
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
-	public void setUserDataByToken(
+	public Response setUserDataByToken(
 			@Context SecurityContext securityContext,
 			@FormParam("image") EntityPart image,
 			@FormParam("username") String username,
@@ -108,7 +108,7 @@ public class UserService {
 
 		if (image != null) {
 			try {
-				String location = FSImage.createUserProfileImage(image.getContent(), image.getMediaType().getSubtype(), userId);
+				String location = FSAsset.createUserProfileImage(image.getContent(), image.getMediaType().getSubtype(), userId);
 				user.setImgpath(location);
 			} catch (IOException e) {
 				throw new TAPException(ErrID.U_EACC_1);
@@ -116,6 +116,9 @@ public class UserService {
 		}
 
 		userRepository.setUserData(userId, user);
+		Map<String, Object> newUserData = userRepository.getUserData(userId);
+
+		return Response.ok(newUserData).build();
 
 	}
 

@@ -16,14 +16,10 @@ import XSection from "xapp/src/components/basic/XSection";
 import { Theme } from "xapp/src/style/themes";
 import XSelector from "xapp/src/components/basic/XSelector";
 import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
-import XSeparator from "xapp/src/components/basic/XSeparator";
 
 const UserSettingsScreen = ({ navigation }) => {
 	const t = useTranslation();
-	const username = useUserName();
-	const roles = useStore(gS => gS.user.roles);
-	const email = useStore(gS => gS.user.email);
-	const initials = useStore(gS => gS.user.initials);
+	const { username, email, initials, imgPath } = useStore(gS => gS.user);
 
 	const isLogged = useIsUserLogged();
 
@@ -57,7 +53,11 @@ const UserSettingsScreen = ({ navigation }) => {
 				{
 					isLogged ?
 						<>
-							<XAvatar initials={initials} size={72} />
+							<XAvatar
+								initials={initials}
+								imgPath={imgPath}
+								size={72}
+							/>
 							<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 								{/* <XText secondary style={{ color: 'lightgreen' }}>{roles.join(', ')}</XText> */}
 								<XText light size={16}>{username}</XText>

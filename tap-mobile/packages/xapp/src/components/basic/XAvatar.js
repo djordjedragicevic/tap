@@ -2,11 +2,16 @@ import { StyleSheet, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XText from "./XText";
 import { Theme } from "../../style/themes";
-import { Image } from "expo-image";
-import { Http } from "../../common/Http";
+import XImage from "./XImage";
 
-
-const XAvatar = ({ size = 30, color, style, imgPath, initials }) => {
+const XAvatar = ({
+	size = 30,
+	color,
+	style,
+	imgPath,
+	initials,
+	local = false
+}) => {
 	const styles = useThemedStyle(styleCreator, color, size);
 
 	return (
@@ -16,10 +21,10 @@ const XAvatar = ({ size = 30, color, style, imgPath, initials }) => {
 			style={[styles.avatar, style]}
 		>
 			{imgPath ?
-				<Image
-					source={{ uri: `${Http.getAPI()}/asset/download?lct=${encodeURIComponent(imgPath)}` }}
+				<XImage
+					imgPath={imgPath}
+					local={local}
 					style={styles.img}
-					cachePolicy={"none"}
 				/>
 				:
 				<View style={styles.text}>

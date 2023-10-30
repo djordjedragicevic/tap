@@ -23,9 +23,6 @@ public class AssetService {
 
 		Response.ResponseBuilder response = Response.ok(f);
 
-
-		System.out.println(f.getName() + " " + f.length());
-
 		response.header("Content-Disposition", "attachment; filename=\"" + f.getName() + "\"");
 		response.header("Content-Type", "image/jpeg");
 		response.header("Content-Length", String.valueOf(f.length()));

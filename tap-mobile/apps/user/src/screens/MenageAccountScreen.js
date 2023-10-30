@@ -12,7 +12,6 @@ import { storeDispatch, useStore } from "xapp/src/store/store";
 import XText from "xapp/src/components/basic/XText";
 import XIcon from "xapp/src/components/basic/XIcon";
 import * as ImagePicker from 'expo-image-picker';
-import XAlert from "xapp/src/components/basic/XAlert";
 
 const MenageAccountScreen = () => {
 	const t = useTranslation();
@@ -39,8 +38,6 @@ const MenageAccountScreen = () => {
 	});
 
 	const [loading, setLoading] = useState(false);
-	const [image, setImage] = useState(null);
-
 	const [selectedImage, setSelectedImage] = useState();
 
 	useEffect(() => {
@@ -62,7 +59,7 @@ const MenageAccountScreen = () => {
 			lastName: data.lastName,
 			phone: data.phone
 		})
-			.then(_ => storeDispatch('user.set_data', data))
+			.then(resp => storeDispatch('user.set_data', resp))
 			.catch(emptyFn)
 			.finally(() => setLoading(false));;
 	};
@@ -83,8 +80,6 @@ const MenageAccountScreen = () => {
 				name: imgName,
 				type: `image/${imgType}`
 			});
-
-			setImage(result.assets[0].uri);
 		}
 	};
 
@@ -96,7 +91,8 @@ const MenageAccountScreen = () => {
 				<Pressable style={{ alignItems: 'center', marginTop: 15 }} onPress={selectImage}>
 					<XAvatar
 						initials={initials}
-						imgPath={data.imgPath}
+						imgPath={selectedImage?.uri || imgPath}
+						local={!!selectedImage?.uri}
 						size={100}
 					/>
 					<View style={{ flexDirection: 'row', paddingVertical: 10, columnGap: 5, alignItems: 'center' }}>

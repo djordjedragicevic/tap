@@ -33,7 +33,6 @@ import { useColor } from 'xapp/src/style/ThemeContext';
 import BookAppointmentScreen from '../screens/BookAppointmentScreen';
 import CreateAccountScreen from '../screens/CreateAccountScreen';
 import VerificationCodeScreen from '../screens/VerificationCodeScreen';
-import TryScreen from '../screens/TryScreen';
 import MenageAccountScreen from '../screens/MenageAccountScreen';
 import MapScreen from '../screens/MapScreen';
 
@@ -43,6 +42,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 	const t = useTranslation();
 	const logged = useIsUserLogged();
 	const initials = useStore(gS => gS.user.initials);
+	const imgPath = useStore(gS => gS.user.imgPath);
 	const colorTextLight = useColor('textLight');
 	const colorPrimary = useColor('primary');
 
@@ -99,7 +99,12 @@ const MainBottomTabNavigator = ({ navigation }) => {
 					headerShown: false,
 					title: logged ? t("Profile") : t("Sign in"),
 					tabBarIcon: (props) => logged ?
-						<XAvatar initials={initials} size={props.size} style={!!props.focused && { borderColor: colorPrimary, borderWidth: 1.5 }} />
+						<XAvatar
+							imgPath={imgPath}
+							initials={initials}
+							size={props.size}
+							style={!!props.focused && { borderColor: colorPrimary, borderWidth: 1.5 }}
+						/>
 						:
 						<AntDesign name="user" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}} />

@@ -1,12 +1,13 @@
 package com.tap;
 
-import com.tap.common.FSImage;
+import com.tap.common.FSAsset;
+import com.tap.exception.ErrID;
+import com.tap.exception.TAPException;
 import com.tap.security.Secured;
 import jakarta.annotation.PostConstruct;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,11 +16,13 @@ import java.nio.file.Paths;
 @Secured
 public class TAPApplication extends Application {
 	@PostConstruct
-	public static void initialize() throws IOException {
+	public static void initialize() {
+		try {
+			Files.createDirectories(Paths.get(FSAsset.getAssetRoot() + FSAsset.USER_IMG_ROOT));
+			Files.createDirectories(Paths.get(FSAsset.getAssetRoot() + FSAsset.PROVIDER_IMG_MAIN));
+		} catch (IOException e) {
+			throw new TAPException(ErrID.TAP_0);
+		}
 
-		String userImgPath = FSImage.getUserProfileImgPath();
-		File f = new File(userImgPath);
-		if (!f.exists())
-			Files.createDirectories(Paths.get(FSImage.getUserProfileImgPath()));
 	}
 }
