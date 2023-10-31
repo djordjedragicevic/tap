@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import XFieldContainer from "./XFieldContainer";
 import XText from "./XText";
 import { AntDesign } from '@expo/vector-icons';
-import { usePrimaryColor, useThemedStyle } from "../../style/ThemeContext";
+import { useColor, useThemedStyle } from "../../style/ThemeContext";
 
 
 const XSelectField = ({
@@ -11,7 +11,7 @@ const XSelectField = ({
 	value,
 	placeholder,
 	pressable = true,
-	iconRight = (props) => (<AntDesign name="down"  {...props} />),
+	iconRight = 'down',
 	meta,
 	vertical = false,
 	valueParams = {},
@@ -19,7 +19,7 @@ const XSelectField = ({
 	...rest
 }) => {
 
-	const primaryColor = usePrimaryColor();
+	const iRC = useColor('textSecondary');
 	const styles = useThemedStyle(styleCreator, vertical);
 
 	const T = useMemo(() => {
@@ -37,7 +37,8 @@ const XSelectField = ({
 		<XFieldContainer
 			pressable={pressable}
 			iconRight={iconRight}
-			iconRightColor={primaryColor}
+			iconRightSize={14}
+			iconRightColor={iRC}
 			meta={meta}
 			{...rest}
 		>
@@ -72,16 +73,7 @@ const styleCreator = (theme, vertical) => {
 				flexDirection: 'column',
 				height: '100%',
 				justifyContent: 'space-evenly'
-			},
-		textTitle: {
-			//paddingEnd: 5,
-			//flex: 1
-		},
-		textValue: {
-			//maxWidth: 150,
-			//minWidth: 80,
-			//alignItems: 'flex-end'
-		}
+			}
 	})
 }
 

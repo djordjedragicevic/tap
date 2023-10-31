@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { storeDispatch } from '../store/store';
-import { SecureStorage } from '../store/deviceStorage';
+import { CacheStorage, SecureStorage } from '../store/deviceStorage';
 import XAlert from '../components/basic/XAlert';
 import I18n from '../i18n/I18n';
 
@@ -165,7 +165,12 @@ export class Http {
 
 	static async postFormData(url, data, hideErrors) {
 		const form = new FormData();
-		Object.entries(data).forEach(([k, v]) => form.append(k, v))
+
+		Object.entries(data).forEach(([k, v]) => {
+			if (v != null)
+				form.append(k, v)
+		});
+
 		const resp = await Http.send(url, {
 			method: 'POST',
 			headers: {
@@ -185,19 +190,25 @@ export class Http {
 	}
 }
 
-export function useHTTPGet(url, params, initData) {
+export function useHTTPGet(url, params, initData, cache = false) {
 
-	const [data, setData] = useState(initData);
+	const cK = cache ? (url + JSON.stringify(params || {})) : null;
+
+	const [data, setData] = useState(cache ? CacheStorage.get(cK, initData) : initData);
 	const [refreshId, setRefreshId] = useState(1);
 	const [refreshing, setRefreshing] = useState(false);
+
 
 	useEffect(() => {
 		setRefreshing(true);
 		let doSetState = true;
 		Http.get(url, params)
 			.then(d => {
-				if (doSetState)
+				if (doSetState) {
 					setData(d);
+					if (cache)
+						CacheStorage.set(cK, d);
+				}
 			})
 			.finally(() => {
 				setRefreshing(false);
@@ -207,7 +218,7 @@ export function useHTTPGet(url, params, initData) {
 			doSetState = false;
 			setRefreshing(false);
 		};
-	}, [refreshId, setRefreshing]);
+	}, [refreshId, setRefreshing,]);
 
 	return [data, () => setRefreshId(refreshId + 1), refreshing];
 };

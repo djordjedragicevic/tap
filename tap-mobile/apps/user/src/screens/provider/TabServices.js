@@ -230,6 +230,7 @@ const styleCreator = (theme) => StyleSheet.create({
 	},
 	sContentContainerStyle: {
 		paddingHorizontal: 10,
+		marginTop: 5,
 		backgroundColor: theme.colors.backgroundColor,
 	},
 	category: {

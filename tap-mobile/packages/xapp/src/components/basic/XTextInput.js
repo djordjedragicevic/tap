@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
-import { useThemedStyle } from "../../style/ThemeContext";
+import { useColor, useThemedStyle } from "../../style/ThemeContext";
 import { useStore } from "../../store/store";
 import XFieldContainer from "./XFieldContainer";
 import XText from "./XText";
@@ -12,6 +12,11 @@ const XTextInput = React.forwardRef((
 		fieldStyle,
 		fieldContainerStyle,
 		outline,
+		editable = true,
+		disabled,
+		clearable = false,
+		value,
+		onClear,
 		...rest
 	},
 	ref) => {
@@ -19,6 +24,7 @@ const XTextInput = React.forwardRef((
 	const [focused, setFocused] = useState(false);
 	const appFont = useStore(state => state.app.font);
 	const styles = useThemedStyle(createStyle, appFont, focused);
+	const tSecondary = useColor('textSecondary');
 
 	const onFocus = useCallback(() => {
 		rest.onFocus?.();
@@ -37,12 +43,22 @@ const XTextInput = React.forwardRef((
 					<XText style={styles.title}>{title}</XText>
 				</View>
 			}
-			<XFieldContainer focused={focused} outline={outline} style={fieldContainerStyle}>
+			<XFieldContainer
+				focused={focused}
+				outline={outline}
+				style={fieldContainerStyle}
+				disabled={disabled}
+				iconRight={clearable && !!value && focused ? 'close' : undefined}
+				iconRightColor={tSecondary}
+				iconRightDisabled={!value}
+				onIconRightPress={onClear}
+			>
 				<TextInput
 					ref={ref}
 					{...rest}
+					value={value}
 					style={[styles.field, fieldStyle]}
-					editable={!!rest.editable || !rest.disabled}
+					editable={editable && !disabled}
 					onFocus={onFocus}
 					onBlur={onBlur}
 				/>

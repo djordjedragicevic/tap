@@ -2,12 +2,11 @@ import { useCallback } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { useHTTPGet } from "xapp/src/common/Http";
 import XText from "xapp/src/components/basic/XText";
+import XImage from "xapp/src/components/basic/XImage";
 import XScreen from "xapp/src/components/XScreen";
 import { PROVIDER_SCREEN } from "../navigators/routes";
 import XSection from "xapp/src/components/basic/XSection";
 import { Theme } from "xapp/src/style/themes";
-import { Image } from 'expo-image';
-import { HOST } from "../common/config";
 import HairSalon from "../components/svg/HairSalon";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XMarkStars from "xapp/src/components/XMarkStars";
@@ -29,10 +28,9 @@ const ProvidersScreen = ({ navigation }) => {
 					<View style={{ flex: 1 }}>
 						{
 							item.mainImg ?
-								<Image
-									source={`${HOST}${item.mainImg?.split(',')[0]}`}
+								<XImage
+									imgPath={item.mainImg?.split(',')[0]}
 									contentFit='cover'
-									cachePolicy='memory'
 									style={{ flex: 1 }}
 								/>
 								:

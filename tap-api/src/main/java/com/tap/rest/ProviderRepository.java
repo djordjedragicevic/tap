@@ -30,8 +30,8 @@ public class ProviderRepository {
 				c.name,
 				FUNCTION('GROUP_CONCAT', a.location) AS mainImg
 				FROM Provider p
-				LEFT JOIN Asset a ON p.id = a.entityIdentifier
-				JOIN a.assettype asType
+				LEFT OUTER JOIN Asset a ON p.id = a.entityIdentifier
+				LEFT OUTER JOIN a.assettype asType
 				JOIN p.providertype pt
 				JOIN p.address ad
 				JOIN ad.city c
@@ -40,12 +40,13 @@ public class ProviderRepository {
 				AND pt.active = 1
 				AND c.active = 1
 				AND c.id = :cityId
+				AND (asType IS NULL OR asType.name = :asTypeName )
 				GROUP BY p.id
 				""";
 
 		List<Object[]> dbRes = em.createQuery(qS, Object[].class)
 				.setParameter("cityId", cityId)
-				//.setParameter("asTypeName", Statics.AT_PROVIDER_IMG)
+				.setParameter("asTypeName", Statics.AT_PROVIDER_IMG)
 				.getResultList();
 
 		return Util.convertToListOfMap(dbRes,

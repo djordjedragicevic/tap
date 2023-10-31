@@ -66,9 +66,6 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 	}, [data]);
 
 	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
-	if (!data || !Object.keys(data).length)
-		return null;
-
 
 	return (
 		<XScreen
@@ -98,7 +95,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 			/>
 
 			{
-				data.apps.length === 0 ?
+				data?.apps.length === 0 ?
 					<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 						<XText>{data.message || 'No appointments'}</XText>
 					</View>
@@ -113,8 +110,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 							justifyContent: 'space-around'
 
 						}}>
-							{data
-								.apps
+							{data?.apps
 								.map(a =>
 									<XButton
 										key={a.id}
@@ -142,7 +138,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 				style={{ marginTop: 10 }}
 				styleContent={{ rowGap: 5 }}
 			>
-				{data.serEmps.map(({ ser, emps }) => (
+				{data?.serEmps.map(({ ser, emps }) => (
 					<XSelector
 						title={ser.name}
 						value={selectedEmps[ser.id]?.name || t('First free')}

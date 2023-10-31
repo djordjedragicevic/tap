@@ -108,10 +108,13 @@ const MenageAccountScreen = ({ navigation }) => {
 					<XTextInput
 						title={t('Username')}
 						value={data.username}
+						clearable
+						onClear={() => setData(old => ({ ...old, username: '' }))}
 						onChangeText={(v) => setData(old => ({ ...old, username: v }))}
 					/>
 					<XTextInput
 						title={t('Email')}
+						disabled
 						value={data.email}
 						onChangeText={(v) => setData(old => ({ ...old, email: v }))}
 					/>
@@ -121,16 +124,22 @@ const MenageAccountScreen = ({ navigation }) => {
 					<XTextInput
 						title={t('First name')}
 						value={data.firstName}
+						clearable
+						onClear={() => setData(old => ({ ...old, firstName: '' }))}
 						onChangeText={(v) => setData(old => ({ ...old, firstName: v }))}
 					/>
 					<XTextInput
 						title={t('Last name')}
 						value={data.lastName}
+						clearable
+						onClear={() => setData(old => ({ ...old, lastName: '' }))}
 						onChangeText={(v) => setData(old => ({ ...old, lastName: v }))}
 					/>
 					<XTextInput
 						title={t('Phone')}
 						value={data.phone}
+						clearable
+						onClear={() => setData(old => ({ ...old, phone: '' }))}
 						onChangeText={(v) => setData(old => ({ ...old, phone: v }))}
 					/>
 
@@ -140,7 +149,6 @@ const MenageAccountScreen = ({ navigation }) => {
 					<XButton
 						title={t('Save')}
 						primary
-						large
 						onPress={saveProfile}
 						disabled={loading}
 					/>

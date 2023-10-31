@@ -10,7 +10,7 @@ import { usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 import HairSalon from "../../components/svg/HairSalon";
 import { storeDispatch, useStore } from "xapp/src/store/store";
-import { FREE_APPOINTMENTS_SCREEN, MAP_SCREEN } from "../../navigators/routes";
+import { FREE_APPOINTMENTS_SCREEN } from "../../navigators/routes";
 import { AntDesign } from '@expo/vector-icons';
 import Footer from "../../components/Footer";
 import { XTabView, XTabScreen } from "xapp/src/components/tabview/XTabView";
@@ -36,7 +36,7 @@ const CHIP_MARK_TOP_MARGIN = (Theme.values.chipHeight / 2 * -1) - CNT_NEG_TOP_MA
 const ProviderScreen = ({ navigation, route }) => {
 
 	const providerId = route.params.id;
-	const [{ mainImg, about }] = useHTTPGet(`/provider/${providerId}`, null, {});
+	const [{ mainImg, about }] = useHTTPGet(`/provider/${providerId}`, null, {}, true);
 
 	const t = useTranslation();
 	const styles = useThemedStyle(styleCreator)
@@ -72,7 +72,6 @@ const ProviderScreen = ({ navigation, route }) => {
 					mainImg ?
 						<XImage
 							imgPath={mainImg[0]}
-							cachePolicy='memory'
 							style={{ flex: 1 }}
 							contentFit="cover"
 						/>

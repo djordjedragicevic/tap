@@ -19,7 +19,7 @@ public class TAPApplication extends Application {
 	public static void initialize() {
 		try {
 			Files.createDirectories(Paths.get(FSAsset.getAssetRoot() + FSAsset.USER_IMG_ROOT));
-			Files.createDirectories(Paths.get(FSAsset.getAssetRoot() + FSAsset.PROVIDER_IMG_MAIN));
+			Files.createDirectories(Paths.get(FSAsset.getAssetRoot() + FSAsset.PROVIDER_IMG_ROOT));
 		} catch (IOException e) {
 			throw new TAPException(ErrID.TAP_0);
 		}

@@ -3,6 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const KEY_PRE = 'XAPP_';
 
+const _cache = {};
+
 export class Storage {
 	static async get(key, defValue) {
 		key = KEY_PRE + key;
@@ -51,3 +53,16 @@ export class SecureStorage {
 		}
 	}
 };
+
+export class CacheStorage {
+	static get(key, defValue) {
+		if (_cache.hasOwnProperty(key))
+			return _cache[key];
+		else
+			return defValue;
+	}
+
+	static set(key, value) {
+		_cache[key] = value;
+	}
+}

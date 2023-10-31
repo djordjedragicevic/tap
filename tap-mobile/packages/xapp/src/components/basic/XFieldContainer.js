@@ -15,6 +15,7 @@ const XFieldContainer = ({
 	iconRightColor,
 	iconLeftColor,
 	iconLeftSize = 18,
+	iconRightSize = 18,
 	style = {},
 	styleCenterContainer = {},
 	disabled = false,
@@ -51,9 +52,9 @@ const XFieldContainer = ({
 				!!iconRight &&
 				<IconRightCmp disabled={iconRightDisabled} style={[styles.icon, { opacity: iconRightDisabled ? Theme.values.disabledOpacity : 1 }]} onPress={onIconRightPress}>
 					{typeof iconRight === 'string' ?
-						<AntDesign name={iconRight} size={20} color={iconRightColor || styles.iconColor} />
+						<AntDesign name={iconRight} size={iconRightSize} color={iconRightColor || styles.iconColor} />
 						:
-						iconRight({ size: 20, color: iconLeftColor || styles.iconColor })
+						iconRight({ size: iconRightSize, color: iconRightColor || styles.iconColor })
 					}
 				</IconRightCmp>
 			}
