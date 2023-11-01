@@ -34,8 +34,6 @@ public class AppointmentService {
 	private static final int FREE_APP_CREATING_STEP = 15;
 	@Inject
 	private ProviderRepository providerRepository;
-	@Inject
-	private UtilRepository utilRepository;
 
 	@Inject
 	private AppointmentRepository appointmentRep;
