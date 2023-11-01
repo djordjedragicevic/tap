@@ -16,7 +16,7 @@ import {
 	MAP_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
-import ProviderScreen from '../screens/provider/ProviderScreen';
+import ProviderScreen from '../screens/ProviderScreen';
 import { useStore } from 'xapp/src/store/store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
