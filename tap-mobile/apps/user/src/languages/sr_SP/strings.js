@@ -78,6 +78,22 @@ export const strings = {
 	"Save": "Sačuvaj",
 	"Reject": "Otkaži",
 	"Reject appointment": "Otkaži rezervaciju",
-	"reject_appointment_msg": "Da li ste sigurni da želite otkazati rezervaciju? Moguće da nece biti moguće rezervisati je ponovo!"
+	"reject_appointment_msg": "Da li ste sigurni da želite otkazati rezervaciju? Moguće da nece biti moguće rezervisati je ponovo!",
+	"Book again": "Ponovo rezerviši",
+	"Rebook": "Ponovo rezerviši",
+	"rebook_appointment_msg": "Da li ste sigurni da želite ponovo zakazati rezervaciju?",
+	"No appointments": "Nema termina",
+
+	"Canceled": "Otkazano",
+	"Waiting": "Čeka se",
+	"Rejected": "Odbijeno",
+	"Accepted": "Prihvaćeno",
+	"CANCELED": "OTKAZANO",
+	"WAITING": "ČEKA SE",
+	"REJECTED": "ODBIJENO",
+	"ACCEPTED": "PRIHVAĆENO",
+
+	"Account": "Nalog",
+	"Personal information": "Lični podaci"
 
 };

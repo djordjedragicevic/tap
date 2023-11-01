@@ -91,7 +91,7 @@ const ProvidersScreen = ({ navigation }) => {
 			<FlatList
 				contentContainerStyle={{
 					paddingHorizontal: Theme.values.mainPaddingHorizontal,
-					marginTop: Theme.values.mainPaddingHorizontal,
+					paddingTop: Theme.values.mainPaddingHorizontal,
 					rowGap: Theme.values.mainPaddingHorizontal
 				}}
 				data={providers}

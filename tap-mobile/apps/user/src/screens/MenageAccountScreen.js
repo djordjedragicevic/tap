@@ -104,7 +104,7 @@ const MenageAccountScreen = ({ navigation }) => {
 					</View>
 				</Pressable>
 
-				<XSection transparent>
+				<XSection transparent title={t('Account')}>
 					<XTextInput
 						title={t('Username')}
 						value={data.username}
@@ -120,7 +120,7 @@ const MenageAccountScreen = ({ navigation }) => {
 					/>
 				</XSection>
 
-				<XSection transparent>
+				<XSection transparent title={'Personal information'} style={{ marginTop: 20 }}>
 					<XTextInput
 						title={t('First name')}
 						value={data.firstName}

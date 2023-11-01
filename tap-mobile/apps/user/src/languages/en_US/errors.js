@@ -20,10 +20,6 @@ export const errors = {
 		title: 'Book appointment error',
 		message: 'Requested time for appointment is not free anymore'
 	},
-	APPO_2: {
-		title: '',
-		message: ''
-	},
 	PROV_1: {
 		title: 'Load provider error',
 		message: 'It is not possible to load provider information'

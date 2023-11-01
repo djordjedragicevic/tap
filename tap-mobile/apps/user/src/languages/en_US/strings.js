@@ -80,7 +80,21 @@ export const strings = {
 	"Save": "Save",
 	"Reject": "Reject",
 	"Reject appointment": "Reject appointment",
-	"reject_appointment_msg": "Are you sure you want to reject appointment? It may not be possible to book it again!"
+	"reject_appointment_msg": "Are you sure you want to reject appointment? It may not be possible to book it again!",
+	"Rebook": "Re-book",
+	"Book again": "Book again",
+	"rebook_appointment_msg": "Are you sure you want to re-book appointment?",
+	"No appointments": "No appointments",
 
+	"Canceled": "Canceled",
+	"Waiting": "Waiting",
+	"Rejected": "Rejected",
+	"Accepted": "Accepted",
+	"CANCELED": "CANCELED",
+	"WAITING": "WAITING",
+	"REJECTED": "REJECTED",
+	"ACCEPTED": "ACCEPTED",
 
+	"Account": "Account",
+	"Personal information": "Personal information"
 };

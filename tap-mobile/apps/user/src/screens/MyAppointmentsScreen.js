@@ -1,7 +1,7 @@
 import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 import { useCallback, useMemo, useState } from "react";
-import { Http, useHTTPGet } from "xapp/src/common/Http";
+import { Http, useHTTPGet, useHTTPGetOnFocus } from "xapp/src/common/Http";
 import { FlatList, StyleSheet, View } from "react-native";
 import { useDateCode, useTranslation } from "xapp/src/i18n/I18nContext";
 import XButton from "xapp/src/components/basic/XButton";
@@ -12,6 +12,8 @@ import XAlert from "xapp/src/components/basic/XAlert";
 import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import XChip from "xapp/src/components/basic/XChip";
 import XIcon from "xapp/src/components/basic/XIcon";
+import XEmptyListIcon from "xapp/src/components/XEmptyListIcon";
+import { useFocusEffect } from '@react-navigation/native';
 
 const groupLinked = (apps = []) => {
 	const g = {};
@@ -36,6 +38,13 @@ const STATUS = {
 	CANCELED: 'CANCELED',
 	ACCEPTED: 'ACCEPTED',
 	REJECTED: 'REJECTED'
+};
+
+const STATUS_TEXT = {
+	WAITING: 'Waiting',
+	CANCELED: 'Canceled',
+	ACCEPTED: 'Accepted',
+	REJECTED: 'Rejected'
 };
 
 const ICON = {
@@ -75,7 +84,6 @@ const AppService = ({ item }) => {
 		</View>
 	)
 };
-
 
 
 
@@ -132,15 +140,15 @@ const Appointment = ({ item, reload }) => {
 			case STATUS.CANCELED:
 				return (
 					<XButton
-						title='Ponovo zakazi'
+						title={t('Book again')}
 						small
 						primary
 						uppercase={true}
 						onPress={() => {
-							XAlert.show('Otkazivanje rezervacije', 'Da li ste sigurni da zelite da otkazete rezervaciju', [
-								{ text: 'Odustani' },
+							XAlert.show(t('Reject appointment'), t('reject_appointment_msg'), [
+								{ text: t('Quit') },
 								{
-									text: 'Zakazi', onPress: () => {
+									text: t('Book'), onPress: () => {
 										Http.post('/appointments/my-appointments/rebook', { appIds: itemIds })
 											.finally(reload)
 									}
@@ -153,7 +161,7 @@ const Appointment = ({ item, reload }) => {
 			default:
 				return null;
 		}
-	}, [status, reload])
+	}, [status, reload, t])
 
 
 	return (
@@ -163,10 +171,9 @@ const Appointment = ({ item, reload }) => {
 			title={`${sDate} - ${sTime}`}
 			titleRight={(
 				<XChip
-					text={status}
+					text={t(STATUS_TEXT[status])}
 					color={isHistory ? Theme.vars.gray : COLORS[status]}
 					icon={<XIcon color={isHistory ? undefined : statusColor} icon={ICON[status]} size={16} />}
-					textStyle={{ textTransform: 'capitalize' }}
 				/>
 			)}
 			styleTitle={styles.appTitle}
@@ -200,7 +207,7 @@ const MyAppointmentsScreen = () => {
 
 	const dateCode = useDateCode();
 	const t = useTranslation();
-	const [data, refresh, refreshing] = useHTTPGet('/appointments/my-appointments');
+	const [data, refresh, refreshing] = useHTTPGetOnFocus(useFocusEffect, '/appointments/my-appointments');
 
 	const itemRenderer = useCallback((param) => (
 		<Appointment
@@ -224,7 +231,6 @@ const MyAppointmentsScreen = () => {
 
 	return (
 		<XScreen loading={refreshing} flat>
-
 			<XSegmentedButton
 				options={[
 					{ id: 1, text: t('Upcoming') },
@@ -240,18 +246,22 @@ const MyAppointmentsScreen = () => {
 			/>
 
 
-			<FlatList
-				data={apps}
-				renderItem={itemRenderer}
-				keyExtractor={(item) => Array.isArray(item) ? item[0].joinId : item.id}
-				ListEmptyComponent={(<View><XText>NEMA</XText></View>)}
-				contentContainerStyle={{
-					rowGap: Theme.values.mainPaddingHorizontal,
-					padding: Theme.values.mainPaddingHorizontal
-				}}
-				refreshing={refreshing}
-				onRefresh={refresh}
-			/>
+			{
+				apps?.length ?
+					<FlatList
+						data={apps}
+						renderItem={itemRenderer}
+						keyExtractor={(item) => Array.isArray(item) ? item[0].joinId : item.id}
+						contentContainerStyle={{
+							rowGap: Theme.values.mainPaddingHorizontal,
+							padding: Theme.values.mainPaddingHorizontal
+						}}
+						refreshing={refreshing}
+						onRefresh={refresh}
+					/>
+					:
+					<XEmptyListIcon text={t('No appointments')} />
+			}
 		</XScreen>
 	)
 };
@@ -265,7 +275,7 @@ const styleCreator = (theme) => StyleSheet.create({
 	},
 	appContainer: {
 		borderWidth: Theme.values.borderWidth,
-		borderColor: theme.colors.borderColor,
+		borderColor: theme.colors.borderColor
 	},
 	appContent: {
 		padding: 10,

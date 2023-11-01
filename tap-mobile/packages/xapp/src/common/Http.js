@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { storeDispatch } from '../store/store';
 import { CacheStorage, SecureStorage } from '../store/deviceStorage';
 import XAlert from '../components/basic/XAlert';
@@ -197,7 +197,9 @@ export function useHTTPGet(url, params, initData, cache = false) {
 	const [data, setData] = useState(cache ? CacheStorage.get(cK, initData) : initData);
 	const [refreshId, setRefreshId] = useState(1);
 	const [refreshing, setRefreshing] = useState(false);
-
+	const refreshFn = useCallback(() => {
+		setRefreshId(old => old + 1);
+	}, []);
 
 	useEffect(() => {
 		setRefreshing(true);
@@ -218,7 +220,44 @@ export function useHTTPGet(url, params, initData, cache = false) {
 			doSetState = false;
 			setRefreshing(false);
 		};
-	}, [refreshId, setRefreshing,]);
+	}, [refreshId, setRefreshing]);
 
-	return [data, () => setRefreshId(refreshId + 1), refreshing];
+	return [data, refreshFn, refreshing];
+};
+
+export function useHTTPGetOnFocus(focusFn, url, params, initData, cache = false) {
+
+	const cK = cache ? (url + JSON.stringify(params || {})) : null;
+
+	const [data, setData] = useState(cache ? CacheStorage.get(cK, initData) : initData);
+	const [refreshId, setRefreshId] = useState(1);
+	const [refreshing, setRefreshing] = useState(false);
+	const refreshFn = useCallback(() => {
+		setRefreshId(old => old + 1);
+	}, []);
+
+	focusFn(
+		useCallback(() => {
+			setRefreshing(true);
+			let doSetState = true;
+			Http.get(url, params)
+				.then(d => {
+					if (doSetState) {
+						setData(d);
+						if (cache)
+							CacheStorage.set(cK, d);
+					}
+				})
+				.finally(() => {
+					setRefreshing(false);
+				});
+
+			return () => {
+				doSetState = false;
+				setRefreshing(false);
+			};
+		}, [refreshId, setRefreshing])
+	);
+
+	return [data, refreshFn, refreshing];
 };
