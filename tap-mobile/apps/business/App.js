@@ -15,7 +15,7 @@ import { ThemeContextProvider } from 'xapp/src/style/ThemeContext';
 import { useEffect, useState } from 'react';
 import { Http } from 'xapp/src/common/Http';
 import { storeDispatch, storeInit } from 'xapp/src/store/store';
-import { appStore, userStore } from './src/store/concreteStores';
+import { appStore, providerStore, userStore } from './src/store/concreteStores';
 import { I18nContextProvider } from 'xapp/src/i18n/I18nContext';
 import { Theme } from 'xapp/src/style/themes';
 import { Storage } from 'xapp/src/store/deviceStorage';
@@ -28,6 +28,7 @@ import { emptyFn } from 'xapp/src/common/utils';
 
 storeInit(appStore());
 storeInit(userStore());
+storeInit(providerStore());
 
 Http.init(HOST, API_URL, HTTP_TIMEOUT);
 I18n.init({
@@ -91,17 +92,18 @@ export default App = () => {
 	//Check user token
 	useEffect(() => {
 		if (initialLanguage && initialTheme) {
-			Http.getToken().then(t => {
-				Http.get('/user/profile', t, false, true)
-					.then(userData => {
-						if (userData)
-							storeDispatch('user.set_data', userData);
-					})
-					.catch(emptyFn)
-					.finally(() => {
-						setUserChecked(true);
-					})
-			});
+			// Http.getToken().then(t => {
+			// 	Http.get('/user/profile', t, false, true)
+			// 		.then(userData => {
+			// 			if (userData)
+			// 				storeDispatch('user.set_data', userData);
+			// 		})
+			// 		.catch(emptyFn)
+			// 		.finally(() => {
+			// 			setUserChecked(true);
+			// 		})
+			// });
+			setUserChecked(true)
 		}
 	}, [initialLanguage, initialTheme]);
 

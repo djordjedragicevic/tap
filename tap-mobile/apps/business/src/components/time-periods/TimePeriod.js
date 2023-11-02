@@ -2,8 +2,8 @@ import React, { useCallback, useContext, useMemo } from "react";
 import { StyleSheet, TouchableOpacity, } from "react-native";
 import { calculateHeightFromDate, calculateTopFromDate, emptyFn, getUserDisplayName } from "xapp/src/common/utils";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
-import XText from "../basic/XText";
-import I18nContext from "../../i18n/I18nContext";
+import XText from "xapp/src/components/basic/XText";
+import I18nContext from "xapp/src/i18n/I18nContext";
 
 const HOUR_HEIGHT = 60;
 

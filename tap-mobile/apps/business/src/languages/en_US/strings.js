@@ -1,4 +1,6 @@
 export const strings = {
 	"Appointments": "Appointments",
-	"Settings": "Settings"
+	"Settings": "Settings",
+	"Cancel": "Cancel",
+	"OK": "OK"
 };

@@ -5,8 +5,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { Http } from 'xapp/src/common/Http';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { getUserDisplayName } from 'xapp/src/common/utils';
-import TimePeriod from '../components/time-periods/TimePeriod';
-import TimePeriodsPanel from '../components/time-periods/TimePeriodPanel';
+import TimePeriod from '../../../business/src/components/time-periods/TimePeriod';
+import TimePeriodsPanel from '../../../business/src/components/time-periods/TimePeriodPanel';
 import { CalendarProvider, ExpandableCalendar } from 'react-native-calendars';
 import { useThemedStyle } from 'xapp/src/style/ThemeContext';
 

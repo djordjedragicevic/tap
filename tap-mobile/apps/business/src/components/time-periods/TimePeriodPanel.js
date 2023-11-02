@@ -1,8 +1,8 @@
 import { memo, useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { DateUtils } from "xapp/src/common/utils";
+import XText from "xapp/src/components/basic/XText";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
-import XText from '../basic/XText';
 
 const HOUR_HEIGHT = 60;
 
