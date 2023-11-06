@@ -11,28 +11,16 @@ const AppointmentsScreen = () => {
 	const sizeCoef = useState(1)[0];
 	const pId = useStore(gS => gS.provider.id);
 
-	const [employeeData] = useHTTPGet('/appointments/' + pId)
+	//const [employeeData] = useHTTPGet('/appointments/' + pId)
 
 	return (
-		<XScreen flat>
-			<ScrollView>
-				<TimePeriodsPanel sizeCoef={sizeCoef}>
-					{employeeData && employeeData.calendar[0].periods.map((p, idx) => {
-						return (
-							<TimePeriod
-								key={idx}
-								sizeCoef={sizeCoef}
-								style={{}}
-								item={{
-									...p,
-									username: employeeData.user.username,
-									epmloyeeId: employeeData.user.id
-								}}
-							/>
-						)
-					})}
-				</TimePeriodsPanel>
-			</ScrollView>
+		<XScreen scroll>
+			<TimePeriodsPanel
+				sizeCoef={sizeCoef}
+				startHour={9}
+				endHour={22}
+				data={[]}
+			/>
 		</XScreen>
 	);
 }

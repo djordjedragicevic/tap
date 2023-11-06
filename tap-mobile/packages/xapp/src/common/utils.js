@@ -45,27 +45,19 @@ export const DateUtils = {
 		const d = new Date(dT);
 		return d.toLocaleDateString(locale, { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
 	},
-	getDayHours: (from, to) => {
-		if (from == null)
-			from = 0;
-
-		if (to == null)
-			to = from + 23;
-
+	getDayHours: (from = 0, to = 23) => {
+		let tmp = from;
 		const resp = [];
-		const hourCount = to - from;
-		let idx = from;
 
-		if (hourCount > 0) {
-			for (let i = 0; i <= hourCount; i++) {
-				if (idx > 24)
-					idx = 0;
-				resp.push((idx < 10 ? '0' : '') + idx + ":00")
-
-				idx++
-			}
-
+		while (tmp !== to) {
+			resp.push((tmp < 10 ? '0' : '') + tmp + ":00")
+			if (tmp < 23)
+				tmp += 1;
+			else
+				tmp = 0;
 		}
+		resp.push((to < 10 ? '0' : '') + to + ":00");
+
 		return resp;
 	},
 	WEEK_DAY: ["Monday", "Tuesday", "Wednsday", "Thursday", "Friday", "Saturday", "Sunday"]

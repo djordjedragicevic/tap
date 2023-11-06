@@ -3,11 +3,12 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { DateUtils } from "xapp/src/common/utils";
 import XText from "xapp/src/components/basic/XText";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
+import { Theme } from "xapp/src/style/themes";
 
 const HOUR_HEIGHT = 60;
 
 const getDateState = () => {
-	//const d = new Date('2020-05-12T09:49:00.000Z');
+	//const d = new Date('2020-05-12T14:00:00.000Z');
 	const d = new Date();
 	return {
 		h: d.getHours(),
@@ -16,7 +17,10 @@ const getDateState = () => {
 	}
 };
 
-const CurrentTime = memo(({ sizeCoef, startHour, timeLineStyle, timeTextStyle }) => {
+const CT_HEIGHT = 10;
+const CT_DOT_SIZE = 8;
+
+const CurrentTime = memo(({ sizeCoef, hourHeight, timeLineStyle, topOffset }) => {
 
 	const styles = useThemedStyle(createStyle);
 
@@ -28,12 +32,11 @@ const CurrentTime = memo(({ sizeCoef, startHour, timeLineStyle, timeTextStyle })
 	}, []);
 
 	const top = useMemo(() => {
-		return (dateState.h * HOUR_HEIGHT * sizeCoef) + (dateState.m * sizeCoef) + ((HOUR_HEIGHT / 2) * sizeCoef) + (startHour > 0 ? ((24 - startHour) * HOUR_HEIGHT * sizeCoef) : 0);
-	}, [dateState, startHour, sizeCoef]);
+		return ((dateState.h * hourHeight) + dateState.m + (hourHeight / 2) - (CT_HEIGHT / 2) + topOffset) * sizeCoef;
+	}, [dateState, hourHeight, topOffset]);
 
 	return (
-		<View style={[styles.hourLineContainer, { position: 'absolute', top }]}>
-			<XText style={[styles.currentTimeText, timeTextStyle]}>{dateState.timeString}</XText>
+		<View style={[styles.currentTimeContainer, { top }]}>
 			<View style={styles.currentTimeLineDot} />
 			<View style={[styles.currentTimeLine, timeLineStyle]} />
 		</View>
@@ -53,39 +56,58 @@ const RowRight = memo(({ height }) => {
 	const styles = useThemedStyle(createStyle);
 	return (
 		<View height={height} style={styles.rowRight}>
-			<View style={styles.hourLine} />
+			<View style={styles.hourSeparator} />
 		</View>
 	)
 });
 
-const TimePeriodsPanel = ({ sizeCoef, showCurrentTime, startHour, children }) => {
+const TimePeriodsPanel = ({
+	sizeCoef = 1,
+	showCurrentTime = true,
+	startHour = 0,
+	endHour = 23,
+	children,
+	hourHeight = HOUR_HEIGHT
+}) => {
 
 	const styles = useThemedStyle(createStyle);
 	const height = useMemo(() => sizeCoef * HOUR_HEIGHT, [sizeCoef])
+	const hours = useMemo(() => DateUtils.getDayHours(startHour, endHour), [startHour, endHour]);
+	const topOffset = useMemo(() => (hourHeight * startHour * sizeCoef) * -1, [hourHeight, startHour, sizeCoef]);
+
+
 	return (
-		<ScrollView>
-			<View style={[styles.container]}>
-				<View>
-					{DateUtils.getDayHours(startHour).map(h => <RowLeft key={h} height={height} hour={h} />)}
-				</View>
-				<View style={styles.rowRightContainer}>
-					{DateUtils.getDayHours(startHour).map(h => <RowRight key={h} height={height} />)}
-					{children}
-				</View>
+		<View style={[styles.container]}>
+			<View style={styles.rowLeftContainer}>
+				{hours.map(h => <RowLeft key={h} height={height} hour={h} />)}
 			</View>
-			{showCurrentTime && <CurrentTime key={'currentTime'} sizeCoef={sizeCoef} startHour={startHour} />}
-		</ScrollView >
+			<View style={styles.rowRightContainer}>
+				{hours.map(h => <RowRight key={h} height={height} />)}
+				{children}
+				{showCurrentTime &&
+					<CurrentTime
+						key={'currentTime'}
+						hourHeight={hourHeight}
+						sizeCoef={sizeCoef}
+						startHour={startHour}
+						topOffset={topOffset}
+					/>
+				}
+			</View>
+		</View>
 	)
 };
 
 const createStyle = (theme) => StyleSheet.create({
 	container: {
 		flexDirection: 'row',
-		padding: 10,
+		flex: 1
+	},
+	rowLeftContainer: {
+		marginEnd: Theme.values.mainPaddingHorizontal
 	},
 	rowRightContainer: {
 		flex: 1,
-		marginStart: 10,
 		borderStartWidth: 1,
 		borderColor: theme.colors.borderColor
 	},
@@ -97,41 +119,39 @@ const createStyle = (theme) => StyleSheet.create({
 		justifyContent: 'center'
 	},
 
+	currentTimeContainer: {
+		position: 'absolute',
+		height: CT_HEIGHT,
+		flexDirection: 'row',
+		alignItems: 'center',
+		left: - (CT_DOT_SIZE / 2),
+		right: 0
+	},
+
 	currentTimeLine: {
-		marginEnd: 10,
 		flex: 1,
 		height: 1,
-		backgroundColor: theme.colors.red,
-	},
-	currentTimeText: {
-		paddingHorizontal: 10,
-		color: theme.colors.red,
-		//backgroundColor: theme.colors.backgroundElement
+		backgroundColor: theme.colors.primary,
 	},
 	currentTimeLineDot: {
-		height: 8,
-		width: 8,
+		height: CT_DOT_SIZE,
+		width: CT_DOT_SIZE,
 		borderRadius: 50,
-		backgroundColor: theme.colors.red
+		backgroundColor: theme.colors.primary
 	},
 	currentTimeLineTriangle: {
 		height: 0,
 		width: 0,
-		borderTopWidth: 8,
+		borderTopWidth: CT_DOT_SIZE,
 		borderTopColor: 'transparent',
-		borderBottomWidth: 8,
+		borderBottomWidth: CT_DOT_SIZE,
 		borderBottomColor: 'transparent',
-		borderLeftWidth: 8,
+		borderLeftWidth: CT_DOT_SIZE,
 		borderLeftColor: theme.colors.red
 	},
-
-	hourLine: {
+	hourSeparator: {
 		height: 1,
 		backgroundColor: theme.colors.borderColor
-	},
-	hourLineContainer: {
-		flexDirection: 'row',
-		alignItems: 'center'
 	}
 });
 
