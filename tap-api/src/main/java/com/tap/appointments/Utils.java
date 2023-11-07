@@ -1,6 +1,7 @@
 package com.tap.appointments;
 
 import com.tap.common.TimePeriod;
+import com.tap.db.entity.BusyPeriod;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -62,5 +63,39 @@ public class Utils {
 				.min(Collections.reverseOrder(LocalTime::compareTo))
 				.orElse(LocalTime.MIN);
 
+	}
+
+	public static TimePeriod adjustRepeatablePeriodToOnaDate(LocalDate atDate, LocalDateTime start, LocalDateTime end, String repeatType) {
+		LocalDateTime borderFrom = atDate.atTime(LocalTime.MIN);
+		LocalDateTime borderTo = atDate.atTime(LocalTime.MAX);
+		LocalDateTime realStart = convertToRealDT(borderFrom.toLocalDate(), repeatType, start);
+		LocalDateTime realEnd = convertToRealDT(borderTo.toLocalDate(), repeatType, end);
+		LocalTime from = realStart.isBefore(borderFrom) ? borderFrom.toLocalTime() : realStart.toLocalTime();
+		LocalTime to = realEnd.isAfter(borderTo) ? borderTo.toLocalTime() : realEnd.toLocalTime();
+		return new TimePeriod(from, to);
+	}
+
+	public static TimePeriod adjustPeriodToOnaDate(LocalDate atDate, LocalDateTime start, LocalDateTime end) {
+		LocalTime from = start.isBefore(atDate.atTime(LocalTime.MIN)) ? LocalTime.MIN : start.toLocalTime();
+		LocalTime to = end.isAfter(atDate.atTime(LocalTime.MAX)) ? LocalTime.MAX : end.toLocalTime();
+		return new TimePeriod(from, to);
+	}
+
+	private static LocalDateTime convertToRealDT(LocalDate atDate, String repeatType, LocalDateTime repeatDateTime) {
+		switch (repeatType) {
+			case Utils.EVERY_WEEK -> {
+				return atDate.minusDays(atDate.getDayOfWeek().getValue() - repeatDateTime.getDayOfWeek().getValue()).atTime(repeatDateTime.toLocalTime());
+			}
+			case Utils.EVERY_MONT -> {
+				return atDate.minusDays(atDate.getDayOfMonth() - repeatDateTime.getDayOfMonth()).atTime(repeatDateTime.toLocalTime());
+			}
+			case Utils.EVERY_YEAR -> {
+				return repeatDateTime.withYear(atDate.getYear());
+			}
+			//Also cover EVERY_DAY type
+			default -> {
+				return atDate.atTime(repeatDateTime.toLocalTime());
+			}
+		}
 	}
 }

@@ -188,11 +188,11 @@ public class AppointmentRepository {
 		return q.getResultList();
 	}
 
-	public List<Appointment> getAppointmentsAtDay(List<Integer> eIds, LocalDate date) {
-		return getAppointmentsAtDay(eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
+	public List<Appointment> getAppointmentsAtDayWAStatus(List<Integer> eIds, LocalDate date) {
+		return getAppointmentsAtDayWAStatus(eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
 	}
 
-	public List<Appointment> getAppointmentsAtDay(List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
+	public List<Appointment> getAppointmentsAtDayWAStatus(List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 
 		String query = """
 				SELECT a FROM Appointment a JOIN FETCH a.appointmentstatus status
@@ -288,7 +288,7 @@ public class AppointmentRepository {
 	}
 
 	private boolean isFreeTime(Integer pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
-		return getAppointmentsAtDay(eIds, from, to).isEmpty()
+		return getAppointmentsAtDayWAStatus(eIds, from, to).isEmpty()
 			   &&
 			   getBusyPeriodsAtDay(pId, eIds, from, to).isEmpty();
 	}

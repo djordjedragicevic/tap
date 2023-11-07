@@ -20,7 +20,7 @@ const getDateState = () => {
 const CT_HEIGHT = 10;
 const CT_DOT_SIZE = 8;
 
-const CurrentTime = memo(({ sizeCoef, hourHeight, timeLineStyle, topOffset }) => {
+const CurrentTime = memo(({ sizeCoef, hourHeight, topOffset }) => {
 
 	const styles = useThemedStyle(createStyle);
 
@@ -38,7 +38,7 @@ const CurrentTime = memo(({ sizeCoef, hourHeight, timeLineStyle, topOffset }) =>
 	return (
 		<View style={[styles.currentTimeContainer, { top }]}>
 			<View style={styles.currentTimeLineDot} />
-			<View style={[styles.currentTimeLine, timeLineStyle]} />
+			<View style={[styles.currentTimeLine]} />
 		</View>
 	)
 });
@@ -66,7 +66,6 @@ const TimePeriodsPanel = ({
 	showCurrentTime = true,
 	startHour = 0,
 	endHour = 23,
-	children,
 	hourHeight = HOUR_HEIGHT
 }) => {
 
@@ -83,13 +82,11 @@ const TimePeriodsPanel = ({
 			</View>
 			<View style={styles.rowRightContainer}>
 				{hours.map(h => <RowRight key={h} height={height} />)}
-				{children}
 				{showCurrentTime &&
 					<CurrentTime
 						key={'currentTime'}
 						hourHeight={hourHeight}
 						sizeCoef={sizeCoef}
-						startHour={startHour}
 						topOffset={topOffset}
 					/>
 				}

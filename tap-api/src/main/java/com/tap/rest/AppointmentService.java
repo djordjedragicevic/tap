@@ -298,45 +298,6 @@ public class AppointmentService {
 		return freePeriods;
 	}
 
-	private static TimePeriod adjustBusyTimeToOneDate(LocalDate atDate, BusyPeriod busyPeriod) {
-
-		if (busyPeriod.getRepeattype() == null) {
-			return adjustTimeToOneDate(atDate, busyPeriod.getStart(), busyPeriod.getEnd());
-		} else {
-			LocalDateTime borderFrom = atDate.atTime(LocalTime.MIN);
-			LocalDateTime borderTo = atDate.atTime(LocalTime.MAX);
-			LocalDateTime realStart = convertToRealDT(borderFrom.toLocalDate(), busyPeriod.getRepeattype().getName(), busyPeriod.getStart());
-			LocalDateTime realEnd = convertToRealDT(borderTo.toLocalDate(), busyPeriod.getRepeattype().getName(), busyPeriod.getEnd());
-			LocalTime from = realStart.isBefore(borderFrom) ? borderFrom.toLocalTime() : realStart.toLocalTime();
-			LocalTime to = realEnd.isAfter(borderTo) ? borderTo.toLocalTime() : realEnd.toLocalTime();
-			return new TimePeriod(from, to);
-		}
-	}
-
-	private static TimePeriod adjustTimeToOneDate(LocalDate atDate, LocalDateTime dtFrom, LocalDateTime dtTo) {
-		LocalTime from = dtFrom.isBefore(atDate.atTime(LocalTime.MIN)) ? LocalTime.MIN : dtFrom.toLocalTime();
-		LocalTime to = dtTo.isAfter(atDate.atTime(LocalTime.MAX)) ? LocalTime.MAX : dtTo.toLocalTime();
-		return new TimePeriod(from, to);
-	}
-
-	private static LocalDateTime convertToRealDT(LocalDate atDate, String repeatType, LocalDateTime repeatDateTime) {
-		switch (repeatType) {
-			case Utils.EVERY_WEEK -> {
-				return atDate.minusDays(atDate.getDayOfWeek().getValue() - repeatDateTime.getDayOfWeek().getValue()).atTime(repeatDateTime.toLocalTime());
-			}
-			case Utils.EVERY_MONT -> {
-				return atDate.minusDays(atDate.getDayOfMonth() - repeatDateTime.getDayOfMonth()).atTime(repeatDateTime.toLocalTime());
-			}
-			case Utils.EVERY_YEAR -> {
-				return repeatDateTime.withYear(atDate.getYear());
-			}
-			//Also cover EVERY_DAY type
-			default -> {
-				return atDate.atTime(repeatDateTime.toLocalTime());
-			}
-		}
-	}
-
 	private ProviderWorkInfo getProviderWorkInfoAtDay(Integer pId, List<Integer> eIds, LocalDate date) {
 
 		ProviderWorkInfo pWI = new ProviderWorkInfo(pId, date);
@@ -397,14 +358,17 @@ public class AppointmentService {
 
 		//----------------Create Employee timeline----------------------------------
 
-		List<Appointment> appointments = appointmentRep.getAppointmentsAtDay(eIds, date);
+		List<Appointment> appointments = appointmentRep.getAppointmentsAtDayWAStatus(eIds, date);
 		List<BusyPeriod> busyPeriods = appointmentRep.getBusyPeriodsAtDay(pId, eIds, date);
 
 		List<TimePeriod> providerBTP = new ArrayList<>();
 		List<BusyPeriod> employeeBP = new ArrayList<>();
 		busyPeriods.forEach(bP -> {
 			if (bP.getProvider() != null)
-				providerBTP.add(adjustBusyTimeToOneDate(date, bP));
+				providerBTP.add(bP.getRepeattype() != null ?
+						Utils.adjustRepeatablePeriodToOnaDate(date, bP.getStart(), bP.getEnd(), bP.getRepeattype().getName())
+						:
+						Utils.adjustPeriodToOnaDate(date, bP.getStart(), bP.getEnd()));
 			else
 				employeeBP.add(bP);
 		});
@@ -413,7 +377,7 @@ public class AppointmentService {
 
 			int eId = e.getEmployeeId();
 
-			if (!e.getWorkPeriods().isEmpty() || pWI.isWorking())
+			if (!e.getWorkPeriods().isEmpty() || Boolean.TRUE.equals(pWI.getWorking()))
 				e.setWorking(true);
 
 			//Employee work time
@@ -455,7 +419,10 @@ public class AppointmentService {
 					.stream()
 					.filter(eBP -> eBP.getEmployee().getId() == eId)
 					.forEach(eBP -> {
-						TimePeriod tP = adjustBusyTimeToOneDate(date, eBP);
+						TimePeriod tP = eBP.getRepeattype() != null ?
+								Utils.adjustRepeatablePeriodToOnaDate(date, eBP.getStart(), eBP.getEnd(), eBP.getRepeattype().getName())
+								:
+								Utils.adjustPeriodToOnaDate(date, eBP.getStart(), eBP.getEnd());
 						NamedTimePeriod nTP = new NamedTimePeriod(tP.getStart(), tP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_E_BUSY);
 						e.getTimeline().add(nTP);
 					});
@@ -465,7 +432,7 @@ public class AppointmentService {
 					.stream()
 					.filter(a -> a.getEmployee().getId() == eId)
 					.forEach(a -> {
-						TimePeriod tP = adjustTimeToOneDate(date, a.getStart(), a.getEnd());
+						TimePeriod tP = Utils.adjustPeriodToOnaDate(date, a.getStart(), a.getEnd());
 						NamedTimePeriod nTP = new NamedTimePeriod(tP.getStart(), tP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_APPOINTMENT);
 						e.getTimeline().add(nTP);
 					});
