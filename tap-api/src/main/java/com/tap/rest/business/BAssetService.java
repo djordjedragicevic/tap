@@ -1,24 +1,21 @@
-package com.tap.rest;
+package com.tap.rest.business;
 
 import com.tap.common.FSAsset;
 import com.tap.security.Public;
-import com.tap.security.Secured;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.config.ConfigProvider;
 
-import java.io.*;
-
-@Path("asset")
-public class AssetService {
+@Path("business/asset")
+public class BAssetService {
 	@GET
 	@Path("download")
 	@Public
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response getImage(@QueryParam("lct") String location) {
-
 		return FSAsset.readFile(location).build();
-
 	}
 }

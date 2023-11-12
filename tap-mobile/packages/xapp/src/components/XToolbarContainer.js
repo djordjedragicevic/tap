@@ -9,13 +9,13 @@ export const MIN_TAB_WIDTH = 100;
 
 const XToolbarContainer = ({
 	onItemRender,
-	items,
+	items = [],
 	style,
 	minItemWidth = MIN_TAB_WIDTH,
 	tabBarHPadding = TAB_BAR_H_PADDING,
 	barHeight = 50
 }) => {
-	const styles = useThemedStyle(styleCreator, tabBarHPadding, barHeight);
+	const styles = useThemedStyle(styleCreator, tabBarHPadding, barHeight, minItemWidth);
 
 	const useScroll = useMemo(() => {
 		return ((items.length * minItemWidth) + (2 * tabBarHPadding)) > width;
@@ -34,25 +34,45 @@ const XToolbarContainer = ({
 						showsHorizontalScrollIndicator={false}
 						style={[styles.tabBar, style]}
 					>
-						{items.map(onItemRenderIntern)}
+						{items.map((i, idx) => (
+							<View
+								key={i.id || (idx + 1).toString()}
+								style={styles.itemContainer}
+							>
+								{onItemRenderIntern(i, idx)}
+							</View>
+						)
+						)}
 					</ScrollView>
 					:
 					<View
 						style={[styles.tabBar, style]}
 					>
-						{items.map(onItemRenderIntern)}
+						{items.map((i, idx) => (
+							<View
+								key={i.id || (idx + 1).toString()}
+								style={styles.itemContainer}
+							>
+								{onItemRenderIntern(i, idx)}
+							</View>
+						)
+						)}
 					</View>
 			}
 		</>
 	);
 };
 
-const styleCreator = (_, tabBarHPadding, barHeight) => StyleSheet.create({
+const styleCreator = (_, tabBarHPadding, barHeight, itemMinW) => StyleSheet.create({
 	tabBar: {
 		minHeight: barHeight,
 		maxHeight: barHeight,
 		paddingHorizontal: tabBarHPadding,
 		flexDirection: 'row'
+	},
+	itemContainer: {
+		minWidth: itemMinW,
+		flex: 1
 	}
 });
 

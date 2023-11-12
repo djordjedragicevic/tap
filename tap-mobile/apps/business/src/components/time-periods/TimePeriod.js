@@ -1,53 +1,133 @@
 import React, { useCallback, useContext, useMemo } from "react";
-import { StyleSheet, TouchableOpacity, } from "react-native";
-import { calculateHeightFromDate, calculateTopFromDate, emptyFn, getUserDisplayName } from "xapp/src/common/utils";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
+import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
+import { Theme } from "xapp/src/style/themes";
 import XText from "xapp/src/components/basic/XText";
-import I18nContext from "xapp/src/i18n/I18nContext";
+import XIcon from "xapp/src/components/basic/XIcon";
+import { STATUS } from "../../common/general";
 
-const HOUR_HEIGHT = 60;
-
-
-const formatTime = (dtString, loc) => {
-	return new Date(dtString).toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' });
+const PERIOD_TYPE = {
+	CLOSE_EMPLOYEE_BREAK: "CLOSE_EMPLOYEE_BREAK",
+	CLOSE_PROVIDER_BREAK: "CLOSE_PROVIDER_BREAK",
+	CLOSE_APPOINTMENT: "CLOSE_APPOINTMENT"
 };
 
-const TimePeriod = ({ item, sizeCoef, offset, from, onPress, children, style }) => {
-	const styles = useThemedStyle(createStyle, item.subType);
+
+// const generatePeriodData = (item, t) => {
+// 	switch (item.name) {
+// 		case PERIOD_TYPE.CLOSE_EMPLOYEE_BREAK:
+// 		case PERIOD_TYPE.CLOSE_PROVIDER_BREAK:
+// 			return { title: t('Break'), colorName: Theme.vars.orange };
+// 		case PERIOD_TYPE.CLOSE_APPOINTMENT:
+// 			return { title: item.data.sName, colorName: Theme.vars.green };
+// 		default:
+// 			break;
+// 	}
+// };
+
+
+
+const TimePeriod = ({ item, height, top, style, onPress }) => {
+	const styles = useThemedStyle(createStyle, height, top);
 	const { lng } = useContext(I18nContext);
+	const t = useTranslation();
 
-	const dynStyles = useMemo(() => {
-		return {
-			height: calculateHeightFromDate(item.start, item.end, sizeCoef),
-			top: calculateTopFromDate(item.start, sizeCoef * (HOUR_HEIGHT / 2), sizeCoef, from)
+	useMemo(() => {
+
+	}, [item]);
+
+	const onPressHandler = useCallback(() => {
+		onPress(item)
+	}, []);
+
+	const TPeriod = useMemo(() => {
+		if (item.name === PERIOD_TYPE.CLOSE_APPOINTMENT) {
+			return (
+				<View
+					style={[styles.appointment, item.data.status === STATUS.WAITING && styles.appointmentWaiting]}
+				>
+					<View>
+						{item.data.status === STATUS.WAITING && <XIcon size={14} icon='warning' color={styles.appointmentWIconColor} />}
+					</View>
+					<View>
+						<XText bold size={12}>{item.start + ' - ' + item.end}</XText>
+					</View>
+					<View>
+						<XText
+							bold
+							size={12}
+							numberOfLines={1}
+							ellipsizeMode='tail'
+						>
+							{item.data.sName}
+						</XText>
+					</View>
+					<View style={{ flex: 1 }} />
+					<View>
+						<XText bold size={12}>{item.data.uUsername}</XText>
+					</View>
+				</View>
+			)
 		}
-	}, [item.start, item.end, sizeCoef])
+		else {
+			return (
+				<View style={styles.break}>
+					<XText bold size={12}>{item.start + ' - ' + item.end}</XText>
+					<XText bold size={12}>{t('Break')}</XText>
+				</View>
+			)
+		}
+	}, [item, styles, t, height]);
 
-	const onPressHandler = useCallback(() => onPress(item), []);
 
 	return (
-		<TouchableOpacity style={[styles.item, dynStyles, style]} onPress={onPressHandler}>
-			<XText light>{getUserDisplayName(item)} </XText>
-			<XText light>{formatTime(item.start, lng.code) + ' - ' + formatTime(item.end, lng.code)} </XText>
-			{children}
+		<TouchableOpacity style={[styles.itemContainer, style]} onPress={onPressHandler} >
+			{TPeriod}
 		</TouchableOpacity>
 	);
 };
 
-const createStyle = (theme, periodSubType) => StyleSheet.create({
-	item: {
-		backgroundColor: theme.periodColors[periodSubType],
-		width: '100%',
-		opacity: 0.75,
-		position: 'absolute',
-		borderRadius: 8,
+const createStyle = (theme, height, top, colorName) => {
+	const periodCommon = {
+		opacity: 0.8,
+		flex: 1,
+		columnGap: 5,
+		paddingHorizontal: 5,
+		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'center'
-	}
-});
+		borderWidth: Theme.values.borderWidth,
+		borderRadius: Theme.values.borderRadius,
+		borderColor: theme.colors.borderColor,
+	};
 
-TimePeriod.defaultProps = {
-	onPress: emptyFn
-};
+	return StyleSheet.create({
+		itemContainer: {
+			position: 'absolute',
+			height,
+			top,
+			flex: 1,
+			start: 10,
+			end: 10,
+			borderRadius: Theme.values.borderRadius,
+			overflow: 'hidden'
+		},
+
+		appointmentWIconColor: theme.colors[Theme.vars.red],
+		appointment: {
+			...periodCommon,
+			backgroundColor: theme.colors.green
+		},
+		appointmentWaiting: {
+			backgroundColor: Theme.opacity(theme.colors.textTertiary, 0.6),
+			borderColor: theme.colors.red
+		},
+
+		break: {
+			...periodCommon,
+			backgroundColor: theme.colors[Theme.vars.yellow]
+		}
+	});
+}
 
 export default React.memo(TimePeriod);

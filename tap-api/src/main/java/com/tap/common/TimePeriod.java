@@ -1,10 +1,14 @@
 package com.tap.common;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
+
 import java.time.LocalTime;
 
 public class TimePeriod {
-	private LocalTime start;
-	private LocalTime end;
+	@JsonbDateFormat("HH:mm")
+	private final LocalTime start;
+	@JsonbDateFormat("HH:mm")
+	private final LocalTime end;
 
 	public TimePeriod(LocalTime start, LocalTime end) {
 		this.start = start;

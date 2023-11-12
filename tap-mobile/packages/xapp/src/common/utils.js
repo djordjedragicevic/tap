@@ -32,19 +32,21 @@ export const measureDuration = (fn) => {
 
 
 export const DateUtils = {
-	dateToString: (date) => {
-		return date?.toISOString().split('T')[0];
+	hoursDiff: (start, end) => {
+		if (end < start)
+			return (24 - start) + end;
+		else
+			return end - start;
+
 	},
-	dateToTimeString: (d, hour12 = true) => {
-		return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12 });
+	getMinutesOfDay: (timeString) => {
+		const t = timeString.split(":");
+		return (parseInt(t[0]) * 60) + parseInt(t[1]);
 	},
-	stringToTimeString: (s) => {
-		return DateUtils.dateToTimeString(new Date(s))
+	calculateHeightFromTime: (startTime, endTime) => {
+		return DateUtils.getMinutesOfDay(endTime) - DateUtils.getMinutesOfDay(startTime);
 	},
-	formatStringToDateTime: (dT, locale) => {
-		const d = new Date(dT);
-		return d.toLocaleDateString(locale, { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
-	},
+
 	getDayHours: (from = 0, to = 23) => {
 		let tmp = from;
 		const resp = [];

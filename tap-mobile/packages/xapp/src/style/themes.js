@@ -75,19 +75,13 @@ export const Theme = {
 
 			purple: 'hsl(330, 100%, 30%)',
 			purpleLight: 'hsl(330, 100%, 95%)'
-		},
-		periodColors: {
-			'FREE_APPOINTMENT': '#3399ff',
-			'FREE_PERIOD': 'green',
-			'BUSY_APPOINTMENT': 'red',
-			'BUSY_BREAK': 'orange'
 		}
 	},
 
 	Dark: {
 		id: 'Dark',
 		colors: {
-			primary: '#2E8BC0',
+			primary: 'deepskyblue',
 			primaryLight: 'hsl(195, 100%, 13%)',
 			secondary: '#042C4E',
 			background: 'black',
@@ -101,33 +95,36 @@ export const Theme = {
 
 			borderColor: 'hsl(0, 0%, 25%)',
 
-			gray: 'hsl(0, 0%, 90%)',
-			grayLight: 'hsl(0, 0%, 50%)',
+			gray: 'hsl(0, 0%, 60%)',
+			grayLight: 'hsl(0, 0%, 95%)',
 
-			red: 'hsl(0, 100%, 95%)',
-			redLight: 'hsl(0, 100%, 35%)',
+			red: 'hsl(0, 100%, 50%)',
+			redLight: 'hsl(0, 100%, 95%)',
 
-			green: 'hsl(177, 70%, 92%)',
-			greenLight: 'hsl(177, 70%,41%)',
+			green: 'hsl(177, 70%, 41%)',
+			greenLight: 'hsl(177, 70%, 92%)',
 
-			yellow: 'hsl(60, 100%, 95%)',
-			yellowLight: 'hsl(60, 100%, 35%)',
+			yellow: 'hsl(51, 100%, 40%)',
+			yellowLight: 'hsl(51, 100%, 95%)',
 
-			orange: 'hsl(28, 100%, 95%)',
-			orangeLight: 'hsl(28, 100%, 50%)',
+			orange: 'hsl(28, 100%, 50%)',
+			orangeLight: 'hsl(28, 100%, 95%)',
 
-			blue: 'hsl(225, 100%, 95%)',
-			blueLight: 'hsl(225, 100%, 20%)',
+			blue: 'hsl(225, 100%, 45%)',
+			blueLight: 'hsl(225, 100%, 95%)',
 
-			purple: 'hsl(330, 100%, 95%)',
-			purpleLight: 'hsl(330, 100%, 30%)'
-		},
-		periodColors: {
-			'FREE_APPOINTMENT': '#46b7d7',
-			'FREE_PERIOD': 'green',
-			'BUSY_APPOINTMENT': 'red',
-			'BUSY_BREAK': 'orange'
+			purple: 'hsl(330, 100%, 30%)',
+			purpleLight: 'hsl(330, 100%, 95%)'
 		}
+	},
+	opacity: (color, v) => {
+		if (color.startsWith('hsl')) {
+			let c = color.replace('hsl', 'hsla');
+			c = c.substring(0, c.length - 1);
+			return c + ', ' + v + ')';
+		}
+		else
+			return color;
 	},
 
 	initThemes: function (themes) {

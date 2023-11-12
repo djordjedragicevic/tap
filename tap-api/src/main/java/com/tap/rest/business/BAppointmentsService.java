@@ -61,6 +61,7 @@ public class BAppointmentsService {
 		List<BusyPeriod> bps = cAppointmentRepository.getBusyPeriodsAtDay(pId, eIds, date);
 		List<WorkPeriod> wps = cAppointmentRepository.getBreaksPeriodsAtDay(pId, eIds, date.getDayOfWeek().getValue());
 
+
 		ProviderWorkInfo pWI = new ProviderWorkInfo(pId)
 				.setAtDay(date)
 				.setEmployees(new ArrayList<>())
@@ -80,7 +81,7 @@ public class BAppointmentsService {
 		Employee tmpE;
 		User tmpU;
 		TimePeriod tmpTP;
-
+		String status;
 		//Appointments
 		for (Object[] a : apps) {
 			tmpA = (Appointment) a[0];
@@ -102,7 +103,8 @@ public class BAppointmentsService {
 									"sName", tmpS.getName(),
 									"uId", tmpU.getId(),
 									"uUsername", tmpU.getUsername(),
-									"uEmail", tmpU.getEmail()
+									"uEmail", tmpU.getEmail(),
+									"status", a[4]
 							)
 					));
 		}
@@ -121,7 +123,7 @@ public class BAppointmentsService {
 					tmpTP.getStart(),
 					tmpTP.getEnd(),
 					TypedTimePeriod.CLOSE,
-					isProviderLevel ? NamedTimePeriod.CLOSE_P_BUSY : NamedTimePeriod.CLOSE_E_BUSY,
+					isProviderLevel ? NamedTimePeriod.CLOSE_PROVIDER_BUSY : NamedTimePeriod.CLOSE_EMPLOYEE_BUSY,
 					Map.of(
 							"id", bP.getId(),
 							"comment", bP.getComment(),
@@ -149,7 +151,7 @@ public class BAppointmentsService {
 								wP.getStartTime(),
 								wP.getEndTime(),
 								TypedTimePeriod.CLOSE,
-								NamedTimePeriod.CLOSE_P_BREAK,
+								NamedTimePeriod.CLOSE_PROVIDER_BREAK,
 								Map.of(
 										"id", wP.getId(),
 										"periodType", wP.getPeriodtype().getName()
@@ -160,7 +162,7 @@ public class BAppointmentsService {
 							wP.getStartTime(),
 							wP.getEndTime(),
 							TypedTimePeriod.CLOSE,
-							NamedTimePeriod.CLOSE_E_BREAK,
+							NamedTimePeriod.CLOSE_EMPLOYEE_BREAK,
 							Map.of(
 									"id", wP.getId(),
 									"periodType", wP.getPeriodtype().getName()

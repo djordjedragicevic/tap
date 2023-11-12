@@ -382,12 +382,12 @@ public class AppointmentService {
 
 			//Employee work time
 			boolean hasOwnWT = !e.getWorkPeriods().isEmpty();
-			String wWTName = hasOwnWT ? NamedTimePeriod.OPEN_E_WORK : NamedTimePeriod.OPEN_P_WORK;
+			String wWTName = hasOwnWT ? NamedTimePeriod.OPEN_EMPLOYEE_WORK : NamedTimePeriod.OPEN_PROVIDER_WORK;
 			List<NamedTimePeriod> eWorkTime = (hasOwnWT ? e.getWorkPeriods() : pWI.getWorkPeriods()).stream().map(wP -> new NamedTimePeriod(wP.getStart(), wP.getEnd(), TypedTimePeriod.OPEN, wWTName)).toList();
 
 			//Employee break time
 			boolean hasOwnBT = !e.getBreakPeriods().isEmpty();
-			String wBTName = hasOwnWT ? NamedTimePeriod.CLOSE_E_BREAK : NamedTimePeriod.CLOSE_P_BREAK;
+			String wBTName = hasOwnWT ? NamedTimePeriod.CLOSE_EMPLOYEE_BREAK : NamedTimePeriod.CLOSE_PROVIDER_BREAK;
 			List<NamedTimePeriod> eBreakTime = (hasOwnBT ? e.getBreakPeriods() : pWI.getBreakPeriods()).stream().map(bP -> new NamedTimePeriod(bP.getStart(), bP.getEnd(), TypedTimePeriod.CLOSE, wBTName)).toList();
 
 			//Calculate work time sum
@@ -409,7 +409,7 @@ public class AppointmentService {
 							.filter(wP -> Utils.isTimeOverlap(pBP, wP))
 							.forEach(wP -> {
 								TimePeriod aTP = Utils.adjustOverlapTime(pBP, wP);
-								NamedTimePeriod nTP = new NamedTimePeriod(aTP.getStart(), aTP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_P_BUSY);
+								NamedTimePeriod nTP = new NamedTimePeriod(aTP.getStart(), aTP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_PROVIDER_BUSY);
 								e.getTimeline().add(nTP);
 							})
 					);
@@ -423,7 +423,7 @@ public class AppointmentService {
 								Utils.adjustRepeatablePeriodToOnaDate(date, eBP.getStart(), eBP.getEnd(), eBP.getRepeattype().getName())
 								:
 								Utils.adjustPeriodToOnaDate(date, eBP.getStart(), eBP.getEnd());
-						NamedTimePeriod nTP = new NamedTimePeriod(tP.getStart(), tP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_E_BUSY);
+						NamedTimePeriod nTP = new NamedTimePeriod(tP.getStart(), tP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_EMPLOYEE_BUSY);
 						e.getTimeline().add(nTP);
 					});
 

@@ -37,10 +37,11 @@ public class BAppointmentRepository {
 	public List<Object[]> getAppointments(List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 
 		String query = """
-				SELECT a, s, e, u FROM Appointment a
+				SELECT a, s, e, u, status.name FROM Appointment a
 				JOIN a.service s
 				JOIN a.employee e
 				JOIN a.user u
+				JOIN a.appointmentstatus status
 				WHERE
 				a.employee.id IN :eIds
 				AND

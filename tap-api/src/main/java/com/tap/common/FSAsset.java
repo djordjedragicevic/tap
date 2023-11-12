@@ -1,5 +1,6 @@
 package com.tap.common;
 
+import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.io.*;
@@ -23,6 +24,19 @@ public class FSAsset {
 		writeFile(is, f);
 
 		return USER_IMG_ROOT + "/" + imgName;
+	}
+
+	public static Response.ResponseBuilder readFile(String location){
+		String assetRoot = ConfigProvider.getConfig().getValue("tap.assets.root", String.class);
+		File f = new File(assetRoot + location);
+
+		Response.ResponseBuilder response = Response.ok(f);
+
+		response.header("Content-Disposition", "attachment; filename=\"" + f.getName() + "\"");
+		response.header("Content-Type", "image/jpeg");
+		response.header("Content-Length", String.valueOf(f.length()));
+
+		return response;
 	}
 
 	private static void writeFile(InputStream is, File f) throws IOException {
