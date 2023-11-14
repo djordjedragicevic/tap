@@ -10,4 +10,11 @@ public interface Statics {
 //	public static final String OPEN_PROVIDER_WORK = "OPEN_PROVIDER_WORK";
 //	public static final String OPEN_PROVIDER_WORK = "OPEN_PROVIDER_WORK";
 //	public static final String OPEN_PROVIDER_WORK = "OPEN_PROVIDER_WORK";
+
+
+	public static final String A_STATUS_WAITING = "WAITING";
+	public static final String A_STATUS_ACCEPTED = "ACCEPTED";
+	public static final String A_STATUS_REJECTED = "REJECTED";
+	public static final String A_STATUS_CANCELED = "CANCELED";
+
 }

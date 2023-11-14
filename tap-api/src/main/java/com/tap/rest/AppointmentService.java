@@ -27,10 +27,6 @@ import java.util.stream.Collectors;
 @Path("appointments")
 @RequestScoped
 public class AppointmentService {
-	public static String A_STATUS_WAITING = "WAITING";
-	public static String A_STATUS_ACCEPTED = "ACCEPTED";
-	public static String A_STATUS_REJECTED = "REJECTED";
-	public static String A_STATUS_CANCELED = "CANCELED";
 	private static final int FREE_APP_CREATING_STEP = 15;
 	@Inject
 	private ProviderRepository providerRepository;

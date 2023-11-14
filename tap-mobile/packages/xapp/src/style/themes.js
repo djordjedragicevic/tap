@@ -98,7 +98,7 @@ export const Theme = {
 			gray: 'hsl(0, 0%, 60%)',
 			grayLight: 'hsl(0, 0%, 95%)',
 
-			red: 'hsl(0, 100%, 50%)',
+			red: 'hsl(0, 100%, 40%)',
 			redLight: 'hsl(0, 100%, 95%)',
 
 			green: 'hsl(177, 70%, 41%)',

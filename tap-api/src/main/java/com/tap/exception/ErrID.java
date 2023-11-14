@@ -19,5 +19,10 @@ public enum ErrID {
 	SIGN_IN_1,
 
 	//Invalid data
-	INV_EMAIL_1
+	INV_EMAIL_1,
+
+
+	//Accept appointment
+	B_APP_ST_1,
+	B_APP_ST_2,
 }

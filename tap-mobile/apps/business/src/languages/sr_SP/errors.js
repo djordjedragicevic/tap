@@ -23,5 +23,13 @@ export const errors = {
 	SIGN_IN_1: {
 		title: 'Greška pri prijavi',
 		message: 'Neispravano korisničko ime/email ili lozinka'
+	},
+	B_APP_ST_1: {
+		title: 'Greška statusa rezervacije',
+		message: 'Više nije moguća izmjena statusa rezervacije'
+	},
+	B_APP_ST_2: {
+		title: 'Greška statusa rezervacije',
+		message: 'Nije moguće prihvatiti rezervaciju ako je trenutni status {:status} '
 	}
 }

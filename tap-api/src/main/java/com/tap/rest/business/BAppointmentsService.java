@@ -9,6 +9,7 @@ import com.tap.rest.common.CAppointmentRepository;
 import com.tap.security.Public;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -55,6 +56,32 @@ public class BAppointmentsService {
 
 	}
 
+	@POST
+	@Path("/accept/{appId}/{sId}")
+	@Public
+	@Transactional
+	public Response acceptAppointment(
+			@NotNull @PathParam("appId") Long appId,
+			@NotNull @PathParam("sId") Integer sId
+	) {
+
+		bAppointmentRepository.acceptAppointment(appId, sId, Util.zonedNow());
+		return Response.ok().build();
+	}
+
+	@POST
+	@Path("/reject/{appId}/{sId}")
+	@Public
+	@Transactional
+	public Response rejectAppointment(
+			@NotNull @PathParam("appId") Long appId,
+			@NotNull @PathParam("sId") Integer sId
+	) {
+
+		bAppointmentRepository.rejectAppointment(appId, sId, Util.zonedNow());
+		return Response.ok().build();
+	}
+
 	private ProviderWorkInfo generatePWI(Integer pId, List<Integer> eIds, LocalDate date, List<EmployeeDto> emps) {
 
 		List<Object[]> apps = bAppointmentRepository.getAppointmentsAtDay(eIds, date);
@@ -99,8 +126,14 @@ public class BAppointmentsService {
 							NamedTimePeriod.CLOSE_APPOINTMENT,
 							Map.of(
 									"id", tmpA.getId(),
-									"sId", tmpS.getId(),
-									"sName", tmpS.getName(),
+									"service", Map.of(
+											"id", tmpS.getId(),
+											"name", tmpS.getName(),
+											"duration", tmpS.getDuration(),
+											"price", tmpS.getPrice()
+									),
+									"eId", tmpE.getId(),
+									"eName", tmpE.getName(),
 									"uId", tmpU.getId(),
 									"uUsername", tmpU.getUsername(),
 									"uEmail", tmpU.getEmail(),

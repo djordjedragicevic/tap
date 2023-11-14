@@ -23,5 +23,13 @@ export const errors = {
 	SIGN_IN_1: {
 		title: 'Sign In error',
 		message: 'Invalide username/email or password'
+	},
+	B_APP_ST_1: {
+		title: 'Appointment status error',
+		message: 'The status of appointment can not be changed anymore'
+	},
+	B_APP_ST_2: {
+		title: 'Appointment status error',
+		message: 'Can not accept apointment when current status is {:status} '
 	}
 }

@@ -33,6 +33,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				component={AppointmentsScreen}
 				options={{
 					title: t("Appointments"),
+					headerShown: false,
 					tabBarIcon: (props) => <AntDesign name="calendar" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
 			/>

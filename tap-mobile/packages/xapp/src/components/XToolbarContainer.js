@@ -4,6 +4,7 @@ import { useThemedStyle } from "../style/ThemeContext";
 
 const { width } = Dimensions.get("screen");
 const TAB_BAR_H_PADDING = 0;
+const TAB_BAR_V_PADDING = 0;
 
 export const MIN_TAB_WIDTH = 100;
 
@@ -13,9 +14,10 @@ const XToolbarContainer = ({
 	style,
 	minItemWidth = MIN_TAB_WIDTH,
 	tabBarHPadding = TAB_BAR_H_PADDING,
+	tabBarVPadding = TAB_BAR_V_PADDING,
 	barHeight = 50
 }) => {
-	const styles = useThemedStyle(styleCreator, tabBarHPadding, barHeight, minItemWidth);
+	const styles = useThemedStyle(styleCreator, tabBarHPadding, barHeight, minItemWidth, tabBarVPadding);
 
 	const useScroll = useMemo(() => {
 		return ((items.length * minItemWidth) + (2 * tabBarHPadding)) > width;
@@ -32,7 +34,7 @@ const XToolbarContainer = ({
 					<ScrollView
 						horizontal
 						showsHorizontalScrollIndicator={false}
-						style={[styles.tabBar, style]}
+						contentContainerStyle={[styles.tabBar, style]}
 					>
 						{items.map((i, idx) => (
 							<View
@@ -63,11 +65,12 @@ const XToolbarContainer = ({
 	);
 };
 
-const styleCreator = (_, tabBarHPadding, barHeight, itemMinW) => StyleSheet.create({
+const styleCreator = (_, tabBarHPadding, barHeight, itemMinW, tabBarVPadding) => StyleSheet.create({
 	tabBar: {
 		minHeight: barHeight,
 		maxHeight: barHeight,
 		paddingHorizontal: tabBarHPadding,
+		paddingVertical: tabBarVPadding,
 		flexDirection: 'row'
 	},
 	itemContainer: {

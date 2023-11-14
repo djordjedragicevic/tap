@@ -1,8 +1,10 @@
 package com.tap.rest.common;
 
 import com.tap.appointments.Utils;
+import com.tap.db.entity.AppointmentStatus;
 import com.tap.db.entity.BusyPeriod;
 import com.tap.db.entity.WorkPeriod;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,7 +16,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@RequestScoped
+@ApplicationScoped
 public class CAppointmentRepository {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
@@ -119,5 +121,11 @@ public class CAppointmentRepository {
 			jpaQuery.setParameter("eIds", eIds);
 
 		return jpaQuery.getResultList();
+	}
+
+	public AppointmentStatus getAppointmentStatusByName(String name) {
+		return em.createQuery("SELECT status FROM AppointmentStatus status WHERE status.name = :name", AppointmentStatus.class)
+				.setParameter("name", name)
+				.getSingleResult();
 	}
 }

@@ -39,7 +39,7 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 
 	const onPressHandler = useCallback(() => {
 		onPress(item)
-	}, []);
+	}, [onPress, item]);
 
 	const TPeriod = useMemo(() => {
 		if (item.name === PERIOD_TYPE.CLOSE_APPOINTMENT) {
@@ -51,21 +51,22 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 						{item.data.status === STATUS.WAITING && <XIcon size={14} icon='warning' color={styles.appointmentWIconColor} />}
 					</View>
 					<View>
-						<XText bold size={12}>{item.start + ' - ' + item.end}</XText>
+						<XText light bold size={12}>{item.start + ' - ' + item.end}</XText>
 					</View>
 					<View>
 						<XText
+							light
 							bold
 							size={12}
 							numberOfLines={1}
 							ellipsizeMode='tail'
 						>
-							{item.data.sName}
+							{item.data.service.name}
 						</XText>
 					</View>
 					<View style={{ flex: 1 }} />
 					<View>
-						<XText bold size={12}>{item.data.uUsername}</XText>
+						<XText light bold size={12} >{item.data.uUsername}</XText>
 					</View>
 				</View>
 			)
@@ -73,8 +74,8 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 		else {
 			return (
 				<View style={styles.break}>
-					<XText bold size={12}>{item.start + ' - ' + item.end}</XText>
-					<XText bold size={12}>{t('Break')}</XText>
+					<XText light bold size={12}>{item.start + ' - ' + item.end}</XText>
+					<XText light bold size={12}>{t('Break')}</XText>
 				</View>
 			)
 		}

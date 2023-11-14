@@ -4,3 +4,7 @@ export const STATUS = {
 	REJECTED: 'REJECTED',
 	CANCELED: 'CANCELED'
 };
+
+export const PERIOD = {
+	CLOSE_APPOINTMENT: 'CLOSE_APPOINTMENT'
+}

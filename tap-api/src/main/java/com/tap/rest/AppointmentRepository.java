@@ -2,6 +2,7 @@ package com.tap.rest;
 
 import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.Utils;
+import com.tap.common.Statics;
 import com.tap.common.Util;
 import com.tap.db.entity.*;
 import jakarta.enterprise.context.RequestScoped;
@@ -29,11 +30,11 @@ public class AppointmentRepository {
 			return false;
 
 		for (Appointment a : apps)
-			if (a.getAppointmentstatus().getName().equals(AppointmentService.A_STATUS_REJECTED))
+			if (a.getAppointmentstatus().getName().equals(Statics.A_STATUS_REJECTED))
 				return false;
 
 
-		AppointmentStatus status = this.getAppointmentStatus(AppointmentService.A_STATUS_CANCELED);
+		AppointmentStatus status = this.getAppointmentStatus(Statics.A_STATUS_CANCELED);
 		for (Appointment a : apps)
 			a.setAppointmentstatus(status);
 
@@ -54,7 +55,7 @@ public class AppointmentRepository {
 				return false;
 
 
-		AppointmentStatus status = this.getAppointmentStatus(AppointmentService.A_STATUS_WAITING);
+		AppointmentStatus status = this.getAppointmentStatus(Statics.A_STATUS_WAITING);
 		for (Appointment a : apps)
 			a.setAppointmentstatus(status);
 
@@ -73,7 +74,7 @@ public class AppointmentRepository {
 		boolean isFree = isFreeTime(app.getProviderId(), eIds, from, to);
 
 		if (isFree) {
-			AppointmentStatus aS = getAppointmentStatus(AppointmentService.A_STATUS_WAITING);
+			AppointmentStatus aS = getAppointmentStatus(Statics.A_STATUS_WAITING);
 			User u = em.find(User.class, userId);
 			app.getServices().sort(Comparator.comparing(FreeAppointment.Service::getTime));
 
@@ -207,8 +208,8 @@ public class AppointmentRepository {
 
 		return em.createQuery(query, Appointment.class)
 				.setParameter("eIds", eIds)
-				.setParameter("waiting", AppointmentService.A_STATUS_WAITING)
-				.setParameter("accepted", AppointmentService.A_STATUS_ACCEPTED)
+				.setParameter("waiting", Statics.A_STATUS_WAITING)
+				.setParameter("accepted", Statics.A_STATUS_ACCEPTED)
 				.setParameter("from", from)
 				.setParameter("to", to)
 				.getResultList();

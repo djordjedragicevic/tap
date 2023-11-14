@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { DateUtils } from "xapp/src/common/utils";
+import { DateUtils, emptyFn } from "xapp/src/common/utils";
 import XText from "xapp/src/components/basic/XText";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
@@ -70,7 +70,9 @@ const TimePeriodsPanel = ({
 	startHour = 0,
 	endHour = 23,
 	hourHeight = HOUR_HEIGHT,
-	items = []
+	items = [],
+	style,
+	onItemPress = emptyFn
 }) => {
 
 	const styles = useThemedStyle(createStyle);
@@ -78,12 +80,8 @@ const TimePeriodsPanel = ({
 	const hours = useMemo(() => DateUtils.getDayHours(startHour, endHour), [startHour, endHour]);
 	const topOffset = useMemo(() => (hourHeight * startHour * sizeCoef) * -1, [hourHeight, startHour, sizeCoef]);
 
-	const onItemPress = useCallback((item) => {
-		console.log(item);
-	}, []);
-
 	return (
-		<View style={[styles.container]}>
+		<View style={[styles.container, style]}>
 			<View style={styles.rowLeftContainer}>
 				{hours.map(h => <RowLeft key={h} height={height} hour={h} />)}
 			</View>

@@ -3,5 +3,16 @@ export const strings = {
 	"Settings": "Settings",
 	"Cancel": "Cancel",
 	"OK": "OK",
-	"Break": "Break"
+	"Break": "Break",
+	"Service": "Service",
+	"Duration": "Duration",
+	"Price": "Price",
+	"Employee": "Employee",
+	"User": "User",
+	"min": "min",
+	"Accept": "Accept",
+	"Reject": "Reject",	
+	"Today": "Today",
+	"Tomorow": "Tomorow",
+	"Yesterday": "Yesterday",
 };
