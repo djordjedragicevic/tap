@@ -1,26 +1,28 @@
 package com.tap.rest;
 
 import com.tap.appointments.FreeAppointment;
-import com.tap.appointments.Utils;
 import com.tap.common.Statics;
 import com.tap.common.Util;
+import com.tap.db.dtor.AppointmentDtoSimple;
 import com.tap.db.entity.*;
-import jakarta.enterprise.context.RequestScoped;
+import com.tap.rest.common.CAppointmentRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@RequestScoped
+@ApplicationScoped
 public class AppointmentRepository {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
+	@Inject
+	private CAppointmentRepository cAppointmentRepository;
 
 	@Transactional
 	public boolean cancelAppointments(List<Long> aIds) {
@@ -34,7 +36,7 @@ public class AppointmentRepository {
 				return false;
 
 
-		AppointmentStatus status = this.getAppointmentStatus(Statics.A_STATUS_CANCELED);
+		AppointmentStatus status = cAppointmentRepository.getAppointmentStatus(Statics.A_STATUS_CANCELED);
 		for (Appointment a : apps)
 			a.setAppointmentstatus(status);
 
@@ -55,7 +57,7 @@ public class AppointmentRepository {
 				return false;
 
 
-		AppointmentStatus status = this.getAppointmentStatus(Statics.A_STATUS_WAITING);
+		AppointmentStatus status = cAppointmentRepository.getAppointmentStatus(Statics.A_STATUS_WAITING);
 		for (Appointment a : apps)
 			a.setAppointmentstatus(status);
 
@@ -74,7 +76,7 @@ public class AppointmentRepository {
 		boolean isFree = isFreeTime(app.getProviderId(), eIds, from, to);
 
 		if (isFree) {
-			AppointmentStatus aS = getAppointmentStatus(Statics.A_STATUS_WAITING);
+			AppointmentStatus aS = cAppointmentRepository.getAppointmentStatus(Statics.A_STATUS_WAITING);
 			User u = em.find(User.class, userId);
 			app.getServices().sort(Comparator.comparing(FreeAppointment.Service::getTime));
 
@@ -106,113 +108,22 @@ public class AppointmentRepository {
 		return false;
 	}
 
-	public AppointmentStatus getAppointmentStatus(String name) {
-		return em.createQuery("SELECT a FROM AppointmentStatus a WHERE a.name = :name", AppointmentStatus.class)
-				.setParameter("name", name)
-				.getSingleResult();
+	public List<AppointmentDtoSimple> getAppointmentsAtDayWAStatus(List<Integer> eIds, LocalDate date) {
+		return this.getAppointmentsAtDayWAStatus(
+				eIds,
+				date.atTime(LocalTime.MIN),
+				date.atTime(LocalTime.MAX)
+		);
 	}
 
-
-	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, List<Integer> eIds, LocalDate date) {
-		return getBusyPeriodsAtDay(pId, eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
-	}
-
-	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
-
-		String fromDate = from.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
-		String toDate = to.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
-		String fromTime = from.toLocalTime().format(DateTimeFormatter.ISO_LOCAL_TIME);
-		String toTime = to.toLocalTime().format(DateTimeFormatter.ISO_LOCAL_TIME);
-		int fromDay = from.getDayOfWeek().getValue() - 1;
-		int toDay = to.getDayOfWeek().getValue() - 1;
-		int fromMDay = from.getDayOfMonth();
-		int toMDay = to.getDayOfMonth();
-		int fromYDay = from.getDayOfYear();
-		int toYDay = to.getDayOfYear();
-
-		boolean hasPid = false;
-		boolean hasEid = false;
-		String q1 = " (";
-		if (pId > 0) {
-			hasPid = true;
-			q1 += "bP.provider.id = :pId";
-		}
-		if (eIds != null && !eIds.isEmpty()) {
-			hasEid = true;
-			q1 += " OR bP.employee.id " + (eIds.size() > 1 ? "IN" : "=") + " :eIds";
-		}
-		q1 += ") ";
-
-		String query = """
-				SELECT bP
-				FROM BusyPeriod bP LEFT JOIN FETCH bP.repeattype rT
-				WHERE
-				""";
-		query += q1;
-		query += """
-				AND
-				((function('TIME', bP.start) BETWEEN :fromTime AND :toTime) OR (function('TIME', bP.end) BETWEEN :fromTime AND :toTime) OR (function('TIME', bP.start) <= :fromTime AND function('TIME', bP.end) >= :toTime))
-				AND(
-				(rT IS NULL AND ((function('DATE', bP.start) BETWEEN :fromDate AND :toDate) OR (function('DATE', bP.end) BETWEEN :fromDate AND :toDate) OR (function('DATE', bP.start) <= :fromDate AND function('DATE', bP.end) >= :toDate)))
-				OR
-				(rT.name = :everyDay)
-				OR
-				(rT.name = :everyWeek AND ((function('WEEKDAY', bP.start) BETWEEN :fromDay AND :toDay) OR (function('WEEKDAY', bP.end) BETWEEN :fromDay AND :toDay) OR (function('WEEKDAY', bP.start) <= :fromDay AND function('WEEKDAY', bP.end) >= :toDay)))
-				OR
-				(rT.name = :everyMonth AND ((function('DAYOFMONTH', bP.start) BETWEEN :fromMDay AND :toMDay) OR (function('DAYOFMONTH', bP.end) BETWEEN :fromMDay AND :toMDay) OR (function('DAYOFMONTH', bP.start) <= :fromMDay AND function('DAYOFMONTH', bP.end) >= :toMDay)))
-				OR
-				(rT.name = :everyYear AND ((function('DAYOFYEAR', bP.start) BETWEEN :fromYDay AND :toYDay) OR (function('DAYOFYEAR', bP.end) BETWEEN :fromYDay AND :toYDay) OR (function('DAYOFYEAR', bP.start) <= :fromYDay AND function('DAYOFYEAR', bP.end) >= :toYDay)))
-				)
-				""";
-
-		TypedQuery<BusyPeriod> q = em.createQuery(query, BusyPeriod.class)
-				.setParameter("fromTime", fromTime)
-				.setParameter("toTime", toTime)
-				.setParameter("fromDate", fromDate)
-				.setParameter("toDate", toDate)
-				.setParameter("fromDay", fromDay)
-				.setParameter("toDay", toDay)
-				.setParameter("fromMDay", fromMDay)
-				.setParameter("toMDay", toMDay)
-				.setParameter("fromYDay", fromYDay)
-				.setParameter("toYDay", toYDay)
-				.setParameter("everyDay", Utils.EVERY_DAY)
-				.setParameter("everyWeek", Utils.EVERY_WEEK)
-				.setParameter("everyMonth", Utils.EVERY_MONT)
-				.setParameter("everyYear", Utils.EVERY_YEAR);
-
-		if (hasPid)
-			q.setParameter("pId", pId);
-		if (hasEid)
-			q.setParameter("eIds", eIds.size() == 1 ? eIds.iterator().next() : eIds);
-
-		return q.getResultList();
-	}
-
-	public List<Appointment> getAppointmentsAtDayWAStatus(List<Integer> eIds, LocalDate date) {
-		return getAppointmentsAtDayWAStatus(eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
-	}
-
-	public List<Appointment> getAppointmentsAtDayWAStatus(List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
-
-		String query = """
-				SELECT a FROM Appointment a JOIN FETCH a.appointmentstatus status
-				WHERE
-				a.employee.id IN :eIds
-				AND
-				(status.name = :waiting OR status.name = :accepted)
-				AND
-				((a.start BETWEEN :from AND :to) OR (a.end BETWEEN :from AND :to) OR (a.start <= :from AND a.end >= :to))
-				ORDER BY a.employee.id, a.start
-				""";
-
-		return em.createQuery(query, Appointment.class)
-				.setParameter("eIds", eIds)
-				.setParameter("waiting", Statics.A_STATUS_WAITING)
-				.setParameter("accepted", Statics.A_STATUS_ACCEPTED)
-				.setParameter("from", from)
-				.setParameter("to", to)
-				.getResultList();
+	public List<AppointmentDtoSimple> getAppointmentsAtDayWAStatus(List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
+		return cAppointmentRepository.getAppointments(
+				null,
+				eIds,
+				List.of(Statics.A_STATUS_WAITING, Statics.A_STATUS_ACCEPTED),
+				from,
+				to
+		);
 	}
 
 	public List<Map<String, Object>> getUserAppointments(Integer uId, boolean history) {
@@ -291,6 +202,6 @@ public class AppointmentRepository {
 	private boolean isFreeTime(Integer pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 		return getAppointmentsAtDayWAStatus(eIds, from, to).isEmpty()
 			   &&
-			   getBusyPeriodsAtDay(pId, eIds, from, to).isEmpty();
+			   cAppointmentRepository.getBusyPeriods(pId, eIds, from, to).isEmpty();
 	}
 }

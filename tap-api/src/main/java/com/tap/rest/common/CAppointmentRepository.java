@@ -1,11 +1,11 @@
 package com.tap.rest.common;
 
 import com.tap.appointments.Utils;
+import com.tap.db.dtor.AppointmentDtoSimple;
 import com.tap.db.entity.AppointmentStatus;
 import com.tap.db.entity.BusyPeriod;
 import com.tap.db.entity.WorkPeriod;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -14,12 +14,34 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class CAppointmentRepository {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
+
+	private static final String APP_PRE_QUERY = """
+			   SELECT new com.tap.db.dtor.AppointmentDtoSimple(
+			a.id, a.start, a.end,
+			u.id, u.username, u.email,
+			s.id, s.name, s.price, s.duration,
+			e.id, e.name, e.imagePath,
+			g.name,
+			c.name,
+			status.name
+			)
+			FROM Appointment a
+			JOIN a.appointmentstatus status
+			JOIN a.employee e
+			JOIN a.user u
+			JOIN a.service s
+			LEFT JOIN s.group g
+			LEFT JOIN s.category c
+			JOIN e.provider p
+			""";
 
 	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, List<Integer> eIds, LocalDate date) {
 		return getBusyPeriods(pId, eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
@@ -123,9 +145,59 @@ public class CAppointmentRepository {
 		return jpaQuery.getResultList();
 	}
 
-	public AppointmentStatus getAppointmentStatusByName(String name) {
+	public AppointmentStatus getAppointmentStatus(String name) {
 		return em.createQuery("SELECT status FROM AppointmentStatus status WHERE status.name = :name", AppointmentStatus.class)
 				.setParameter("name", name)
 				.getSingleResult();
+	}
+
+	public List<AppointmentDtoSimple> getAppointments(Integer pId, List<Integer> eId, List<String> statuses, LocalDateTime from, LocalDateTime to) {
+
+		Map<String, Object> qParams = new HashMap<>();
+
+		StringBuilder sB = new StringBuilder(APP_PRE_QUERY);
+
+		if (eId != null && !eId.isEmpty()) {
+			if (eId.size() > 1) {
+				sB.append(" WHERE e.id IN :eId");
+				qParams.put("eId", eId);
+			} else {
+				sB.append(" WHERE e.id = :eId");
+				qParams.put("eId", eId.get(0));
+			}
+		} else if (pId != null) {
+			sB.append(" WHERE p.id = :pId");
+			qParams.put("pId", pId);
+		}
+
+		if (statuses != null && !statuses.isEmpty()) {
+			if (statuses.size() > 1) {
+				sB.append(" AND status.name IN :status");
+				qParams.put("status", statuses);
+			} else {
+				sB.append(" AND status.name = :status");
+				qParams.put("status", statuses.get(0));
+			}
+		}
+
+		if (from != null) {
+			if (to != null) {
+				sB.append(" AND ((a.start BETWEEN :from AND :to) OR (a.end BETWEEN :from AND :to) OR (a.start <= :from AND a.end >= :to))");
+				qParams.put("from", from);
+				qParams.put("to", to);
+
+			} else {
+				sB.append(" AND a.start > :from");
+				qParams.put("from", from);
+			}
+		}
+
+		sB.append(" ORDER BY e.id, a.start");
+
+		TypedQuery<AppointmentDtoSimple> q = em.createQuery(sB.toString(), AppointmentDtoSimple.class);
+
+		qParams.forEach(q::setParameter);
+
+		return q.getResultList();
 	}
 }

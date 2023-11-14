@@ -4,6 +4,7 @@ import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
 import com.tap.common.*;
 import com.tap.db.dto.EmployeeDto;
+import com.tap.db.dtor.AppointmentDtoSimple;
 import com.tap.db.entity.*;
 import com.tap.rest.common.CAppointmentRepository;
 import com.tap.security.Public;
@@ -32,7 +33,7 @@ public class BAppointmentsService {
 	@Public
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAppointments(
+	public Response getAppointmentsAtDate(
 			@NotNull @PathParam("pId") Integer pId,
 			@NotNull @QueryParam("date") Date d
 	) {
@@ -53,7 +54,29 @@ public class BAppointmentsService {
 		ProviderWorkInfo pWI = this.generatePWI(pId, eIds, date, emps);
 
 		return Response.ok(pWI).build();
+	}
 
+	@GET
+	@Path("/waiting/{pId}")
+	@Public
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getWaitingAppointments(
+			@NotNull @PathParam("pId") Integer pId
+	) {
+		List<AppointmentDtoSimple> apps = bAppointmentRepository.getWaitingAppointments(pId, Util.zonedNow());
+		return Response.ok(apps).build();
+	}
+
+	@GET
+	@Path("/waiting/{pId}/{eId}")
+	@Public
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getWaitingAppointments(
+			@NotNull @PathParam("pId") Integer pId,
+			@NotNull @PathParam("eId") Integer eId
+	) {
+		List<AppointmentDtoSimple> apps = bAppointmentRepository.getWaitingAppointmentsForEmployee(pId, eId, Util.zonedNow());
+		return Response.ok(apps).build();
 	}
 
 	@POST
@@ -84,7 +107,7 @@ public class BAppointmentsService {
 
 	private ProviderWorkInfo generatePWI(Integer pId, List<Integer> eIds, LocalDate date, List<EmployeeDto> emps) {
 
-		List<Object[]> apps = bAppointmentRepository.getAppointmentsAtDay(eIds, date);
+		List<AppointmentDtoSimple> apps = bAppointmentRepository.getWAAppointmentsAtDay(eIds, date);
 		List<BusyPeriod> bps = cAppointmentRepository.getBusyPeriodsAtDay(pId, eIds, date);
 		List<WorkPeriod> wps = cAppointmentRepository.getBreaksPeriodsAtDay(pId, eIds, date.getDayOfWeek().getValue());
 
@@ -103,42 +126,18 @@ public class BAppointmentsService {
 				)
 		);
 
-		Appointment tmpA;
-		Service tmpS;
-		Employee tmpE;
-		User tmpU;
 		TimePeriod tmpTP;
-		String status;
 		//Appointments
-		for (Object[] a : apps) {
-			tmpA = (Appointment) a[0];
-			tmpS = (Service) a[1];
-			tmpE = (Employee) a[2];
-			tmpU = (User) a[3];
-
-			tmpTP = Utils.adjustPeriodToOnaDate(date, tmpA.getStart(), tmpA.getEnd());
-			pWI.getEmployeeById(tmpE.getId())
+		for (AppointmentDtoSimple a : apps) {
+			tmpTP = Utils.adjustPeriodToOnaDate(date, a.start(), a.end());
+			pWI.getEmployeeById(a.eId())
 					.getTimeline()
 					.add(new NamedTimePeriodExt(
 							tmpTP.getStart(),
 							tmpTP.getEnd(),
 							TypedTimePeriod.CLOSE,
 							NamedTimePeriod.CLOSE_APPOINTMENT,
-							Map.of(
-									"id", tmpA.getId(),
-									"service", Map.of(
-											"id", tmpS.getId(),
-											"name", tmpS.getName(),
-											"duration", tmpS.getDuration(),
-											"price", tmpS.getPrice()
-									),
-									"eId", tmpE.getId(),
-									"eName", tmpE.getName(),
-									"uId", tmpU.getId(),
-									"uUsername", tmpU.getUsername(),
-									"uEmail", tmpU.getEmail(),
-									"status", a[4]
-							)
+							a
 					));
 		}
 

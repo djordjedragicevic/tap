@@ -70,7 +70,7 @@ const AppointmentsScreen = () => {
 
 	const onAppStateChange = useCallback((item, state) => {
 		storeDispatch('app.mask', true);
-		Http.post(`/appointments/${state}/${item.data.id}/${item.data.service.id}`)
+		Http.post(`/appointments/${state}/${item.data.id}/${item.data.sId}`)
 			.catch(emptyFn)
 			.then(() => {
 				setLoadCount(old => old + 1);
@@ -142,10 +142,10 @@ const AppointmentsScreen = () => {
 							<XTextLabels
 								textSize={16}
 								items={[
-									{ label: t('Service'), value: modal.data.service.name },
+									{ label: t('Service'), value: modal.data.sName },
 									{ label: t('Employee'), value: modal.data.eName },
-									{ label: t('Duration'), value: modal.data.service.duration + ' ' + t('min') },
-									{ label: t('Price'), value: CurrencyUtils.convert(modal.data.service.price) },
+									{ label: t('Duration'), value: modal.data.sDuration + ' ' + t('min') },
+									{ label: t('Price'), value: CurrencyUtils.convert(modal.data.sPrice) },
 									{ label: t('User'), value: modal.data.uUsername }
 								]}
 							/>

@@ -3,6 +3,8 @@ package com.tap.rest;
 import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
+import com.tap.db.dtor.AppointmentDtoSimple;
+import com.tap.rest.common.CAppointmentRepository;
 import com.tap.security.Public;
 import com.tap.common.*;
 import com.tap.db.dto.EmployeeDto;
@@ -33,6 +35,8 @@ public class AppointmentService {
 
 	@Inject
 	private AppointmentRepository appointmentRep;
+	@Inject
+	private CAppointmentRepository cAppointmentRepository;
 
 	@GET
 	@Path("my-appointments")
@@ -354,8 +358,8 @@ public class AppointmentService {
 
 		//----------------Create Employee timeline----------------------------------
 
-		List<Appointment> appointments = appointmentRep.getAppointmentsAtDayWAStatus(eIds, date);
-		List<BusyPeriod> busyPeriods = appointmentRep.getBusyPeriodsAtDay(pId, eIds, date);
+		List<AppointmentDtoSimple> appointments = appointmentRep.getAppointmentsAtDayWAStatus(eIds, date);
+		List<BusyPeriod> busyPeriods = cAppointmentRepository.getBusyPeriodsAtDay(pId, eIds, date);
 
 		List<TimePeriod> providerBTP = new ArrayList<>();
 		List<BusyPeriod> employeeBP = new ArrayList<>();
@@ -426,9 +430,9 @@ public class AppointmentService {
 			//Add appointments
 			appointments
 					.stream()
-					.filter(a -> a.getEmployee().getId() == eId)
+					.filter(a -> a.eId().equals(eId))
 					.forEach(a -> {
-						TimePeriod tP = Utils.adjustPeriodToOnaDate(date, a.getStart(), a.getEnd());
+						TimePeriod tP = Utils.adjustPeriodToOnaDate(date, a.start(), a.end());
 						NamedTimePeriod nTP = new NamedTimePeriod(tP.getStart(), tP.getEnd(), TypedTimePeriod.CLOSE, NamedTimePeriod.CLOSE_APPOINTMENT);
 						e.getTimeline().add(nTP);
 					});

@@ -61,7 +61,7 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 							numberOfLines={1}
 							ellipsizeMode='tail'
 						>
-							{item.data.service.name}
+							{item.data.sName}
 						</XText>
 					</View>
 					<View style={{ flex: 1 }} />
