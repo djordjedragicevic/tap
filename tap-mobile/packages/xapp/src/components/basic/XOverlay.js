@@ -5,15 +5,15 @@ import XText from "../basic/XText";
 import { Theme } from "../../style/themes";
 
 const XOverlay = () => {
-	const [isMaksed, maskText] = useStore(gS => [gS.app.maskShown, gS.app.maskText]);
-	const styles = useThemedStyle(styleCreator);
+	const [isMaksed, maskText, style, transparent] = useStore(gS => [gS.app.maskShown, gS.app.maskText, gS.app.maskStyle, gS.app.maskTransparent]);
+	const styles = useThemedStyle(styleCreator, transparent);
 
 	if (!isMaksed)
 		return null
 
 	return (
 		<>
-			<View style={styles.mask} />
+			<View style={[styles.mask, style]} />
 			<View style={styles.overContainer}>
 				{
 					!!maskText &&
@@ -26,12 +26,12 @@ const XOverlay = () => {
 	)
 };
 
-const styleCreator = (theme) => StyleSheet.create({
+const styleCreator = (theme, transparent) => StyleSheet.create({
 	mask: {
 		...StyleSheet.absoluteFill,
 		zIndex: 1,
 		backgroundColor: theme.colors.background,
-		opacity: 0.8,
+		opacity: transparent ? 0.0 : 0.8,
 		alignItems: 'center',
 		justifyContent: 'center'
 	},

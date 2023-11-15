@@ -67,7 +67,7 @@ export const DateUtils = {
 
 export const CurrencyUtils = {
 	convert: (v) => {
-		return v + ' KM';
+		return (v ?? ' - ') + ' KM';
 	}
 }
 

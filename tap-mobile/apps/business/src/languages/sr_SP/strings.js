@@ -14,5 +14,10 @@ export const strings = {
 	"Reject": "Odbaci",
 	"Today": "Danas",
 	"Tomorow": "Sutra",
-	"Yesterday": "Juče"
+	"Yesterday": "Juče",
+	"Requests": "Zahtjevi",
+	"Accept All": "Prihvati sve",
+	"No items": "Nema stavki",
+	"From": "Od",
+	"To": "Do"
 };

@@ -4,10 +4,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
 import { AntDesign } from '@expo/vector-icons';
 import { useIsUserLogged } from '../store/concreteStores';
-import { MAIN_STACK, MAIN_TAB_APPOINTMENTS, MAIN_TAB_SETTINGS } from './routes';
+import { MAIN_STACK, MAIN_TAB_APPOINTMENTS, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS } from './routes';
 import SettingsScreen from '../screens/SettingsScreen';
 import { useColor, usePrimaryColor } from 'xapp/src/style/ThemeContext';
 import AppointmentsScreen from '../screens/AppointmentsScreen';
+import RequestsScreen from '../screens/RequestsScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -35,6 +36,15 @@ const MainBottomTabNavigator = ({ navigation }) => {
 					title: t("Appointments"),
 					headerShown: false,
 					tabBarIcon: (props) => <AntDesign name="calendar" {...props} color={props.focused ? colorPrimary : colorTextLight} />
+				}}
+			/>
+			<BottomTab.Screen
+				name={MAIN_TAB_REQUESTS}
+				component={RequestsScreen}
+				options={{
+					title: t("Requests"),
+					headerShown: false,
+					tabBarIcon: (props) => <AntDesign name="exception1" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
 			/>
 			<BottomTab.Screen

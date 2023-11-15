@@ -85,9 +85,21 @@ public class BAppointmentRepository {
 		if (!a.getAppointmentstatus().getName().equals(Statics.A_STATUS_WAITING))
 			throw new TAPException(ErrID.B_APP_ST_2, null, Map.of("status", a.getAppointmentstatus().getName()));
 
-		AppointmentStatus appointmentStatus = cAppointmentRepository.getAppointmentStatusByName(Statics.A_STATUS_ACCEPTED);
+		AppointmentStatus appointmentStatus = cAppointmentRepository.getAppointmentStatus(Statics.A_STATUS_ACCEPTED);
 		a.setAppointmentstatus(appointmentStatus);
 		em.persist(a);
+	}
+
+	public void acceptAppointmentMulti(List<Long> appIds) {
+		List<Appointment> apps = em.createQuery("SELECT a FROM Appointment a WHERE a.id IN :aIds", Appointment.class)
+				.setParameter("aIds", appIds)
+				.getResultList();
+
+		AppointmentStatus status = cAppointmentRepository.getAppointmentStatus(Statics.A_STATUS_ACCEPTED);
+		for (Appointment a : apps) {
+			a.setAppointmentstatus(status);
+			em.persist(a);
+		}
 	}
 
 	public void rejectAppointment(Long appId, Integer sId, LocalDateTime now) {
@@ -114,7 +126,7 @@ public class BAppointmentRepository {
 		if (!a.getAppointmentstatus().getName().equals(Statics.A_STATUS_WAITING))
 			throw new TAPException(ErrID.B_APP_ST_2, null, Map.of("status", a.getAppointmentstatus().getName()));
 
-		AppointmentStatus appointmentStatus = cAppointmentRepository.getAppointmentStatusByName(Statics.A_STATUS_REJECTED);
+		AppointmentStatus appointmentStatus = cAppointmentRepository.getAppointmentStatus(Statics.A_STATUS_REJECTED);
 		for (Appointment app : joinedApps) {
 			app.setAppointmentstatus(appointmentStatus);
 			em.persist(app);

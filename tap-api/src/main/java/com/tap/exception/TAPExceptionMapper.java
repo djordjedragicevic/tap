@@ -19,7 +19,13 @@ public class TAPExceptionMapper implements ExceptionMapper<Exception> {
 
 		System.err.println(ex);
 
-		TAPException exception = ex instanceof TAPException e ? e : new TAPException(ErrID.TAP_0);
+		TAPException exception;
+		if (ex instanceof TAPException e)
+			exception = e;
+		else if (ex.getCause() instanceof TAPException e)
+			exception = e;
+		else
+			exception = new TAPException(ErrID.TAP_0);
 
 		JsonObjectBuilder err = Json.createObjectBuilder();
 		err.add("tapEID", exception.getTapEID().toString());

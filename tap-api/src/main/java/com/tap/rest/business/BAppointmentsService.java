@@ -10,6 +10,7 @@ import com.tap.rest.common.CAppointmentRepository;
 import com.tap.security.Public;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.json.JsonArray;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
@@ -89,6 +90,17 @@ public class BAppointmentsService {
 	) {
 
 		bAppointmentRepository.acceptAppointment(appId, sId, Util.zonedNow());
+		return Response.ok().build();
+	}
+
+	@POST
+	@Path("/accept/multi")
+	@Transactional
+	@Public
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response acceptAppointmentMulti(JsonArray appIds) {
+		List<Long> apps = appIds.stream().mapToLong(v -> Long.parseLong(v.toString())).boxed().toList();
+		bAppointmentRepository.acceptAppointmentMulti(apps);
 		return Response.ok().build();
 	}
 

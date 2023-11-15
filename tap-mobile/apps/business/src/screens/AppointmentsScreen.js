@@ -15,7 +15,6 @@ import XBottomSheetModal from 'xapp/src/components/basic/XBottomSheetModal';
 import XToolbar from 'xapp/src/components/XToolbar';
 import XTextLabels from 'xapp/src/components/XTextLabels';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
-import { PERIOD, STATUS } from '../common/general';
 
 
 const HOUR_HEIGHT = 60;
@@ -69,7 +68,7 @@ const AppointmentsScreen = () => {
 	}, []);
 
 	const onAppStateChange = useCallback((item, state) => {
-		storeDispatch('app.mask', true);
+		storeDispatch('app.mask', { maskTransparent: true });
 		Http.post(`/appointments/${state}/${item.data.id}/${item.data.sId}`)
 			.catch(emptyFn)
 			.then(() => {
@@ -144,6 +143,8 @@ const AppointmentsScreen = () => {
 								items={[
 									{ label: t('Service'), value: modal.data.sName },
 									{ label: t('Employee'), value: modal.data.eName },
+									{ label: t('From'), value: modal.start },
+									{ label: t('To'), value: modal.end },
 									{ label: t('Duration'), value: modal.data.sDuration + ' ' + t('min') },
 									{ label: t('Price'), value: CurrencyUtils.convert(modal.data.sPrice) },
 									{ label: t('User'), value: modal.data.uUsername }

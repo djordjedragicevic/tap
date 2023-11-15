@@ -12,6 +12,7 @@ const ButtonIcon = ({
 	backgroundColor,
 	size = 36,
 	disabled = false,
+	standard = false,
 	onPress = emptyFn,
 	...rest
 }) => {
@@ -42,7 +43,6 @@ const styleCreator = (theme, size, backgroundColor, primary, disabled) => {
 		bgColor = backgroundColor;
 	if (primary)
 		bgColor = theme.colors.primary;
-
 
 
 	return StyleSheet.create({

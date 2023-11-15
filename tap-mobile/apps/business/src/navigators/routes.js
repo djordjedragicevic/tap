@@ -8,6 +8,7 @@
 // export const MAP_SCREEN = 'MapScreen';
 
 export const MAIN_TAB_APPOINTMENTS = 'MainTabAppointments';
+export const MAIN_TAB_REQUESTS = 'MainTabRequests';
 export const MAIN_TAB_SETTINGS = 'MainTabSettings';
 
 export const MAIN_STACK = 'MainStack';

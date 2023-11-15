@@ -1,29 +1,31 @@
 import { getInitials } from "xapp/src/common/utils";
 import { useStore } from "xapp/src/store/store";
 
+const maskDefault = {
+	maskShown: false,
+	maskText: '',
+	maskTransparent: false,
+	maskStyle: null,
+};
+
 export const appStore = (initD = {}) => ({
 	name: 'app',
 	actions: {
 		'app.mask': (appStore, maskShown) => {
 
 			const shown = !!maskShown;
-			let maskText = '';
-			if (maskShown instanceof Object) {
-				maskText = maskShown.maskText;
-			}
 
 			return {
 				...appStore,
-				maskShown: shown,
-				maskText: shown ? maskText : ''
+				...((maskShown instanceof Object) ? maskShown : maskDefault),
+				maskShown: !!shown,
 			}
 		}
 	},
 	initData: {
 		httpLoading: false,
 		font: '',
-		maskShown: false,
-		maskText: '',
+		...maskDefault,
 		...initD
 	}
 });

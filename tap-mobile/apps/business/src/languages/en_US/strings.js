@@ -11,8 +11,13 @@ export const strings = {
 	"User": "User",
 	"min": "min",
 	"Accept": "Accept",
-	"Reject": "Reject",	
+	"Reject": "Reject",
 	"Today": "Today",
 	"Tomorow": "Tomorow",
 	"Yesterday": "Yesterday",
+	"Requests": "Requests",
+	"Accept All": "Accept All",
+	"No items": "No items",
+	"From": "From",
+	"To": "To"
 };

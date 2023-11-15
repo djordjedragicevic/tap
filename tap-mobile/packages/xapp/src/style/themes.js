@@ -35,7 +35,8 @@ export const Theme = {
 
 		footerHeight: 52,
 		chipHeight: 24,
-		bigTitleSize: 26
+		bigTitleSize: 26,
+		buttonHeight: 38
 	},
 
 	Light: {

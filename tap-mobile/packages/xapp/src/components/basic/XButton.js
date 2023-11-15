@@ -85,7 +85,7 @@ const createStyle = (theme, params, primary, secondary) => {
 
 	const btnStyle = {
 		backgroundColor: theme.colors.backgroundElement,
-		height: 38,
+		height: Theme.values.buttonHeight,
 		paddingHorizontal: 10,
 		borderRadius: Theme.values.borderRadius,
 		flexDirection: 'row',

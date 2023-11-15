@@ -2,14 +2,16 @@ import { StyleSheet, View } from "react-native";
 import XIcon from "./basic/XIcon";
 import XText from "./basic/XText";
 import { useColor } from "../style/ThemeContext";
+import { useTranslation } from "../i18n/I18nContext";
 
 const XEmptyListIcon = ({ text }) => {
 	const iconColor = useColor('textTertiary');
+	const t = useTranslation();
 	return (
 		<View style={styles.constainer}>
 			<View style={styles.inner}>
 				<XIcon color={iconColor} icon='scan1' size={64} />
-				<XText secondary size={16}>{text}</XText>
+				{text && <XText secondary size={16}>{text === true ? t("No items") : text}</XText>}
 			</View>
 		</View>
 	);
