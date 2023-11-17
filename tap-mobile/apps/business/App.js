@@ -75,7 +75,7 @@ export default App = () => {
 			Storage.get(Theme.STORAGE_HEY, Theme.SYSETM),
 			Storage.get(I18n.STORAGE_HEY, DEFAULT_LANGUAGE)
 		]).then(([themeId, langId]) => {
-			setInitialTheme(themeId);
+			setInitialTheme(Theme.LIGHT);
 			if (I18n.getLanguage().id !== langId)
 				I18n.changeLanguageById(langId)
 			setInitialLanguage(langId);
@@ -85,7 +85,7 @@ export default App = () => {
 	//Set font
 	useEffect(() => {
 		if (fontsLoaded)
-			storeDispatch('app.set_font', 'Inter_400Regular');
+			storeDispatch('app.set_font', 'Inter_500Medium');
 	}, [fontsLoaded]);
 
 

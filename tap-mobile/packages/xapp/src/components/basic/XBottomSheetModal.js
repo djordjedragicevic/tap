@@ -3,6 +3,7 @@ import XText from "./XText";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { forwardRef, useCallback } from "react";
 import { useThemedStyle } from "../../style/ThemeContext";
+import { Theme } from "../../style/themes";
 
 
 const XBottomSheetModal = forwardRef(({ title, titleHeight = 40, children, ...rest }, sheetRef) => {
@@ -16,7 +17,7 @@ const XBottomSheetModal = forwardRef(({ title, titleHeight = 40, children, ...re
 		/>
 	}, []);
 
-	const styles = useThemedStyle(styleCreate);
+	const styles = useThemedStyle(styleCreate, titleHeight);
 
 	return (
 		<BottomSheetModal
@@ -28,8 +29,8 @@ const XBottomSheetModal = forwardRef(({ title, titleHeight = 40, children, ...re
 		>
 			{
 				!!title &&
-				<View style={{ height: titleHeight }}>
-					<XText size={18} style={{ paddingHorizontal: 22 }}>{title}</XText>
+				<View style={styles.title}>
+					<XText size={18}>{title}</XText>
 				</View>
 			}
 			{children}
@@ -37,7 +38,13 @@ const XBottomSheetModal = forwardRef(({ title, titleHeight = 40, children, ...re
 	);
 });
 
-const styleCreate = (theme) => StyleSheet.create({
+const styleCreate = (theme, titleHeight) => StyleSheet.create({
+	title: {
+		height: titleHeight,
+		paddingHorizontal: 22,
+		borderBottomColor: theme.colors.borderColor,
+		borderBottomWidth: Theme.values.borderWidth
+	},
 	modal: {
 		backgroundColor: theme.colors.backgroundElement
 	}

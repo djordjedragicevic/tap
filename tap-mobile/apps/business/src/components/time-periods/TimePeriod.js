@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useContext, useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { useThemedStyle } from "xapp/src/style/ThemeContext";
+import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
 import { Theme } from "xapp/src/style/themes";
 import XText from "xapp/src/components/basic/XText";
@@ -16,7 +16,7 @@ const PERIOD_TYPE = {
 
 const Time = memo(({ start, end }) => {
 	return (
-		<View >
+		<View>
 			<XText light bold size={12}>{start + '-' + end}</XText>
 		</View>
 	)
@@ -26,9 +26,7 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 	const styles = useThemedStyle(createStyle, height, top);
 	const t = useTranslation();
 
-	useMemo(() => {
-
-	}, [item]);
+	const colorRed = useColor('red');
 
 	const onPressHandler = useCallback(() => {
 		onPress(item)
@@ -37,23 +35,18 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 	const TPeriod = useMemo(() => {
 		if (item.name === PERIOD_TYPE.CLOSE_APPOINTMENT) {
 			return (
-				<View
-					style={[styles.appointment, item.data.status === STATUS.WAITING && styles.appointmentWaiting]}
-				>
+				<View style={[styles.appointment, item.data.status === STATUS.WAITING && styles.appointmentWaiting]}>
 
 					<Time start={item.start} end={item.end} />
 
 					<View style={styles.itemConteainerCenter}>
-						<XText
-							light
-							bold
-							size={12}
-							numberOfLines={1}
-							ellipsizeMode='tail'
-						>
+						<XText light bold oneLine size={12}>
 							{item.data.sName}, {item.data.uUsername}
 						</XText>
 					</View>
+					{item.data.status === STATUS.WAITING &&
+						<XIcon icon={'warning'} size={14} color={colorRed} />
+					}
 				</View>
 			)
 		}
@@ -63,7 +56,7 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 					<Time start={item.start} end={item.end} />
 
 					<View style={styles.itemConteainerCenter}>
-						<XText light bold size={11}>{t('Break')}</XText>
+						<XText light bold size={12}>{t('Break')}</XText>
 					</View>
 				</View>
 			)
@@ -82,7 +75,6 @@ const createStyle = (theme, height, top, colorName) => {
 	const periodCommon = {
 		opacity: 0.8,
 		flex: 1,
-		//columnGap: 5,
 		paddingHorizontal: 3,
 		flexDirection: 'row',
 		alignItems: 'center',
@@ -104,8 +96,9 @@ const createStyle = (theme, height, top, colorName) => {
 		},
 		itemConteainerCenter: {
 			flex: 1,
-			alignItems: 'center',
-			paddingHorizontal: 5
+			//flexDirection: 'row',
+			//alignItems: 'center',
+			paddingHorizontal: 10
 		},
 
 		appointmentWIconColor: theme.colors[Theme.vars.red],

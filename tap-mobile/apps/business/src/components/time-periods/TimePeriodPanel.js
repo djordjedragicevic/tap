@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { DateUtils, emptyFn } from "xapp/src/common/utils";
 import XText from "xapp/src/components/basic/XText";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
@@ -72,6 +72,8 @@ const TimePeriodsPanel = ({
 	hourHeight = HOUR_HEIGHT,
 	items = [],
 	style,
+	refreshing = false,
+	onRefresh = emptyFn,
 	onItemPress = emptyFn
 }) => {
 
@@ -81,29 +83,38 @@ const TimePeriodsPanel = ({
 	const topOffset = useMemo(() => (hourHeight * startHour * sizeCoef) * -1, [hourHeight, startHour, sizeCoef]);
 
 	return (
-		<View style={[styles.container, style]}>
-			<View style={styles.rowLeftContainer}>
-				{hours.map(h => <RowLeft key={h} height={height} hour={h} />)}
+		<ScrollView
+			refreshControl={
+				<RefreshControl
+					refreshing={refreshing}
+					onRefresh={onRefresh}
+				/>
+			}
+		>
+			<View style={[styles.container, style]}>
+				<View style={styles.rowLeftContainer}>
+					{hours.map(h => <RowLeft key={h} height={height} hour={h} />)}
+				</View>
+				<View style={styles.rowRightContainer}>
+					{hours.map(h => <RowRight key={h} height={height} />)}
+					{items.map((i) =>
+						<TimePeriod
+							key={`${i.data.id}#${i.name}`}
+							item={i}
+							height={DateUtils.calculateHeightFromTime(i.start, i.end) * sizeCoef}
+							top={((DateUtils.getMinutesOfDay(i.start) + (hourHeight / 2)) * sizeCoef) + topOffset}
+							onPress={onItemPress}
+						/>)}
+					{showCurrentTime &&
+						<CurrentTime
+							hourHeight={hourHeight}
+							sizeCoef={sizeCoef}
+							topOffset={topOffset}
+						/>
+					}
+				</View>
 			</View>
-			<View style={styles.rowRightContainer}>
-				{hours.map(h => <RowRight key={h} height={height} />)}
-				{items.map((i) =>
-					<TimePeriod
-						key={`${i.data.id}#${i.name}`}
-						item={i}
-						height={DateUtils.calculateHeightFromTime(i.start, i.end) * sizeCoef}
-						top={((DateUtils.getMinutesOfDay(i.start) + (hourHeight / 2)) * sizeCoef) + topOffset}
-						onPress={onItemPress}
-					/>)}
-				{showCurrentTime &&
-					<CurrentTime
-						hourHeight={hourHeight}
-						sizeCoef={sizeCoef}
-						topOffset={topOffset}
-					/>
-				}
-			</View>
-		</View>
+		</ScrollView>
 	)
 };
 
@@ -113,7 +124,7 @@ const createStyle = (theme) => StyleSheet.create({
 		flex: 1
 	},
 	rowLeftContainer: {
-		marginEnd: Theme.values.mainPaddingHorizontal
+		marginHorizontal: Theme.values.mainPaddingHorizontal
 	},
 	rowRightContainer: {
 		flex: 1,

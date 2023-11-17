@@ -6,7 +6,8 @@ const XTextLabels = ({
 	style,
 	styleLabels,
 	styleValues,
-	textSize = 14
+	textSize = 14,
+	oneLine = true
 }) => {
 	return (
 		<View style={[styles.container, style]}>
@@ -26,6 +27,7 @@ const XTextLabels = ({
 					<XText
 						key={idx.toString() + i.value}
 						size={i.size || textSize}
+						oneLine
 					>
 						{i.value}
 					</XText>

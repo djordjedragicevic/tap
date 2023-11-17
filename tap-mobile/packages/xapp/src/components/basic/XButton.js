@@ -23,7 +23,8 @@ const XButton = ({
 	outline = false,
 	primary = false,
 	secondary = false,
-	uppercase = true
+	uppercase = true,
+	flex = false
 }) => {
 
 	const styles = useThemedStyle(createStyle, {
@@ -34,11 +35,12 @@ const XButton = ({
 		outline,
 		color,
 		textColor,
-		uppercase
+		uppercase,
+		flex
 	}, primary, secondary);
 
 	const getTextColor = () => {
-		if (primary)
+		if (primary || color)
 			return 'textLight';
 		else
 			return 'textPrimary';
@@ -57,22 +59,20 @@ const XButton = ({
 	}, [disabled]);
 
 	return (
-		<>
-			<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
-				{!!iconLeft &&
-					<View style={styles.iconLeft}>
-						{typeof iconLeft === 'string' ? <AntDesign name={iconLeft} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
-					</View>
-				}
-				{!!title && <XText style={[styles.text, textStyle]} secondary>{title}</XText>}
-				{!!iconRight &&
-					<View style={styles.iconRight}>
-						{typeof iconRight === 'string' ? <AntDesign name={iconRight} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
-					</View>
-				}
-				{children}
-			</TouchableOpacity>
-		</>
+		<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
+			{!!iconLeft &&
+				<View style={styles.iconLeft}>
+					{typeof iconLeft === 'string' ? <AntDesign name={iconLeft} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
+				</View>
+			}
+			{!!title && <XText style={[styles.text, textStyle]} secondary>{title}</XText>}
+			{!!iconRight &&
+				<View style={styles.iconRight}>
+					{typeof iconRight === 'string' ? <AntDesign name={iconRight} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
+				</View>
+			}
+			{children}
+		</TouchableOpacity>
 	);
 };
 
@@ -99,6 +99,9 @@ const createStyle = (theme, params, primary, secondary) => {
 		textAlign: 'center',
 		fontWeight: 600
 	};
+
+	if (params.flex)
+		btnStyle.flex = 1;
 
 	if (params.uppercase) {
 		textStyle.textTransform = 'uppercase';
@@ -131,6 +134,7 @@ const createStyle = (theme, params, primary, secondary) => {
 
 	if (params.color) {
 		btnStyle.backgroundColor = params.color;
+		textStyle.color = theme.colors.textLight;
 	}
 
 	if (params.textColor)

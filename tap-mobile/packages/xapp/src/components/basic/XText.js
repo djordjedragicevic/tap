@@ -21,6 +21,7 @@ const XText = ({
 	primary,
 	secondary,
 	tertiary,
+	colorPrimary,
 	light,
 	style,
 	children,
@@ -32,6 +33,7 @@ const XText = ({
 	icon,
 	ellipsizeMode = 'tail',
 	numberOfLines = 0,
+	oneLine = false,
 	...rest
 }) => {
 	const textColor = useMemo(() => {
@@ -41,10 +43,12 @@ const XText = ({
 			return 'textSecondary';
 		else if (tertiary)
 			return 'textTertiary';
+		else if (colorPrimary)
+			return 'primary'
 		else
 			return 'textPrimary';
 
-	}, [primary, secondary, light]);
+	}, [primary, secondary, light, colorPrimary]);
 
 	const appFont = useStore(state => state.app.font);
 	const styles = useThemedStyle(createStyle, textColor, appFont, { weight: bold ? 600 : weight, italic, size });
@@ -52,20 +56,20 @@ const XText = ({
 
 	if (!icon)
 		return (
-			<Text style={[styles.text, style]} ellipsizeMode={ellipsizeMode} numberOfLines={numberOfLines}{...rest}>{children}</Text>
+			<Text style={[styles.text, style]} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
 		);
 	else if (typeof icon === 'string')
 		return (
 			<View style={styles.container}>
 				<AntDesign name={icon} size={18} color={pColor} />
-				<Text style={[styles.text, style]} ellipsizeMode={ellipsizeMode} numberOfLines={numberOfLines} {...rest}>{children}</Text>
+				<Text style={[styles.text, style]} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
 			</View>
 		);
 	else if (typeof icon === 'function')
 		return (
 			<View style={styles.container}>
 				{icon({ size: 18, color: pColor })}
-				<Text style={[styles.text, style]} ellipsizeMode={ellipsizeMode} numberOfLines={numberOfLines}{...rest}>{children}</Text>
+				<Text style={[styles.text, style]} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
 			</View>
 		);
 };
@@ -97,8 +101,6 @@ const createStyle = (theme, textColor, appFont, { weight, italic, size }) => {
 
 	if (size)
 		style.fontSize = size;
-
-
 
 	return StyleSheet.create({
 		text: style,

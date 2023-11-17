@@ -19,5 +19,7 @@ export const strings = {
 	"Accept All": "Prihvati sve",
 	"No items": "Nema stavki",
 	"From": "Od",
-	"To": "Do"
+	"To": "Do",
+	"Appointment confirmation": "Potvrda rezervacije",
+	"Appointment": "Termin",
 };

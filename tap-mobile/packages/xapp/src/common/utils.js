@@ -39,6 +39,10 @@ export const DateUtils = {
 			return end - start;
 
 	},
+	timesDiff: (from, to) => {
+		const diff = DateUtils.getMinutesOfDay(to) - DateUtils.getMinutesOfDay(from);
+		return Math.floor(diff / 60) + ':' + (diff % 60).toLocaleString(undefined, { minimumIntegerDigits: 2 });
+	},
 	getMinutesOfDay: (timeString) => {
 		const t = timeString.split(":");
 		return (parseInt(t[0]) * 60) + parseInt(t[1]);

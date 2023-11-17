@@ -205,7 +205,7 @@ const TabServices = ({
 					items={services?.categoryList || []}
 					onItemRender={onCategoryRender}
 					minItemWidth={90}
-					tabBarHPadding={5}
+					tabBarHMargin={5}
 					barHeight={42}
 				/>
 			}

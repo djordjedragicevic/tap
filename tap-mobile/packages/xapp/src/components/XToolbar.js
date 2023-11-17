@@ -10,14 +10,13 @@ import XIcon from './basic/XIcon';
 const XToolbar = ({
 	items = [],
 	barHeight,
-	tabBarHPadding,
-	tabBarVPadding,
+	tabBarHMargin,
+	tabBarVMargin,
 	minItemWidth,
 	initialSelectedIdx = 0,
 	onChange = emptyFn,
 	onItemRender = emptyFn,
 	icon,
-	style,
 	itemStyle,
 	...rest
 }) => {
@@ -51,7 +50,13 @@ const XToolbar = ({
 				}
 
 				<View style={styles.tabText}>
-					<XText light={selectedIdx === idx} bold>{item.title || item.name}</XText>
+					<XText
+						light={selectedIdx !== idx}
+						colorPrimary={selectedIdx === idx}
+						bold
+					>
+						{item.title || item.name}
+					</XText>
 				</View>
 
 			</Pressable>
@@ -61,12 +66,12 @@ const XToolbar = ({
 	return (
 		<XToolbarContainer
 			barHeight={barHeight}
-			tabBarHPadding={tabBarHPadding}
-			tabBarVPadding={tabBarVPadding}
+			tabBarHMargin={tabBarHMargin}
+			tabBarVMargin={tabBarVMargin}
 			minItemWidth={minItemWidth}
 			items={items}
 			onItemRender={onToolbarItemRender}
-			style={[styles.toolbar, style]}
+			style={[styles.toolbar]}
 			{...rest}
 
 		/>
@@ -75,22 +80,23 @@ const XToolbar = ({
 
 const styleCreator = (theme) => StyleSheet.create({
 	toolbar: {
-		backgroundColor: theme.colors.backgroundElement
+		backgroundColor: theme.colors.secondary
 	},
 	tabItem: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
-		borderRadius: Theme.values.borderRadius,
+		//borderRadius: Theme.values.borderRadius,
 		flex: 1,
-		padding: Theme.values.mainPaddingHorizontal,
 		columnGap: Theme.values.mainPaddingHorizontal
 	},
 	tabItemSelected: {
-		backgroundColor: theme.colors.secondary
+		borderBottomWidth: 2,
+		borderBottomColor: theme.colors.primary
+		//backgroundColor: theme.colors.secondary
 	},
 	tabText: {
-		flex: 1
+		alignItems: 'center'
 	},
 	tabIcon: {
 	}
