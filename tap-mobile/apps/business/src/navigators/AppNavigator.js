@@ -10,6 +10,9 @@ import { useColor, usePrimaryColor } from 'xapp/src/style/ThemeContext';
 import AppointmentsScreen from '../screens/AppointmentsScreen';
 import RequestsScreen from '../screens/RequestsScreen';
 import CreatePeriodScreen from '../screens/CreatePeriodScreen';
+import XHeaderButtonBack from 'xapp/src/components/XHeaderButtonBack';
+import { useCallback } from 'react';
+import { useHeaderBackButton } from 'xapp/src/common/hooks';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -66,6 +69,9 @@ const AppNavigator = ({ }) => {
 	const font = useStore(s => s.app.font);
 	const t = useTranslation();
 	const logged = useIsUserLogged();
+
+	const headerBackButton = useHeaderBackButton();
+
 	return (
 		<Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: font } }}>
 			<Stack.Screen
@@ -80,6 +86,10 @@ const AppNavigator = ({ }) => {
 			<Stack.Screen
 				name={CREATE_PERIOD_SCREEN}
 				component={CreatePeriodScreen}
+				options={{
+					title: t('Add time period'),
+					headerLeft: headerBackButton
+				}}
 			/>
 
 		</Stack.Navigator>

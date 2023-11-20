@@ -2,8 +2,8 @@ import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 import XTextInput from "xapp/src/components/basic/XTextInput";
 import XSelectField from "xapp/src/components/basic/XSelectField";
-import { useState } from "react";
-import { Pressable, TouchableOpacity, View } from "react-native";
+import { useMemo, useState } from "react";
+import { } from "react-native";
 import XSection from "xapp/src/components/basic/XSection";
 import { useDateCode } from "xapp/src/i18n/I18nContext";
 import XAlert from "xapp/src/components/basic/XAlert";
@@ -13,21 +13,25 @@ import XButton from "xapp/src/components/basic/XButton";
 import { Http } from "xapp/src/common/Http";
 import { useStore } from "xapp/src/store/store";
 import { DateUtils } from "xapp/src/common/utils";
+import { CREATE_PERIOD_SCREEN, MAIN_TAB_APPOINTMENTS } from "../navigators/routes";
 
 
-const CreatePeriodScreen = ({ }) => {
+const CreatePeriodScreen = ({ navigation }) => {
 	const dateCode = useDateCode();
-	const [fromDate, setFromDate] = useState(new Date());
-	const [fromTime, setFromTime] = useState(new Date());
-	const [toDate, setToDate] = useState(new Date());
-	const [toTime, setToTime] = useState(new Date(Date.now() + (30 * 60 * 1000)));
+
+	const initDate = useMemo(() => DateUtils.roundTo30Min(new Date()), []);
+
+	const [fromDate, setFromDate] = useState(new Date(initDate.getTime()));
+	const [fromTime, setFromTime] = useState(new Date(initDate.getTime()));
+	const [toDate, setToDate] = useState(new Date(initDate.getTime()));
+	const [toTime, setToTime] = useState(new Date(initDate.getTime() + (15 * 60 * 1000)));
 
 	const [fromDateVisible, setFromDateVisible] = useState(false);
 	const [fromTimeVisible, setFromTimeVisible] = useState(false);
 	const [toDateVisible, setToDateVisible] = useState(false);
 	const [toTimeVisible, setToTimeVisible] = useState(false);
 
-	const [comment, setComment] = useState('To tiad sf asdfjlasfdk jasldfjalkdjal aflsdkjf fads fadsfas as');
+	const [comment, setComment] = useState('');
 
 	const pId = useStore(gS => gS.provider.id);
 
@@ -44,14 +48,22 @@ const CreatePeriodScreen = ({ }) => {
 		toDate.setSeconds(0);
 		toDate.setMilliseconds(0);
 
+		XAlert.showYesNo("Kreiraj vremenski period", "Da li ste sigurni da želite kreirati novi vremenski period?", [
+			true,
+			{
+				onPress: () => {
+					Http.post(`/manual-periods/busy-period/${pId}`, {
+						comment,
+						start: DateUtils.dateToString(start),
+						end: DateUtils.dateToString(end)
+					})
+						.then(() => {
+							navigation.navigate(MAIN_TAB_APPOINTMENTS, { reload: true });
+						});
+				}
+			}
+		]);
 
-		console.log(start)
-
-		Http.post(`/manual-periods/busy-period/${pId}`, {
-			comment,
-			start: DateUtils.dateToString(start),
-			end: DateUtils.dateToString(end),
-		});
 	};
 
 	return (
@@ -92,7 +104,7 @@ const CreatePeriodScreen = ({ }) => {
 					onConfirm={(d) => {
 						setFromTimeVisible(false);
 						setFromTime(d);
-						setToTime(new Date(d.getTime() + (30 * 60 * 1000)))
+						setToTime(new Date(d.getTime() + (15 * 60 * 1000)))
 					}}
 					onCancel={() => setFromTimeVisible(false)}
 					onHide={() => setFromTimeVisible(false)}

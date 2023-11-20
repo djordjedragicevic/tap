@@ -311,7 +311,7 @@ public class AppointmentService {
 
 		workPeriod.forEach(wP -> {
 
-			boolean isOpen = wP.getPeriodtype().getOpen() == 1;
+			boolean isOpen = wP.getPeriodtype().isOpen();
 			LocalTime start = wP.getStartTime();
 			LocalTime end = wP.getEndTime();
 

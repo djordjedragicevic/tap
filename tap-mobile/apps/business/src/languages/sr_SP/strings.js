@@ -22,4 +22,7 @@ export const strings = {
 	"To": "Do",
 	"Appointment confirmation": "Potvrda rezervacije",
 	"Appointment": "Termin",
+	"Add time period": "Dodajte period",
+	"Yes": "Da",
+	"No": "Ne"
 };

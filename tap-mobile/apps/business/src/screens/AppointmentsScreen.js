@@ -6,7 +6,6 @@ import TimePeriodsPanel from "../components/time-periods/TimePeriodPanel";
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import XFieldDatePicker from "xapp/src/components/basic/XFieldDataPicker";
 import { CurrencyUtils, DateUtils, emptyFn, getInitials } from 'xapp/src/common/utils';
-import XText from "xapp/src/components/basic/XText";
 import XAvatar from 'xapp/src/components/basic/XAvatar';
 import { Theme } from 'xapp/src/style/themes';
 import { useColor, useThemedStyle } from 'xapp/src/style/ThemeContext';
@@ -16,13 +15,13 @@ import XButtonIcon from 'xapp/src/components/basic/XButtonIcon';
 import XToolbar from 'xapp/src/components/XToolbar';
 import XTextLabels from 'xapp/src/components/XTextLabels';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
-import { PERIOD, STATUS } from '../common/general';
+import { PERIOD } from '../common/general';
 import { CREATE_PERIOD_SCREEN } from '../navigators/routes';
 
 
 const HOUR_HEIGHT = 60;
 
-const AppointmentsScreen = ({ navigation }) => {
+const AppointmentsScreen = ({ navigation, route }) => {
 
 	const sizeCoef = useState(2)[0];
 	const pId = useStore(gS => gS.provider.id);
@@ -39,6 +38,11 @@ const AppointmentsScreen = ({ navigation }) => {
 
 	const modalRef = useRef(null);
 
+	console.log("R", route);
+	useEffect(() => {
+		if (route?.params?.reload)
+			setLoadCount(old => old + 1);
+	}, [route])
 
 	const [modalLabels, modalTitle] = useMemo(() => {
 
@@ -81,7 +85,6 @@ const AppointmentsScreen = ({ navigation }) => {
 		let finish = true;
 		Http.get(`/appointments/${pId}`, { date: date })
 			.then(reps => {
-				console.log(reps.employees[0].timeline);
 				if (finish) {
 					setData(reps);
 					setSelectedEmployee({

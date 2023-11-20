@@ -20,5 +20,8 @@ export const strings = {
 	"No items": "No items",
 	"From": "From",
 	"Appointment confirmation": "Appointment confirmation",
-	"Appointment": "Appointment"
+	"Appointment": "Appointment",
+	"Add time period": "Add time period",
+	"Yes": "Yes",
+	"No": "No"
 };

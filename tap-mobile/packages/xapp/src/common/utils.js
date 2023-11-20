@@ -66,10 +66,40 @@ export const DateUtils = {
 
 		return resp;
 	},
-	WEEK_DAY: ["Monday", "Tuesday", "Wednsday", "Thursday", "Friday", "Saturday", "Sunday"],
 	dateToString: (date = new Date()) => {
-		return `${date.getFullYear()}-${(date.getMonth() + 1).toLocaleString(undefined, {minimumIntegerDigits: 2})}-${date.getDate().toLocaleString(undefined, {minimumIntegerDigits: 2})}T${date.getHours().toLocaleString(undefined, {minimumIntegerDigits: 2})}:${date.getMinutes().toLocaleString(undefined, {minimumIntegerDigits: 2})}:${date.getSeconds().toLocaleString(undefined, {minimumIntegerDigits: 2})}`;
-	}
+		return `${date.getFullYear()}-${(date.getMonth() + 1).toLocaleString(undefined, { minimumIntegerDigits: 2 })}-${date.getDate().toLocaleString(undefined, { minimumIntegerDigits: 2 })}T${date.getHours().toLocaleString(undefined, { minimumIntegerDigits: 2 })}:${date.getMinutes().toLocaleString(undefined, { minimumIntegerDigits: 2 })}:${date.getSeconds().toLocaleString(undefined, { minimumIntegerDigits: 2 })}`;
+	},
+	roundTo30Min: (date = new Date()) => {
+		const dateOff = new Date(date.getTime() + (1000 * 60 * 5));
+		const min = dateOff.getMinutes();
+		let newDate;
+
+		if (min > 1 && min < 15) {
+			dateOff.setMinutes(15);
+			dateOff.setMilliseconds(0);
+			return dateOff;
+		}
+		else if (min > 15 && min < 30) {
+			dateOff.setMinutes(30);
+			dateOff.setMilliseconds(0);
+			return dateOff;
+		}
+		else if (min > 30 && min < 45) {
+			dateOff.setMinutes(45);
+			dateOff.setMilliseconds(0);
+			return dateOff;
+		}
+		else if (min > 45) {
+			newDate = new Date(dateOff.getTime() + (1000 * 60 * 60));
+			newDate.setMinutes(0);
+			newDate.setMilliseconds(0);
+			return newDate;
+		}
+		console.log(min);
+		return date;
+
+	},
+	WEEK_DAY: ["Monday", "Tuesday", "Wednsday", "Thursday", "Friday", "Saturday", "Sunday"],
 };
 
 export const CurrencyUtils = {
