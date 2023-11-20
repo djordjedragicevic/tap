@@ -1,6 +1,6 @@
 package com.tap.security;
 
-import com.tap.rest.UtilRepository;
+import com.tap.rest.common.CUtilRepository;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Priorities;
@@ -25,7 +25,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	ResourceInfo resourceInfo;
 
 	@Inject
-	UtilRepository utilRepository;
+	CUtilRepository CUtilRepository;
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -87,7 +87,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	}
 
 	private boolean isValidOnDb(Token t) {
-		Optional<com.tap.db.entity.Token> tokenRec = utilRepository.getEntity(com.tap.db.entity.Token.class, t.getRid());
+		Optional<com.tap.db.entity.Token> tokenRec = CUtilRepository.getEntity(com.tap.db.entity.Token.class, t.getRid());
 		return tokenRec.isPresent() &&
 			   tokenRec.get().getTokenstatus().getName().equals(Token.VALID) &&
 			   tokenRec.get().getJti() != null &&

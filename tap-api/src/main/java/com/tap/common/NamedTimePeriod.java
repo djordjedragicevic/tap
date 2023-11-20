@@ -12,6 +12,7 @@ public class NamedTimePeriod extends TypedTimePeriod {
 	public static final String CLOSE_PROVIDER_BUSY = "CLOSE_PROVIDER_BUSY";
 	public static final String CLOSE_EMPLOYEE_BUSY = "CLOSE_EMPLOYEE_BUSY";
 	public static final String CLOSE_APPOINTMENT = "CLOSE_APPOINTMENT";
+	public static final String CLOSE_LOCK_TIME = "CLOSE_LOCK_TIME";
 	private final String name;
 
 	public NamedTimePeriod(LocalTime start, LocalTime end, String type, String name) {

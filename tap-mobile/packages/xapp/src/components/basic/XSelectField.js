@@ -26,9 +26,9 @@ const XSelectField = ({
 		if (React.isValidElement(title))
 			return <>{title}</>
 		if (title != null)
-			return <XText ellipsizeMode={'tail'} numberOfLines={1} {...titleParams}>{title}</XText>
+			return <XText oneLine secondary {...titleParams}>{title}</XText>
 		else if (placeholder != null)
-			return <XText tertiary ellipsizeMode={'tail'} numberOfLines={1}  {...titleParams}>{placeholder}</XText>
+			return <XText tertiary oneLine {...titleParams}>{placeholder}</XText>
 		else
 			return null;
 	}, [title, placeholder, titleParams]);
@@ -46,7 +46,7 @@ const XSelectField = ({
 				{T}
 				{!!value &&
 					<XText
-						secondary
+						primary
 						ellipsizeMode={'tail'}
 						numberOfLines={1}
 						{...valueParams}

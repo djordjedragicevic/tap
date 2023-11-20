@@ -12,15 +12,17 @@ import { Theme } from 'xapp/src/style/themes';
 import { useColor, useThemedStyle } from 'xapp/src/style/ThemeContext';
 import XButton from 'xapp/src/components/basic/XButton';
 import XBottomSheetModal from 'xapp/src/components/basic/XBottomSheetModal';
+import XButtonIcon from 'xapp/src/components/basic/XButtonIcon';
 import XToolbar from 'xapp/src/components/XToolbar';
 import XTextLabels from 'xapp/src/components/XTextLabels';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
 import { PERIOD, STATUS } from '../common/general';
+import { CREATE_PERIOD_SCREEN } from '../navigators/routes';
 
 
 const HOUR_HEIGHT = 60;
 
-const AppointmentsScreen = () => {
+const AppointmentsScreen = ({ navigation }) => {
 
 	const sizeCoef = useState(2)[0];
 	const pId = useStore(gS => gS.provider.id);
@@ -79,6 +81,7 @@ const AppointmentsScreen = () => {
 		let finish = true;
 		Http.get(`/appointments/${pId}`, { date: date })
 			.then(reps => {
+				console.log(reps.employees[0].timeline);
 				if (finish) {
 					setData(reps);
 					setSelectedEmployee({
@@ -160,11 +163,18 @@ const AppointmentsScreen = () => {
 					refreshing={loading}
 					onRefresh={() => setLoadCount(loadCount + 1)}
 					sizeCoef={sizeCoef}
-					startHour={9}
-					endHour={0}
+					startHour={0}
+					endHour={23}
 					rowHeight={HOUR_HEIGHT}
 					items={data?.employees[selectedEmployee.index].timeline}
 					onItemPress={onItemPress}
+				/>
+				<XButtonIcon
+					icon='plus'
+					primary
+					size={44}
+					style={styles.btnPlus}
+					onPress={() => navigation.navigate(CREATE_PERIOD_SCREEN)}
 				/>
 
 			</XScreen>
@@ -208,6 +218,11 @@ const styleCreator = (theme) => {
 		},
 		btnRejectText: {
 			color: theme.colors.textLight
+		},
+		btnPlus: {
+			position: 'absolute',
+			bottom: 10,
+			right: 10
 		},
 		tabItem: {
 			flexDirection: 'row',

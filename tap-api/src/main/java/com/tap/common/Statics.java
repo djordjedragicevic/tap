@@ -11,6 +11,9 @@ public interface Statics {
 //	public static final String OPEN_PROVIDER_WORK = "OPEN_PROVIDER_WORK";
 //	public static final String OPEN_PROVIDER_WORK = "OPEN_PROVIDER_WORK";
 
+	public static final String PT_CLOSE_LOCK_TIME = "CLOSE_LOCK_TIME";
+	public static final String PT_CLOSE_OTHER = "CLOSE_OTHER";
+
 
 	public static final String A_STATUS_WAITING = "WAITING";
 	public static final String A_STATUS_ACCEPTED = "ACCEPTED";

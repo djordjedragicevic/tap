@@ -25,7 +25,7 @@ public class UserService {
 	@Inject
 	UserRepository userRepository;
 	@Inject
-	UtilRepository utilRepository;
+	com.tap.rest.common.CUtilRepository CUtilRepository;
 
 	@Path("create-account")
 	@POST
@@ -43,10 +43,10 @@ public class UserService {
 		if (!Util.isMail(email))
 			throw new TAPException(ErrID.INV_EMAIL_1);
 
-		if (utilRepository.getSingleEntityBy(User.class, "email", email).isPresent())
+		if (CUtilRepository.getSingleEntityBy(User.class, "email", email).isPresent())
 			throw new TAPException(ErrID.U_CACC_2, null, Map.of("email", email));
 
-		if (utilRepository.getSingleEntityBy(User.class, "username", username).isPresent())
+		if (CUtilRepository.getSingleEntityBy(User.class, "username", username).isPresent())
 			throw new TAPException(ErrID.U_CACC_3, null, Map.of("username", username));
 
 		try {

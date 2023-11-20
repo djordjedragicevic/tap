@@ -5,7 +5,7 @@ package com.tap.db.dto;
 public class PeriodTypeDto {	
 	private Integer id;
 	private String name;
-	private Byte open;
+	private Boolean open;
 	private String description;
 	public PeriodTypeDto() {}
 
@@ -27,12 +27,12 @@ public class PeriodTypeDto {
 		return this.name;
 	}
 
-	public PeriodTypeDto setOpen( byte open ) {
+	public PeriodTypeDto setOpen( boolean open ) {
 		this.open = open;
 		return this;
 	}
 
-	public byte getOpen() {
+	public boolean isOpen() {
 		return this.open;
 	}
 

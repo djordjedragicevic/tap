@@ -4,11 +4,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
 import { AntDesign } from '@expo/vector-icons';
 import { useIsUserLogged } from '../store/concreteStores';
-import { MAIN_STACK, MAIN_TAB_APPOINTMENTS, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS } from './routes';
+import { CREATE_PERIOD_SCREEN, MAIN_STACK, MAIN_TAB_APPOINTMENTS, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS } from './routes';
 import SettingsScreen from '../screens/SettingsScreen';
 import { useColor, usePrimaryColor } from 'xapp/src/style/ThemeContext';
 import AppointmentsScreen from '../screens/AppointmentsScreen';
 import RequestsScreen from '../screens/RequestsScreen';
+import CreatePeriodScreen from '../screens/CreatePeriodScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -66,7 +67,7 @@ const AppNavigator = ({ }) => {
 	const t = useTranslation();
 	const logged = useIsUserLogged();
 	return (
-		<Stack.Navigator>
+		<Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: font } }}>
 			<Stack.Screen
 				name={MAIN_STACK}
 				component={MainBottomTabNavigator}
@@ -74,6 +75,11 @@ const AppNavigator = ({ }) => {
 					headerShown: false,
 					headerTitleStyle: { fontFamily: font }
 				}}
+			/>
+
+			<Stack.Screen
+				name={CREATE_PERIOD_SCREEN}
+				component={CreatePeriodScreen}
 			/>
 
 		</Stack.Navigator>

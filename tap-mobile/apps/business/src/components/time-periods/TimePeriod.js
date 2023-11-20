@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useContext, useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
-import I18nContext, { useTranslation } from "xapp/src/i18n/I18nContext";
+import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { Theme } from "xapp/src/style/themes";
 import XText from "xapp/src/components/basic/XText";
 import XIcon from "xapp/src/components/basic/XIcon";
@@ -45,7 +45,7 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 						</XText>
 					</View>
 					{item.data.status === STATUS.WAITING &&
-						<XIcon icon={'warning'} size={14} color={colorRed} />
+						<XIcon icon='warning' size={14} color={colorRed} />
 					}
 				</View>
 			)
@@ -56,7 +56,7 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 					<Time start={item.start} end={item.end} />
 
 					<View style={styles.itemConteainerCenter}>
-						<XText light bold size={12}>{t('Break')}</XText>
+						<XText light bold size={12}>{item.data.periodType}</XText>
 					</View>
 				</View>
 			)

@@ -10,8 +10,8 @@ BusyPeriod {
   periodTypeId : int { @DbName(period_type_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_busy_period_period_type1, PeriodType.id) };
   createdBy : int { @DbName(created_by) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_busy_time_user1, User.id) };
   repeatTypeId : byte { @DbName(repeat_type_id) @DbType(TINYINT UNSIGNED) @FK(fk_busy_period_repeat_type1, RepeatType.id) };
-  comment : string { @DbName(comment) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
-  createDate : timestamp { @DbName(create_date) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
+  comment : string { @DbName(comment) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
+  createDate : timestamp { @DbName(create_date) @DbType(DATETIME) @NotNull @NotEmpty };
   // links
   periodtype : PeriodType { @LinkByFK(fk_busy_period_period_type1) };
   repeattype : RepeatType { @LinkByFK(fk_busy_period_repeat_type1) };

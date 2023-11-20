@@ -24,10 +24,11 @@ const XFieldContainer = ({
 	onCenterPress,
 	meta,
 	outline,
-	focused
+	focused,
+	flex = false
 }) => {
 
-	const styles = useThemedStyle(createStyle, outline, focused);
+	const styles = useThemedStyle(createStyle, outline, focused, flex);
 	const RootCmp = onPress ? TouchableOpacity : View;
 	const IconRightCmp = onIconRightPress ? TouchableOpacity : View;
 	const IconLeftCmp = onIconLeftPress ? TouchableOpacity : View;
@@ -63,27 +64,30 @@ const XFieldContainer = ({
 	);
 };
 
-const createStyle = (theme, outline, focused) => StyleSheet.create({
-	container: {
-		borderRadius: Theme.values.borderRadius,
-		borderWidth: outline && Theme.values.borderWidth,
-		borderColor: focused ? theme.colors.primary : theme.colors.borderColor,
-		flexDirection: 'row',
-		backgroundColor: theme.colors.backgroundElement,
-		height: 45
-	},
-	icon: {
-		paddingHorizontal: 8,
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	centerContainer: {
-		flex: 1,
-		paddingHorizontal: 8,
-		justifyContent: 'center'
-	},
-	iconColor: theme.colors.primary,
-	iconRightColor: theme.colors.textSecondary
-});
+const createStyle = (theme, outline, focused, flex) => {
+	return StyleSheet.create({
+		container: {
+			borderRadius: Theme.values.borderRadius,
+			borderWidth: outline && Theme.values.borderWidth,
+			borderColor: focused ? theme.colors.primary : theme.colors.borderColor,
+			flexDirection: 'row',
+			backgroundColor: theme.colors.backgroundElement,
+			height: 45,
+			flex: flex ? 1 : undefined
+		},
+		icon: {
+			paddingHorizontal: 8,
+			alignItems: 'center',
+			justifyContent: 'center'
+		},
+		centerContainer: {
+			flex: 1,
+			paddingHorizontal: 8,
+			justifyContent: 'center'
+		},
+		iconColor: theme.colors.primary,
+		iconRightColor: theme.colors.textSecondary
+	})
+};
 
 export default XFieldContainer;

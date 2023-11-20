@@ -4,7 +4,6 @@ import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.security.Credentials;
 import com.tap.security.Public;
-import com.tap.security.Secured;
 import com.tap.security.Token;
 import com.tap.db.entity.Role;
 import com.tap.db.entity.User;
@@ -23,7 +22,7 @@ public class AuthService {
 	@Inject
 	AuthRepository authRepository;
 	@Inject
-	UtilRepository utilRepository;
+	com.tap.rest.common.CUtilRepository CUtilRepository;
 
 
 	@POST
@@ -59,7 +58,7 @@ public class AuthService {
 		com.tap.db.entity.Token tokenRec;
 		try {
 			long rid = new Token(bearer).validate().getRid();
-			Optional<com.tap.db.entity.Token> currToken = utilRepository.getEntity(com.tap.db.entity.Token.class, rid);
+			Optional<com.tap.db.entity.Token> currToken = CUtilRepository.getEntity(com.tap.db.entity.Token.class, rid);
 			tokenRec = currToken.orElse(null);
 		} catch (Exception e) {
 			tokenRec = null;

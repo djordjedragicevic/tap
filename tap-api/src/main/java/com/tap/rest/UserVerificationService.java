@@ -23,7 +23,7 @@ public class UserVerificationService {
 	@Inject
 	UserVerificationRepository userVerificationRepository;
 	@Inject
-	UtilRepository utilRepository;
+	com.tap.rest.common.CUtilRepository CUtilRepository;
 
 	@Path("data/{userId}")
 	@GET
@@ -32,7 +32,7 @@ public class UserVerificationService {
 	@Public
 	public Response getVerificationCodeData(@PathParam("userId") Integer userId) {
 
-		Optional<UserVerification> userVerification = utilRepository.getSingleEntityBy(UserVerification.class, "user.id", userId);
+		Optional<UserVerification> userVerification = CUtilRepository.getSingleEntityBy(UserVerification.class, "user.id", userId);
 
 		if (userVerification.isEmpty())
 			throw new TAPException(ErrID.TAP_0);

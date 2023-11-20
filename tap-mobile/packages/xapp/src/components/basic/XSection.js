@@ -25,7 +25,7 @@ const XSection = ({
 		<View style={[styles.container, style]}>
 			{!!(title || titleRight) &&
 				<View style={[styles.title, styleTitle]}>
-					{!!title && <XText bold>{title}</XText>}
+					{!!title && <XText bold secondary>{title}</XText>}
 					{!!titleRight && titleRight}
 				</View>
 			}
@@ -45,7 +45,6 @@ XSection.defaultProps = {
 
 const createStyle = (theme, transparent, hasTitle) => StyleSheet.create({
 	title: {
-		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',

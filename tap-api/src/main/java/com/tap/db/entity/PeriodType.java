@@ -26,7 +26,7 @@ public class PeriodType implements Serializable {
 	private boolean active;
 
     @Column(name="open", nullable=false)
-	private byte open;
+	private boolean open;
 
     @Column(name="description", length=512)
 	private String description;
@@ -60,11 +60,11 @@ public class PeriodType implements Serializable {
 		return this.active;
 	}
 
-	public void setOpen( byte open ) {
+	public void setOpen( boolean open ) {
 		this.open = open ;
 	}
 
-	public byte getOpen() {
+	public boolean isOpen() {
 		return this.open;
 	}
 

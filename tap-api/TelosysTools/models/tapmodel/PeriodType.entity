@@ -5,7 +5,7 @@ PeriodType {
   id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
   name : string { @DbName(name) @DbType("VARCHAR(32)") @NotNull @NotEmpty @Size(32) @MaxLen(32) };
   active : boolean { @DbName(active) @DbType(BIT) @DbDefaultValue(1) @NotNull @NotEmpty };
-  open : byte { @DbName(open) @DbType(TINYINT) @NotNull @NotEmpty };
+  open : boolean { @DbName(open) @DbType(BIT) @NotNull @NotEmpty };
   description : string { @DbName(description) @DbType("VARCHAR(512)") @Size(512) @MaxLen(512) };
   // links
   busyperiodList : BusyPeriod[];

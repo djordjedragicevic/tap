@@ -117,6 +117,7 @@ public class BAppointmentsService {
 		return Response.ok().build();
 	}
 
+
 	private ProviderWorkInfo generatePWI(Integer pId, List<Integer> eIds, LocalDate date, List<EmployeeDto> emps) {
 
 		List<AppointmentDtoSimple> apps = bAppointmentRepository.getWAAppointmentsAtDay(eIds, date);
@@ -185,7 +186,7 @@ public class BAppointmentsService {
 		boolean isClose;
 		for (WorkPeriod wP : wps) {
 			isProviderLevel = wP.getProvider() != null;
-			isClose = wP.getPeriodtype().getOpen() == 0;
+			isClose = !wP.getPeriodtype().isOpen();
 
 			//Breaks
 			if (isClose) {

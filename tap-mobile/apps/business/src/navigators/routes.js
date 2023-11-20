@@ -11,6 +11,8 @@ export const MAIN_TAB_APPOINTMENTS = 'MainTabAppointments';
 export const MAIN_TAB_REQUESTS = 'MainTabRequests';
 export const MAIN_TAB_SETTINGS = 'MainTabSettings';
 
+export const CREATE_PERIOD_SCREEN = 'CreatePeriodScreen';
+
 export const MAIN_STACK = 'MainStack';
 
 // export const LOGIN_SCREEN = 'LoginScreen';

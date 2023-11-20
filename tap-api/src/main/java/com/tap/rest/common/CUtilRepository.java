@@ -1,14 +1,14 @@
-package com.tap.rest;
+package com.tap.rest.common;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-import java.util.Optional;
+import java.util.*;
 
 @RequestScoped
-public class UtilRepository {
+public class CUtilRepository {
 	@PersistenceContext(unitName = "tap-pu")
 	private EntityManager em;
 
@@ -40,4 +40,27 @@ public class UtilRepository {
 		}
 	}
 
+	public <T> T getSingleEntityBy(Class<T> ec, Map<String, Object> params) {
+		StringBuilder query = new StringBuilder();
+
+		query.append(String.format("SELECT c FROM %s c WHERE", ec.getSimpleName()));
+
+		int i = 1;
+		List<Object> values = new ArrayList<>();
+		for (Map.Entry<String, Object> k : params.entrySet()){
+			query.append(" c.").append(k.getKey()).append(" = :val").append(i++);
+			if((i - 1) < params.size())
+				query.append(" AND");
+			values.add(k.getValue());
+		}
+
+		TypedQuery<T> q = em.createQuery(query.toString(), ec);
+		i = 1;
+		for (Object v : values)
+			q.setParameter("val" + i++, v);
+
+
+		return q.getSingleResult();
+
+	}
 }
