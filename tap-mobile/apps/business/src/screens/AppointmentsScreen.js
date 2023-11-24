@@ -21,6 +21,78 @@ import { CREATE_PERIOD_SCREEN } from '../navigators/routes';
 
 const HOUR_HEIGHT = 60;
 
+const findOverlapIndex = (tps, idx) => {
+	const tP = tps[idx];
+	for (let i = idx - 1; i >= 0; i--) {
+		if (DateUtils.isTimeBefore(tP.start, tps[i].end))
+			return i;
+	}
+	return -1;
+};
+
+const arrangeTimeline = (tl) => {
+
+	const resp = [];
+	const groups = {};
+	let g = {
+		id: '',
+		start: '',
+		end: '',
+		columns: []
+	};
+
+	let gIdx = 0;
+
+	let tmpC;
+	let tmpOver;
+	let tmpOverIdx;
+
+	for (let i = 0, s = tl.length; i < s; i++) {
+		tmpC = tl[i];
+		tmpOverIdx = findOverlapIndex(tl, i);
+
+		if (tmpOverIdx === -1) {
+			g = {
+				id: 'g' + (++gIdx),
+				start: tmpC.start,
+				end: tmpC.end,
+				columns: [[tmpC]]
+			};
+			groups[g.id] = g;
+			resp.push(g);
+			tmpC._gId = g.id;
+		}
+		else {
+			tmpOver = tl[tmpOverIdx];
+			groups[tmpOver._gId].end = tmpC.end;
+			tmpC._gId = tmpOver._gId;
+			let addedInC = false;
+			for (let c of groups[tmpOver._gId].columns) {
+				if (!DateUtils.isTimeBefore(tmpC.start, c[c.length - 1].end)) {
+					c.push(tmpC);
+					addedInC = true;
+					break;
+				}
+			}
+			if (!addedInC)
+				groups[tmpOver._gId].columns.push([tmpC]);
+		}
+	}
+
+	return resp;
+};
+
+let empsTimeline = {};
+const getArrangedTimeline = (emp) => {
+
+	if (emp) {
+		if (!emp[emp.employeeId])
+			empsTimeline[emp.employeeId] = arrangeTimeline(emp.timeline);
+
+		return empsTimeline[emp.employeeId];
+	}
+};
+
 const AppointmentsScreen = ({ navigation, route }) => {
 
 	const sizeCoef = useState(2)[0];
@@ -38,7 +110,6 @@ const AppointmentsScreen = ({ navigation, route }) => {
 
 	const modalRef = useRef(null);
 
-	console.log("R", route);
 	useEffect(() => {
 		if (route?.params?.reload)
 			setLoadCount(old => old + 1);
@@ -83,8 +154,10 @@ const AppointmentsScreen = ({ navigation, route }) => {
 	useEffect(() => {
 		setLoading(true);
 		let finish = true;
-		Http.get(`/appointments/${pId}`, { date: date })
+		Http.get(`/appointments/${pId}`, { ...DateUtils.convertToParam(date) })
 			.then(reps => {
+				empsTimeline = {};
+
 				if (finish) {
 					setData(reps);
 					setSelectedEmployee({
@@ -166,10 +239,11 @@ const AppointmentsScreen = ({ navigation, route }) => {
 					refreshing={loading}
 					onRefresh={() => setLoadCount(loadCount + 1)}
 					sizeCoef={sizeCoef}
-					startHour={0}
-					endHour={23}
+					startHour={9}
+					endHour={22}
 					rowHeight={HOUR_HEIGHT}
 					items={data?.employees[selectedEmployee.index].timeline}
+					arrangedItems={getArrangedTimeline(data?.employees[selectedEmployee.index])}
 					onItemPress={onItemPress}
 				/>
 				<XButtonIcon

@@ -64,6 +64,31 @@ const RowRight = memo(({ height }) => {
 	)
 });
 
+const Gropu = ({ children, top, height }) => {
+
+	return (
+		<View
+			style={{
+				position: 'absolute',
+				flexDirection: 'row',
+				height: height,
+				top: top,
+				end: 0,
+				start: 0
+			}}>
+			{children}
+		</View>
+	);
+};
+
+const Column = ({ children }) => {
+	return (
+		<View style={{ flex: 1 }}>
+			{children}
+		</View>
+	);
+};
+
 const TimePeriodsPanel = ({
 	sizeCoef = 1,
 	showCurrentTime = true,
@@ -71,6 +96,7 @@ const TimePeriodsPanel = ({
 	endHour = 23,
 	hourHeight = HOUR_HEIGHT,
 	items = [],
+	arrangedItems,
 	style,
 	refreshing = false,
 	onRefresh = emptyFn,
@@ -97,7 +123,30 @@ const TimePeriodsPanel = ({
 				</View>
 				<View style={styles.rowRightContainer}>
 					{hours.map(h => <RowRight key={h} height={height} />)}
-					{items.map((i) =>
+
+					{arrangedItems?.map((group) => (
+						<Gropu
+							key={group.id}
+							top={((DateUtils.getMinutesOfDay(group.start) + (hourHeight / 2)) * sizeCoef) + topOffset}
+							height={DateUtils.calculateHeightFromTime(group.start, group.end) * sizeCoef}
+						>
+							{group.columns.map((c, cIdx) => (
+								<Column key={`${group.id}_${cIdx.toString()}`}>
+									{c.map(cI => (
+										<TimePeriod
+											key={`${cI.data.id}#${cI.name}`}
+											item={cI}
+											height={DateUtils.calculateHeightFromTime(cI.start, cI.end) * sizeCoef}
+											top={((DateUtils.getMinutesOfDay(cI.start) - DateUtils.getMinutesOfDay(group.start)) * sizeCoef)}
+											onPress={onItemPress}
+										/>
+									))}
+								</Column>
+							))}
+						</Gropu>
+					))}
+
+					{!arrangedItems && items.map((i) =>
 						<TimePeriod
 							key={`${i.data.id}#${i.name}`}
 							item={i}
@@ -105,6 +154,7 @@ const TimePeriodsPanel = ({
 							top={((DateUtils.getMinutesOfDay(i.start) + (hourHeight / 2)) * sizeCoef) + topOffset}
 							onPress={onItemPress}
 						/>)}
+
 					{showCurrentTime &&
 						<CurrentTime
 							hourHeight={hourHeight}

@@ -95,9 +95,27 @@ export const DateUtils = {
 			newDate.setMilliseconds(0);
 			return newDate;
 		}
-		console.log(min);
 		return date;
 
+	},
+	convertToParam: (date) => {
+		return {
+			y: date.getFullYear(),
+			m: date.getMonth() + 1,
+			d: date.getDate(),
+			h: date.getHours(),
+			min: date.getMinutes()
+		};
+	},
+	isTimeBefore: (time1, time2) => {
+		const t1 = time1.split(':');
+		const t2 = time2.split(':');
+		const h1 = parseInt(t1[0]);
+		const h2 = parseInt(t2[0]);
+		const m1 = parseInt(t1[1]);
+		const m2 = parseInt(t2[1]);
+
+		return h1 < h2 || (h1 === h2 && m1 < m2)
 	},
 	WEEK_DAY: ["Monday", "Tuesday", "Wednsday", "Thursday", "Friday", "Saturday", "Sunday"],
 };

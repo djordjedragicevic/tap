@@ -5,8 +5,6 @@ export const appStore = (initD = {}) => ({
 	name: 'app',
 	actions: {
 		'app.mask': (appStore, maskShown) => {
-			console.log("MASK", maskShown)
-
 			const shown = !!maskShown;
 			let maskText = '';
 			if (maskShown instanceof Object) {

@@ -89,8 +89,8 @@ const createStyle = (theme, height, top, colorName) => {
 			height,
 			top,
 			flex: 1,
-			start: 10,
-			end: 10,
+			start: 0,
+			end: 0,
 			borderRadius: Theme.values.borderRadius,
 			overflow: 'hidden'
 		},

@@ -36,7 +36,12 @@ public class BAppointmentsService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAppointmentsAtDate(
 			@NotNull @PathParam("pId") Integer pId,
-			@NotNull @QueryParam("date") Date d
+			@NotNull @QueryParam("y") int y,
+			@NotNull @QueryParam("m") int m,
+			@NotNull @QueryParam("d") int d,
+			@NotNull @QueryParam("h") int h,
+			@NotNull @QueryParam("min") int min
+
 	) {
 
 		List<EmployeeDto> emps = bAppointmentRepository.getEmployees(pId)
@@ -49,7 +54,7 @@ public class BAppointmentsService {
 
 		List<Integer> eIds = emps.stream().mapToInt(EmployeeDto::getId).boxed().toList();
 
-		LocalDateTime from = Util.zonedDT(d);
+		LocalDateTime from = LocalDateTime.of(y, m, d, h, min);
 		LocalDate date = from.toLocalDate();
 
 		ProviderWorkInfo pWI = this.generatePWI(pId, eIds, date, emps);
