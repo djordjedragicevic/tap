@@ -73,8 +73,8 @@ const Gropu = ({ children, top, height }) => {
 				flexDirection: 'row',
 				height: height,
 				top: top,
-				end: 0,
-				start: 0
+				end: 5,
+				start: 5
 			}}>
 			{children}
 		</View>

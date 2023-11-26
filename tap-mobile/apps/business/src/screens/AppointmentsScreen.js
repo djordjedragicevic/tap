@@ -96,7 +96,7 @@ const getArrangedTimeline = (emp) => {
 const AppointmentsScreen = ({ navigation, route }) => {
 
 	const sizeCoef = useState(2)[0];
-	const pId = useStore(gS => gS.provider.id);
+	const pId = 2;
 	const [data, setData] = useState();
 	const [loading, setLoading] = useState(false);
 	const [loadCount, setLoadCount] = useState(1);
@@ -160,14 +160,15 @@ const AppointmentsScreen = ({ navigation, route }) => {
 
 				if (finish) {
 					setData(reps);
-					setSelectedEmployee({
-						index: 0,
-						employee: {
-							id: reps.employees[0].employeeId,
-							name: reps.employees[0].name,
-							imagePath: reps.employees[0].imagePath
-						}
-					});
+					if (!selectedEmployee)
+						setSelectedEmployee({
+							index: 0,
+							employee: {
+								id: reps.employees[0].employeeId,
+								name: reps.employees[0].name,
+								imagePath: reps.employees[0].imagePath
+							}
+						});
 				}
 			})
 			.catch(emptyFn)
@@ -251,7 +252,7 @@ const AppointmentsScreen = ({ navigation, route }) => {
 					primary
 					size={44}
 					style={styles.btnPlus}
-					onPress={() => navigation.navigate(CREATE_PERIOD_SCREEN)}
+					onPress={() => navigation.navigate(CREATE_PERIOD_SCREEN, { pId })}
 				/>
 
 			</XScreen>

@@ -54,9 +54,9 @@ const createStyle = (theme, transparent, hasTitle) => StyleSheet.create({
 	content: {
 		padding: 6,
 		backgroundColor: transparent ? 'transparent' : theme.colors.backgroundElement,
-		borderRadius: Theme.values.borderRadius,
-		borderTopEndRadius: hasTitle ? 0 : Theme.values.borderRadius,
-		borderTopStartRadius: hasTitle ? 0 : Theme.values.borderRadius
+		borderRadius: Theme.values.borderRadius
+		// borderTopEndRadius: hasTitle ? 0 : Theme.values.borderRadius,
+		// borderTopStartRadius: hasTitle ? 0 : Theme.values.borderRadius
 	},
 	container: {
 		//backgroundColor: transparent ? 'transparent' : theme.colors.background,

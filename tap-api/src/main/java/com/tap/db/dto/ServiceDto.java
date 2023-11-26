@@ -1,5 +1,5 @@
 /**
- * Generated DTO class for "Service"
+ * Generated DTO class for "ServiceDto"
  */
 package com.tap.db.dto;
 import java.math.BigDecimal;

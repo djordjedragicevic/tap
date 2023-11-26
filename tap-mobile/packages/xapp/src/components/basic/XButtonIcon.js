@@ -19,7 +19,7 @@ const ButtonIcon = ({
 
 	const tPColor = useColor('textPrimary');
 	const pLCorlor = useColor('primaryLight');
-	const iconColor = (primary && pLCorlor) || color || tPColor;
+	const iconColor = ((primary || backgroundColor) && pLCorlor) || color || tPColor;
 	const styles = useThemedStyle(styleCreator, size, backgroundColor, primary, disabled);
 	const iconSize = Math.round(size * 0.6);
 
@@ -48,7 +48,7 @@ const styleCreator = (theme, size, backgroundColor, primary, disabled) => {
 	return StyleSheet.create({
 		btn: {
 			borderRadius: Theme.values.borderRadius,
-			padding: 7,
+			//padding: 7,
 			backgroundColor: bgColor,
 			width: size,
 			height: size,

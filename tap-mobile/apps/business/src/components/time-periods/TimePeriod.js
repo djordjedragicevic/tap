@@ -37,7 +37,7 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 			return (
 				<View style={[styles.appointment, item.data.status === STATUS.WAITING && styles.appointmentWaiting]}>
 
-					<Time start={item.start} end={item.end} />
+					<XText light bold size={12}>{item.start}</XText>
 
 					<View style={styles.itemConteainerCenter}>
 						<XText light bold oneLine size={12}>
@@ -53,11 +53,11 @@ const TimePeriod = ({ item, height, top, style, onPress }) => {
 		else {
 			return (
 				<View style={[styles.break]}>
-					<Time start={item.start} end={item.end} />
-
-					<View style={styles.itemConteainerCenter}>
+					<XText>
+						<XText light bold size={12}>{item.start} </XText>
 						<XText light bold size={12}>{item.data.periodType}</XText>
-					</View>
+
+					</XText>
 				</View>
 			)
 		}
@@ -77,7 +77,7 @@ const createStyle = (theme, height, top, colorName) => {
 		flex: 1,
 		paddingHorizontal: 3,
 		flexDirection: 'row',
-		alignItems: 'center',
+		//alignItems: 'center',
 		borderWidth: Theme.values.borderWidth,
 		borderRadius: Theme.values.borderRadius,
 		borderColor: theme.colors.borderColor,

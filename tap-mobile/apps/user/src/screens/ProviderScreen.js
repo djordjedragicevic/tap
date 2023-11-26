@@ -20,6 +20,9 @@ import TabAbout from "./provider/TabAbout";
 import TabServices from "./provider/TabServices";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import { CurrencyUtils } from "xapp/src/common/utils";
+import { useIsUserLogged } from "../store/concreteStores";
+import XAlert from "xapp/src/components/basic/XAlert";
+import { handleUnauth } from "../common/general";
 
 const TabReviews = () => {
 	return (
@@ -45,6 +48,7 @@ const ProviderScreen = ({ navigation, route }) => {
 	const [selectedIds, setSelectedIdxs] = useState([]);
 	const [priceSum, setPriceSum] = useState();
 	const [favoriteDisabled, setFavoriteDisabled] = useState(false);
+	const userLoged = useIsUserLogged();
 
 	const userId = useStore(st => st.user.id);
 	const fProviders = useStore(st => st.user.state.favoriteProviders);
@@ -178,7 +182,12 @@ const ProviderScreen = ({ navigation, route }) => {
 					primary
 					disabled={!selectedIds?.length}
 					style={{ margin: 5, flex: 1 }}
-					onPress={() => navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selectedIds], providerId })}
+					onPress={() => {
+						if (userLoged)
+							navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selectedIds], providerId });
+						else
+							handleUnauth()
+					}}
 					iconRight={bookBtnRightIcon}
 				/>
 			</Footer>

@@ -15,8 +15,12 @@ class XAlert {
 			if (btns[0] === true)
 				btns[0] = {};
 
-			btns[0].text = I18n.translate(type !== XAlert.YESNO ? 'Cancel' : 'No');
-			btns[1].text = I18n.translate(type !== XAlert.YESNO ? 'OK' : 'Yes');
+
+			if (!btns[0]?.text)
+				btns[0].text = I18n.translate(type !== XAlert.YESNO ? 'Cancel' : 'No');
+
+			if (!btns[1]?.text)
+				btns[1].text = I18n.translate(type !== XAlert.YESNO ? 'OK' : 'Yes');
 		}
 
 		Alert.alert(title, msg, btns);

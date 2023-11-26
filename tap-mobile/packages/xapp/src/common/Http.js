@@ -190,7 +190,7 @@ export class Http {
 	}
 }
 
-export function useHTTPGet(url, params, initData, cache = false) {
+export function useHTTPGet(url, params, initData, cache = false, onGet = null) {
 
 	const cK = cache ? (url + JSON.stringify(params || {})) : null;
 
@@ -205,8 +205,9 @@ export function useHTTPGet(url, params, initData, cache = false) {
 		setRefreshing(true);
 		let doSetState = true;
 		Http.get(url, params)
-			.then(d => {
+			.then(resp => {
 				if (doSetState) {
+					const d = onGet ? onGet(resp) : resp;
 					setData(d);
 					if (cache)
 						CacheStorage.set(cK, d);

@@ -33,6 +33,7 @@ const XText = ({
 	icon,
 	ellipsizeMode = 'tail',
 	numberOfLines = 0,
+	adjustsFontSizeToFit = false,
 	oneLine = false,
 	...rest
 }) => {
@@ -56,20 +57,20 @@ const XText = ({
 
 	if (!icon)
 		return (
-			<Text style={[styles.text, style]} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
+			<Text style={[styles.text, style]} adjustsFontSizeToFit={adjustsFontSizeToFit} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
 		);
 	else if (typeof icon === 'string')
 		return (
 			<View style={styles.container}>
 				<AntDesign name={icon} size={18} color={pColor} />
-				<Text style={[styles.text, style]} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
+				<Text style={[styles.text, style]} adjustsFontSizeToFit={adjustsFontSizeToFit} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
 			</View>
 		);
 	else if (typeof icon === 'function')
 		return (
 			<View style={styles.container}>
 				{icon({ size: 18, color: pColor })}
-				<Text style={[styles.text, style]} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
+				<Text style={[styles.text, style]} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} adjustsFontSizeToFit={adjustsFontSizeToFit} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
 			</View>
 		);
 };

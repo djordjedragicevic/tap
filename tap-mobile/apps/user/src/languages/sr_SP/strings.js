@@ -21,7 +21,7 @@ export const strings = {
 	"English": "Engleski",
 	"Serbian": "Srpski",
 
-	"Services": "Services",
+	"Services": "Usluge",
 	"First free": "Prvi slobodan",
 	"Free appointments": "Slobodni termini",
 	"Today": "Danas",
@@ -94,6 +94,7 @@ export const strings = {
 	"ACCEPTED": "PRIHVAĆENO",
 
 	"Account": "Nalog",
-	"Personal information": "Lični podaci"
+	"Personal information": "Lični podaci",
+	"Go to login screen": "Idi na logovanje"
 
 };
