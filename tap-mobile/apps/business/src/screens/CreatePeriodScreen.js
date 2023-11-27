@@ -11,25 +11,24 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
 import XButton from "xapp/src/components/basic/XButton";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
-import XSeparator from "xapp/src/components/basic/XSeparator";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
-import { useStore } from "xapp/src/store/store";
 import { DateUtils } from "xapp/src/common/utils";
 import { MAIN_TAB_APPOINTMENTS } from "../navigators/routes";
 import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
-import XSelector from "xapp/src/components/basic/XSelector";
+import XBottomSheetSelector from "xapp/src/components/basic/XBottomSheetSelector";
 
 
 const CreatePeriodScreen = ({ navigation, route }) => {
 	const dateCode = useDateCode();
 	const styles = useThemedStyle(styleCreator);
 	const cGreen = useColor('green');
+	const cRed = useColor('red');
 
 	const initDate = useMemo(() => DateUtils.roundTo30Min(new Date()), []);
 
 	const [fromDate, setFromDate] = useState(new Date(initDate.getTime()));
-	const [fromTime, setFromTime] = useState(new Date(initDate.getTime()));
+	const [fromTime, setFromTime] = useState(new Date(initDate.getTime() + (selectedServices?.map(s => s.duration).reduce((prev, curr) => prev + curr, 0) || 0) * 60 * 1000));
 	const [toDate, setToDate] = useState(new Date(initDate.getTime()));
 	const [toTime, setToTime] = useState(new Date(initDate.getTime() + (15 * 60 * 1000)));
 
@@ -42,6 +41,11 @@ const CreatePeriodScreen = ({ navigation, route }) => {
 	const [comment, setComment] = useState('');
 
 	const [selectedServices, setSelectedServices] = useState([]);
+	const [serviceSelectVisible, setServiceSelectVisible] = useState(false);
+
+	const toDateCalc = useMemo(() => {
+		return new Date(fromTime.getTime() + (selectedServices?.map(s => s.duration).reduce((prev, curr) => prev + curr, 0) || 0) * 60 * 1000);
+	}, [selectedServices, fromTime]);
 
 	const pId = route.params.pId;
 
@@ -86,136 +90,163 @@ const CreatePeriodScreen = ({ navigation, route }) => {
 	};
 
 	return (
-		<XScreen style={{ rowGap: 15, marginHorizontal: 10 }}>
-			<XSection title={'Vrijeme'}>
+		<XScreen scroll>
+			<View style={{ rowGap: 15, paddingBottom: 10 }}>
+				<XSection title={'Vrijeme'}>
+					<XFieldContainer
+						iconLeft={'clockcircleo'}
+						styleCenterContainer={{
+							flexDirection: 'row',
+							alignItems: 'center',
+							justifyContent: 'space-between'
+						}}
+					>
+						<Pressable onPress={() => setFromDateVisible(true)}>
+							<XText>{fromDate.toLocaleDateString(dateCode, { year: 'numeric', month: 'short', weekday: 'short', day: '2-digit' })}</XText>
+						</Pressable>
+						<Pressable onPress={() => setFromTimeVisible(true)}>
+							<XText>{fromTime.toLocaleTimeString(dateCode, { hour: "2-digit", minute: '2-digit', hour12: false })}</XText>
+						</Pressable>
+					</XFieldContainer>
 
-				<XFieldContainer
-					iconLeft={'clockcircleo'}
-					styleCenterContainer={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'space-between'
+					<XFieldContainer
+						iconLeft={'clockcircleo'}
+						disabled
+						styleCenterContainer={{
+							flexDirection: 'row',
+							alignItems: 'center',
+							justifyContent: 'space-between'
+						}}
+					>
+						<Pressable onPress={() => setToDateVisible(true)}>
+							<XText>{toDateCalc.toLocaleDateString(dateCode, { year: 'numeric', month: 'short', weekday: 'short', day: '2-digit' })}</XText>
+						</Pressable>
+						<Pressable onPress={() => setToTimeVisible(true)}>
+							<XText>{toDateCalc.toLocaleTimeString(dateCode, { hour: "2-digit", minute: '2-digit', hour12: false })}</XText>
+						</Pressable>
+					</XFieldContainer>
+
+
+					<DateTimePickerModal
+						isVisible={fromDateVisible}
+						mode="date"
+						date={fromDate}
+						minimumDate={fromDate}
+						onConfirm={(d) => {
+							setFromDateVisible(false);
+							setFromDate(d);
+							if (d > toDate)
+								setToDate(new Date(d.getTime()));
+						}}
+						onCancel={() => setFromDateVisible(false)}
+						onHide={() => setFromDateVisible(false)}
+					/>
+					<DateTimePickerModal
+						isVisible={fromTimeVisible}
+						mode="time"
+						date={fromTime}
+						is24Hour={true}
+						onConfirm={(d) => {
+							setFromTimeVisible(false);
+							setFromTime(d);
+							setToTime(new Date(d.getTime() + (15 * 60 * 1000)))
+						}}
+						onCancel={() => setFromTimeVisible(false)}
+						onHide={() => setFromTimeVisible(false)}
+					/>
+					<DateTimePickerModal
+						isVisible={toDateVisible}
+						mode="date"
+						date={toDate}
+						minimumDate={new Date()}
+						onConfirm={(d) => {
+							setToDateVisible(false);
+							setToDate(d);
+						}}
+						onCancel={() => setToDateVisible(false)}
+						onHide={() => setToDateVisible(false)}
+					/>
+					<DateTimePickerModal
+						isVisible={toTimeVisible}
+						mode="time"
+						date={toTime}
+						is24Hour={true}
+						onConfirm={(d) => {
+							setToTimeVisible(false);
+							setToTime(d);
+						}}
+						onCancel={() => setToTimeVisible(false)}
+						onHide={() => setToTimeVisible(false)}
+					/>
+				</XSection>
+
+
+				<XSection
+					title={'Servisi'}
+					styleTitle={{
+						backgroundColor: 'white',
+						borderBottomWidth: 1,
+						borderColor: 'lightgray',
+						height: 45
 					}}
-				>
-					<Pressable onPress={() => setFromDateVisible(true)}>
-						<XText>{fromDate.toLocaleDateString(dateCode, { year: 'numeric', month: 'short', weekday: 'short', day: '2-digit' })}</XText>
-					</Pressable>
-					<Pressable onPress={() => setFromTimeVisible(true)}>
-						<XText>{fromTime.toLocaleTimeString(dateCode, { hour: "2-digit", minute: '2-digit', hour12: false })}</XText>
-					</Pressable>
-				</XFieldContainer>
-
-				<XFieldContainer
-					iconLeft={'clockcircleo'}
-					styleCenterContainer={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'space-between'
-					}}
-				>
-					<Pressable onPress={() => setToDateVisible(true)}>
-						<XText>{toDate.toLocaleDateString(dateCode, { year: 'numeric', month: 'short', weekday: 'short', day: '2-digit' })}</XText>
-					</Pressable>
-					<Pressable onPress={() => setToTimeVisible(true)}>
-						<XText>{toTime.toLocaleTimeString(dateCode, { hour: "2-digit", minute: '2-digit', hour12: false })}</XText>
-					</Pressable>
-				</XFieldContainer>
-
-
-				<DateTimePickerModal
-					isVisible={fromDateVisible}
-					mode="date"
-					date={fromDate}
-					minimumDate={fromDate}
-					onConfirm={(d) => {
-						setFromDateVisible(false);
-						setFromDate(d);
-						if (d > toDate)
-							setToDate(new Date(d.getTime()));
-					}}
-					onCancel={() => setFromDateVisible(false)}
-					onHide={() => setFromDateVisible(false)}
-				/>
-				<DateTimePickerModal
-					isVisible={fromTimeVisible}
-					mode="time"
-					date={fromTime}
-					is24Hour={true}
-					onConfirm={(d) => {
-						setFromTimeVisible(false);
-						setFromTime(d);
-						setToTime(new Date(d.getTime() + (15 * 60 * 1000)))
-					}}
-					onCancel={() => setFromTimeVisible(false)}
-					onHide={() => setFromTimeVisible(false)}
-				/>
-				<DateTimePickerModal
-					isVisible={toDateVisible}
-					mode="date"
-					date={toDate}
-					minimumDate={new Date()}
-					onConfirm={(d) => {
-						setToDateVisible(false);
-						setToDate(d);
-					}}
-					onCancel={() => setToDateVisible(false)}
-					onHide={() => setToDateVisible(false)}
-				/>
-				<DateTimePickerModal
-					isVisible={toTimeVisible}
-					mode="time"
-					date={toTime}
-					is24Hour={true}
-					onConfirm={(d) => {
-						setToTimeVisible(false);
-						setToTime(d);
-					}}
-					onCancel={() => setToTimeVisible(false)}
-					onHide={() => setToTimeVisible(false)}
-				/>
-			</XSection>
-
-			<XSelector
-				selector={{
-					title: 'Services'
-				}}
-				data={services}
-				multiselect
-				closeOnSelect={false}
-				selectedId={selectedServices?.map(s => s.id)}
-				onItemSelect={setSelectedServices}
-			/>
-
-
-			<XSelectField
-				title={'Services'}
-				iconRight={() => {
-					return (
+					styleContent={{ minHeight: 45 }}
+					titleRight={(
 						<XButtonIcon
-							size={25}
+							size={28}
 							backgroundColor={cGreen}
 							icon={'plus'}
-							onPress={() => { }}
+							onPress={() => setServiceSelectVisible(true)}
 						/>
-					)
-				}}
-			/>
+					)}
+				>
+					{
+						selectedServices?.map(s => (
+							<View key={s.id} style={styles.servicesItem}>
+								<View flex={1}>
+									<XText oneLine>{s.title}</XText>
+								</View>
+								<XButtonIcon
+									color={cRed}
+									size={30}
+									icon={'close'}
+									onPress={() => {
+										setSelectedServices(old => old.filter(i => i.id != s.id))
+									}}
+								/>
+							</View>
+						))
+					}
+				</XSection>
 
 
+				<XBottomSheetSelector
+					visible={serviceSelectVisible}
+					setVisible={setServiceSelectVisible}
+					title={'Services'}
+					data={services}
+					multiselect
+					closeOnSelect={false}
+					selected={selectedServices}
+					onItemSelect={setSelectedServices}
+				/>
 
+				<XTextInput
+					title='Comment'
+					fieldStyle={{ flex: 1, textAlignVertical: 'top', paddingVertical: 10 }}
+					fieldContainerStyle={{ height: 100 }}
+					value={comment}
+					multiline
+					clearable
+					onClear={() => setComment('')}
+					onChangeText={setComment}
+				/>
 
-			<XTextInput
-				title='Comment'
-				fieldStyle={{ flex: 1, textAlignVertical: 'top', paddingVertical: 10 }}
-				fieldContainerStyle={{ height: 100 }}
-				value={comment}
-				multiline
-				clearable
-				onClear={() => setComment('')}
-				onChangeText={setComment}
-			/>
-
-			<XButton title={'Kreiraj'} primary onPress={createPeriod} />
+				<XButton
+					title={'Kreiraj'}
+					primary
+					onPress={createPeriod}
+				/>
+			</View>
 		</XScreen>
 	);
 };
@@ -223,9 +254,18 @@ const CreatePeriodScreen = ({ navigation, route }) => {
 const styleCreator = (theme) => {
 	return StyleSheet.create({
 		serviceHeader: {
+			flexDirection: 'row',
+			alignItems: 'center',
 			backgroundColor: theme.colors.backgroundElement,
 			height: 45,
 			borderRadius: Theme.values.borderRadius
+		},
+		servicesItem: {
+			backgroundColor: theme.colors.backgroundElement,
+			height: 48,
+			padding: 5,
+			flexDirection: 'row',
+			alignItems: 'center'
 		}
 	});
 };

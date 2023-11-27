@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import XFieldContainer from "./XFieldContainer";
 import XText from "./XText";
-import { AntDesign } from '@expo/vector-icons';
 import { useColor, useThemedStyle } from "../../style/ThemeContext";
 
 

@@ -42,8 +42,8 @@ public class BProviderRepository {
 		return map.values().stream().toList();
 	}
 
-	public List<ServiceDto> getServicesIdName(Integer pId){
-		return em.createQuery("SELECT new com.tap.db.dtor.ServiceDto(s.id, s.name, g.name) FROM Service s LEFT JOIN s.group g WHERE s.active = 1 AND s.provider.id = :pId", ServiceDto.class)
+	public List<ServiceDto> getServices(Integer pId){
+		return em.createQuery("SELECT new com.tap.db.dtor.ServiceDto(s.id, s.name, g.name, s.duration) FROM Service s LEFT JOIN s.group g WHERE s.active = 1 AND s.provider.id = :pId", ServiceDto.class)
 				.setParameter("pId", pId)
 				.getResultList();
 	}

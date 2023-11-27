@@ -138,33 +138,38 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 				style={{ marginTop: 10 }}
 				styleContent={{ rowGap: 5 }}
 			>
-				{data?.serEmps.map(({ ser, emps }) => (
-					<XSelector
-						title={ser.name}
-						value={selectedEmps[ser.id]?.name || t('First free')}
-						key={ser.id}
-						selector={{
-							title: t('Select employee')
-						}}
-						data={[{
-							id: -1,
-							title: t('First free'),
+				{data?.serEmps.map(({ ser, emps }) => {
+					const data = [{
+						id: -1,
+						title: t('First free'),
+						serviceId: ser.id
+					}].concat(
+						emps.map(e => ({
+							id: e.id,
+							title: e.name,
 							serviceId: ser.id
-						}].concat(
-							emps.map(e => ({
-								id: e.id,
-								title: e.name,
-								serviceId: ser.id
-							})))
-						}
-						onItemSelect={({ id, serviceId, title }) => {
-							setSelectedEmps(curr => ({
-								...curr,
-								[serviceId]: { id, name: title }
-							}));
-						}}
-					/>
-				))}
+						})));
+
+					const selected = selectedEmps[ser.id] ? data.find(d => d.id === selectedEmps[ser.id].id) : data[0];
+					return (
+						<XSelector
+							title={ser.name}
+							value={selectedEmps[ser.id]?.name || t('First free')}
+							key={ser.id}
+							selector={{
+								title: t('Select employee')
+							}}
+							data={data}
+							selected={selected}
+							onItemSelect={({ id, serviceId, title }) => {
+								setSelectedEmps(curr => ({
+									...curr,
+									[serviceId]: { id, name: title }
+								}));
+							}}
+						/>
+					)
+				})}
 			</XSection>
 		</XScreen >
 	);

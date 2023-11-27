@@ -1,6 +1,6 @@
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import { forwardRef, useCallback, useMemo } from "react";
-import { View, useWindowDimensions, StyleSheet } from "react-native";
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import XText from "./XText";
 import XBottomSheetModal from "./XBottomSheetModal";
 import XCheckBox from "./XCheckBox";
@@ -9,36 +9,60 @@ import XButton from "./XButton";
 import XButtonIcon from "./XButtonIcon";
 import { Theme } from "../../style/themes";
 import { useThemedStyle } from "../../style/ThemeContext";
+import { useTranslation } from "../../i18n/I18nContext";
+import { emptyFn } from "../../common/utils";
 
 const titleHeight = 40;
 const rowHeight = 40
 const rowVerticalMargin = 5;
 
-
 const XBottomSheetSelector = forwardRef(({
 	data = [],
 	onItemSelect,
 	multiselect = false,
-	selectedId = [],
+	selected = [],
+	initSelectedIdx,
 	closeOnSelect = true,
-	onMultiConfirm,
-	onMultiReject,
-	onMultiClear,
+	visible = false,
+	setVisible = emptyFn,
 	...rest
-}, sheetRef) => {
+}, outRef) => {
 
 	const styles = useThemedStyle(styleCreator);
+	const [selectedIntern, setSelectedIntern] = useState(selected && !Array.isArray(selected) ? [selected] : selected || []);
+	const t = useTranslation();
+	const sheetRef = useRef(outRef);
+
+	useEffect(() => {
+		if (visible) {
+			setSelectedIntern(selected)
+			sheetRef?.current?.present();
+		}
+		else
+			sheetRef?.current?.close();
+	}, [visible, selected]);
 
 	const renderItem = useCallback(({ item }) => {
 		return (
 			<XFieldContainer
 				title={item.title}
 				style={{ height: rowHeight, marginVertical: rowVerticalMargin }}
-				iconLeft={() => <XCheckBox round checked={multiselect && Array.isArray(selectedId) ? !!selectedId.find(i => i === item.id) : item.id === selectedId} />}
+				iconLeft={() => <XCheckBox round checked={!!selectedIntern?.find(i => i.id === item.id)} />}
 				onPress={() => {
-					onItemSelect(item);
-					if (closeOnSelect)
-						sheetRef?.current?.close();
+					if (multiselect) {
+						const newItems = selectedIntern ? [...selectedIntern] : [];
+						const existIdx = newItems.findIndex(i => i.id === item.id);
+						if (existIdx > -1)
+							newItems.splice(existIdx, 1);
+						else
+							newItems.push(item);
+						setSelectedIntern(newItems);
+					}
+					else {
+						if (closeOnSelect)
+							setVisible(false);
+						onItemSelect(item);
+					}
 				}}
 			>
 				<View style={{ flex: 1, justifyContent: 'center' }}>
@@ -46,7 +70,7 @@ const XBottomSheetSelector = forwardRef(({
 				</View>
 			</XFieldContainer>
 		)
-	}, [onItemSelect, selectedId]);
+	}, [onItemSelect, selectedIntern, multiselect]);
 
 	const keyExtractor = useCallback(i => i.id);
 
@@ -55,9 +79,25 @@ const XBottomSheetSelector = forwardRef(({
 		return [h]
 	}, [data?.length]);
 
+	const onMultiConfirm = useCallback(() => {
+		onItemSelect([...selectedIntern]);
+		setSelectedIntern([]);
+		setVisible(false)
+	}, [onItemSelect, selectedIntern, setSelectedIntern, setVisible]);
+
+	const onMultiClear = useCallback(() => {
+		setSelectedIntern([]);
+	}, [setSelectedIntern]);
+
+	const onDismiss = useCallback(() => {
+		setVisible(false);
+		setSelectedIntern(selected && !Array.isArray(selected) ? [selected] : selected || []);
+	}, [setVisible, setSelectedIntern, selected]);
+
 	return (
 		<XBottomSheetModal
 			{...rest}
+			onDismiss={onDismiss}
 			snapPoints={snapPoints}
 			ref={sheetRef}
 			titleHeight={titleHeight}
@@ -71,8 +111,8 @@ const XBottomSheetSelector = forwardRef(({
 			{multiselect &&
 				<View style={styles.buttons}>
 					<XButtonIcon icon='close' onPress={onMultiClear} />
-					<XButton flex title={'Odustani'} onPress={onMultiReject} />
-					<XButton flex title={'Potvrdi'} primary onPress={onMultiConfirm} />
+					<XButton flex title={t('Cancel')} onPress={onDismiss} />
+					<XButton flex title={t('OK')} primary onPress={onMultiConfirm} />
 				</View>
 			}
 		</XBottomSheetModal>
@@ -82,7 +122,7 @@ const XBottomSheetSelector = forwardRef(({
 const styleCreator = (theme) => StyleSheet.create({
 	buttons: {
 		flexDirection: 'row',
-		padding: 10,
+		padding: 8,
 		columnGap: 5,
 		borderTopColor: theme.colors.borderColor,
 		borderTopWidth: Theme.values.borderWidth

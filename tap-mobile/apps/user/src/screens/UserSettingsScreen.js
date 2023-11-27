@@ -32,13 +32,13 @@ const UserSettingsScreen = ({ navigation }) => {
 		{ id: 'Dark', title: t('Dark') },
 		{ id: 'System', title: t('Use device theme') }
 	], [lng]);
-	const selectedThemeIdx = THEMES.findIndex(t => t.id === themeName) || 0;
+	const selectedTheme = THEMES.find(t => t.id === themeName);
 
 	const LANGS = useMemo(() => [
 		{ id: 'en_US', title: t('English') },
 		{ id: 'sr_SP', title: t('Serbian') }
 	], [lng]);
-	const selectedLangIdx = LANGS.findIndex(l => l.id === lng.id) || 0;
+	const selectedLang = LANGS.find(l => l.id === lng.id) || 0;
 
 	const doLogout = () => {
 		Http.setToken('');
@@ -109,7 +109,7 @@ const UserSettingsScreen = ({ navigation }) => {
 						iconLeft='bulb1'
 						value={t(themeName)}
 						data={THEMES}
-						initSelectedIdx={selectedThemeIdx}
+						selected={selectedTheme}
 						onItemSelect={(item) => setThemeId(item.id)}
 						selector={{
 							title: t('Appearance')
@@ -119,7 +119,7 @@ const UserSettingsScreen = ({ navigation }) => {
 						title={t('Language')}
 						iconLeft='earth'
 						value={t(lng.name)}
-						initSelectedIdx={selectedLangIdx}
+						selected={selectedLang}
 						data={LANGS}
 						onItemSelect={(item) => setLanguage(item.id)}
 						selector={{

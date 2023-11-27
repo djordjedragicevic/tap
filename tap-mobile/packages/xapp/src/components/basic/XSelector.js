@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import XBottomSheetSelector from "./XBottomSheetSelector";
 import { emptyFn } from "../../common/utils";
 import XSelectField from "./XSelectField";
@@ -7,8 +7,8 @@ import XSelectField from "./XSelectField";
 const XSelector = ({
 	data,
 	onItemSelect = emptyFn,
-	initSelectedIdx = 0,
-	selectedId = [],
+	initSelectedIdx,
+	selected,
 	multiselect = false,
 	closeOnSelect = true,
 	selector = {
@@ -17,47 +17,11 @@ const XSelector = ({
 	...rest
 }) => {
 
-	const selectorRef = useRef(null);
-	const [intSelectedId, setIntSelectedId] = useState(selectedId);
-
-	useEffect(() => {
-		setIntSelectedId(selectedId)
-	}, [selectedId]);
-
-	const onItemSelectInt = useCallback((item) => {
-		if (multiselect) {
-			const newSel = [...intSelectedId];
-			const existIdx = newSel.findIndex(s => s === item.id);
-			if (existIdx > -1)
-				newSel.splice(existIdx, 1);
-			else
-				newSel.push(item.id);
-
-			setIntSelectedId(newSel);
-		}
-		else {
-			onItemSelect(item.id);
-			setIntSelectedId(item.id);
-		}
-	}, [onItemSelect, multiselect, setIntSelectedId, intSelectedId]);
-
-	const onMultiConfirm = useCallback(() => {
-		onItemSelect(intSelectedId);
-		selectorRef?.current.close();
-	}, [intSelectedId, onItemSelect]);
-
-	const onMultiReject = useCallback(() => {
-		setIntSelectedId(selectedId);
-		selectorRef?.current.close();
-	}, [selectedId]);
-
-	const onMultiClear = useCallback(() => {
-		setIntSelectedId([]);
-	}, [setIntSelectedId]);
+	const [visible, setVisible] = useState(false);
 
 	const onPress = useCallback(() => {
-		selectorRef?.current.present();
-	}, [selectorRef]);
+		setVisible(true);
+	}, [setVisible]);
 
 
 	return (
@@ -68,16 +32,15 @@ const XSelector = ({
 			/>
 			{data &&
 				<XBottomSheetSelector
-					ref={selectorRef}
+					visible={visible}
+					setVisible={setVisible}
+					initSelectedIdx
 					title={selector.title}
 					data={data}
 					multiselect={multiselect}
 					closeOnSelect={closeOnSelect}
-					selectedId={intSelectedId}
-					onItemSelect={onItemSelectInt}
-					onMultiConfirm={onMultiConfirm}
-					onMultiReject={onMultiReject}
-					onMultiClear={onMultiClear}
+					selected={selected}
+					onItemSelect={onItemSelect}
 				/>
 			}
 		</>

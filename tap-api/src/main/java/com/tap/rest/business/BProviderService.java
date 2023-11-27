@@ -22,9 +22,9 @@ public class BProviderService {
 	@GET
 	@Public
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getServicesIdName (
+	public Response getServices (
 			@NotNull @PathParam("pId") Integer pId
 	){
-		return Response.ok(bProviderRepository.getServicesIdName(pId)).build();
+		return Response.ok(bProviderRepository.getServices(pId)).build();
 	}
 }
