@@ -5,7 +5,8 @@ Appointment {
   id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
   start : timestamp { @DbName(start) @DbType(DATETIME) @NotNull @NotEmpty };
   end : timestamp { @DbName(end) @DbType(DATETIME) @NotNull @NotEmpty };
-  userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_user1, User.id) };
+  userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @FK(fk_appointment_user1, User.id) };
+  userName : string { @DbName(user_name) @DbType("VARCHAR(32)") @Size(32) @MaxLen(32) };
   serviceId : int { @DbName(service_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_service1, Service.id) };
   employeeId : int { @DbName(employee_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_employee1, Employee.id) };
   createDate : timestamp { @DbName(create_date) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };

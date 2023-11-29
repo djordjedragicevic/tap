@@ -26,7 +26,7 @@ public class BusyPeriod implements Serializable {
     @Column(name="end", nullable=false)
 	private LocalDateTime end;
 
-    @Column(name="comment", length=128)
+    @Column(name="comment", length=65535)
 	private String comment;
 
     @Column(name="create_date", nullable=false)

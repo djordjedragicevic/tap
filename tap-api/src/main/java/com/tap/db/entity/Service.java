@@ -1,5 +1,5 @@
 /**
- * Generated JPA entity class for "ServiceDto"
+ * Generated JPA entity class for "Service"
  */
 
 package com.tap.db.entity;

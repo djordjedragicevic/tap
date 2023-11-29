@@ -30,6 +30,10 @@ export const errors = {
 	},
 	B_APP_ST_2: {
 		title: 'Appointment status error',
-		message: 'Can not accept apointment when current status is {:status} '
+		message: 'Can not accept apointment when current status is {:status}'
+	},
+	B_APP_1: {
+		title: 'Create appointment error',
+		message: 'Error occurred while trying to create appointment'
 	}
 }

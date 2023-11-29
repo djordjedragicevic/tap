@@ -1,120 +1,121 @@
-import React, { memo, useCallback, useContext, useMemo } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
-import { useTranslation } from "xapp/src/i18n/I18nContext";
+import { useColor, useTheme, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 import XText from "xapp/src/components/basic/XText";
 import XIcon from "xapp/src/components/basic/XIcon";
-import { STATUS } from "../../common/general";
+import { PERIOD, STATUS, isWaitingAppointment } from "../../common/general";
+import I18n from "xapp/src/i18n/I18n";
+import { FontAwesome5 } from '@expo/vector-icons';
 
-const PERIOD_TYPE = {
-	CLOSE_EMPLOYEE_BREAK: "CLOSE_EMPLOYEE_BREAK",
-	CLOSE_PROVIDER_BREAK: "CLOSE_PROVIDER_BREAK",
-	CLOSE_APPOINTMENT: "CLOSE_APPOINTMENT"
+const getPeriodColor = (item) => {
+
+	switch (item.name) {
+		case PERIOD.CLOSE_APPOINTMENT:
+		case PERIOD.CLOSE_APPOINTMENT_BY_PROVIDER:
+			if (item.data.status === STATUS.WAITING)
+				return Theme.vars.red;
+			else if (!item.data.userId)
+				return Theme.vars.blue;
+			else
+				return Theme.vars.green;
+
+		case PERIOD.CLOSE_EMPLOYEE_BREAK:
+		case PERIOD.CLOSE_PROVIDER_BREAK:
+			return Theme.vars.gray;
+		default:
+			return Theme.vars.gray;
+	}
+};
+
+const getPeriodStyle = (item, theme) => {
+
+	switch (item.name) {
+		case PERIOD.CLOSE_APPOINTMENT:
+		case PERIOD.CLOSE_APPOINTMENT_BY_PROVIDER:
+			if (item.data.status === STATUS.WAITING)
+				return Theme.vars.red;
+			else if (!item.data.userId)
+				return Theme.vars.blue;
+			else
+				return Theme.vars.green;
+
+		case PERIOD.CLOSE_EMPLOYEE_BREAK:
+		case PERIOD.CLOSE_PROVIDER_BREAK:
+			return Theme.vars.gray;
+		default:
+			return Theme.vars.gray;
+	}
+};
+
+const getPeriodText = (item) => {
+	let text = item.start + '-' + item.end;
+
+	switch (item.name) {
+		case PERIOD.CLOSE_APPOINTMENT:
+		case PERIOD.CLOSE_APPOINTMENT_BY_PROVIDER:
+			text += ' ' + item.data.sName + ' ' + (item.data.uUsername || '')
+			break;
+		case PERIOD.CLOSE_EMPLOYEE_BREAK:
+		case PERIOD.CLOSE_PROVIDER_BREAK:
+			text += ' ' + I18n.translate('Break');
+			break;
+		default:
+			text += ' ' + (item.data.comment ? item.data.comment : I18n.translate('Reserved time'));
+			break;
+	}
+
+	return text;
 };
 
 
-const Time = memo(({ start, end }) => {
-	return (
-		<View>
-			<XText light bold size={12}>{start + '-' + end}</XText>
-		</View>
-	)
-});
+const TimePeriod = ({ item, height, top, onPress }) => {
 
-const TimePeriod = ({ item, height, top, style, onPress }) => {
-	const styles = useThemedStyle(createStyle, height, top);
-	const t = useTranslation();
-
-	const colorRed = useColor('red');
+	const styles = useThemedStyle(createStyle, height, top, getPeriodColor(item));
+	const cRed = useColor('red');
 
 	const onPressHandler = useCallback(() => {
 		onPress(item)
 	}, [onPress, item]);
 
-	const TPeriod = useMemo(() => {
-		if (item.name === PERIOD_TYPE.CLOSE_APPOINTMENT) {
-			return (
-				<View style={[styles.appointment, item.data.status === STATUS.WAITING && styles.appointmentWaiting]}>
-
-					<XText light bold size={12}>{item.start}</XText>
-
-					<View style={styles.itemConteainerCenter}>
-						<XText light bold oneLine size={12}>
-							{item.data.sName}, {item.data.uUsername}
-						</XText>
-					</View>
-					{item.data.status === STATUS.WAITING &&
-						<XIcon icon='warning' size={14} color={colorRed} />
-					}
-				</View>
-			)
-		}
-		else {
-			return (
-				<View style={[styles.break]}>
-					<XText>
-						<XText light bold size={12}>{item.start} </XText>
-						<XText light bold size={12}>{item.data.periodType}</XText>
-
-					</XText>
-				</View>
-			)
-		}
-	}, [item, styles, t, height]);
-
+	const getExclamationIcon = useCallback(() => <FontAwesome5 name="exclamation" size={15} color={cRed} />, [cRed]);
 
 	return (
-		<TouchableOpacity style={[styles.itemContainer, style]} onPress={onPressHandler}>
-			{TPeriod}
+		<TouchableOpacity style={styles.itemContainer} onPress={onPressHandler}>
+			{(isWaitingAppointment(item) && height >= 15) &&
+				<View style={{ alignItems: 'center', justifyContent: 'center', marginEnd: 3 }}>
+					<XIcon icon={getExclamationIcon} />
+				</View>
+			}
+			<View flex={1} style={styles.item}>
+				<XText light adjustsFontSizeToFit>{getPeriodText(item)}</XText>
+			</View>
 		</TouchableOpacity>
 	);
 };
 
 const createStyle = (theme, height, top, colorName) => {
-	const periodCommon = {
-		opacity: 0.8,
-		flex: 1,
-		paddingHorizontal: 3,
-		flexDirection: 'row',
-		//alignItems: 'center',
-		borderWidth: Theme.values.borderWidth,
-		borderRadius: Theme.values.borderRadius,
-		borderColor: theme.colors.borderColor,
-	};
-
 	return StyleSheet.create({
 		itemContainer: {
 			position: 'absolute',
-			height,
+			height: height,
+			overflow: 'hidden',
+			flexDirection: 'row',
 			top,
-			flex: 1,
 			start: 0,
 			end: 0,
-			borderRadius: Theme.values.borderRadius,
-			overflow: 'hidden'
 		},
-		itemConteainerCenter: {
+		item: {
+			flexDirection: 'row',
 			flex: 1,
-			//flexDirection: 'row',
-			//alignItems: 'center',
-			paddingHorizontal: 10
-		},
-
-		appointmentWIconColor: theme.colors[Theme.vars.red],
-		appointment: {
-			...periodCommon,
-			backgroundColor: Theme.opacity(theme.colors.green, 0.6)
-		},
-		appointmentWaiting: {
-			backgroundColor: Theme.opacity(theme.colors.red, 0.4),
-			borderColor: theme.colors.red
-		},
-
-		break: {
-			...periodCommon,
-			backgroundColor: Theme.opacity(theme.colors[Theme.vars.gray], 0.6)
+			borderWidth: Theme.values.borderWidth,
+			borderRadius: Theme.values.borderRadius,
+			borderColor: theme.colors.borderColor,
+			paddingHorizontal: 3,
+			overflow: 'hidden',
+			backgroundColor: Theme.opacity(theme.colors[colorName], 0.7)
 		}
+
 	});
 }
 

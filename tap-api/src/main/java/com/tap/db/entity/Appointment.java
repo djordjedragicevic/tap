@@ -26,6 +26,9 @@ public class Appointment implements Serializable {
     @Column(name="end", nullable=false)
 	private LocalDateTime end;
 
+    @Column(name="user_name", length=32)
+	private String userName;
+
     @Column(name="create_date", nullable=false)
 	private LocalDateTime createDate;
 
@@ -85,6 +88,14 @@ public class Appointment implements Serializable {
 
 	public LocalDateTime getEnd() {
 		return this.end;
+	}
+
+	public void setUserName( String userName ) {
+		this.userName = userName ;
+	}
+
+	public String getUserName() {
+		return this.userName;
 	}
 
 	public void setCreateDate( LocalDateTime createDate ) {

@@ -24,8 +24,8 @@ public class CAppointmentRepository {
 	private EntityManager em;
 
 	private static final String APP_PRE_QUERY = """
-			   SELECT new com.tap.db.dtor.AppointmentDtoSimple(
-			a.id, a.start, a.end,
+			SELECT new com.tap.db.dtor.AppointmentDtoSimple(
+			a.id, a.start, a.end, a.userName,
 			u.id, u.username, u.email,
 			s.id, s.name, s.price, s.duration,
 			e.id, e.name, e.imagePath,
@@ -36,7 +36,7 @@ public class CAppointmentRepository {
 			FROM Appointment a
 			JOIN a.appointmentstatus status
 			JOIN a.employee e
-			JOIN a.user u
+			LEFT JOIN a.user u
 			JOIN a.service s
 			LEFT JOIN s.group g
 			LEFT JOIN s.category c

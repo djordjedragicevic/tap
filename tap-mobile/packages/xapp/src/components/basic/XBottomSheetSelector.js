@@ -15,6 +15,7 @@ import { emptyFn } from "../../common/utils";
 const titleHeight = 40;
 const rowHeight = 40
 const rowVerticalMargin = 5;
+const multiButtonsHeight = 50;
 
 const XBottomSheetSelector = forwardRef(({
 	data = [],
@@ -76,8 +77,8 @@ const XBottomSheetSelector = forwardRef(({
 
 	const snapPoints = useMemo(() => {
 		const h = (data.length * rowHeight) + titleHeight + ((data.length * 2) * rowVerticalMargin) + 50;
-		return [h]
-	}, [data?.length]);
+		return [h + (multiselect ? multiButtonsHeight : 0)]
+	}, [data?.length, multiselect]);
 
 	const onMultiConfirm = useCallback(() => {
 		onItemSelect([...selectedIntern]);
@@ -122,7 +123,9 @@ const XBottomSheetSelector = forwardRef(({
 const styleCreator = (theme) => StyleSheet.create({
 	buttons: {
 		flexDirection: 'row',
-		padding: 8,
+		height: multiButtonsHeight,
+		alignItems: 'center',
+		paddingHorizontal: 5,
 		columnGap: 5,
 		borderTopColor: theme.colors.borderColor,
 		borderTopWidth: Theme.values.borderWidth

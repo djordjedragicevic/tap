@@ -1,15 +1,17 @@
 export const strings = {
-	"Appointments": "Rezervacije",
+	"Appointments": "Termini",
 	"Settings": "Podešavanja",
 	"Cancel": "Otkaži",
 	"OK": "OK",
 	"Break": "Pauza",
+	"Reserved time": "Rezervisano vrijeme",
 	"Service": "Usluga",
 	"Duration": "Trajanje",
 	"Price": "Cijena",
 	"Employee": "Radnik",
 	"User": "Korisnik",
 	"min": "min",
+	"h": "h",
 	"Accept": "Prihvati",
 	"Reject": "Odbaci",
 	"Today": "Danas",
@@ -22,7 +24,12 @@ export const strings = {
 	"To": "Do",
 	"Appointment confirmation": "Potvrda rezervacije",
 	"Appointment": "Termin",
+	"Appointment - manually entered": "Termin - ručno unešen",
 	"Add time period": "Dodajte period",
+	"Create appointment": "Kreiraj termin",
 	"Yes": "Da",
-	"No": "Ne"
+	"No": "Ne",
+	"Period": "Period",
+	"Create time period": "Create time period",
+	"Are you surre you want to create new time period?": "Are you surre you want to create new time period?"
 };

@@ -1,8 +1,9 @@
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { emptyFn } from "xapp/src/common/utils";
 import { Theme } from "xapp/src/style/themes";
 import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
-import { AntDesign } from '@expo/vector-icons';
+import XText from "./XText";
+import XIcon from "./XIcon";
 
 const ButtonIcon = ({
 	icon,
@@ -13,6 +14,7 @@ const ButtonIcon = ({
 	size = 36,
 	disabled = false,
 	standard = false,
+	title,
 	onPress = emptyFn,
 	...rest
 }) => {
@@ -20,7 +22,7 @@ const ButtonIcon = ({
 	const tPColor = useColor('textPrimary');
 	const pLCorlor = useColor('primaryLight');
 	const iconColor = ((primary || backgroundColor) && pLCorlor) || color || tPColor;
-	const styles = useThemedStyle(styleCreator, size, backgroundColor, primary, disabled);
+	const styles = useThemedStyle(styleCreator, title ? size + 5 : size, backgroundColor, primary, disabled);
 	const iconSize = Math.round(size * 0.6);
 
 	return (
@@ -29,15 +31,17 @@ const ButtonIcon = ({
 			style={[styles.btn, style]}
 			onPress={onPress}
 			{...rest}
+			onBlur={() => console.log("BLURRRR")}
 		>
-			{
-				typeof icon === 'string' ? <AntDesign name={icon} color={iconColor} size={iconSize} /> : icon({ color: iconColor, size: iconSize })
-			}
+			<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+				{!!icon && <XIcon icon={icon} color={iconColor} size={iconSize} />}
+				{!!title && <XText size={10} color={iconColor}>{title}</XText>}
+			</View>
 		</Pressable>
 	)
 };
 
-const styleCreator = (theme, size, backgroundColor, primary, disabled) => {
+const styleCreator = (theme, size, backgroundColor, primary, disabled, iconColor) => {
 	let bgColor = theme.colors.backgroundElement;
 	if (backgroundColor)
 		bgColor = backgroundColor;

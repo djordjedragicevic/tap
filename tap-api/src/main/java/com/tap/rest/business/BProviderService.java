@@ -18,13 +18,14 @@ public class BProviderService {
 	@Inject
 	BProviderRepository bProviderRepository;
 
-	@Path("services")
+	@Path("services/{eId}")
 	@GET
 	@Public
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getServices (
-			@NotNull @PathParam("pId") Integer pId
+			@NotNull @PathParam("pId") Integer pId,
+			@NotNull @PathParam("eId") Integer eId
 	){
-		return Response.ok(bProviderRepository.getServices(pId)).build();
+		return Response.ok(bProviderRepository.getServicesOfEmployee(pId, eId)).build();
 	}
 }

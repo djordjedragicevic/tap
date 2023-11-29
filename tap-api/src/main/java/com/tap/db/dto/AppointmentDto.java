@@ -7,6 +7,7 @@ public class AppointmentDto {
 	private Long id;
 	private LocalDateTime start;
 	private LocalDateTime end;
+	private String userName;
 	private LocalDateTime createDate;
 	private String joinId;
 	private LocalDateTime statusResponseDate;
@@ -43,6 +44,15 @@ public class AppointmentDto {
 
 	public LocalDateTime getEnd() {
 		return this.end;
+	}
+
+	public AppointmentDto setUserName( String userName ) {
+		this.userName = userName;
+		return this;
+	}
+
+	public String getUserName() {
+		return this.userName;
 	}
 
 	public AppointmentDto setCreateDate( LocalDateTime createDate ) {

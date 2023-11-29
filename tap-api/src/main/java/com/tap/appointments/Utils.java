@@ -1,6 +1,7 @@
 package com.tap.appointments;
 
 import com.tap.common.TimePeriod;
+import com.tap.common.Util;
 import com.tap.db.entity.BusyPeriod;
 
 import java.time.*;
@@ -79,6 +80,10 @@ public class Utils {
 		LocalTime from = start.isBefore(atDate.atTime(LocalTime.MIN)) ? LocalTime.MIN : start.toLocalTime();
 		LocalTime to = end.isAfter(atDate.atTime(LocalTime.MAX)) ? LocalTime.MAX : end.toLocalTime();
 		return new TimePeriod(from, to);
+	}
+
+	public static String generateJoinId(LocalDateTime dT, Integer pId, List<Integer> sIds) {
+		return dT.atZone(Util.zone()).toEpochSecond() + "S" + sIds.stream().map(String::valueOf).collect(Collectors.joining("_")) + "P" + pId;
 	}
 
 	private static LocalDateTime convertToRealDT(LocalDate atDate, String repeatType, LocalDateTime repeatDateTime) {

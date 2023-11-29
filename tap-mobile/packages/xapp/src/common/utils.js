@@ -1,3 +1,4 @@
+import I18n from "../i18n/I18n";
 import { Http } from "./Http";
 
 export const emptyFn = function () { };
@@ -41,7 +42,7 @@ export const DateUtils = {
 	},
 	timesDiff: (from, to) => {
 		const diff = DateUtils.getMinutesOfDay(to) - DateUtils.getMinutesOfDay(from);
-		return Math.floor(diff / 60) + ':' + (diff % 60).toLocaleString(undefined, { minimumIntegerDigits: 2 });
+		return DateUtils.minToHMin(diff);
 	},
 	getMinutesOfDay: (timeString) => {
 		const t = timeString.split(":");
@@ -116,6 +117,14 @@ export const DateUtils = {
 		const m2 = parseInt(t2[1]);
 
 		return h1 < h2 || (h1 === h2 && m1 < m2)
+	},
+	formatToHourMin(time) {
+		const splited = time.split(':');
+		console.log(splited)
+		return (parseInt(splited[0]) > 0 ? (splited[0] + I18n.translate('h') + ':') : '') + splited[1] + I18n.translate('min');
+	},
+	minToHMin(minutes) {
+		return Math.floor(minutes / 60) + ':' + (minutes % 60).toLocaleString(undefined, { minimumIntegerDigits: 2 });
 	},
 	WEEK_DAY: ["Monday", "Tuesday", "Wednsday", "Thursday", "Friday", "Saturday", "Sunday"],
 };

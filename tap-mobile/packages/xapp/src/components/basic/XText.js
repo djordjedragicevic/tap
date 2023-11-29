@@ -52,7 +52,13 @@ const XText = ({
 	}, [primary, secondary, light, colorPrimary]);
 
 	const appFont = useStore(state => state.app.font);
-	const styles = useThemedStyle(createStyle, textColor, appFont, { weight: bold ? 600 : weight, italic, size });
+	const styles = useThemedStyle(createStyle, appFont, {
+		weight: bold ? 600 : weight,
+		italic,
+		size,
+		color,
+		colorName: textColor
+	});
 	const pColor = usePrimaryColor();
 
 	if (!icon)
@@ -85,9 +91,9 @@ XText.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme, textColor, appFont, { weight, italic, size }) => {
+const createStyle = (theme, appFont, { weight, italic, size, color, colorName }) => {
 	const style = {
-		color: theme.colors[textColor]
+		color: color || theme.colors[colorName]
 	};
 
 	if (appFont) {

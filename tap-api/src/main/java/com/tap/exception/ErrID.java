@@ -25,4 +25,7 @@ public enum ErrID {
 	//Accept appointment
 	B_APP_ST_1,
 	B_APP_ST_2,
+	//Create custom appoint
+	B_APP_1
+
 }

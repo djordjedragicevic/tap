@@ -3,6 +3,7 @@ package com.tap.rest.business;
 import com.tap.db.dtor.EmployeeDto;
 import com.tap.db.dtor.ServiceDto;
 import com.tap.db.dtor.ServiceWithEmployeesDto;
+import com.tap.db.entity.Service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -42,9 +43,31 @@ public class BProviderRepository {
 		return map.values().stream().toList();
 	}
 
-	public List<ServiceDto> getServices(Integer pId){
-		return em.createQuery("SELECT new com.tap.db.dtor.ServiceDto(s.id, s.name, g.name, s.duration) FROM Service s LEFT JOIN s.group g WHERE s.active = 1 AND s.provider.id = :pId", ServiceDto.class)
+	public List<ServiceDto> getServicesOfEmployee(Integer pId, Integer eId) {
+
+		String query = """
+				SELECT new com.tap.db.dtor.ServiceDto(s.id, s.name, g.name, s.duration, s.price) FROM Service s
+				INNER JOIN ServiceEmployee se ON se.service.id = s.id
+				LEFT JOIN s.group g
+				WHERE s.active = 1 AND s.provider.id = :pId AND se.employee.id = :eId
+				ORDER BY s.name
+				""";
+
+		return em.createQuery(query, ServiceDto.class)
 				.setParameter("pId", pId)
+				.setParameter("eId", eId)
+				.getResultList();
+	}
+
+	public List<Service> getServicesByIds(Integer pId, List<Integer> sIds) {
+		String query = """
+				SELECT s FROM Service s
+				WHERE s.active = 1 AND s.provider.id = :pId AND s.id IN :sIds
+				""";
+
+		return em.createQuery(query, Service.class)
+				.setParameter("pId", pId)
+				.setParameter("sIds", sIds)
 				.getResultList();
 	}
 }

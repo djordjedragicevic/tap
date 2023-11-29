@@ -15,8 +15,10 @@ import XButtonIcon from 'xapp/src/components/basic/XButtonIcon';
 import XToolbar from 'xapp/src/components/XToolbar';
 import XTextLabels from 'xapp/src/components/XTextLabels';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
-import { PERIOD } from '../common/general';
-import { CREATE_PERIOD_SCREEN } from '../navigators/routes';
+import { PERIOD, PERIOD_NAME, getFrendlyName, isWaitingAppointment } from '../common/general';
+import { CREATE_APPOINTMENT_SCREEN, CREATE_PERIOD_SCREEN } from '../navigators/routes';
+import I18n from 'xapp/src/i18n/I18n';
+import XButtonExtend from 'xapp/src/components/basic/XButtonExtend';
 
 
 const HOUR_HEIGHT = 60;
@@ -93,15 +95,52 @@ const getArrangedTimeline = (emp) => {
 	}
 };
 
+const getModalData = (employee, item) => {
+
+	const data = {
+		title: I18n.translate(getFrendlyName(item)),
+		labels: []
+	};
+
+	if (item.name === PERIOD.CLOSE_APPOINTMENT) {
+		data.labels = [
+			{ label: I18n.translate('Service'), value: item.data.sName },
+			{ label: I18n.translate('Employee'), value: employee.name },
+			{ label: I18n.translate('From'), value: item.start },
+			{ label: I18n.translate('To'), value: item.end },
+			{ label: I18n.translate('Duration'), value: DateUtils.formatToHourMin(DateUtils.minToHMin(item.data.sDuration)) },
+			{ label: I18n.translate('Price'), value: CurrencyUtils.convert(item.data.sPrice) },
+			{ label: I18n.translate('User'), value: item.data.uUsername || item.data.userName || '-' }
+		];
+	}
+	else {
+		data.labels = [
+			{ label: I18n.translate('Employee'), value: employee.name },
+			{ label: I18n.translate('From'), value: item.start },
+			{ label: I18n.translate('To'), value: item.end },
+			{ label: I18n.translate('Duration'), value: DateUtils.formatToHourMin(DateUtils.timesDiff(item.start, item.end)) }
+		];
+
+	}
+
+	if (item.comment) {
+		data.labels.push({ label: I18n.translate('Comment'), value: item.comment });
+	}
+
+	return data;
+}
+
 const AppointmentsScreen = ({ navigation, route }) => {
 
 	const sizeCoef = useState(2)[0];
-	const pId = 2;
+	const pId = useStore(gS => gS.provider.id);
 	const [data, setData] = useState();
 	const [loading, setLoading] = useState(false);
 	const [loadCount, setLoadCount] = useState(1);
 	const [date, setDate] = useState(new Date());
-	const [selectedEmployee, setSelectedEmployee] = useState({ index: 0 });
+
+	const [selectedEmpIdx, setSelectedEmpIdx] = useState(0);
+
 	const [selectedPeriod, setSelectedPeriod] = useState();
 	const redColor = useColor('red');
 	const t = useTranslation();
@@ -115,41 +154,13 @@ const AppointmentsScreen = ({ navigation, route }) => {
 			setLoadCount(old => old + 1);
 	}, [route])
 
-	const [modalLabels, modalTitle] = useMemo(() => {
-
-		if (selectedPeriod) {
-			if (selectedPeriod.name === PERIOD.CLOSE_APPOINTMENT) {
-				return [
-					[
-						{ label: t('Service'), value: selectedPeriod.data.sName },
-						{ label: t('Employee'), value: selectedEmployee.employee.name },
-						{ label: t('From'), value: selectedPeriod.start },
-						{ label: t('To'), value: selectedPeriod.end },
-						{ label: t('Duration'), value: selectedPeriod.data.sDuration + ' ' + t('min') },
-						{ label: t('Price'), value: CurrencyUtils.convert(selectedPeriod.data.sPrice) },
-						{ label: t('User'), value: selectedPeriod.data.uUsername }
-					],
-					t('Appointment')
-				];
-			}
-			else {
-				const lbls = [
-					{ label: t('Employee'), value: selectedEmployee.employee.name },
-					{ label: t('From'), value: selectedPeriod.start },
-					{ label: t('To'), value: selectedPeriod.end },
-					{ label: t('Duration'), value: DateUtils.timesDiff(selectedPeriod.start, selectedPeriod.end) + ' ' + t('min') }
-				];
-				if (selectedPeriod.comment)
-					lbls.push({ label: t('Note'), value: selectedPeriod.comment });
-
-				return [lbls, t('Break')];
-			}
+	const modalData = useMemo(() => {
+		if (selectedPeriod && data) {
+			return getModalData(data.employees[selectedEmpIdx], selectedPeriod)
 		}
-		else {
-			return [[], ''];
-		}
-
-	}, [selectedPeriod, selectedEmployee, t]);
+		else
+			return {}
+	}, [selectedPeriod, data, selectedEmpIdx]);
 
 	useEffect(() => {
 		setLoading(true);
@@ -157,18 +168,8 @@ const AppointmentsScreen = ({ navigation, route }) => {
 		Http.get(`/appointments/${pId}`, { ...DateUtils.convertToParam(date) })
 			.then(reps => {
 				empsTimeline = {};
-
 				if (finish) {
 					setData(reps);
-					if (!selectedEmployee)
-						setSelectedEmployee({
-							index: 0,
-							employee: {
-								id: reps.employees[0].employeeId,
-								name: reps.employees[0].name,
-								imagePath: reps.employees[0].imagePath
-							}
-						});
 				}
 			})
 			.catch(emptyFn)
@@ -207,15 +208,8 @@ const AppointmentsScreen = ({ navigation, route }) => {
 	}, [modalRef]);
 
 	const onToolbarChange = useCallback((idx) => {
-		setSelectedEmployee({
-			index: idx,
-			employee: {
-				id: data.employees[idx].employeeId,
-				name: data.employees[idx].name,
-				imagePath: data.employees[idx].imagePath
-			}
-		});
-	}, [data]);
+		setSelectedEmpIdx(idx);
+	}, [setSelectedEmpIdx]);
 
 	return (
 		<>
@@ -225,7 +219,7 @@ const AppointmentsScreen = ({ navigation, route }) => {
 					<XToolbar
 						barHeight={45}
 						minItemWidth={120}
-						initialSelectedIdx={selectedEmployee.index}
+						initialSelectedIdx={selectedEmpIdx}
 						onChange={onToolbarChange}
 						items={data?.employees}
 						icon={renderAvatar}
@@ -243,30 +237,34 @@ const AppointmentsScreen = ({ navigation, route }) => {
 					startHour={9}
 					endHour={22}
 					rowHeight={HOUR_HEIGHT}
-					items={data?.employees[selectedEmployee.index].timeline}
-					arrangedItems={getArrangedTimeline(data?.employees[selectedEmployee.index])}
+					items={data?.employees[selectedEmpIdx].timeline}
+					arrangedItems={getArrangedTimeline(data?.employees[selectedEmpIdx])}
 					onItemPress={onItemPress}
 				/>
-				<XButtonIcon
+
+				<XButtonExtend
 					icon='plus'
 					primary
 					size={44}
 					style={styles.btnPlus}
-					onPress={() => navigation.navigate(CREATE_PERIOD_SCREEN, { pId })}
+					options={[
+						{ icon: 'calendar', primary: true, titleLeft: t('Appointment'), onPress: () => navigation.navigate(CREATE_APPOINTMENT_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId }) },
+						{ icon: 'book', primary: true, titleLeft: t('Period'), onPress: () => navigation.navigate(CREATE_PERIOD_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId }) },
+					]}
 				/>
 
 			</XScreen>
 
 			<XBottomSheetModal
-				title={modalTitle}
+				title={modalData.title}
 				snapPoints={['40%']}
 				ref={modalRef}
 			>
 				<View style={{ flex: 1, padding: 10 }}>
-					<XTextLabels items={modalLabels} />
+					<XTextLabels items={modalData.labels} />
+
 					{
-						(selectedPeriod?.name === PERIOD.CLOSE_APPOINTMENT)
-						&&
+						isWaitingAppointment(selectedPeriod) &&
 						<View style={{ flexDirection: 'row', columnGap: 5 }}>
 							<XButton title={t('Reject')}
 								color={redColor}
@@ -282,8 +280,7 @@ const AppointmentsScreen = ({ navigation, route }) => {
 						</View>
 					}
 				</View>
-
-			</XBottomSheetModal >
+			</XBottomSheetModal>
 		</>
 	);
 };

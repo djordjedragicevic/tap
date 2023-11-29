@@ -7,6 +7,8 @@ export const Theme = {
 	vars: {
 		red: 'red',
 		redLight: 'redLight',
+		redDark: 'redDark',
+		
 		green: 'green',
 		greenLight: 'greenLight',
 		yellow: 'yellow',
@@ -61,12 +63,13 @@ export const Theme = {
 
 			red: 'hsl(0, 100%, 50%)',
 			redLight: 'hsl(0, 100%, 95%)',
+			redDark: 'hsl(0, 100%, 27%)',
 
 			green: 'hsl(177, 70%, 41%)',
 			greenLight: 'hsl(177, 70%, 92%)',
 
-			yellow: 'hsl(51, 100%, 40%)',
-			yellowLight: 'hsl(51, 100%, 95%)',
+			yellow: 'hsl(45, 100%, 50%)',
+			yellowLight: 'hsl(45, 100%, 95%)',
 
 			orange: 'hsl(28, 100%, 50%)',
 			orangeLight: 'hsl(28, 100%, 95%)',
@@ -101,6 +104,7 @@ export const Theme = {
 
 			red: 'hsl(0, 100%, 40%)',
 			redLight: 'hsl(0, 100%, 95%)',
+			redDark: 'hsl(0, 100%, 27%)',
 
 			green: 'hsl(177, 70%, 41%)',
 			greenLight: 'hsl(177, 70%, 92%)',

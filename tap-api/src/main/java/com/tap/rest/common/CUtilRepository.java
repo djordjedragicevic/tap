@@ -40,6 +40,10 @@ public class CUtilRepository {
 		}
 	}
 
+	public <T> T getSingleActiveEntityById(Class<T> ec, Object id){
+		return getSingleEntityBy(ec, Map.of("active", (byte)1, "id", id));
+	}
+
 	public <T> T getSingleEntityBy(Class<T> ec, Map<String, Object> params) {
 		StringBuilder query = new StringBuilder();
 
@@ -47,9 +51,9 @@ public class CUtilRepository {
 
 		int i = 1;
 		List<Object> values = new ArrayList<>();
-		for (Map.Entry<String, Object> k : params.entrySet()){
+		for (Map.Entry<String, Object> k : params.entrySet()) {
 			query.append(" c.").append(k.getKey()).append(" = :val").append(i++);
-			if((i - 1) < params.size())
+			if ((i - 1) < params.size())
 				query.append(" AND");
 			values.add(k.getValue());
 		}
@@ -63,4 +67,5 @@ public class CUtilRepository {
 		return q.getSingleResult();
 
 	}
+
 }

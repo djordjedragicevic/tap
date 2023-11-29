@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
 import { AntDesign } from '@expo/vector-icons';
 import { useIsUserLogged } from '../store/concreteStores';
-import { CREATE_PERIOD_SCREEN, MAIN_STACK, MAIN_TAB_APPOINTMENTS, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS } from './routes';
+import { CREATE_APPOINTMENT_SCREEN, CREATE_PERIOD_SCREEN, MAIN_STACK, MAIN_TAB_APPOINTMENTS, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS } from './routes';
 import SettingsScreen from '../screens/SettingsScreen';
 import { useColor, usePrimaryColor } from 'xapp/src/style/ThemeContext';
 import AppointmentsScreen from '../screens/AppointmentsScreen';
@@ -13,6 +13,7 @@ import CreatePeriodScreen from '../screens/CreatePeriodScreen';
 import XHeaderButtonBack from 'xapp/src/components/XHeaderButtonBack';
 import { useCallback } from 'react';
 import { useHeaderBackButton } from 'xapp/src/common/hooks';
+import CreateAppointmentScreen from '../screens/CreateAppointmentScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -73,7 +74,11 @@ const AppNavigator = ({ }) => {
 	const headerBackButton = useHeaderBackButton();
 
 	return (
-		<Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: font } }}>
+		<Stack.Navigator
+			screenOptions={{
+				headerTitleStyle: { fontFamily: font },
+				headerLeft: headerBackButton
+			}}>
 			<Stack.Screen
 				name={MAIN_STACK}
 				component={MainBottomTabNavigator}
@@ -88,7 +93,14 @@ const AppNavigator = ({ }) => {
 				component={CreatePeriodScreen}
 				options={{
 					title: t('Add time period'),
-					headerLeft: headerBackButton
+
+				}}
+			/>
+			<Stack.Screen
+				name={CREATE_APPOINTMENT_SCREEN}
+				component={CreateAppointmentScreen}
+				options={{
+					title: t('Create appointment')
 				}}
 			/>
 

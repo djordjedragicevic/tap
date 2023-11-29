@@ -31,5 +31,9 @@ export const errors = {
 	B_APP_ST_2: {
 		title: 'Greška statusa rezervacije',
 		message: 'Nije moguće prihvatiti rezervaciju ako je trenutni status {:status} '
+	},
+	B_APP_1: {
+		title: 'Kreiranje rezervacije',
+		message: 'Došlo je do greške pri pokušaju kreiranje rezervacije'
 	}
 }

@@ -4,12 +4,14 @@ export const strings = {
 	"Cancel": "Cancel",
 	"OK": "OK",
 	"Break": "Break",
+	"Reserved time": "Reserved time",
 	"Service": "Service",
 	"Duration": "Duration",
 	"Price": "Price",
 	"Employee": "Employee",
 	"User": "User",
 	"min": "min",
+	"h": "h",
 	"Accept": "Accept",
 	"Reject": "Reject",
 	"Today": "Today",
@@ -21,7 +23,12 @@ export const strings = {
 	"From": "From",
 	"Appointment confirmation": "Appointment confirmation",
 	"Appointment": "Appointment",
+	"Appointment - manually entered": "Appointment - manually entered",
 	"Add time period": "Add time period",
 	"Yes": "Yes",
-	"No": "No"
+	"No": "No",
+	"Period": "Period",
+	"Create appointment": "Create appointment",
+	"Create time period": "Kreiraj vremenski period",
+	"Are you surre you want to create new time period?": "Da li ste sigurni da želite kreirati novi vremenski period?"
 };
