@@ -58,10 +58,10 @@ const getPeriodText = (item) => {
 			break;
 		case PERIOD.CLOSE_EMPLOYEE_BREAK:
 		case PERIOD.CLOSE_PROVIDER_BREAK:
-			text += ' ' + I18n.translate('Break');
+			text += ' ' + I18n.t('Break');
 			break;
 		default:
-			text += ' ' + (item.data.comment ? item.data.comment : I18n.translate('Reserved time'));
+			text += ' ' + (item.data.comment ? item.data.comment : I18n.t('Reserved time'));
 			break;
 	}
 
@@ -108,7 +108,7 @@ const createStyle = (theme, height, top, colorName) => {
 		item: {
 			flexDirection: 'row',
 			flex: 1,
-			borderWidth: Theme.values.borderWidth,
+			//borderWidth: Theme.values.borderWidth,
 			borderRadius: Theme.values.borderRadius,
 			borderColor: theme.colors.borderColor,
 			paddingHorizontal: 3,

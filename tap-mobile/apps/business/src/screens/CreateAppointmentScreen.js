@@ -25,8 +25,7 @@ const calculateServicesDuration = (services) => {
 
 const CreateAppointmentsScreen = ({ navigation, route }) => {
 	const styles = useThemedStyle(styleCreator);
-	const cGreen = useColor('green');
-	const cRed = useColor('red');
+	const [cGreen, cRed] = useColor(['green', 'red']);
 	const t = useTranslation();
 
 	const [comment, setComment] = useState();
@@ -41,12 +40,8 @@ const CreateAppointmentsScreen = ({ navigation, route }) => {
 		setToDate(new Date(fromDate.getTime() + calculateServicesDuration(selectedServices)));
 	}, [selectedServices, fromDate]);
 
-
-	const pId = route.params.pId;
-	const eId = route.params.eId;
-
 	const [services] = useHTTPGet(
-		`/provider/${pId}/services/${eId}`,
+		`/provider/services`,
 		null,
 		[],
 		false,
@@ -60,22 +55,14 @@ const CreateAppointmentsScreen = ({ navigation, route }) => {
 			true,
 			{
 				onPress: () => {
-					Http.post(`/custom-periods/${pId}/appointment`, {
+					Http.post(`/custom-periods/appointment`, {
 						comment,
 						user,
 						services: selectedServices.map(s => s.id),
-						start: DateUtils.dateToString(fromDate),
-						eId
+						start: DateUtils.dateToString(fromDate)
 					}).then(() => {
 						navigation.navigate(MAIN_TAB_APPOINTMENTS, { reload: true });
 					});
-					// Http.post(`/custom-periods/busy-period/${pId}`, {
-					// 	comment,
-					// 	start: DateUtils.dateToString(start),
-					// 	end: DateUtils.dateToString(end)
-					// }).then(() => {
-					// 	navigation.navigate(MAIN_TAB_APPOINTMENTS, { reload: true });
-					// });
 				}
 			}
 		]);

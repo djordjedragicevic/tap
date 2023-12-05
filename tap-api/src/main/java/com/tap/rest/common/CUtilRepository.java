@@ -40,11 +40,27 @@ public class CUtilRepository {
 		}
 	}
 
-	public <T> T getSingleActiveEntityById(Class<T> ec, Object id){
-		return getSingleEntityBy(ec, Map.of("active", (byte)1, "id", id));
+	public <T> T getSingleActiveEntityById(Class<T> ec, Object id) {
+		return getSingleEntityBy(ec, Map.of("active", (byte) 1, "id", id));
 	}
 
 	public <T> T getSingleEntityBy(Class<T> ec, Map<String, Object> params) {
+		return this.createQuery(ec, params).getSingleResult();
+	}
+
+	public <T> T getSingleEntityBy(Class<T> ec, Object... params) {
+		Map<String, Object> paramsMap = new LinkedHashMap<>();
+		for (int i = 0, s = params.length; i < s; i += 2)
+			paramsMap.put(params[i].toString(), params[i + 1]);
+
+		return this.createQuery(ec, paramsMap).getSingleResult();
+	}
+
+	public <T> List<T> getEntitiesBy(Class<T> ec, Map<String, Object> params) {
+		return this.createQuery(ec, params).getResultList();
+	}
+
+	private <T> TypedQuery<T> createQuery(Class<T> ec, Map<String, Object> params) {
 		StringBuilder query = new StringBuilder();
 
 		query.append(String.format("SELECT c FROM %s c WHERE", ec.getSimpleName()));
@@ -63,9 +79,7 @@ public class CUtilRepository {
 		for (Object v : values)
 			q.setParameter("val" + i++, v);
 
-
-		return q.getSingleResult();
-
+		return q;
 	}
 
 }

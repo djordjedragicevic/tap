@@ -3,13 +3,19 @@ package com.tap.security;
 import jakarta.ws.rs.core.SecurityContext;
 
 import java.security.Principal;
+import java.util.List;
 
 public class TAPSecurityContext implements SecurityContext {
 
-	private int userId;
+	private final int userId;
+	private final List<String> roles;
+	private final Token token;
 
-	public TAPSecurityContext(int userId) {
+	public TAPSecurityContext(int userId, List<String> roles, Token t) {
 		this.userId = userId;
+		this.roles = roles;
+		this.token = t;
+
 	}
 
 	@Override
@@ -19,7 +25,7 @@ public class TAPSecurityContext implements SecurityContext {
 
 	@Override
 	public boolean isUserInRole(String role) {
-		return true;
+		return this.roles.contains(role);
 	}
 
 	@Override
@@ -30,5 +36,9 @@ public class TAPSecurityContext implements SecurityContext {
 	@Override
 	public String getAuthenticationScheme() {
 		return null;
+	}
+
+	public Token getToken() {
+		return this.token;
 	}
 }

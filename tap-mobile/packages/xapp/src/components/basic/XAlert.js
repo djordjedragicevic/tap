@@ -7,9 +7,9 @@ class XAlert {
 
 	static show(title, msg, btns, type) {
 		if (!btns)
-			btns = [{ text: I18n.translate('OK') }]
+			btns = [{ text: I18n.t('OK') }]
 		else if (btns.length === 1 && btns[0].text == null)
-			btns[0].text = I18n.translate('OK');
+			btns[0].text = I18n.t('OK');
 
 		else if (btns.length === 2) {
 			if (btns[0] === true)
@@ -17,10 +17,10 @@ class XAlert {
 
 
 			if (!btns[0]?.text)
-				btns[0].text = I18n.translate(type !== XAlert.YESNO ? 'Cancel' : 'No');
+				btns[0].text = I18n.t(type !== XAlert.YESNO ? 'Cancel' : 'No');
 
 			if (!btns[1]?.text)
-				btns[1].text = I18n.translate(type !== XAlert.YESNO ? 'OK' : 'Yes');
+				btns[1].text = I18n.t(type !== XAlert.YESNO ? 'OK' : 'Yes');
 		}
 
 		Alert.alert(title, msg, btns);

@@ -8,6 +8,9 @@ import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.rest.common.CUtilRepository;
 import com.tap.security.Public;
+import com.tap.security.Role;
+import com.tap.security.Secured;
+import com.tap.security.Token;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.json.JsonObject;
@@ -16,6 +19,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -23,7 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-@Path("/business/custom-periods/{pId}")
+@Path("/business/custom-periods")
 @RequestScoped
 public class BCustomPeriodService {
 	@Inject
@@ -35,20 +39,24 @@ public class BCustomPeriodService {
 
 
 	@POST
-	@Path("lock/{eId}")
-	@Public
+	@Path("lock")
 	@Transactional
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
 	public Response rejectAppointment(
-			@NotNull @PathParam("pId") int pId,
-			@NotNull @PathParam("eId") int eId,
+			@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer,
 			BusyPeriod bp
 	) {
+
+		Token token = new Token(bearer);
+		int pId = token.getProviderId();
+		int eId = token.getEmployeeId();
 
 		PeriodType pT = cUtilRepository.getSingleEntityBy(PeriodType.class, Map.of("active", true, "name", Statics.PT_CLOSE_LOCK_TIME));
 		Provider provider = cUtilRepository.getSingleEntityBy(Provider.class, Map.of("id", pId, "active", 1));
 		Employee e = cUtilRepository.getSingleActiveEntityById(Employee.class, eId);
+
+		if (bp.getStart() == null || bp.getEnd() == null || bp.getEnd().isBefore(bp.getStart()))
+			throw new TAPException(ErrID.B_APP_2);
 
 		bp.setProvider(provider);
 		bp.setPeriodtype(pT);
@@ -64,14 +72,16 @@ public class BCustomPeriodService {
 
 	@POST
 	@Path("appointment")
-	@Public
 	@Transactional
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response rejectAppointment(JsonObject params, @NotNull @PathParam("pId") Integer pId) {
+	@Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
+	public Response createAppointment(JsonObject params, @HeaderParam(HttpHeaders.AUTHORIZATION) String bearer) {
 
+		Token t = new Token(bearer);
+		int eId = t.getEmployeeId();
+		int pId = t.getProviderId();
 
-		Integer eId = params.getInt("eId");
 		String comment = params.containsKey("comment") ? params.getString("comment") : null;
 		String user = params.containsKey("user") ? params.getString("user") : null;
 		LocalDateTime start = LocalDateTime.parse(params.getString("start"));

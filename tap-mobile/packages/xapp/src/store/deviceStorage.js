@@ -52,6 +52,15 @@ export class SecureStorage {
 			console.log("SECURE STORAGE ERROR SET: ", key, err);
 		}
 	}
+	static async delete(key) {
+		key = KEY_PRE + key;
+		try {
+			await SS.deleteItemAsync(key);
+
+		} catch (err) {
+			console.log("SECURE STORAGE ERROR REMOVE: ", key, err);
+		}
+	}
 };
 
 export class CacheStorage {

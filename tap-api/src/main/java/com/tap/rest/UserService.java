@@ -5,6 +5,8 @@ import com.tap.common.Mail;
 import com.tap.common.Util;
 import com.tap.db.dto.UserDto;
 import com.tap.db.entity.User;
+import com.tap.db.entity.UserRole;
+import com.tap.db.entity.UserVerification;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.security.Public;
@@ -13,24 +15,30 @@ import com.tap.security.Secured;
 import com.tap.security.Security;
 import jakarta.inject.Inject;
 import jakarta.json.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-
+import org.eclipse.microprofile.config.ConfigProvider;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Path("user")
 public class UserService {
-
+	@PersistenceContext(unitName = "tap-pu")
+	private EntityManager em;
 	@Inject
 	UserRepository userRepository;
 	@Inject
-	com.tap.rest.common.CUtilRepository CUtilRepository;
+	com.tap.rest.common.CUtilRepository cUtilRepository;
 
 	@Path("create-account")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
+	@Transactional
 	public Response createAccount(JsonObject params) {
 
 		String username = params.getString("username");
@@ -43,21 +51,48 @@ public class UserService {
 		if (!Util.isMail(email))
 			throw new TAPException(ErrID.INV_EMAIL_1);
 
-		if (CUtilRepository.getSingleEntityBy(User.class, "email", email).isPresent())
+		if (cUtilRepository.getSingleEntityBy(User.class, "email", email).isPresent())
 			throw new TAPException(ErrID.U_CACC_2, null, Map.of("email", email));
 
-		if (CUtilRepository.getSingleEntityBy(User.class, "username", username).isPresent())
+		if (cUtilRepository.getSingleEntityBy(User.class, "username", username).isPresent())
 			throw new TAPException(ErrID.U_CACC_3, null, Map.of("username", username));
 
 		try {
 
 			String code = Util.generateVerificationCode();
 
-			int uId = userRepository.saveNewUser(username, email, password, Role.USER, code);
+			String salt = Util.getRandomString(16, true);
+			String encryptedPass = Security.encryptPassword(password, salt);
 
-			Mail.sendCode(code, email);
+			User u = new User();
+			u.setUsername(username);
+			u.setEmail(email);
+			u.setPassword(encryptedPass);
+			u.setSalt(salt);
+			u.setCreateDate(Util.zonedNow());
 
-			return Response.ok(uId).build();
+			long vCDuration = ConfigProvider.getConfig().getValue("tap.verification.code.duration", Long.class);
+			LocalDateTime vCTime = LocalDateTime.now(Util.zone());
+			LocalDateTime vCExpireTime = vCTime.plusMinutes(vCDuration);
+
+			UserVerification validation = new UserVerification();
+			validation.setCode(code);
+			validation.setUser(u);
+			validation.setCreateTime(vCTime);
+			validation.setExpireTime(vCExpireTime);
+
+			com.tap.db.entity.Role role = cUtilRepository.getSingleEntityBy(com.tap.db.entity.Role.class, Map.of("name", com.tap.security.Role.USER.getName()));
+			UserRole uR = new UserRole();
+			uR.setUser(u);
+			uR.setRole(role);
+
+			em.persist(u);
+			em.persist(validation);
+			em.persist(uR);
+
+			//Mail.sendCode(code, email);
+
+			return Response.ok(u.getId()).build();
 
 		} catch (Exception c) {
 			throw new TAPException(ErrID.U_CACC_1);

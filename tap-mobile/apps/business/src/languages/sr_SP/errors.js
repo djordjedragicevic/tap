@@ -14,7 +14,7 @@ export const errors = {
 	},
 	TAP_0: {
 		title: 'Neočekivana greška',
-		message: 'Aplikacija je naišla na nepoznatu grešku. Pomozite nam da poboljšamo vaše iskustvo slanjem izvještaja o grešci'
+		message: 'Aplikacija je naišla na neočekivanu grešku. Pomozite nam da poboljšamo vaše iskustvo slanjem izvještaja o grešci'
 	},
 	INV_EMAIL_1: {
 		title: 'Neodgovarajući podaci',
@@ -23,6 +23,10 @@ export const errors = {
 	SIGN_IN_1: {
 		title: 'Greška pri prijavi',
 		message: 'Neispravano korisničko ime/email ili lozinka'
+	},
+	U_UVFY_1: {
+		title: 'Neverifikovan nalog',
+		message: 'Vaš nalog nije verifikovan'
 	},
 	B_APP_ST_1: {
 		title: 'Greška statusa rezervacije',
@@ -35,5 +39,9 @@ export const errors = {
 	B_APP_1: {
 		title: 'Kreiranje rezervacije',
 		message: 'Došlo je do greške pri pokušaju kreiranje rezervacije'
+	},
+	B_APP_2: {
+		title: 'Kreiranje vremenskog perioda',
+		message: 'Došlo je do greške pri pokušaju kreiranje vremenskog perioda'
 	}
 }

@@ -14,7 +14,7 @@ export const errors = {
 	},
 	TAP_0: {
 		title: 'Neočekivana greška',
-		message: 'Aplikacija je naišla na nepoznatu grešku. Pomozite nam da poboljšamo vaše iskustvo slanjem izvještaja o grešci'
+		message: 'Aplikacija je naišla na neočekivanu grešku. Pomozite nam da poboljšamo vaše iskustvo slanjem izvještaja o grešci'
 	},
 
 	APPO_1: {

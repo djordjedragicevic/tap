@@ -1,14 +1,11 @@
 package com.tap.exception;
 
 import jakarta.json.Json;
-import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
-import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Provider
@@ -17,7 +14,7 @@ public class TAPExceptionMapper implements ExceptionMapper<Exception> {
 	@Override
 	public Response toResponse(final Exception ex) {
 
-		System.err.println(ex);
+		ex.printStackTrace();
 
 		TAPException exception;
 		if (ex instanceof TAPException e)

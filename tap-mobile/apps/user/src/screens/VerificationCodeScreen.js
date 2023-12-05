@@ -65,7 +65,7 @@ const VerificationCodeScreen = ({ navigation, route }) => {
 		Http.post('/verification/verify', { userId: userId, code: code.join('') })
 			.then(async () => {
 				if (username && password) {
-					const resp = await Http.post('/auth/login', { username, password });
+					const resp = await Http.post('/app/login', { username, password });
 					if (resp.token) {
 						await Http.setToken(resp.token);
 

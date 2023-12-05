@@ -4,6 +4,7 @@ Token {
   // attributes
   id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
   jti : string { @DbName(jti) @DbType("VARCHAR(64)") @Size(64) @MaxLen(64) };
+  token : string { @DbName(token) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
   userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_token_user1, User.id) };
   tokenStatusId : short { @DbName(token_status_id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty @FK(fk_token_token_status1, TokenStatus.id) };
   // links

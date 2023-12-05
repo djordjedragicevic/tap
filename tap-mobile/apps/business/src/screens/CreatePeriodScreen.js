@@ -1,6 +1,6 @@
 import XScreen from "xapp/src/components/XScreen";
 import XTextInput from "xapp/src/components/basic/XTextInput";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import XAlert from "xapp/src/components/basic/XAlert";
@@ -16,29 +16,33 @@ const CreatePeriodScreen = ({ navigation, route }) => {
 
 	const [comment, setComment] = useState();
 	const [fromDate, setFromDate] = useState(DateUtils.roundTo30Min(new Date()));
-	const [toDate, setToDate] = useState(new Date(fromDate.getTime()));
-
-
-	const pId = route.params.pId;
-	const eId = route.params.eId;
-
+	const [toDate, setToDate] = useState(new Date(fromDate.getTime() + (15 * 60 * 1000)));
 
 	const createPeriod = () => {
 
-		XAlert.showYesNo(t("Create time period"), t("Are you surre you want to create new time period?"), [
-			true,
-			{
-				onPress: () => {
-					Http.post(`/custom-periods/${pId}/lock/${eId}`, {
-						comment,
-						start: DateUtils.dateToString(fromDate),
-						end: DateUtils.dateToString(toDate)
-					}).then(() => {
-						navigation.navigate(MAIN_TAB_APPOINTMENTS, { reload: true });
-					});
+
+		if (((toDate - fromDate) * 60000) < 1) {
+			XAlert.show(
+				t("Invalid time period"),
+				t("Duration of time period must be at least one minute")
+			);
+		}
+		else {
+			XAlert.showYesNo(t("Create time period"), t("Are you surre you want to create new time period?"), [
+				true,
+				{
+					onPress: () => {
+						Http.post(`/custom-periods/lock`, {
+							comment,
+							start: DateUtils.dateToString(fromDate),
+							end: DateUtils.dateToString(toDate)
+						}).then(() => {
+							navigation.navigate(MAIN_TAB_APPOINTMENTS, { reload: true });
+						});
+					}
 				}
-			}
-		]);
+			]);
+		}
 	};
 
 	return (

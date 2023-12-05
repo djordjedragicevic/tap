@@ -29,7 +29,7 @@ export const I18nContextProvider = ({ children }) => {
 export const useTranslation = () => {
 	const { lng } = useContext(I18nContext);
 
-	const t = useCallback((text, params) => I18n.translate(text, params), [lng]);
+	const t = useCallback((text, params) => I18n.t(text, params), [lng]);
 
 	return t;
 };

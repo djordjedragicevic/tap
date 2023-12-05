@@ -22,6 +22,9 @@ public class Token implements Serializable {
     @Column(name="jti", length=64)
 	private String jti;
 
+    @Column(name="token", length=65535)
+	private String token;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="token_status_id", referencedColumnName="id")
@@ -49,6 +52,14 @@ public class Token implements Serializable {
 
 	public String getJti() {
 		return this.jti;
+	}
+
+	public void setToken( String token ) {
+		this.token = token ;
+	}
+
+	public String getToken() {
+		return this.token;
 	}
 
 	public TokenStatus getTokenstatus() {

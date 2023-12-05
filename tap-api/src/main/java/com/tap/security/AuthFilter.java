@@ -1,5 +1,6 @@
 package com.tap.security;
 
+import com.tap.db.entity.User;
 import com.tap.rest.common.CUtilRepository;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
@@ -25,7 +26,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	ResourceInfo resourceInfo;
 
 	@Inject
-	CUtilRepository CUtilRepository;
+	CUtilRepository cUtilRepository;
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -49,13 +50,19 @@ public class AuthFilter implements ContainerRequestFilter {
 					return;
 				}
 
-				//Authorize
-				if (!authorize(t.getAud(), secAnno)){
+				//Check is user verified
+				if(!isUserVerified(t)){
 					requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
 					return;
 				}
 
-				requestContext.setSecurityContext(new TAPSecurityContext(t.getSub()));
+				//Authorize
+				if (!authorize(t.getAud(), secAnno)) {
+					requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
+					return;
+				}
+
+				requestContext.setSecurityContext(new TAPSecurityContext(t.getSub(), t.getAud(), t));
 
 			} catch (Exception e) {
 				requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
@@ -66,7 +73,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	private boolean authorize(List<String> userRoles, Secured secured) {
 		if (userRoles != null && !userRoles.isEmpty() && secured != null) {
 			Role[] roles = secured.value();
-			if(roles.length == 0)
+			if (roles.length == 0)
 				return true;
 			for (String userRole : userRoles) {
 				if (userRole.equals(Role.SUPER_ADMIN.getName()))
@@ -87,10 +94,15 @@ public class AuthFilter implements ContainerRequestFilter {
 	}
 
 	private boolean isValidOnDb(Token t) {
-		Optional<com.tap.db.entity.Token> tokenRec = CUtilRepository.getEntity(com.tap.db.entity.Token.class, t.getRid());
+		Optional<com.tap.db.entity.Token> tokenRec = cUtilRepository.getEntity(com.tap.db.entity.Token.class, t.getRid());
 		return tokenRec.isPresent() &&
 			   tokenRec.get().getTokenstatus().getName().equals(Token.VALID) &&
 			   tokenRec.get().getJti() != null &&
 			   tokenRec.get().getJti().equals(t.getJti());
+	}
+
+	private boolean isUserVerified(Token t) {
+		Optional<User> user = cUtilRepository.getEntity(User.class, t.getSub());
+		return user.isPresent() && user.get().getVerified() == 1;
 	}
 }

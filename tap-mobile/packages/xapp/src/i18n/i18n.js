@@ -7,7 +7,7 @@ export default class I18n {
 	static fallbackError = '';
 	static STORAGE_HEY = 'lngId'
 
-	static translate(text, params) {
+	static t(text, params) {
 
 		let s;
 		if (I18n.lng.strings.hasOwnProperty(text))
@@ -23,7 +23,7 @@ export default class I18n {
 		return s;
 	}
 
-	static translateError(errorCode) {
+	static tErr(errorCode) {
 		const err = I18n.lng.errors[errorCode || I18n.fallbackError] || I18n.lng.errors[I18n.fallbackError];
 		return { ...err };
 	}

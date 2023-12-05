@@ -4,18 +4,14 @@ import com.tap.common.Statics;
 import com.tap.db.dtor.AppointmentDtoSimple;
 import com.tap.db.entity.Appointment;
 import com.tap.db.entity.AppointmentStatus;
-import com.tap.db.entity.Employee;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.rest.common.CAppointmentRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import org.eclipse.microprofile.config.ConfigProvider;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,19 +23,6 @@ public class BAppointmentRepository {
 	private EntityManager em;
 	@Inject
 	CAppointmentRepository cAppointmentRepository;
-
-	public List<Employee> getEmployees(int pId) {
-
-		String query = """
-				SELECT e FROM Employee e
-				JOIN e.provider p
-				WHERE e.active = 1 AND e.provider.id = :pId
-				""";
-
-		return em.createQuery(query, Employee.class)
-				.setParameter("pId", pId)
-				.getResultList();
-	}
 
 	public List<AppointmentDtoSimple> getWaitingAppointments(Integer pId, LocalDateTime from) {
 		return cAppointmentRepository.getAppointments(

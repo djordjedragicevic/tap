@@ -42,7 +42,6 @@ const AppointmentItem = ({ item, styles, selected, onPress }) => {
 
 const RequestsScreen = () => {
 
-	const pId = useStore(gS => gS.provider.id);
 	const [loading, setLoading] = useState(false);
 	const [reload, setReload] = useState(1);
 	const [data, setData] = useState([]);
@@ -54,7 +53,7 @@ const RequestsScreen = () => {
 	useEffect(() => {
 		setLoading(true);
 		let finish = true;
-		Http.get(`/appointments/waiting/${pId}`)
+		Http.get(`/appointments/waiting`)
 			.then(resp => {
 				if (finish) {
 					let tmpD;

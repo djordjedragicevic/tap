@@ -4,22 +4,20 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
 import { AntDesign } from '@expo/vector-icons';
 import { useIsUserLogged } from '../store/concreteStores';
-import { CREATE_APPOINTMENT_SCREEN, CREATE_PERIOD_SCREEN, MAIN_STACK, MAIN_TAB_APPOINTMENTS, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS } from './routes';
+import { CREATE_APPOINTMENT_SCREEN, CREATE_PERIOD_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_APPOINTMENTS, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS } from './routes';
 import SettingsScreen from '../screens/SettingsScreen';
 import { useColor, usePrimaryColor } from 'xapp/src/style/ThemeContext';
 import AppointmentsScreen from '../screens/AppointmentsScreen';
 import RequestsScreen from '../screens/RequestsScreen';
 import CreatePeriodScreen from '../screens/CreatePeriodScreen';
-import XHeaderButtonBack from 'xapp/src/components/XHeaderButtonBack';
-import { useCallback } from 'react';
 import { useHeaderBackButton } from 'xapp/src/common/hooks';
 import CreateAppointmentScreen from '../screens/CreateAppointmentScreen';
+import LoginScreen from '../screens/LoginScreen';
 
 const BottomTab = createBottomTabNavigator();
 
 const MainBottomTabNavigator = ({ navigation }) => {
 	const t = useTranslation();
-	const logged = useIsUserLogged();
 	const colorPrimary = usePrimaryColor();
 	const colorTextLight = useColor('textLight');
 
@@ -79,30 +77,46 @@ const AppNavigator = ({ }) => {
 				headerTitleStyle: { fontFamily: font },
 				headerLeft: headerBackButton
 			}}>
-			<Stack.Screen
-				name={MAIN_STACK}
-				component={MainBottomTabNavigator}
-				options={{
-					headerShown: false,
-					headerTitleStyle: { fontFamily: font }
-				}}
-			/>
+			{
+				logged ?
+					<Stack.Group>
+						<Stack.Screen
+							name={MAIN_STACK}
+							component={MainBottomTabNavigator}
+							options={{
+								headerShown: false,
+								headerTitleStyle: { fontFamily: font }
+							}}
+						/>
 
-			<Stack.Screen
-				name={CREATE_PERIOD_SCREEN}
-				component={CreatePeriodScreen}
-				options={{
-					title: t('Add time period'),
+						<Stack.Screen
+							name={CREATE_PERIOD_SCREEN}
+							component={CreatePeriodScreen}
+							options={{
+								title: t('Add time period'),
 
-				}}
-			/>
-			<Stack.Screen
-				name={CREATE_APPOINTMENT_SCREEN}
-				component={CreateAppointmentScreen}
-				options={{
-					title: t('Create appointment')
-				}}
-			/>
+							}}
+						/>
+						<Stack.Screen
+							name={CREATE_APPOINTMENT_SCREEN}
+							component={CreateAppointmentScreen}
+							options={{
+								title: t('Create appointment')
+							}}
+						/>
+					</Stack.Group>
+					:
+					<Stack.Screen
+						name={LOGIN_SCREEN}
+						component={LoginScreen}
+						options={{
+							headerTransparent: true,
+							title: ''
+						}}
+					/>
+			}
+
+
 
 		</Stack.Navigator>
 	);

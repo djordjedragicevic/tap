@@ -32,5 +32,10 @@ export const getFrendlyName = (item) => {
 	else if (item?.name === PERIOD.CLOSE_EMPLOYEE_BREAK || item?.name === PERIOD.CLOSE_PROVIDER_BREAK)
 		return 'Break';
 	else
-		return 'Reserved period';
+		return 'Reserved time';
 };
+
+export const ROLE = {
+	PROVIDER_OWNER: 'PROVIDER_OWNER',
+	EMPLOYER: 'EMPLOYEE'
+}

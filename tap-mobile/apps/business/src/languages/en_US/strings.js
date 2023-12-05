@@ -3,7 +3,15 @@ export const strings = {
 	"Settings": "Settings",
 	"Cancel": "Cancel",
 	"OK": "OK",
+	
+	"Sing In": "Sing In",
+	"Sing Up": "Sing Up",
+	"Log out": "Log out",
+	"Username or email": "Username or email",
+	"Password": "Password",
+	
 	"Break": "Break",
+	"Don't have an account?": "Don't have an account?",
 	"Reserved time": "Reserved time",
 	"Service": "Service",
 	"Duration": "Duration",
@@ -30,5 +38,9 @@ export const strings = {
 	"Period": "Period",
 	"Create appointment": "Create appointment",
 	"Create time period": "Kreiraj vremenski period",
-	"Are you surre you want to create new time period?": "Da li ste sigurni da želite kreirati novi vremenski period?"
+	"Are you surre you want to create new time period?": "Da li ste sigurni da želite kreirati novi vremenski period?",
+
+	"Invalid time period": "Invalid time period",
+	"Duration of time period must be at least one minute": "Duration of time period must be at least one minute",
+	"Me": "Me"
 };

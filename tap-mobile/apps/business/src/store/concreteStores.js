@@ -1,5 +1,5 @@
-import { getInitials } from "xapp/src/common/utils";
 import { useStore } from "xapp/src/store/store";
+import { ROLE } from "../common/general";
 
 const maskDefault = {
 	maskShown: false,
@@ -30,79 +30,57 @@ export const appStore = (initD = {}) => ({
 	}
 });
 
-
-export const userStore = (initD = {}) => {
-
-	const initData = {
+export const userStore = (
+	initD = {
 		isLogged: false,
-		state: {
-			favoriteProviders: []
-		},
-		firstName: '',
-		lastName: '',
-		username: '',
-		email: '',
-		phone: '',
-		initials: '',
-		imgPath: '',
 		roles: [],
-		...initD
-	};
-
-	return {
-		name: 'user',
-		actions: {
-			'user.set_data': (userStore, userData) => {
-				const newData = {
-					...userStore,
-					...userData,
-					isLogged: true,
-					initials: getInitials(userData.firstName, userData.lastName, userData.username, userData.email)
-				};
-
-				if (!newData.state)
-					newData.state = {};
-
-				if (newData.state.favoriteProviders)
-					newData.state.favoriteProviders = JSON.parse(newData.state.favoriteProviders);
-
-				return newData;
+		employee: {
+			id: -1,
+			name: '',
+			imagePath: '',
+			provider: {
+				id: '',
+				name: ''
 			},
-			'user.log_out': () => {
-				return {
-					...initData
-				}
-			},
-			'user.set_is_logged': (userStore, isLogged) => {
-				return {
-					...userStore,
-					isLogged
-				}
+			user: {
+				id: '',
+				email: ''
+			}
+		}
+	}
+) => ({
+	name: 'user',
+	actions: {
+		'user.login': (employeeStore, data = {}) => {
+			return {
+				...employeeStore,
+				...data,
+				isLogged: true
 			}
 		},
-		initData: { ...initData }
-	}
-
-};
-
-export const providerStore = (initD = {}) => ({
-	name: 'provider',
-	actions: {
-		'app.set_provider_data': (providerStore, data) => {
+		'user.logout': () => {
 			return {
-				...providerStore,
-				...data
+				...initD,
+				isLogged: false,
 			}
 		}
 	},
-	initData: {
-		id: 1,
-		name: '',
-		...initD
-	}
+	initData: { ...initD }
 });
 
-export const useIsUserLogged = function (params) {
+
+export const useIsUserLogged = function () {
 	const isLogged = useStore(gS => gS.user.isLogged);
 	return isLogged;
+};
+
+
+export const useIsRoleEmployee = function () {
+	const roles = useStore(gS => gS.user.roles);
+	return roles?.indexOf(ROLE.EMPLOYER) > -1;
+};
+
+export const useIsRoleOwner = function () {
+	const roles = useStore(gS => gS.user.roles);
+	return roles?.indexOf(ROLE.PROVIDER_OWNER) > -1;
 };

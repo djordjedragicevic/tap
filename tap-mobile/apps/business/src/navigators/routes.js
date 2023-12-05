@@ -13,12 +13,12 @@ export const MAIN_TAB_SETTINGS = 'MainTabSettings';
 
 export const CREATE_PERIOD_SCREEN = 'CreatePeriodScreen';
 export const CREATE_APPOINTMENT_SCREEN = 'CreateAppointmentScreen';
+export const LOGIN_SCREEN = 'LoginScreen';
 
 export const MAIN_STACK = 'MainStack';
 
 // export const LOGIN_SCREEN = 'LoginScreen';
 // export const CREATE_ACCOUNT_SCREEN = 'CreateAccountScreen';
 // export const VERIFICATION_CODE_SCREEN = 'VerificationCodeScreen';
-
 // export const DRAWER_HOME = 'DrowerHome';
 

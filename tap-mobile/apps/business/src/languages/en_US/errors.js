@@ -24,6 +24,10 @@ export const errors = {
 		title: 'Sign In error',
 		message: 'Invalide username/email or password'
 	},
+	U_UVFY_1: {
+		title: 'Unverified account',
+		message: 'Your account in not verified'
+	},
 	B_APP_ST_1: {
 		title: 'Appointment status error',
 		message: 'The status of appointment can not be changed anymore'
@@ -35,5 +39,9 @@ export const errors = {
 	B_APP_1: {
 		title: 'Create appointment error',
 		message: 'Error occurred while trying to create appointment'
+	},
+	B_APP_2: {
+		title: 'Create time period error',
+		message: 'Error occurred while trying to create time period'
 	}
 }

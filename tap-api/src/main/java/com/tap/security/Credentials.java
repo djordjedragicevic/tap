@@ -30,4 +30,8 @@ public class Credentials {
 		this.password = password;
 		return this;
 	}
+
+	public boolean isValid() {
+		return this.getPassword() != null && !this.getPassword().isEmpty() && this.getUsername() != null && !this.getUsername().isEmpty();
+	}
 }

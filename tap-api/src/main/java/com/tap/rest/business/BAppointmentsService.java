@@ -3,19 +3,20 @@ package com.tap.rest.business;
 import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
 import com.tap.common.*;
-import com.tap.db.dto.EmployeeDto;
 import com.tap.db.dtor.AppointmentDtoSimple;
-import com.tap.db.entity.*;
+import com.tap.db.entity.BusyPeriod;
+import com.tap.db.entity.Employee;
+import com.tap.db.entity.WorkPeriod;
 import com.tap.rest.common.CAppointmentRepository;
-import com.tap.security.Public;
+import com.tap.rest.common.CUtilRepository;
+import com.tap.security.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.json.JsonArray;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,71 +24,54 @@ import java.util.*;
 
 @Path("/business/appointments")
 @RequestScoped
+@Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
 public class BAppointmentsService {
 	@Inject
 	BAppointmentRepository bAppointmentRepository;
 	@Inject
 	CAppointmentRepository cAppointmentRepository;
+	@Inject
+	CUtilRepository cUtilRepository;
+	@Inject
+	BProviderRepository bProviderRepository;
 
 	@GET
-	@Path("{pId}")
-	@Public
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAppointmentsAtDate(
-			@NotNull @PathParam("pId") Integer pId,
-			@NotNull @QueryParam("y") int y,
-			@NotNull @QueryParam("m") int m,
-			@NotNull @QueryParam("d") int d,
-			@NotNull @QueryParam("h") int h,
-			@NotNull @QueryParam("min") int min
-
+			@NotNull @QueryParam("date") String d,
+			@Context SecurityContext sC
 	) {
 
-		List<EmployeeDto> emps = bAppointmentRepository.getEmployees(pId)
-				.stream()
-				.map(e -> new EmployeeDto()
-						.setId(e.getId())
-						.setName(e.getName())
-						.setImagePath(e.getImagePath()))
-				.toList();
-
-		List<Integer> eIds = emps.stream().mapToInt(EmployeeDto::getId).boxed().toList();
-
-		LocalDateTime from = LocalDateTime.of(y, m, d, h, min);
+		LocalDateTime from = LocalDateTime.parse(d);
 		LocalDate date = from.toLocalDate();
+		int userId = Security.getUserId(sC);
+		boolean isOwner = sC.isUserInRole(Role.PROVIDER_OWNER.getName());
 
-		ProviderWorkInfo pWI = this.generatePWI(pId, eIds, date, emps);
+		Employee e = cUtilRepository.getSingleEntityBy(Employee.class, Map.of(
+				"user.id", userId,
+				"active", 1
+		));
+
+		int pId = e.getProvider().getId();
+		List<Employee> emps = isOwner ? bProviderRepository.getProviderEmployees(pId) : List.of(e);
+
+		ProviderWorkInfo pWI = this.generatePWI(pId, date, emps);
 
 		return Response.ok(pWI).build();
 	}
 
 	@GET
-	@Path("/waiting/{pId}")
-	@Public
+	@Path("/waiting")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getWaitingAppointments(
-			@NotNull @PathParam("pId") Integer pId
-	) {
+	public Response getWaitingAppointments(@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer) {
+		int pId = new Token(bearer).getProviderId();
 		List<AppointmentDtoSimple> apps = bAppointmentRepository.getWaitingAppointments(pId, Util.zonedNow());
-		return Response.ok(apps).build();
-	}
-
-	@GET
-	@Path("/waiting/{pId}/{eId}")
-	@Public
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getWaitingAppointments(
-			@NotNull @PathParam("pId") Integer pId,
-			@NotNull @PathParam("eId") Integer eId
-	) {
-		List<AppointmentDtoSimple> apps = bAppointmentRepository.getWaitingAppointmentsForEmployee(pId, eId, Util.zonedNow());
 		return Response.ok(apps).build();
 	}
 
 	@POST
 	@Path("/accept/{appId}/{sId}")
-	@Public
 	@Transactional
 	public Response acceptAppointment(
 			@NotNull @PathParam("appId") Long appId,
@@ -101,7 +85,6 @@ public class BAppointmentsService {
 	@POST
 	@Path("/accept/multi")
 	@Transactional
-	@Public
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response acceptAppointmentMulti(JsonArray appIds) {
 		List<Long> apps = appIds.stream().mapToLong(v -> Long.parseLong(v.toString())).boxed().toList();
@@ -111,7 +94,6 @@ public class BAppointmentsService {
 
 	@POST
 	@Path("/reject/{appId}/{sId}")
-	@Public
 	@Transactional
 	public Response rejectAppointment(
 			@NotNull @PathParam("appId") Long appId,
@@ -123,8 +105,8 @@ public class BAppointmentsService {
 	}
 
 
-	private ProviderWorkInfo generatePWI(Integer pId, List<Integer> eIds, LocalDate date, List<EmployeeDto> emps) {
-
+	private ProviderWorkInfo generatePWI(Integer pId, LocalDate date, List<Employee> emps) {
+		List<Integer> eIds = emps.stream().mapToInt(Employee::getId).boxed().toList();
 		List<AppointmentDtoSimple> apps = bAppointmentRepository.getWAAppointmentsAtDay(eIds, date);
 		List<BusyPeriod> bps = cAppointmentRepository.getBusyPeriodsAtDay(pId, eIds, date);
 		List<WorkPeriod> wps = cAppointmentRepository.getBreaksPeriodsAtDay(pId, eIds, date.getDayOfWeek().getValue());
@@ -162,23 +144,25 @@ public class BAppointmentsService {
 		//Busy periods
 		NamedTimePeriodExt tmpNTPE;
 		boolean isProviderLevel;
+		Map<String, Object> tmpData;
 		for (BusyPeriod bP : bps) {
-			isProviderLevel = bP.getProvider() != null;
+			isProviderLevel = bP.getEmployee() == null;
 			tmpTP = bP.getRepeattype() != null ?
 					Utils.adjustRepeatablePeriodToOnaDate(date, bP.getStart(), bP.getEnd(), bP.getRepeattype().getName())
 					:
 					Utils.adjustPeriodToOnaDate(date, bP.getStart(), bP.getEnd());
+
+			tmpData = new HashMap<>();
+			tmpData.put("id", bP.getId());
+			tmpData.put("comment", bP.getComment());
+			tmpData.put("periodType", bP.getPeriodtype().getName());
 
 			tmpNTPE = new NamedTimePeriodExt(
 					tmpTP.getStart(),
 					tmpTP.getEnd(),
 					TypedTimePeriod.CLOSE,
 					isProviderLevel ? NamedTimePeriod.CLOSE_PROVIDER_BUSY : NamedTimePeriod.CLOSE_EMPLOYEE_BUSY,
-					Map.of(
-							"id", bP.getId(),
-							"comment", bP.getComment(),
-							"periodType", bP.getPeriodtype().getName()
-					)
+					tmpData
 			);
 			if (isProviderLevel)
 				for (ProviderWorkInfo.Employee e : pWI.getEmployees())
@@ -190,7 +174,7 @@ public class BAppointmentsService {
 		//Work periods (breaks and working time)
 		boolean isClose;
 		for (WorkPeriod wP : wps) {
-			isProviderLevel = wP.getProvider() != null;
+			isProviderLevel = wP.getEmployee() == null;
 			isClose = !wP.getPeriodtype().isOpen();
 
 			//Breaks

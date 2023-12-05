@@ -1,7 +1,7 @@
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import XScreen from "xapp/src/components/XScreen";
 import { Http } from 'xapp/src/common/Http';
-import { storeDispatch, useStore } from "xapp/src/store/store";
+import { storeDispatch, storeGetValue, useStore } from "xapp/src/store/store";
 import TimePeriodsPanel from "../components/time-periods/TimePeriodPanel";
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import XFieldDatePicker from "xapp/src/components/basic/XFieldDataPicker";
@@ -11,14 +11,14 @@ import { Theme } from 'xapp/src/style/themes';
 import { useColor, useThemedStyle } from 'xapp/src/style/ThemeContext';
 import XButton from 'xapp/src/components/basic/XButton';
 import XBottomSheetModal from 'xapp/src/components/basic/XBottomSheetModal';
-import XButtonIcon from 'xapp/src/components/basic/XButtonIcon';
 import XToolbar from 'xapp/src/components/XToolbar';
 import XTextLabels from 'xapp/src/components/XTextLabels';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
-import { PERIOD, PERIOD_NAME, getFrendlyName, isWaitingAppointment } from '../common/general';
+import { PERIOD, getFrendlyName, isWaitingAppointment } from '../common/general';
 import { CREATE_APPOINTMENT_SCREEN, CREATE_PERIOD_SCREEN } from '../navigators/routes';
 import I18n from 'xapp/src/i18n/I18n';
 import XButtonExtend from 'xapp/src/components/basic/XButtonExtend';
+import { useIsRoleOwner } from '../store/concreteStores';
 
 
 const HOUR_HEIGHT = 60;
@@ -98,33 +98,33 @@ const getArrangedTimeline = (emp) => {
 const getModalData = (employee, item) => {
 
 	const data = {
-		title: I18n.translate(getFrendlyName(item)),
+		title: I18n.t(getFrendlyName(item)),
 		labels: []
 	};
 
 	if (item.name === PERIOD.CLOSE_APPOINTMENT) {
 		data.labels = [
-			{ label: I18n.translate('Service'), value: item.data.sName },
-			{ label: I18n.translate('Employee'), value: employee.name },
-			{ label: I18n.translate('From'), value: item.start },
-			{ label: I18n.translate('To'), value: item.end },
-			{ label: I18n.translate('Duration'), value: DateUtils.formatToHourMin(DateUtils.minToHMin(item.data.sDuration)) },
-			{ label: I18n.translate('Price'), value: CurrencyUtils.convert(item.data.sPrice) },
-			{ label: I18n.translate('User'), value: item.data.uUsername || item.data.userName || '-' }
+			{ label: I18n.t('Service'), value: item.data.sName },
+			{ label: I18n.t('Employee'), value: employee.name },
+			{ label: I18n.t('From'), value: item.start },
+			{ label: I18n.t('To'), value: item.end },
+			{ label: I18n.t('Duration'), value: DateUtils.formatToHourMin(DateUtils.minToHMin(item.data.sDuration)) },
+			{ label: I18n.t('Price'), value: CurrencyUtils.convert(item.data.sPrice) },
+			{ label: I18n.t('User'), value: item.data.uUsername || item.data.userName || '-' }
 		];
 	}
 	else {
 		data.labels = [
-			{ label: I18n.translate('Employee'), value: employee.name },
-			{ label: I18n.translate('From'), value: item.start },
-			{ label: I18n.translate('To'), value: item.end },
-			{ label: I18n.translate('Duration'), value: DateUtils.formatToHourMin(DateUtils.timesDiff(item.start, item.end)) }
+			{ label: I18n.t('Employee'), value: employee.name },
+			{ label: I18n.t('From'), value: item.start },
+			{ label: I18n.t('To'), value: item.end },
+			{ label: I18n.t('Duration'), value: DateUtils.formatToHourMin(DateUtils.timesDiff(item.start, item.end)) }
 		];
 
 	}
 
 	if (item.comment) {
-		data.labels.push({ label: I18n.translate('Comment'), value: item.comment });
+		data.labels.push({ label: I18n.t('Comment'), value: item.comment });
 	}
 
 	return data;
@@ -133,7 +133,11 @@ const getModalData = (employee, item) => {
 const AppointmentsScreen = ({ navigation, route }) => {
 
 	const sizeCoef = useState(2)[0];
-	const pId = useStore(gS => gS.provider.id);
+
+	const pId = useStore(gS => gS.user.employee.provider.id);
+
+	const isOwner = useIsRoleOwner();
+
 	const [data, setData] = useState();
 	const [loading, setLoading] = useState(false);
 	const [loadCount, setLoadCount] = useState(1);
@@ -165,11 +169,20 @@ const AppointmentsScreen = ({ navigation, route }) => {
 	useEffect(() => {
 		setLoading(true);
 		let finish = true;
-		Http.get(`/appointments/${pId}`, { ...DateUtils.convertToParam(date) })
-			.then(reps => {
+		Http.get('/appointments', { date: DateUtils.dateToString(date) })
+			.then(resp => {
 				empsTimeline = {};
 				if (finish) {
-					setData(reps);
+					const eId = storeGetValue(gS => gS.user.employee.id);
+					if (isOwner && resp.employees?.length > 1) {
+						const eIdx = resp.employees.findIndex(e => e.employeeId === eId);
+						console.log("ED", eIdx)
+						const e = { ...resp.employees[eIdx] };
+						e.name = I18n.t('Me');
+						resp.employees.splice(1, eIdx);
+						resp.employees.unshift(e);
+					}
+					setData(resp);
 				}
 			})
 			.catch(emptyFn)
@@ -215,7 +228,7 @@ const AppointmentsScreen = ({ navigation, route }) => {
 		<>
 			<XScreen flat loading={loading}>
 				{
-					!!data?.employees?.length &&
+					(isOwner && !!data?.employees?.length) &&
 					<XToolbar
 						barHeight={45}
 						minItemWidth={120}
@@ -248,8 +261,18 @@ const AppointmentsScreen = ({ navigation, route }) => {
 					size={44}
 					style={styles.btnPlus}
 					options={[
-						{ icon: 'calendar', primary: true, titleLeft: t('Appointment'), onPress: () => navigation.navigate(CREATE_APPOINTMENT_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId }) },
-						{ icon: 'book', primary: true, titleLeft: t('Period'), onPress: () => navigation.navigate(CREATE_PERIOD_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId }) },
+						{
+							icon: 'calendar',
+							primary: true,
+							titleLeft: t('Appointment'),
+							onPress: () => navigation.navigate(CREATE_APPOINTMENT_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId })
+						},
+						{
+							icon: 'book',
+							primary: true,
+							titleLeft: t('Period'),
+							onPress: () => navigation.navigate(CREATE_PERIOD_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId })
+						},
 					]}
 				/>
 

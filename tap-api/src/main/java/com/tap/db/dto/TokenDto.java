@@ -5,6 +5,7 @@ package com.tap.db.dto;
 public class TokenDto {	
 	private Long id;
 	private String jti;
+	private String token;
 	private TokenStatusDto tokenstatus; 
 	private UserDto user; 
 	public TokenDto() {}
@@ -25,6 +26,15 @@ public class TokenDto {
 
 	public String getJti() {
 		return this.jti;
+	}
+
+	public TokenDto setToken( String token ) {
+		this.token = token;
+		return this;
+	}
+
+	public String getToken() {
+		return this.token;
 	}
 
 	public TokenStatusDto getTokenstatus() {

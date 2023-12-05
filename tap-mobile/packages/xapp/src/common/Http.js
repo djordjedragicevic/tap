@@ -21,8 +21,8 @@ export class Http {
 	}
 
 	static init(host, apiUrl, timeout) {
-		_API_URL = apiUrl;
 		_HOST = host;
+		_API_URL = apiUrl;
 		if (timeout != null)
 			_HTTP_TIMEOUT = timeout;
 	}
@@ -34,7 +34,7 @@ export class Http {
 
 		let err, errId, data;
 
-		console.log('HTTP START: ' + config.method, ': ', _API_URL.concat(url));
+		console.log('HTTP START: ' + config.method, ': ', Http.getAPI().concat(url));
 
 		config.headers['Authorization'] = 'Bearer ' + await Http.getToken();
 
@@ -45,7 +45,7 @@ export class Http {
 			config.signal = signal;
 
 			const fId = setTimeout(() => controller.abort("TIMEOT"), _HTTP_TIMEOUT);
-			const response = await fetch(_API_URL.concat(url), config);
+			const response = await fetch(Http.getAPI().concat(url), config);
 			clearTimeout(fId);
 
 			if (response.ok && response.status === 200) {
@@ -60,7 +60,7 @@ export class Http {
 				switch (response.status) {
 					case 400: //Bad request, used for custom errors
 						const resp = await response.json();
-						err = I18n.translateError(resp.tapEID);
+						err = I18n.tErr(resp.tapEID);
 						errId = resp.tapEID;
 						if (resp.params) {
 							Object.entries(resp.params).forEach(([k, v]) => {
@@ -69,15 +69,15 @@ export class Http {
 						}
 						break;
 					case 401:
-						err = I18n.translateError(Http.ERR.UNAUTHENTICATE);
+						err = I18n.tErr(Http.ERR.UNAUTHENTICATE);
 						errId = Http.ERR.UNAUTHENTICATE;
 						break;
 					case 403:
-						err = I18n.translateError(Http.ERR.FORBIDEN);
+						err = I18n.tErr(Http.ERR.FORBIDEN);
 						errId = Http.ERR.FORBIDEN;
 						break;
 					default: {
-						err = I18n.translateError();
+						err = I18n.tErr();
 						errId = I18n.fallbackError;
 					}
 				}
@@ -85,9 +85,9 @@ export class Http {
 
 		} catch (e) {
 			if (e?.name === 'AbortError')
-				err = I18n.translateError(Http.ERR.CONNECTION_TIMEOUT);
+				err = I18n.tErr(Http.ERR.CONNECTION_TIMEOUT);
 			else
-				err = I18n.translateError();
+				err = I18n.tErr();
 		}
 		finally {
 			console.log(`HTTP ${err ? 'NOT ' : ''}SUCCESS: (${(new Date().getTime() - d) / 1000}s)`);
@@ -148,6 +148,11 @@ export class Http {
 	static async setToken(token) {
 		await SecureStorage.set(S_KEY_TOKEN, token);
 		_token = token;
+	}
+
+	static async removeToken() {
+		await SecureStorage.delete(S_KEY_TOKEN);
+		_token = null;
 	}
 
 

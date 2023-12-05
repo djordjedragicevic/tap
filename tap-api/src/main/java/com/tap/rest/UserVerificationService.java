@@ -6,6 +6,7 @@ import com.tap.db.entity.User;
 import com.tap.db.entity.UserVerification;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
+import com.tap.rest.common.CUtilRepository;
 import com.tap.security.Public;
 import jakarta.inject.Inject;
 import jakarta.json.JsonObject;
@@ -23,7 +24,7 @@ public class UserVerificationService {
 	@Inject
 	UserVerificationRepository userVerificationRepository;
 	@Inject
-	com.tap.rest.common.CUtilRepository CUtilRepository;
+	CUtilRepository cUtilRepository;
 
 	@Path("data/{userId}")
 	@GET
@@ -32,7 +33,7 @@ public class UserVerificationService {
 	@Public
 	public Response getVerificationCodeData(@PathParam("userId") Integer userId) {
 
-		Optional<UserVerification> userVerification = CUtilRepository.getSingleEntityBy(UserVerification.class, "user.id", userId);
+		Optional<UserVerification> userVerification = cUtilRepository.getSingleEntityBy(UserVerification.class, "user.id", userId);
 
 		if (userVerification.isEmpty())
 			throw new TAPException(ErrID.TAP_0);

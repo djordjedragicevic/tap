@@ -1,31 +1,51 @@
 package com.tap.rest.business;
 
-import com.tap.security.Public;
+import com.tap.rest.common.CUserRepository;
+import com.tap.security.Role;
+import com.tap.security.Secured;
+import com.tap.security.Security;
+import com.tap.security.Token;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RequestScoped
-@Path("business/provider/{pId}")
+@Path("business/provider")
+@Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
 public class BProviderService {
 
 	@Inject
 	BProviderRepository bProviderRepository;
+	@Inject
+	CUserRepository cUserRepository;
 
-	@Path("services/{eId}")
+	@Path("services")
 	@GET
-	@Public
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getServices (
-			@NotNull @PathParam("pId") Integer pId,
-			@NotNull @PathParam("eId") Integer eId
-	){
-		return Response.ok(bProviderRepository.getServicesOfEmployee(pId, eId)).build();
+	public Response getEmployeeServices(
+			//@NotNull @PathParam("eId") Integer eId,
+			@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer
+	) {
+		int eId =  new Token(bearer).getEmployeeId();
+		return Response.ok(bProviderRepository.getServicesOfEmployee(eId)).build();
+	}
+
+	@Path("employee-data")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
+	public Response getEmployeeData(@Context SecurityContext sC) {
+		int userId = Security.getUserId(sC);
+
+		Map<String, Object> employee = bProviderRepository.getEmployeeFullData(userId);
+		List<String> roles = cUserRepository.getRoleNames(userId);
+		employee.put("roles", roles);
+
+		return Response.ok(employee).build();
 	}
 }

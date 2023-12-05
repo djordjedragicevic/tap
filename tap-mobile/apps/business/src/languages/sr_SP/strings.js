@@ -1,8 +1,16 @@
 export const strings = {
 	"Appointments": "Termini",
 	"Settings": "Podešavanja",
+	
+	"Sing In": "Uloguj se",
+	"Log out": "Izloguj se",
+	"Sing Up": "Kreirajte nalog",
+	"Username or email": "Korisničko ime ili email",
+	"Password": "Lozinka",
 	"Cancel": "Otkaži",
 	"OK": "OK",
+	"Don't have an account?": "Još uvijek nemate nalog?",
+	
 	"Break": "Pauza",
 	"Reserved time": "Rezervisano vrijeme",
 	"Service": "Usluga",
@@ -31,5 +39,9 @@ export const strings = {
 	"No": "Ne",
 	"Period": "Period",
 	"Create time period": "Create time period",
-	"Are you surre you want to create new time period?": "Are you surre you want to create new time period?"
+	"Are you surre you want to create new time period?": "Are you surre you want to create new time period?",
+
+	"Invalid time period": "Neispravan vremenski period",
+	"Duration of time period must be at least one minute": "Trajanje vremenskog perioda mora da iznosi najmanje 1 minutu",
+	"Me": "Ja"
 };

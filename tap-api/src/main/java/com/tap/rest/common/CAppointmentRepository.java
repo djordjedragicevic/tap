@@ -60,26 +60,13 @@ public class CAppointmentRepository {
 		int fromYDay = from.getDayOfYear();
 		int toYDay = to.getDayOfYear();
 
-		boolean hasPid = false;
-		boolean hasEid = false;
-		String q1 = " (";
-		if (pId > 0) {
-			hasPid = true;
-			q1 += "bP.provider.id = :pId";
-		}
-		if (eIds != null && !eIds.isEmpty()) {
-			hasEid = true;
-			q1 += " OR bP.employee.id " + (eIds.size() > 1 ? "IN" : "=") + " :eIds";
-		}
-		q1 += ") ";
+
 
 		String query = """
 				SELECT bP
 				FROM BusyPeriod bP LEFT JOIN FETCH bP.repeattype rT
 				WHERE
-				""";
-		query += q1;
-		query += """
+				((bp.employee IS NOT NULL AND bP.employee.id IN :eIds) OR (bp.employee IS NULL AND bp.provider.id = :pId))
 				AND
 				((function('TIME', bP.start) BETWEEN :fromTime AND :toTime) OR (function('TIME', bP.end) BETWEEN :fromTime AND :toTime) OR (function('TIME', bP.start) <= :fromTime AND function('TIME', bP.end) >= :toTime))
 				AND(
@@ -109,12 +96,9 @@ public class CAppointmentRepository {
 				.setParameter("everyDay", Utils.EVERY_DAY)
 				.setParameter("everyWeek", Utils.EVERY_WEEK)
 				.setParameter("everyMonth", Utils.EVERY_MONT)
-				.setParameter("everyYear", Utils.EVERY_YEAR);
-
-		if (hasPid)
-			q.setParameter("pId", pId);
-		if (hasEid)
-			q.setParameter("eIds", eIds.size() == 1 ? eIds.iterator().next() : eIds);
+				.setParameter("everyYear", Utils.EVERY_YEAR)
+				.setParameter("pId", pId)
+				.setParameter("eIds", eIds);
 
 		return q.getResultList();
 	}

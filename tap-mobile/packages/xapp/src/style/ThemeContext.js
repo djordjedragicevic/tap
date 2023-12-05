@@ -48,9 +48,20 @@ export const usePrimaryColor = () => {
 	return theme.colors.primary;
 };
 
-export const useColor = (colorName) => {
+export const useColor = (color) => {
 	const theme = useTheme();
-	return theme.colors[colorName];
+	let resp;
+	if (Array.isArray(color)) {
+		resp = [];
+		for (let i = 0, s = color.length; i < s; i++)
+			resp.push(theme.colors[color[i]])
+	}
+	else {
+		resp = theme.colors[color];
+	}
+
+	return resp;
+
 };
 
 export const useIsDarkTheme = () => {
