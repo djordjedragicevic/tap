@@ -1,17 +1,13 @@
-package com.tap.rest;
+package com.tap.rest.user;
 
 import com.tap.common.FSAsset;
 import com.tap.security.Public;
-import com.tap.security.Secured;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.config.ConfigProvider;
-
-import java.io.*;
 
 @Path("asset")
-public class AssetService {
+public class AssetRepository {
 	@GET
 	@Path("download")
 	@Public

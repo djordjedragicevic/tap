@@ -6,8 +6,9 @@ import I18n from "xapp/src/i18n/I18n";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { storeDispatch } from "xapp/src/store/store";
 import { Http } from "xapp/src/common/Http";
+import { SERVICE_MANAGEMENT_SCREEN } from "../navigators/routes";
 
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }) => {
 	const isLogged = useIsUserLogged();
 	const t = useTranslation();
 
@@ -32,6 +33,14 @@ const SettingsScreen = () => {
 					onPress={doLogout}
 				/>
 			}
+			<XButton
+				bottom
+				iconLeft='edit'
+				title={t("Service management")}
+				uppercase={false}
+				style={{ marginTop: 15 }}
+				onPress={() => navigation.navigate(SERVICE_MANAGEMENT_SCREEN)}
+			/>
 		</XScreen>
 	);
 }

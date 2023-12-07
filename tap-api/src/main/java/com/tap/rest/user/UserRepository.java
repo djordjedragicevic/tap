@@ -1,4 +1,4 @@
-package com.tap.rest;
+package com.tap.rest.user;
 
 import com.tap.common.Util;
 import com.tap.db.dto.UserDto;
@@ -29,42 +29,6 @@ public class UserRepository {
 
 	@Inject
 	CUserRepository cUserRepository;
-
-//	@Transactional
-//	public int saveNewUser(String username, String email, String password, com.tap.security.Role r, String code) throws InvalidKeySpecException, NoSuchAlgorithmException {
-//
-//		String salt = Util.getRandomString(16, true);
-//		String encryptedPass = Security.encryptPassword(password, salt);
-//
-//		User u = new User();
-//		u.setUsername(username);
-//		u.setEmail(email);
-//		u.setPassword(encryptedPass);
-//		u.setSalt(salt);
-//		u.setCreateDate(Util.zonedNow());
-//
-//		long vCDuration = ConfigProvider.getConfig().getValue("tap.verification.code.duration", Long.class);
-//		LocalDateTime vCTime = LocalDateTime.now(Util.zone());
-//		LocalDateTime vCExpireTime = vCTime.plusMinutes(vCDuration);
-//
-//		UserVerification validation = new UserVerification();
-//		validation.setCode(code);
-//		validation.setUser(u);
-//		validation.setCreateTime(vCTime);
-//		validation.setExpireTime(vCExpireTime);
-//
-//		Role role = cUserRepository.getRoles(u.getId());
-//		UserRole uR = new UserRole();
-//		uR.setUser(u);
-//		uR.setRole(role);
-//
-//		em.persist(u);
-//		em.persist(validation);
-//		em.persist(uR);
-//		em.flush();
-//
-//		return u.getId();
-//	}
 
 	public Map<String, Object> getUserData(int userId) {
 

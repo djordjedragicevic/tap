@@ -7,6 +7,7 @@ package com.tap.db.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
+import jakarta.json.bind.annotation.JsonbTransient;
 import java.math.BigDecimal;
 
 @Entity
@@ -47,14 +48,17 @@ public class Service implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="category_id", referencedColumnName="id")
+	@JsonbTransient
 	private Category category ; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="group_id", referencedColumnName="id")
+	@JsonbTransient
 	private Group group ; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="provider_id", referencedColumnName="id")
+	@JsonbTransient
 	private Provider provider ; 
 
 	public Service() {

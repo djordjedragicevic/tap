@@ -1,7 +1,6 @@
-package com.tap.rest;
+package com.tap.rest.user;
 
 import com.tap.db.dto.EmployeeDto;
-import com.tap.db.dto.WorkPeriodDto;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.security.Public;

@@ -1,13 +1,9 @@
 package com.tap.rest.business;
 
 import com.tap.common.FSAsset;
-import com.tap.db.dto.EmployeeDto;
-import com.tap.db.entity.Employee;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.rest.common.CController;
-import com.tap.rest.common.CUserRepository;
-import com.tap.rest.common.CUtilRepository;
 import com.tap.security.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -22,7 +18,7 @@ import java.util.Map;
 
 @RequestScoped
 @Path("business/app")
-public class BAppService {
+public class BAppResource {
 	@Inject
 	CController cController;
 

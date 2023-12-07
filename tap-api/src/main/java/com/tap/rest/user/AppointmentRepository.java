@@ -1,4 +1,4 @@
-package com.tap.rest;
+package com.tap.rest.user;
 
 import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.ProviderWorkInfo;
@@ -28,13 +28,13 @@ import java.util.stream.Collectors;
 
 @Path("appointments")
 @RequestScoped
-public class AppointmentService {
+public class AppointmentRepository {
 	private static final int FREE_APP_CREATING_STEP = 15;
 	@Inject
 	private ProviderRepository providerRepository;
 
 	@Inject
-	private AppointmentRepository appointmentRep;
+	private com.tap.rest.AppointmentRepository appointmentRep;
 	@Inject
 	private CAppointmentRepository cAppointmentRepository;
 

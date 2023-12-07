@@ -14,6 +14,7 @@ export const MAIN_TAB_SETTINGS = 'MainTabSettings';
 export const CREATE_PERIOD_SCREEN = 'CreatePeriodScreen';
 export const CREATE_APPOINTMENT_SCREEN = 'CreateAppointmentScreen';
 export const LOGIN_SCREEN = 'LoginScreen';
+export const SERVICE_MANAGEMENT_SCREEN = 'ServiceManagementScreen';
 
 export const MAIN_STACK = 'MainStack';
 

@@ -7,7 +7,6 @@ import com.tap.db.entity.*;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.rest.common.CUtilRepository;
-import com.tap.security.Public;
 import com.tap.security.Role;
 import com.tap.security.Secured;
 import com.tap.security.Token;
@@ -17,7 +16,6 @@ import jakarta.json.JsonObject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
@@ -29,7 +27,7 @@ import java.util.Map;
 
 @Path("/business/custom-periods")
 @RequestScoped
-public class BCustomPeriodService {
+public class BCustomPeriodResource {
 	@Inject
 	CUtilRepository cUtilRepository;
 	@Inject

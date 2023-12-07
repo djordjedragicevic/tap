@@ -166,6 +166,37 @@ const AppointmentsScreen = ({ navigation, route }) => {
 			return {}
 	}, [selectedPeriod, data, selectedEmpIdx]);
 
+	const modalButtons = useMemo(() => {
+		if (isWaitingAppointment(selectedPeriod))
+			return (
+				<View style={{ flexDirection: 'row', columnGap: 5 }}>
+					<XButton title={I18n.t('Reject')}
+						color={redColor}
+						flex
+						onPress={() => onAppStateChange(selectedPeriod, 'reject')}
+					/>
+					<XButton
+						title={I18n.t('Accept')}
+						primary
+						flex
+						onPress={() => onAppStateChange(selectedPeriod, 'accept')}
+					/>
+				</View>
+			)
+		else if (selectedPeriod?.name === PERIOD.CLOSE_EMPLOYEE_BUSY) {
+			return (
+				<View style={{ flexDirection: 'row', columnGap: 5 }}>
+					<XButton title={I18n.t('Delete')}
+						color={redColor}
+						flex
+						onPress={() => { }}
+					/>
+				</View>
+			)
+		}
+
+	}, [selectedPeriod, redColor, onAppStateChange])
+
 	useEffect(() => {
 		setLoading(true);
 		let finish = true;
@@ -176,7 +207,6 @@ const AppointmentsScreen = ({ navigation, route }) => {
 					const eId = storeGetValue(gS => gS.user.employee.id);
 					if (isOwner && resp.employees?.length > 1) {
 						const eIdx = resp.employees.findIndex(e => e.employeeId === eId);
-						console.log("ED", eIdx)
 						const e = { ...resp.employees[eIdx] };
 						e.name = I18n.t('Me');
 						resp.employees.splice(1, eIdx);
@@ -285,23 +315,7 @@ const AppointmentsScreen = ({ navigation, route }) => {
 			>
 				<View style={{ flex: 1, padding: 10 }}>
 					<XTextLabels items={modalData.labels} />
-
-					{
-						isWaitingAppointment(selectedPeriod) &&
-						<View style={{ flexDirection: 'row', columnGap: 5 }}>
-							<XButton title={t('Reject')}
-								color={redColor}
-								flex
-								onPress={() => onAppStateChange(selectedPeriod, 'reject')}
-							/>
-							<XButton
-								title={t('Accept')}
-								primary
-								flex
-								onPress={() => onAppStateChange(selectedPeriod, 'accept')}
-							/>
-						</View>
-					}
+					{modalButtons}
 				</View>
 			</XBottomSheetModal>
 		</>

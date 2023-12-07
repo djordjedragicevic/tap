@@ -9,6 +9,7 @@ export const strings = {
 	"Log out": "Log out",
 	"Username or email": "Username or email",
 	"Password": "Password",
+	"Delete": "Delete",
 	
 	"Break": "Break",
 	"Don't have an account?": "Don't have an account?",
@@ -42,5 +43,6 @@ export const strings = {
 
 	"Invalid time period": "Invalid time period",
 	"Duration of time period must be at least one minute": "Duration of time period must be at least one minute",
-	"Me": "Me"
+	"Me": "Me",
+	"Service management": "Service management"
 };

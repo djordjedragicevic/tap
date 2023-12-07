@@ -1,10 +1,9 @@
-package com.tap.rest;
+package com.tap.rest.user;
 
 import com.tap.rest.common.CController;
 import com.tap.security.Credentials;
 import com.tap.security.Public;
 import com.tap.security.Role;
-import com.tap.security.Token;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -18,7 +17,7 @@ import java.util.Map;
 
 @RequestScoped
 @Path("app")
-public class AppService {
+public class AppRepository {
 	@Inject
 	CController cController;
 

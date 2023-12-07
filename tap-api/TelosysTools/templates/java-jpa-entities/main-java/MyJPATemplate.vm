@@ -39,6 +39,7 @@ $generator.generate($target.entityName ,  "${jpaEntityIdClass}.java", $target.fo
 import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
+import jakarta.json.bind.annotation.JsonbTransient;
 #foreach( $import in $java.imports($entity) )
 #if(!$import.toString().contains("List"))
 import $import;
@@ -80,6 +81,7 @@ $jpa.fieldAnnotations(4, $attribute)
 ##$jpa.linkAnnotations(4, $link, $entity.attributes)
 ##--- no "insertable=false, updatable=false" if already mapped
 $jpa.linkAnnotations(4, $link)
+	@JsonbTransient
 ##--- Just @Cardinality annotation
 ## $jpa.linkCardinalityAnnotation(4, $link) 
 ##--- Just @JoinColumn(s) annotation(s)

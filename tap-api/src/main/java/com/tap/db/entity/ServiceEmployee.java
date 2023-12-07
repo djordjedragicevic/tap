@@ -7,6 +7,7 @@ package com.tap.db.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
+import jakarta.json.bind.annotation.JsonbTransient;
 
 @Entity
 @Table(name="service_employee", catalog="tap" )
@@ -22,10 +23,12 @@ public class ServiceEmployee implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="employee_id", referencedColumnName="id")
+	@JsonbTransient
 	private Employee employee ; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="service_id", referencedColumnName="id")
+	@JsonbTransient
 	private Service service ; 
 
 	public ServiceEmployee() {

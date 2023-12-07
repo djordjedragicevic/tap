@@ -62,6 +62,8 @@ public class Util {
 		String key;
 
 		for (int i = 0, s = keys.size(); i < s; i++) {
+			if (r[i] == null)
+				continue;
 			tmpK = keys.get(i);
 
 			if (tmpK instanceof List<?>) {

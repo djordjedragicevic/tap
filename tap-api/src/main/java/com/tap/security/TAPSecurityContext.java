@@ -20,7 +20,12 @@ public class TAPSecurityContext implements SecurityContext {
 
 	@Override
 	public Principal getUserPrincipal() {
-		return () -> String.valueOf(this.userId);
+		String name = String.valueOf(this.userId);
+		if (this.token.getProviderId() > 0)
+			name += ("_" + this.token.getProviderId() + "_" + this.token.getEmployeeId());
+
+		String finalName = name;
+		return () -> finalName;
 	}
 
 	@Override
@@ -36,9 +41,5 @@ public class TAPSecurityContext implements SecurityContext {
 	@Override
 	public String getAuthenticationScheme() {
 		return null;
-	}
-
-	public Token getToken() {
-		return this.token;
 	}
 }

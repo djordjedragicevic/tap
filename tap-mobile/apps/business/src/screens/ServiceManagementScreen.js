@@ -1,17 +1,13 @@
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { useHTTPGet } from "xapp/src/common/Http";
-import { StyleSheet, Pressable, View, SectionList } from "react-native";
-import { Theme } from "xapp/src/style/themes";
+import { memo, useCallback, useEffect, useState } from "react";
+import { SectionList, View, StyleSheet, Pressable } from "react-native";
+import { Http } from "xapp/src/common/Http";
+import { groupServices } from "xapp/src/common/general";
+import XScreen from "xapp/src/components/XScreen";
 import XCheckBox from "xapp/src/components/basic/XCheckBox";
 import XText from "xapp/src/components/basic/XText";
-import XToolbarContainer from "xapp/src/components/XToolbarContainer";
-import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
-
-
-let lastP = {};
-
-
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
+import { Theme } from "xapp/src/style/themes";
 
 const areSIEqual = (oldProps, newProps) => {
 	return oldProps.id === newProps.id && oldProps.isSelected === newProps.isSelected;
@@ -31,18 +27,15 @@ const ServiceItem = memo(({
 	const tStyles = useThemedStyle(serviceItemSC, isSelected);
 	const t = useTranslation();
 
-	const onItemPress = () => {
-		onPress(id);
-	};
 
 	const dur = (durationTo ? duration + ' - ' + durationTo : duration) + ' ' + t('min') + '.'
 	return (
 		<Pressable
-			onPress={onItemPress}
+			onPress={onPress}
 			style={tStyles.container}
 		>
 			<View style={{ alignSelf: 'center' }}>
-				<XCheckBox checked={isSelected} setChecked={onItemPress} size={14} />
+				<XCheckBox checked={isSelected} setChecked={onPress} size={14} />
 			</View>
 
 			<View style={{ flex: 1 }}>
@@ -77,31 +70,14 @@ const serviceItemSC = (theme, selected) => StyleSheet.create({
 	}
 });
 
-
-const TabServices = ({
-	providerId,
-	selected,
-	setSelected,
-	setPriceSum
-}) => {
-
+const ServiceManagementScreen = () => {
+	const [services, setServices] = useState();
 	const [selectedCatIdx, setSelectedCatIdx] = useState(0);
+	const [selected, setSelected] = useState([]);
 	const styles = useThemedStyle(styleCreator);
 
-	const [provider] = useHTTPGet(`/provider/${providerId}`, undefined, lastP[providerId]);
-	lastP[providerId] = provider;
-
-	const services = useMemo(() => groupServices(provider?.services), [provider]);
-	const hasCats = services?.categoryList.length > 1;
-
-	useEffect(() => {
-		const priceSum = selected.map(sId => services.sMap[sId].price).reduce((accumulator, price) => accumulator + price, 0);
-		setPriceSum(priceSum)
-	}, [selected, services, setPriceSum]);
-
-
-
 	const onItemPress = useCallback((itemId) => {
+		console.log("SELECT");
 		const selectedIdx = selected.indexOf(itemId);
 		if (selectedIdx > -1) {
 			setSelected(old => old.filter(oldId => oldId !== itemId));
@@ -110,6 +86,13 @@ const TabServices = ({
 			setSelected(old => [...old, itemId])
 
 	}, [selected]);
+	
+	useEffect(() => {
+		Http.get('/service-management/list')
+			.then(resp => {
+				setServices(groupServices(resp));
+			})
+	}, []);
 
 	const renderItem = useCallback(({ item }) => (
 		<ServiceItem
@@ -133,46 +116,18 @@ const TabServices = ({
 		)
 	}, [styles]);
 
-	const onCategoryRender = useCallback((item, idx, minItemWidth) => {
-		const isSelected = idx === selectedCatIdx;
-
-		return (
-			<Pressable
-				onPress={() => setSelectedCatIdx(idx)}
-				key={item.id}
-				style={[styles.category, { minWidth: minItemWidth }, isSelected && styles.categorySelected]}
-			>
-				<XText light={isSelected}>{item.name}</XText>
-			</Pressable>
-		)
-	}, [setSelectedCatIdx, selectedCatIdx]);
-
-	if (!provider)
-		return null;
-
 
 	return (
-		<View style={{ flex: 1 }}>
-			{
-				hasCats &&
-				<XToolbarContainer
-					items={services?.categoryList || []}
-					onItemRender={onCategoryRender}
-					minItemWidth={90}
-					tabBarHMargin={5}
-					barHeight={42}
-				/>
-			}
-
+		<XScreen>
 			<SectionList
-				sections={services.categories[services.categoryList[selectedCatIdx].id].groups}
+				sections={services?.categories[services.categoryList[selectedCatIdx].id].groups || []}
 				renderItem={renderItem}
 				renderSectionHeader={renderSectionHeader}
 				contentContainerStyle={styles.sContentContainerStyle}
 				showsVerticalScrollIndicator={true}
 				scrollEventThrottle={16}
 			/>
-		</View>
+		</XScreen>
 	);
 };
 
@@ -199,4 +154,4 @@ const styleCreator = (theme) => StyleSheet.create({
 	}
 });
 
-export default TabServices;
+export default ServiceManagementScreen;

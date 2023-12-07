@@ -7,6 +7,7 @@ package com.tap.db.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
+import jakarta.json.bind.annotation.JsonbTransient;
 import java.time.LocalDateTime;
 
 @Entity
@@ -56,10 +57,12 @@ public class Provider implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="address_id", referencedColumnName="id")
+	@JsonbTransient
 	private Address address ; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="provider_type_id", referencedColumnName="id")
+	@JsonbTransient
 	private ProviderType providertype ; 
 
 	public Provider() {

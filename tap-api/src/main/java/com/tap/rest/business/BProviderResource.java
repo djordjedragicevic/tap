@@ -7,7 +7,6 @@ import com.tap.security.Security;
 import com.tap.security.Token;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
@@ -17,7 +16,7 @@ import java.util.Map;
 @RequestScoped
 @Path("business/provider")
 @Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
-public class BProviderService {
+public class BProviderResource {
 
 	@Inject
 	BProviderRepository bProviderRepository;

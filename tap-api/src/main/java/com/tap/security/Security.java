@@ -16,7 +16,40 @@ public class Security {
 		if (p != null) {
 			String id = p.getName();
 			if (id != null && !id.isEmpty()) {
-				return Integer.parseInt(id);
+				if (id.contains("_"))
+					return Integer.parseInt(id.split("_")[0]);
+				else
+					return Integer.parseInt(id);
+			}
+		}
+
+		return -1;
+	}
+
+	public static long getProviderId(SecurityContext sC) {
+		Principal p = sC.getUserPrincipal();
+		if (p != null) {
+			String id = p.getName();
+			if (id != null && !id.isEmpty()) {
+				if (id.contains("_"))
+					return Integer.parseInt(id.split("_")[1]);
+				else
+					return -1;
+			}
+		}
+
+		return -1;
+	}
+
+	public static long getEmployeeId(SecurityContext sC) {
+		Principal p = sC.getUserPrincipal();
+		if (p != null) {
+			String id = p.getName();
+			if (id != null && !id.isEmpty()) {
+				if (id.contains("_"))
+					return Integer.parseInt(id.split("_")[2]);
+				else
+					return -1;
 			}
 		}
 
@@ -26,7 +59,7 @@ public class Security {
 	public static String encryptPassword(String password, String salt) throws InvalidKeySpecException, NoSuchAlgorithmException {
 
 		String algorithm = "PBKDF2WithHmacSHA1";
-		int derivedKeyLength = 8*32; // for SHA1
+		int derivedKeyLength = 8 * 32; // for SHA1
 		int iterations = 20000; // NIST specifies 10000
 
 		byte[] saltBytes = Base64.getDecoder().decode(salt);

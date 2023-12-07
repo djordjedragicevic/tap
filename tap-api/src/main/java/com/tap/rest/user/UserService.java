@@ -1,7 +1,6 @@
-package com.tap.rest;
+package com.tap.rest.user;
 
 import com.tap.common.FSAsset;
-import com.tap.common.Mail;
 import com.tap.common.Util;
 import com.tap.db.dto.UserDto;
 import com.tap.db.entity.User;

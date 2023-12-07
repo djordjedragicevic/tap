@@ -25,7 +25,7 @@ import java.util.*;
 @Path("/business/appointments")
 @RequestScoped
 @Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
-public class BAppointmentsService {
+public class BAppointmentsResource {
 	@Inject
 	BAppointmentRepository bAppointmentRepository;
 	@Inject

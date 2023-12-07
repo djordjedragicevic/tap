@@ -140,11 +140,17 @@ public class Token {
 	}
 
 	public int getProviderId() {
-		return this.payload.getJsonNumber("providerId").intValue();
+		if (this.payload.containsKey("providerId"))
+			return this.payload.getJsonNumber("providerId").intValue();
+		else
+			return -1;
 	}
 
 	public int getEmployeeId() {
-		return this.payload.getJsonNumber("employeeId").intValue();
+		if (this.payload.containsKey("employeeId"))
+			return this.payload.getJsonNumber("employeeId").intValue();
+		else
+			return -1;
 	}
 
 

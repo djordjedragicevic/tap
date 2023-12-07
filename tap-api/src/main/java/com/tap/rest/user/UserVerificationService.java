@@ -1,4 +1,4 @@
-package com.tap.rest;
+package com.tap.rest.user;
 
 import com.tap.common.Mail;
 import com.tap.common.Util;

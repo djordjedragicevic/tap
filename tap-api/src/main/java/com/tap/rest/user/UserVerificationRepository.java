@@ -1,4 +1,4 @@
-package com.tap.rest;
+package com.tap.rest.user;
 
 import com.tap.common.Util;
 import com.tap.db.entity.User;

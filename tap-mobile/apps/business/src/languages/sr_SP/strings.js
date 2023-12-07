@@ -10,6 +10,7 @@ export const strings = {
 	"Cancel": "Otkaži",
 	"OK": "OK",
 	"Don't have an account?": "Još uvijek nemate nalog?",
+	"Delete": "Obriši",
 	
 	"Break": "Pauza",
 	"Reserved time": "Rezervisano vrijeme",
@@ -43,5 +44,6 @@ export const strings = {
 
 	"Invalid time period": "Neispravan vremenski period",
 	"Duration of time period must be at least one minute": "Trajanje vremenskog perioda mora da iznosi najmanje 1 minutu",
-	"Me": "Ja"
+	"Me": "Ja",
+	"Service management": "Upravljanje uslugama"
 };
