@@ -5,7 +5,7 @@ import { Theme } from "xapp/src/style/themes";
 import XText from "xapp/src/components/basic/XText";
 import XIcon from "xapp/src/components/basic/XIcon";
 import { PERIOD, STATUS, isWaitingAppointment } from "../../common/general";
-import I18n from "xapp/src/i18n/I18n";
+import I18nT from "xapp/src/i18n/i18n";
 import { FontAwesome5 } from '@expo/vector-icons';
 
 const getPeriodColor = (item) => {
@@ -58,10 +58,10 @@ const getPeriodText = (item) => {
 			break;
 		case PERIOD.CLOSE_EMPLOYEE_BREAK:
 		case PERIOD.CLOSE_PROVIDER_BREAK:
-			text += ' ' + I18n.t('Break');
+			text += ' ' + I18nT.t('Break');
 			break;
 		default:
-			text += ' ' + (item.data.comment ? item.data.comment : I18n.t('Reserved time'));
+			text += ' ' + (item.data.comment ? item.data.comment : I18nT.t('Reserved time'));
 			break;
 	}
 

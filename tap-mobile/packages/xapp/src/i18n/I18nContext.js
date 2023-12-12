@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import I18n from "./I18n";
+import I18nT from "./i18n";
 
 const I18nContext = createContext({
 	lng: {},
@@ -8,11 +8,11 @@ const I18nContext = createContext({
 
 export const I18nContextProvider = ({ children }) => {
 
-	const [lng, setLng] = useState(I18n.getLanguage());
+	const [lng, setLng] = useState(I18nT.getLanguage());
 
 	const setLanguage = useCallback((lngId) => {
-		setLng(I18n.changeLanguageById(lngId));
-	}, [setLng, I18n.changeLanguageById]);
+		setLng(I18nT.changeLanguageById(lngId));
+	}, [setLng, I18nT.changeLanguageById]);
 
 	const context = useMemo(() => ({
 		lng,
@@ -29,7 +29,7 @@ export const I18nContextProvider = ({ children }) => {
 export const useTranslation = () => {
 	const { lng } = useContext(I18nContext);
 
-	const t = useCallback((text, params) => I18n.t(text, params), [lng]);
+	const t = useCallback((text, params) => I18nT.t(text, params), [lng]);
 
 	return t;
 };

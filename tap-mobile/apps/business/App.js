@@ -23,14 +23,14 @@ import { strings as en_US_str } from './src/languages/en_US/strings';
 import { errors as en_US_err } from './src/languages/en_US/errors';
 import { strings as sr_SP_str } from './src/languages/sr_SP/strings';
 import { errors as sr_SP_err } from './src/languages/sr_SP/errors';
-import I18n from 'xapp/src/i18n/I18n';
+import I18nT from 'xapp/src/i18n/i18n';
 import { emptyFn } from 'xapp/src/common/utils';
 
 storeInit(appStore());
 storeInit(userStore());
 
 Http.init(HOST, API_URL, HTTP_TIMEOUT);
-I18n.init({
+I18nT.init({
 	langs: {
 		en_US: {
 			id: 'en_US',
@@ -72,11 +72,11 @@ export default App = () => {
 	useEffect(() => {
 		Promise.all([
 			Storage.get(Theme.STORAGE_HEY, Theme.SYSETM),
-			Storage.get(I18n.STORAGE_HEY, DEFAULT_LANGUAGE)
+			Storage.get(I18nT.STORAGE_HEY, DEFAULT_LANGUAGE)
 		]).then(([themeId, langId]) => {
 			setInitialTheme(Theme.LIGHT);
-			if (I18n.getLanguage().id !== langId)
-				I18n.changeLanguageById(langId)
+			if (I18nT.getLanguage().id !== langId)
+				I18nT.changeLanguageById(langId)
 			setInitialLanguage(langId);
 		});
 	}, []);

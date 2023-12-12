@@ -16,7 +16,7 @@ import XTextLabels from 'xapp/src/components/XTextLabels';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
 import { PERIOD, getFrendlyName, isWaitingAppointment } from '../common/general';
 import { CREATE_APPOINTMENT_SCREEN, CREATE_PERIOD_SCREEN } from '../navigators/routes';
-import I18n from 'xapp/src/i18n/I18n';
+import I18nT from 'xapp/src/i18n/i18n';
 import XButtonExtend from 'xapp/src/components/basic/XButtonExtend';
 import { useIsRoleOwner } from '../store/concreteStores';
 
@@ -98,33 +98,33 @@ const getArrangedTimeline = (emp) => {
 const getModalData = (employee, item) => {
 
 	const data = {
-		title: I18n.t(getFrendlyName(item)),
+		title: I18nT.t(getFrendlyName(item)),
 		labels: []
 	};
 
 	if (item.name === PERIOD.CLOSE_APPOINTMENT) {
 		data.labels = [
-			{ label: I18n.t('Service'), value: item.data.sName },
-			{ label: I18n.t('Employee'), value: employee.name },
-			{ label: I18n.t('From'), value: item.start },
-			{ label: I18n.t('To'), value: item.end },
-			{ label: I18n.t('Duration'), value: DateUtils.formatToHourMin(DateUtils.minToHMin(item.data.sDuration)) },
-			{ label: I18n.t('Price'), value: CurrencyUtils.convert(item.data.sPrice) },
-			{ label: I18n.t('User'), value: item.data.uUsername || item.data.userName || '-' }
+			{ label: I18nT.t('Service'), value: item.data.sName },
+			{ label: I18nT.t('Employee'), value: employee.name },
+			{ label: I18nT.t('From'), value: item.start },
+			{ label: I18nT.t('To'), value: item.end },
+			{ label: I18nT.t('Duration'), value: DateUtils.formatToHourMin(DateUtils.minToHMin(item.data.sDuration)) },
+			{ label: I18nT.t('Price'), value: CurrencyUtils.convert(item.data.sPrice) },
+			{ label: I18nT.t('User'), value: item.data.uUsername || item.data.userName || '-' }
 		];
 	}
 	else {
 		data.labels = [
-			{ label: I18n.t('Employee'), value: employee.name },
-			{ label: I18n.t('From'), value: item.start },
-			{ label: I18n.t('To'), value: item.end },
-			{ label: I18n.t('Duration'), value: DateUtils.formatToHourMin(DateUtils.timesDiff(item.start, item.end)) }
+			{ label: I18nT.t('Employee'), value: employee.name },
+			{ label: I18nT.t('From'), value: item.start },
+			{ label: I18nT.t('To'), value: item.end },
+			{ label: I18nT.t('Duration'), value: DateUtils.formatToHourMin(DateUtils.timesDiff(item.start, item.end)) }
 		];
 
 	}
 
 	if (item.comment) {
-		data.labels.push({ label: I18n.t('Comment'), value: item.comment });
+		data.labels.push({ label: I18nT.t('Comment'), value: item.comment });
 	}
 
 	return data;
@@ -170,13 +170,13 @@ const AppointmentsScreen = ({ navigation, route }) => {
 		if (isWaitingAppointment(selectedPeriod))
 			return (
 				<View style={{ flexDirection: 'row', columnGap: 5 }}>
-					<XButton title={I18n.t('Reject')}
+					<XButton title={I18nT.t('Reject')}
 						color={redColor}
 						flex
 						onPress={() => onAppStateChange(selectedPeriod, 'reject')}
 					/>
 					<XButton
-						title={I18n.t('Accept')}
+						title={I18nT.t('Accept')}
 						primary
 						flex
 						onPress={() => onAppStateChange(selectedPeriod, 'accept')}
@@ -186,7 +186,7 @@ const AppointmentsScreen = ({ navigation, route }) => {
 		else if (selectedPeriod?.name === PERIOD.CLOSE_EMPLOYEE_BUSY) {
 			return (
 				<View style={{ flexDirection: 'row', columnGap: 5 }}>
-					<XButton title={I18n.t('Delete')}
+					<XButton title={I18nT.t('Delete')}
 						color={redColor}
 						flex
 						onPress={() => { }}
@@ -208,7 +208,7 @@ const AppointmentsScreen = ({ navigation, route }) => {
 					if (isOwner && resp.employees?.length > 1) {
 						const eIdx = resp.employees.findIndex(e => e.employeeId === eId);
 						const e = { ...resp.employees[eIdx] };
-						e.name = I18n.t('Me');
+						e.name = I18nT.t('Me');
 						resp.employees.splice(1, eIdx);
 						resp.employees.unshift(e);
 					}

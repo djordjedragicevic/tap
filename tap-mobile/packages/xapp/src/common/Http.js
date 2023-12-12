@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { storeDispatch } from '../store/store';
 import { CacheStorage, SecureStorage } from '../store/deviceStorage';
 import XAlert from '../components/basic/XAlert';
-import I18n from '../i18n/I18n';
+import I18nT from '../i18n/i18n';
 
 
 const S_KEY_TOKEN = 'token';
@@ -60,7 +60,7 @@ export class Http {
 				switch (response.status) {
 					case 400: //Bad request, used for custom errors
 						const resp = await response.json();
-						err = I18n.tErr(resp.tapEID);
+						err = I18nT.tErr(resp.tapEID);
 						errId = resp.tapEID;
 						if (resp.params) {
 							Object.entries(resp.params).forEach(([k, v]) => {
@@ -69,25 +69,25 @@ export class Http {
 						}
 						break;
 					case 401:
-						err = I18n.tErr(Http.ERR.UNAUTHENTICATE);
+						err = I18nT.tErr(Http.ERR.UNAUTHENTICATE);
 						errId = Http.ERR.UNAUTHENTICATE;
 						break;
 					case 403:
-						err = I18n.tErr(Http.ERR.FORBIDEN);
+						err = I18nT.tErr(Http.ERR.FORBIDEN);
 						errId = Http.ERR.FORBIDEN;
 						break;
 					default: {
-						err = I18n.tErr();
-						errId = I18n.fallbackError;
+						err = I18nT.tErr();
+						errId = I18nT.fallbackError;
 					}
 				}
 			}
 
 		} catch (e) {
 			if (e?.name === 'AbortError')
-				err = I18n.tErr(Http.ERR.CONNECTION_TIMEOUT);
+				err = I18nT.tErr(Http.ERR.CONNECTION_TIMEOUT);
 			else
-				err = I18n.tErr();
+				err = I18nT.tErr();
 		}
 		finally {
 			console.log(`HTTP ${err ? 'NOT ' : ''}SUCCESS: (${(new Date().getTime() - d) / 1000}s)`);

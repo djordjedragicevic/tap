@@ -1,4 +1,6 @@
-import I18n from "../i18n/I18n";
+import I18nT from "../i18n/i18n";
+
+
 
 export const emptyFn = function () { };
 
@@ -120,7 +122,7 @@ export const DateUtils = {
 	formatToHourMin(time) {
 		const splited = time.split(':');
 		console.log(splited)
-		return (parseInt(splited[0]) > 0 ? (splited[0] + I18n.t('h') + ':') : '') + splited[1] + I18n.t('min');
+		return (parseInt(splited[0]) > 0 ? (splited[0] + I18nT.t('h') + ':') : '') + splited[1] + I18nT.t('min');
 	},
 	minToHMin(minutes) {
 		return Math.floor(minutes / 60) + ':' + (minutes % 60).toLocaleString(undefined, { minimumIntegerDigits: 2 });

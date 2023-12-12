@@ -2,7 +2,7 @@ import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 import { useIsUserLogged } from "../store/concreteStores";
 import XButton from "xapp/src/components/basic/XButton";
-import I18n from "xapp/src/i18n/I18n";
+import I18nT from "xapp/src/i18n/i18n";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { storeDispatch } from "xapp/src/store/store";
 import { Http } from "xapp/src/common/Http";
