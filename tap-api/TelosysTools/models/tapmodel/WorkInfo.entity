@@ -1,6 +1,6 @@
-@DbTable(work_period)
+@DbTable(work_info)
 @DbCatalog(tap)
-WorkPeriod {
+WorkInfo {
   // attributes
   id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
   periodTypeId : int { @DbName(period_type_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_work_period_period_type1, PeriodType.id) };

@@ -29,20 +29,18 @@ public class Token implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="token_status_id", referencedColumnName="id")
-	@JsonbTransient
-	private TokenStatus tokenstatus ; 
+	private TokenStatus tokenstatus; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", referencedColumnName="id")
-	@JsonbTransient
-	private User user ; 
+	private User user; 
 
 	public Token() {
 		super();
 	}
 	
 	public void setId( long id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public long getId() {
@@ -50,7 +48,7 @@ public class Token implements Serializable {
 	}
 
 	public void setJti( String jti ) {
-		this.jti = jti ;
+		this.jti = jti;
 	}
 
 	public String getJti() {
@@ -58,7 +56,7 @@ public class Token implements Serializable {
 	}
 
 	public void setToken( String token ) {
-		this.token = token ;
+		this.token = token;
 	}
 
 	public String getToken() {

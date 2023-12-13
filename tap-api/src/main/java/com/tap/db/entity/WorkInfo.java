@@ -1,5 +1,5 @@
 /**
- * Generated JPA entity class for "WorkPeriod"
+ * Generated JPA entity class for "WorkInfo"
  */
 
 package com.tap.db.entity;
@@ -11,8 +11,8 @@ import jakarta.json.bind.annotation.JsonbTransient;
 import java.time.LocalTime;
 
 @Entity
-@Table(name="work_period", catalog="tap" )
-public class WorkPeriod implements Serializable {
+@Table(name="work_info", catalog="tap" )
+public class WorkInfo implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
@@ -33,25 +33,22 @@ public class WorkPeriod implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="employee_id", referencedColumnName="id")
-	@JsonbTransient
-	private Employee employee ; 
+	private Employee employee; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="period_type_id", referencedColumnName="id")
-	@JsonbTransient
-	private PeriodType periodtype ; 
+	private PeriodType periodtype; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="provider_id", referencedColumnName="id")
-	@JsonbTransient
-	private Provider provider ; 
+	private Provider provider; 
 
-	public WorkPeriod() {
+	public WorkInfo() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -59,7 +56,7 @@ public class WorkPeriod implements Serializable {
 	}
 
 	public void setDay( byte day ) {
-		this.day = day ;
+		this.day = day;
 	}
 
 	public byte getDay() {
@@ -67,7 +64,7 @@ public class WorkPeriod implements Serializable {
 	}
 
 	public void setStartTime( LocalTime startTime ) {
-		this.startTime = startTime ;
+		this.startTime = startTime;
 	}
 
 	public LocalTime getStartTime() {
@@ -75,7 +72,7 @@ public class WorkPeriod implements Serializable {
 	}
 
 	public void setEndTime( LocalTime endTime ) {
-		this.endTime = endTime ;
+		this.endTime = endTime;
 	}
 
 	public LocalTime getEndTime() {

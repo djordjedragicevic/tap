@@ -4,9 +4,9 @@ import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
 import com.tap.common.*;
 import com.tap.db.dtor.AppointmentDtoSimple;
-import com.tap.db.entity.BusyPeriod;
+import com.tap.db.entity.CustomPeriod;
 import com.tap.db.entity.Employee;
-import com.tap.db.entity.WorkPeriod;
+import com.tap.db.entity.WorkInfo;
 import com.tap.rest.common.CAppointmentRepository;
 import com.tap.rest.common.CUtilRepository;
 import com.tap.security.*;
@@ -108,8 +108,8 @@ public class BAppointmentsResource {
 	private ProviderWorkInfo generatePWI(Integer pId, LocalDate date, List<Employee> emps) {
 		List<Integer> eIds = emps.stream().mapToInt(Employee::getId).boxed().toList();
 		List<AppointmentDtoSimple> apps = bAppointmentRepository.getWAAppointmentsAtDay(eIds, date);
-		List<BusyPeriod> bps = cAppointmentRepository.getBusyPeriodsAtDay(pId, eIds, date);
-		List<WorkPeriod> wps = cAppointmentRepository.getBreaksPeriodsAtDay(pId, eIds, date.getDayOfWeek().getValue());
+		List<CustomPeriod> bps = cAppointmentRepository.getCustomPeriodsAtDay(pId, eIds, date);
+		List<WorkInfo> wps = cAppointmentRepository.getBreaksPeriodsAtDay(pId, eIds, date.getDayOfWeek().getValue());
 
 
 		ProviderWorkInfo pWI = new ProviderWorkInfo(pId)
@@ -145,7 +145,7 @@ public class BAppointmentsResource {
 		NamedTimePeriodExt tmpNTPE;
 		boolean isProviderLevel;
 		Map<String, Object> tmpData;
-		for (BusyPeriod bP : bps) {
+		for (CustomPeriod bP : bps) {
 			isProviderLevel = bP.getEmployee() == null;
 			tmpTP = bP.getRepeattype() != null ?
 					Utils.adjustRepeatablePeriodToOnaDate(date, bP.getStart(), bP.getEnd(), bP.getRepeattype().getName())
@@ -173,33 +173,33 @@ public class BAppointmentsResource {
 
 		//Work periods (breaks and working time)
 		boolean isClose;
-		for (WorkPeriod wP : wps) {
-			isProviderLevel = wP.getEmployee() == null;
-			isClose = !wP.getPeriodtype().isOpen();
+		for (WorkInfo wI : wps) {
+			isProviderLevel = wI.getEmployee() == null;
+			isClose = !wI.getPeriodtype().isOpen();
 
 			//Breaks
 			if (isClose) {
 				if (isProviderLevel)
 					for (ProviderWorkInfo.Employee e : pWI.getEmployees())
 						e.getTimeline().add(new NamedTimePeriodExt(
-								wP.getStartTime(),
-								wP.getEndTime(),
+								wI.getStartTime(),
+								wI.getEndTime(),
 								TypedTimePeriod.CLOSE,
 								NamedTimePeriod.CLOSE_PROVIDER_BREAK,
 								Map.of(
-										"id", wP.getId(),
-										"periodType", wP.getPeriodtype().getName()
+										"id", wI.getId(),
+										"periodType", wI.getPeriodtype().getName()
 								)
 						));
 				else
-					pWI.getEmployeeById(wP.getEmployee().getId()).getTimeline().add(new NamedTimePeriodExt(
-							wP.getStartTime(),
-							wP.getEndTime(),
+					pWI.getEmployeeById(wI.getEmployee().getId()).getTimeline().add(new NamedTimePeriodExt(
+							wI.getStartTime(),
+							wI.getEndTime(),
 							TypedTimePeriod.CLOSE,
 							NamedTimePeriod.CLOSE_EMPLOYEE_BREAK,
 							Map.of(
-									"id", wP.getId(),
-									"periodType", wP.getPeriodtype().getName()
+									"id", wI.getId(),
+									"periodType", wI.getPeriodtype().getName()
 							)
 					));
 
@@ -207,10 +207,10 @@ public class BAppointmentsResource {
 			//Working time
 			else {
 				if (isProviderLevel)
-					pWI.getWorkPeriods().add(new TimePeriod(wP.getStartTime(), wP.getEndTime()));
+					pWI.getWorkPeriods().add(new TimePeriod(wI.getStartTime(), wI.getEndTime()));
 				else
-					pWI.getEmployeeById(wP.getEmployee().getId())
-							.getWorkPeriods().add(new TimePeriod(wP.getStartTime(), wP.getEndTime()));
+					pWI.getEmployeeById(wI.getEmployee().getId())
+							.getWorkPeriods().add(new TimePeriod(wI.getStartTime(), wI.getEndTime()));
 			}
 
 		}

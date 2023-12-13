@@ -9,6 +9,7 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="user", catalog="tap" )
@@ -58,22 +59,48 @@ public class User implements Serializable {
 	private byte active;
 
 
+    @OneToMany()
+	@JsonbTransient
+	private List<Appointment> appointmentList; 
+
+    @OneToMany()
+	@JsonbTransient
+	private List<Appointment> appointmentList2; 
+
+    @OneToMany(mappedBy="user")
+	@JsonbTransient
+	private List<CustomPeriod> customperiodList; 
+
+    @OneToMany(mappedBy="user")
+	@JsonbTransient
+	private List<Employee> employeeList; 
+
+    @OneToMany(mappedBy="user")
+	@JsonbTransient
+	private List<Token> tokenList; 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="address_id", referencedColumnName="id")
-	@JsonbTransient
-	private Address address ; 
+	private Address address; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_state_id", referencedColumnName="id")
+	private UserState userstate; 
+
+    @OneToMany(mappedBy="user")
 	@JsonbTransient
-	private UserState userstate ; 
+	private List<UserRole> userroleList; 
+
+    @OneToMany(mappedBy="user")
+	@JsonbTransient
+	private List<UserVerification> userverificationList; 
 
 	public User() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -81,7 +108,7 @@ public class User implements Serializable {
 	}
 
 	public void setUsername( String username ) {
-		this.username = username ;
+		this.username = username;
 	}
 
 	public String getUsername() {
@@ -89,7 +116,7 @@ public class User implements Serializable {
 	}
 
 	public void setEmail( String email ) {
-		this.email = email ;
+		this.email = email;
 	}
 
 	public String getEmail() {
@@ -97,7 +124,7 @@ public class User implements Serializable {
 	}
 
 	public void setPassword( String password ) {
-		this.password = password ;
+		this.password = password;
 	}
 
 	public String getPassword() {
@@ -105,7 +132,7 @@ public class User implements Serializable {
 	}
 
 	public void setSalt( String salt ) {
-		this.salt = salt ;
+		this.salt = salt;
 	}
 
 	public String getSalt() {
@@ -113,7 +140,7 @@ public class User implements Serializable {
 	}
 
 	public void setFirstName( String firstName ) {
-		this.firstName = firstName ;
+		this.firstName = firstName;
 	}
 
 	public String getFirstName() {
@@ -121,7 +148,7 @@ public class User implements Serializable {
 	}
 
 	public void setLastName( String lastName ) {
-		this.lastName = lastName ;
+		this.lastName = lastName;
 	}
 
 	public String getLastName() {
@@ -129,7 +156,7 @@ public class User implements Serializable {
 	}
 
 	public void setPhone( String phone ) {
-		this.phone = phone ;
+		this.phone = phone;
 	}
 
 	public String getPhone() {
@@ -137,7 +164,7 @@ public class User implements Serializable {
 	}
 
 	public void setImgpath( String imgpath ) {
-		this.imgpath = imgpath ;
+		this.imgpath = imgpath;
 	}
 
 	public String getImgpath() {
@@ -145,7 +172,7 @@ public class User implements Serializable {
 	}
 
 	public void setCreateDate( LocalDateTime createDate ) {
-		this.createDate = createDate ;
+		this.createDate = createDate;
 	}
 
 	public LocalDateTime getCreateDate() {
@@ -153,7 +180,7 @@ public class User implements Serializable {
 	}
 
 	public void setLastLogin( LocalDateTime lastLogin ) {
-		this.lastLogin = lastLogin ;
+		this.lastLogin = lastLogin;
 	}
 
 	public LocalDateTime getLastLogin() {
@@ -161,7 +188,7 @@ public class User implements Serializable {
 	}
 
 	public void setVerified( byte verified ) {
-		this.verified = verified ;
+		this.verified = verified;
 	}
 
 	public byte getVerified() {
@@ -169,13 +196,48 @@ public class User implements Serializable {
 	}
 
 	public void setActive( byte active ) {
-		this.active = active ;
+		this.active = active;
 	}
 
 	public byte getActive() {
 		return this.active;
 	}
 
+	public List<Appointment> getAppointmentList() {
+		return this.appointmentList;
+	}
+	
+	public void setAppointmentList(List<Appointment> appointmentList) {
+		this.appointmentList = appointmentList;
+	}
+	public List<Appointment> getAppointmentList2() {
+		return this.appointmentList2;
+	}
+	
+	public void setAppointmentList2(List<Appointment> appointmentList2) {
+		this.appointmentList2 = appointmentList2;
+	}
+	public List<CustomPeriod> getCustomperiodList() {
+		return this.customperiodList;
+	}
+	
+	public void setCustomperiodList(List<CustomPeriod> customperiodList) {
+		this.customperiodList = customperiodList;
+	}
+	public List<Employee> getEmployeeList() {
+		return this.employeeList;
+	}
+	
+	public void setEmployeeList(List<Employee> employeeList) {
+		this.employeeList = employeeList;
+	}
+	public List<Token> getTokenList() {
+		return this.tokenList;
+	}
+	
+	public void setTokenList(List<Token> tokenList) {
+		this.tokenList = tokenList;
+	}
 	public Address getAddress() {
 		return this.address;
 	}
@@ -189,5 +251,19 @@ public class User implements Serializable {
 	
 	public void setUserstate(UserState userstate) {
 		this.userstate = userstate;
+	}
+	public List<UserRole> getUserroleList() {
+		return this.userroleList;
+	}
+	
+	public void setUserroleList(List<UserRole> userroleList) {
+		this.userroleList = userroleList;
+	}
+	public List<UserVerification> getUserverificationList() {
+		return this.userverificationList;
+	}
+	
+	public void setUserverificationList(List<UserVerification> userverificationList) {
+		this.userverificationList = userverificationList;
 	}
 }

@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
+import java.util.List;
 
 @Entity
 @Table(name="provider_type", catalog="tap" )
@@ -30,12 +31,16 @@ public class ProviderType implements Serializable {
 	private boolean active;
 
 
+    @OneToMany(mappedBy="providertype")
+	@JsonbTransient
+	private List<Provider> providerList; 
+
 	public ProviderType() {
 		super();
 	}
 	
 	public void setId( short id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public short getId() {
@@ -43,7 +48,7 @@ public class ProviderType implements Serializable {
 	}
 
 	public void setName( String name ) {
-		this.name = name ;
+		this.name = name;
 	}
 
 	public String getName() {
@@ -51,7 +56,7 @@ public class ProviderType implements Serializable {
 	}
 
 	public void setDescription( String description ) {
-		this.description = description ;
+		this.description = description;
 	}
 
 	public String getDescription() {
@@ -59,11 +64,18 @@ public class ProviderType implements Serializable {
 	}
 
 	public void setActive( boolean active ) {
-		this.active = active ;
+		this.active = active;
 	}
 
 	public boolean isActive() {
 		return this.active;
 	}
 
+	public List<Provider> getProviderList() {
+		return this.providerList;
+	}
+	
+	public void setProviderList(List<Provider> providerList) {
+		this.providerList = providerList;
+	}
 }

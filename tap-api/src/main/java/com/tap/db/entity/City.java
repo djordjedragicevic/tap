@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
+import java.util.List;
 
 @Entity
 @Table(name="city", catalog="tap" )
@@ -30,17 +31,20 @@ public class City implements Serializable {
 	private boolean active;
 
 
+    @OneToMany(mappedBy="city")
+	@JsonbTransient
+	private List<Address> addressList; 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="country_id", referencedColumnName="id")
-	@JsonbTransient
-	private Country country ; 
+	private Country country; 
 
 	public City() {
 		super();
 	}
 	
 	public void setId( short id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public short getId() {
@@ -48,7 +52,7 @@ public class City implements Serializable {
 	}
 
 	public void setName( String name ) {
-		this.name = name ;
+		this.name = name;
 	}
 
 	public String getName() {
@@ -56,7 +60,7 @@ public class City implements Serializable {
 	}
 
 	public void setPostCode( String postCode ) {
-		this.postCode = postCode ;
+		this.postCode = postCode;
 	}
 
 	public String getPostCode() {
@@ -64,13 +68,20 @@ public class City implements Serializable {
 	}
 
 	public void setActive( boolean active ) {
-		this.active = active ;
+		this.active = active;
 	}
 
 	public boolean isActive() {
 		return this.active;
 	}
 
+	public List<Address> getAddressList() {
+		return this.addressList;
+	}
+	
+	public void setAddressList(List<Address> addressList) {
+		this.addressList = addressList;
+	}
 	public Country getCountry() {
 		return this.country;
 	}

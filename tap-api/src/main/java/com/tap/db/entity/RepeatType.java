@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
+import java.util.List;
 
 @Entity
 @Table(name="repeat_type", catalog="tap" )
@@ -27,12 +28,16 @@ public class RepeatType implements Serializable {
 	private boolean active;
 
 
+    @OneToMany(mappedBy="repeattype")
+	@JsonbTransient
+	private List<CustomPeriod> customperiodList; 
+
 	public RepeatType() {
 		super();
 	}
 	
 	public void setId( byte id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public byte getId() {
@@ -40,7 +45,7 @@ public class RepeatType implements Serializable {
 	}
 
 	public void setName( String name ) {
-		this.name = name ;
+		this.name = name;
 	}
 
 	public String getName() {
@@ -48,11 +53,18 @@ public class RepeatType implements Serializable {
 	}
 
 	public void setActive( boolean active ) {
-		this.active = active ;
+		this.active = active;
 	}
 
 	public boolean isActive() {
 		return this.active;
 	}
 
+	public List<CustomPeriod> getCustomperiodList() {
+		return this.customperiodList;
+	}
+	
+	public void setCustomperiodList(List<CustomPeriod> customperiodList) {
+		this.customperiodList = customperiodList;
+	}
 }

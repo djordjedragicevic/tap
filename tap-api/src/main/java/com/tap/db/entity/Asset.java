@@ -29,15 +29,14 @@ public class Asset implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="asset_type_id", referencedColumnName="id")
-	@JsonbTransient
-	private AssetType assettype ; 
+	private AssetType assettype; 
 
 	public Asset() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -45,7 +44,7 @@ public class Asset implements Serializable {
 	}
 
 	public void setEntityIdentifier( long entityIdentifier ) {
-		this.entityIdentifier = entityIdentifier ;
+		this.entityIdentifier = entityIdentifier;
 	}
 
 	public long getEntityIdentifier() {
@@ -53,7 +52,7 @@ public class Asset implements Serializable {
 	}
 
 	public void setLocation( String location ) {
-		this.location = location ;
+		this.location = location;
 	}
 
 	public String getLocation() {

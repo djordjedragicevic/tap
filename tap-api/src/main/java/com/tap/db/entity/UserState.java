@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
+import java.util.List;
 
 @Entity
 @Table(name="user_state", catalog="tap" )
@@ -33,12 +34,16 @@ public class UserState implements Serializable {
 	private String custom;
 
 
+    @OneToMany(mappedBy="userstate")
+	@JsonbTransient
+	private List<User> userList; 
+
 	public UserState() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -46,7 +51,7 @@ public class UserState implements Serializable {
 	}
 
 	public void setFavoriteProviders( String favoriteProviders ) {
-		this.favoriteProviders = favoriteProviders ;
+		this.favoriteProviders = favoriteProviders;
 	}
 
 	public String getFavoriteProviders() {
@@ -54,7 +59,7 @@ public class UserState implements Serializable {
 	}
 
 	public void setLanguage( String language ) {
-		this.language = language ;
+		this.language = language;
 	}
 
 	public String getLanguage() {
@@ -62,7 +67,7 @@ public class UserState implements Serializable {
 	}
 
 	public void setTheme( String theme ) {
-		this.theme = theme ;
+		this.theme = theme;
 	}
 
 	public String getTheme() {
@@ -70,11 +75,18 @@ public class UserState implements Serializable {
 	}
 
 	public void setCustom( String custom ) {
-		this.custom = custom ;
+		this.custom = custom;
 	}
 
 	public String getCustom() {
 		return this.custom;
 	}
 
+	public List<User> getUserList() {
+		return this.userList;
+	}
+	
+	public void setUserList(List<User> userList) {
+		this.userList = userList;
+	}
 }

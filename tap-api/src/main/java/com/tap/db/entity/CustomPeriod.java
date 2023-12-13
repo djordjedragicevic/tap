@@ -1,5 +1,5 @@
 /**
- * Generated JPA entity class for "BusyPeriod"
+ * Generated JPA entity class for "CustomPeriod"
  */
 
 package com.tap.db.entity;
@@ -11,8 +11,8 @@ import jakarta.json.bind.annotation.JsonbTransient;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="busy_period", catalog="tap" )
-public class BusyPeriod implements Serializable {
+@Table(name="custom_period", catalog="tap" )
+public class CustomPeriod implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
@@ -36,35 +36,30 @@ public class BusyPeriod implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="period_type_id", referencedColumnName="id")
-	@JsonbTransient
-	private PeriodType periodtype ; 
+	private PeriodType periodtype; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="repeat_type_id", referencedColumnName="id")
-	@JsonbTransient
-	private RepeatType repeattype ; 
+	private RepeatType repeattype; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="created_by", referencedColumnName="id")
-	@JsonbTransient
-	private User user ; 
+	private User user; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="employee_id", referencedColumnName="id")
-	@JsonbTransient
-	private Employee employee ; 
+	private Employee employee; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="provider_id", referencedColumnName="id")
-	@JsonbTransient
-	private Provider provider ; 
+	private Provider provider; 
 
-	public BusyPeriod() {
+	public CustomPeriod() {
 		super();
 	}
 	
 	public void setId( long id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public long getId() {
@@ -72,7 +67,7 @@ public class BusyPeriod implements Serializable {
 	}
 
 	public void setStart( LocalDateTime start ) {
-		this.start = start ;
+		this.start = start;
 	}
 
 	public LocalDateTime getStart() {
@@ -80,7 +75,7 @@ public class BusyPeriod implements Serializable {
 	}
 
 	public void setEnd( LocalDateTime end ) {
-		this.end = end ;
+		this.end = end;
 	}
 
 	public LocalDateTime getEnd() {
@@ -88,7 +83,7 @@ public class BusyPeriod implements Serializable {
 	}
 
 	public void setComment( String comment ) {
-		this.comment = comment ;
+		this.comment = comment;
 	}
 
 	public String getComment() {
@@ -96,7 +91,7 @@ public class BusyPeriod implements Serializable {
 	}
 
 	public void setCreateDate( LocalDateTime createDate ) {
-		this.createDate = createDate ;
+		this.createDate = createDate;
 	}
 
 	public LocalDateTime getCreateDate() {

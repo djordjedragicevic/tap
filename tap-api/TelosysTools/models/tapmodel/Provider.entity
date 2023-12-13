@@ -17,10 +17,10 @@ Provider {
   reviewCount : int { @DbName(review_count) @DbType(INT) @DbDefaultValue(0) };
   active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
   // links
-  busyperiodList : BusyPeriod[];
+  customperiodList : CustomPeriod[];
   employeeList : Employee[];
   address : Address { @LinkByFK(fk_provider_address1) };
   providertype : ProviderType { @LinkByFK(fk_provider_provider_type) };
   serviceList : Service[];
-  workperiodList : WorkPeriod[];
+  workinfoList : WorkInfo[];
 }

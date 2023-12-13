@@ -39,15 +39,14 @@ public class UserVerification implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", referencedColumnName="id")
-	@JsonbTransient
-	private User user ; 
+	private User user; 
 
 	public UserVerification() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -55,7 +54,7 @@ public class UserVerification implements Serializable {
 	}
 
 	public void setCode( String code ) {
-		this.code = code ;
+		this.code = code;
 	}
 
 	public String getCode() {
@@ -63,7 +62,7 @@ public class UserVerification implements Serializable {
 	}
 
 	public void setCreateTime( LocalDateTime createTime ) {
-		this.createTime = createTime ;
+		this.createTime = createTime;
 	}
 
 	public LocalDateTime getCreateTime() {
@@ -71,7 +70,7 @@ public class UserVerification implements Serializable {
 	}
 
 	public void setExpireTime( LocalDateTime expireTime ) {
-		this.expireTime = expireTime ;
+		this.expireTime = expireTime;
 	}
 
 	public LocalDateTime getExpireTime() {
@@ -79,7 +78,7 @@ public class UserVerification implements Serializable {
 	}
 
 	public void setValidateTime( LocalDateTime validateTime ) {
-		this.validateTime = validateTime ;
+		this.validateTime = validateTime;
 	}
 
 	public LocalDateTime getValidateTime() {
@@ -87,7 +86,7 @@ public class UserVerification implements Serializable {
 	}
 
 	public void setCodeVersion( byte codeVersion ) {
-		this.codeVersion = codeVersion ;
+		this.codeVersion = codeVersion;
 	}
 
 	public byte getCodeVersion() {

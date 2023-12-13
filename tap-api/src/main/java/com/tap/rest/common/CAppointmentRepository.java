@@ -3,12 +3,13 @@ package com.tap.rest.common;
 import com.tap.appointments.Utils;
 import com.tap.db.dtor.AppointmentDtoSimple;
 import com.tap.db.entity.AppointmentStatus;
-import com.tap.db.entity.BusyPeriod;
-import com.tap.db.entity.WorkPeriod;
+import com.tap.db.entity.CustomPeriod;
+import com.tap.db.entity.WorkInfo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.resource.spi.work.Work;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,11 +44,11 @@ public class CAppointmentRepository {
 			JOIN e.provider p
 			""";
 
-	public List<BusyPeriod> getBusyPeriodsAtDay(int pId, List<Integer> eIds, LocalDate date) {
-		return getBusyPeriods(pId, eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
+	public List<CustomPeriod> getCustomPeriodsAtDay(int pId, List<Integer> eIds, LocalDate date) {
+		return getCustomPeriods(pId, eIds, date.atTime(LocalTime.MIN), date.atTime(LocalTime.MAX));
 	}
 
-	public List<BusyPeriod> getBusyPeriods(int pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
+	public List<CustomPeriod> getCustomPeriods(int pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 
 		String fromDate = from.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
 		String toDate = to.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -64,7 +65,7 @@ public class CAppointmentRepository {
 
 		String query = """
 				SELECT bP
-				FROM BusyPeriod bP LEFT JOIN FETCH bP.repeattype rT
+				FROM CustomPeriod bP LEFT JOIN FETCH bP.repeattype rT
 				WHERE
 				((bp.employee IS NOT NULL AND bP.employee.id IN :eIds) OR (bp.employee IS NULL AND bp.provider.id = :pId))
 				AND
@@ -82,7 +83,7 @@ public class CAppointmentRepository {
 				)
 				""";
 
-		TypedQuery<BusyPeriod> q = em.createQuery(query, BusyPeriod.class)
+		TypedQuery<CustomPeriod> q = em.createQuery(query, CustomPeriod.class)
 				.setParameter("fromTime", fromTime)
 				.setParameter("toTime", toTime)
 				.setParameter("fromDate", fromDate)
@@ -103,14 +104,14 @@ public class CAppointmentRepository {
 		return q.getResultList();
 	}
 
-	public List<WorkPeriod> getBreaksPeriodsAtDay(int pId, List<Integer> eIds, int day) {
+	public List<WorkInfo> getBreaksPeriodsAtDay(int pId, List<Integer> eIds, int day) {
 
 		boolean hasEIds = eIds != null && !eIds.isEmpty();
 
 		String query = """
-				SELECT wp FROM WorkPeriod wp
+				SELECT wp FROM WorkInfo wi
 				WHERE
-				:day = wp.day AND
+				:day = wi.day AND
 				(wp.provider.id = :pId
 				""";
 
@@ -119,7 +120,7 @@ public class CAppointmentRepository {
 
 		query = query + ")";
 
-		TypedQuery<WorkPeriod> jpaQuery = em.createQuery(query, WorkPeriod.class)
+		TypedQuery<WorkInfo> jpaQuery = em.createQuery(query, WorkInfo.class)
 				.setParameter("day", day)
 				.setParameter("pId", pId);
 

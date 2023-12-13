@@ -202,6 +202,6 @@ public class AppointmentRepository {
 	private boolean isFreeTime(Integer pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 		return getAppointmentsAtDayWAStatus(eIds, from, to).isEmpty()
 			   &&
-			   cAppointmentRepository.getBusyPeriods(pId, eIds, from, to).isEmpty();
+			   cAppointmentRepository.getCustomPeriods(pId, eIds, from, to).isEmpty();
 	}
 }

@@ -1,9 +1,9 @@
 /**
- * Generated DTO class for "WorkPeriod"
+ * Generated DTO class for "WorkInfo"
  */
 package com.tap.db.dto;
 import java.time.LocalTime;
-public class WorkPeriodDto {	
+public class WorkInfoDto {	
 	private Integer id;
 	private Byte day;
 	private LocalTime startTime;
@@ -11,9 +11,9 @@ public class WorkPeriodDto {
 	private EmployeeDto employee; 
 	private PeriodTypeDto periodtype; 
 	private ProviderDto provider; 
-	public WorkPeriodDto() {}
+	public WorkInfoDto() {}
 
-	public WorkPeriodDto setId( Integer id ) {
+	public WorkInfoDto setId( Integer id ) {
 		this.id = id;
 		return this;
 	}
@@ -22,7 +22,7 @@ public class WorkPeriodDto {
 		return this.id;
 	}
 
-	public WorkPeriodDto setDay( byte day ) {
+	public WorkInfoDto setDay( byte day ) {
 		this.day = day;
 		return this;
 	}
@@ -31,7 +31,7 @@ public class WorkPeriodDto {
 		return this.day;
 	}
 
-	public WorkPeriodDto setStartTime( LocalTime startTime ) {
+	public WorkInfoDto setStartTime( LocalTime startTime ) {
 		this.startTime = startTime;
 		return this;
 	}
@@ -40,7 +40,7 @@ public class WorkPeriodDto {
 		return this.startTime;
 	}
 
-	public WorkPeriodDto setEndTime( LocalTime endTime ) {
+	public WorkInfoDto setEndTime( LocalTime endTime ) {
 		this.endTime = endTime;
 		return this;
 	}
@@ -53,7 +53,7 @@ public class WorkPeriodDto {
 		return this.employee;
 	}
 
-	public WorkPeriodDto setEmployee(EmployeeDto employee) {
+	public WorkInfoDto setEmployee(EmployeeDto employee) {
 		this.employee = employee;
 		return this;
 	}
@@ -61,7 +61,7 @@ public class WorkPeriodDto {
 		return this.periodtype;
 	}
 
-	public WorkPeriodDto setPeriodtype(PeriodTypeDto periodtype) {
+	public WorkInfoDto setPeriodtype(PeriodTypeDto periodtype) {
 		this.periodtype = periodtype;
 		return this;
 	}
@@ -69,7 +69,7 @@ public class WorkPeriodDto {
 		return this.provider;
 	}
 
-	public WorkPeriodDto setProvider(ProviderDto provider) {
+	public WorkInfoDto setProvider(ProviderDto provider) {
 		this.provider = provider;
 		return this;
 	}

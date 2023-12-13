@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
+import java.util.List;
 
 @Entity
 @Table(name="appointment_status", catalog="tap" )
@@ -24,12 +25,16 @@ public class AppointmentStatus implements Serializable {
 	private String name;
 
 
+    @OneToMany(mappedBy="appointmentstatus")
+	@JsonbTransient
+	private List<Appointment> appointmentList; 
+
 	public AppointmentStatus() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -37,11 +42,18 @@ public class AppointmentStatus implements Serializable {
 	}
 
 	public void setName( String name ) {
-		this.name = name ;
+		this.name = name;
 	}
 
 	public String getName() {
 		return this.name;
 	}
 
+	public List<Appointment> getAppointmentList() {
+		return this.appointmentList;
+	}
+	
+	public void setAppointmentList(List<Appointment> appointmentList) {
+		this.appointmentList = appointmentList;
+	}
 }

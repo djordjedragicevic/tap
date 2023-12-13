@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
+import java.util.List;
 
 @Entity
 @Table(name="role", catalog="tap" )
@@ -27,12 +28,16 @@ public class Role implements Serializable {
 	private byte active;
 
 
+    @OneToMany(mappedBy="role")
+	@JsonbTransient
+	private List<UserRole> userroleList; 
+
 	public Role() {
 		super();
 	}
 	
 	public void setId( byte id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public byte getId() {
@@ -40,7 +45,7 @@ public class Role implements Serializable {
 	}
 
 	public void setName( String name ) {
-		this.name = name ;
+		this.name = name;
 	}
 
 	public String getName() {
@@ -48,11 +53,18 @@ public class Role implements Serializable {
 	}
 
 	public void setActive( byte active ) {
-		this.active = active ;
+		this.active = active;
 	}
 
 	public byte getActive() {
 		return this.active;
 	}
 
+	public List<UserRole> getUserroleList() {
+		return this.userroleList;
+	}
+	
+	public void setUserroleList(List<UserRole> userroleList) {
+		this.userroleList = userroleList;
+	}
 }

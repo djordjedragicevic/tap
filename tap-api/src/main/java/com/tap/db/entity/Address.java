@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
+import java.util.List;
 
 @Entity
 @Table(name="address", catalog="tap" )
@@ -41,15 +42,22 @@ public class Address implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="city_id", referencedColumnName="id")
+	private City city; 
+
+    @OneToMany(mappedBy="address")
 	@JsonbTransient
-	private City city ; 
+	private List<Provider> providerList; 
+
+    @OneToMany(mappedBy="address")
+	@JsonbTransient
+	private List<User> userList; 
 
 	public Address() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -57,7 +65,7 @@ public class Address implements Serializable {
 	}
 
 	public void setStreet( String street ) {
-		this.street = street ;
+		this.street = street;
 	}
 
 	public String getStreet() {
@@ -65,7 +73,7 @@ public class Address implements Serializable {
 	}
 
 	public void setNumber( String number ) {
-		this.number = number ;
+		this.number = number;
 	}
 
 	public String getNumber() {
@@ -73,7 +81,7 @@ public class Address implements Serializable {
 	}
 
 	public void setLongitude( Float longitude ) {
-		this.longitude = longitude ;
+		this.longitude = longitude;
 	}
 
 	public Float getLongitude() {
@@ -81,7 +89,7 @@ public class Address implements Serializable {
 	}
 
 	public void setLatitude( Float latitude ) {
-		this.latitude = latitude ;
+		this.latitude = latitude;
 	}
 
 	public Float getLatitude() {
@@ -89,7 +97,7 @@ public class Address implements Serializable {
 	}
 
 	public void setFlatNumber( String flatNumber ) {
-		this.flatNumber = flatNumber ;
+		this.flatNumber = flatNumber;
 	}
 
 	public String getFlatNumber() {
@@ -97,7 +105,7 @@ public class Address implements Serializable {
 	}
 
 	public void setAddress1( String address1 ) {
-		this.address1 = address1 ;
+		this.address1 = address1;
 	}
 
 	public String getAddress1() {
@@ -110,5 +118,19 @@ public class Address implements Serializable {
 	
 	public void setCity(City city) {
 		this.city = city;
+	}
+	public List<Provider> getProviderList() {
+		return this.providerList;
+	}
+	
+	public void setProviderList(List<Provider> providerList) {
+		this.providerList = providerList;
+	}
+	public List<User> getUserList() {
+		return this.userList;
+	}
+	
+	public void setUserList(List<User> userList) {
+		this.userList = userList;
 	}
 }

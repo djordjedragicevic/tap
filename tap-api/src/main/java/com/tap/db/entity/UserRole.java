@@ -23,20 +23,18 @@ public class UserRole implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="role_id", referencedColumnName="id")
-	@JsonbTransient
-	private Role role ; 
+	private Role role; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", referencedColumnName="id")
-	@JsonbTransient
-	private User user ; 
+	private User user; 
 
 	public UserRole() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {

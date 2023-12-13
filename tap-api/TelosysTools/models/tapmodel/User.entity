@@ -20,7 +20,7 @@ User {
   // links
   appointmentList : Appointment[];
   appointmentList2 : Appointment[];
-  busyperiodList : BusyPeriod[];
+  customperiodList : CustomPeriod[];
   employeeList : Employee[];
   tokenList : Token[];
   address : Address { @LinkByFK(fk_user_address1) };

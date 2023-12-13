@@ -45,35 +45,30 @@ public class Appointment implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="appointment_status_id", referencedColumnName="id")
-	@JsonbTransient
-	private AppointmentStatus appointmentstatus ; 
+	private AppointmentStatus appointmentstatus; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="employee_id", referencedColumnName="id")
-	@JsonbTransient
-	private Employee employee ; 
+	private Employee employee; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="service_id", referencedColumnName="id")
-	@JsonbTransient
-	private Service service ; 
+	private Service service; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", referencedColumnName="id")
-	@JsonbTransient
-	private User user ; 
+	private User user; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="created_by_id", referencedColumnName="id")
-	@JsonbTransient
-	private User user2 ; 
+	private User user2; 
 
 	public Appointment() {
 		super();
 	}
 	
 	public void setId( long id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public long getId() {
@@ -81,7 +76,7 @@ public class Appointment implements Serializable {
 	}
 
 	public void setStart( LocalDateTime start ) {
-		this.start = start ;
+		this.start = start;
 	}
 
 	public LocalDateTime getStart() {
@@ -89,7 +84,7 @@ public class Appointment implements Serializable {
 	}
 
 	public void setEnd( LocalDateTime end ) {
-		this.end = end ;
+		this.end = end;
 	}
 
 	public LocalDateTime getEnd() {
@@ -97,7 +92,7 @@ public class Appointment implements Serializable {
 	}
 
 	public void setUserName( String userName ) {
-		this.userName = userName ;
+		this.userName = userName;
 	}
 
 	public String getUserName() {
@@ -105,7 +100,7 @@ public class Appointment implements Serializable {
 	}
 
 	public void setCreateDate( LocalDateTime createDate ) {
-		this.createDate = createDate ;
+		this.createDate = createDate;
 	}
 
 	public LocalDateTime getCreateDate() {
@@ -113,7 +108,7 @@ public class Appointment implements Serializable {
 	}
 
 	public void setJoinId( String joinId ) {
-		this.joinId = joinId ;
+		this.joinId = joinId;
 	}
 
 	public String getJoinId() {
@@ -121,7 +116,7 @@ public class Appointment implements Serializable {
 	}
 
 	public void setStatusResponseDate( LocalDateTime statusResponseDate ) {
-		this.statusResponseDate = statusResponseDate ;
+		this.statusResponseDate = statusResponseDate;
 	}
 
 	public LocalDateTime getStatusResponseDate() {
@@ -129,7 +124,7 @@ public class Appointment implements Serializable {
 	}
 
 	public void setComment( String comment ) {
-		this.comment = comment ;
+		this.comment = comment;
 	}
 
 	public String getComment() {

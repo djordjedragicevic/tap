@@ -2,10 +2,7 @@ package com.tap.appointments;
 
 import com.tap.common.TimePeriod;
 import com.tap.common.Util;
-import com.tap.db.entity.BusyPeriod;
-
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 

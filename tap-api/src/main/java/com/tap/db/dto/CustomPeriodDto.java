@@ -1,9 +1,9 @@
 /**
- * Generated DTO class for "BusyPeriod"
+ * Generated DTO class for "CustomPeriod"
  */
 package com.tap.db.dto;
 import java.time.LocalDateTime;
-public class BusyPeriodDto {	
+public class CustomPeriodDto {	
 	private Long id;
 	private LocalDateTime start;
 	private LocalDateTime end;
@@ -14,9 +14,9 @@ public class BusyPeriodDto {
 	private UserDto user; 
 	private EmployeeDto employee; 
 	private ProviderDto provider; 
-	public BusyPeriodDto() {}
+	public CustomPeriodDto() {}
 
-	public BusyPeriodDto setId( Long id ) {
+	public CustomPeriodDto setId( Long id ) {
 		this.id = id;
 		return this;
 	}
@@ -25,7 +25,7 @@ public class BusyPeriodDto {
 		return this.id;
 	}
 
-	public BusyPeriodDto setStart( LocalDateTime start ) {
+	public CustomPeriodDto setStart( LocalDateTime start ) {
 		this.start = start;
 		return this;
 	}
@@ -34,7 +34,7 @@ public class BusyPeriodDto {
 		return this.start;
 	}
 
-	public BusyPeriodDto setEnd( LocalDateTime end ) {
+	public CustomPeriodDto setEnd( LocalDateTime end ) {
 		this.end = end;
 		return this;
 	}
@@ -43,7 +43,7 @@ public class BusyPeriodDto {
 		return this.end;
 	}
 
-	public BusyPeriodDto setComment( String comment ) {
+	public CustomPeriodDto setComment( String comment ) {
 		this.comment = comment;
 		return this;
 	}
@@ -52,7 +52,7 @@ public class BusyPeriodDto {
 		return this.comment;
 	}
 
-	public BusyPeriodDto setCreateDate( LocalDateTime createDate ) {
+	public CustomPeriodDto setCreateDate( LocalDateTime createDate ) {
 		this.createDate = createDate;
 		return this;
 	}
@@ -65,7 +65,7 @@ public class BusyPeriodDto {
 		return this.periodtype;
 	}
 
-	public BusyPeriodDto setPeriodtype(PeriodTypeDto periodtype) {
+	public CustomPeriodDto setPeriodtype(PeriodTypeDto periodtype) {
 		this.periodtype = periodtype;
 		return this;
 	}
@@ -73,7 +73,7 @@ public class BusyPeriodDto {
 		return this.repeattype;
 	}
 
-	public BusyPeriodDto setRepeattype(RepeatTypeDto repeattype) {
+	public CustomPeriodDto setRepeattype(RepeatTypeDto repeattype) {
 		this.repeattype = repeattype;
 		return this;
 	}
@@ -81,7 +81,7 @@ public class BusyPeriodDto {
 		return this.user;
 	}
 
-	public BusyPeriodDto setUser(UserDto user) {
+	public CustomPeriodDto setUser(UserDto user) {
 		this.user = user;
 		return this;
 	}
@@ -89,7 +89,7 @@ public class BusyPeriodDto {
 		return this.employee;
 	}
 
-	public BusyPeriodDto setEmployee(EmployeeDto employee) {
+	public CustomPeriodDto setEmployee(EmployeeDto employee) {
 		this.employee = employee;
 		return this;
 	}
@@ -97,7 +97,7 @@ public class BusyPeriodDto {
 		return this.provider;
 	}
 
-	public BusyPeriodDto setProvider(ProviderDto provider) {
+	public CustomPeriodDto setProvider(ProviderDto provider) {
 		this.provider = provider;
 		return this;
 	}

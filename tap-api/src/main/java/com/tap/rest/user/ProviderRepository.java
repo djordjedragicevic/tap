@@ -217,40 +217,34 @@ public class ProviderRepository {
 
 	public List<Map<String, Object>> getProviderWorkPeriods(int pId) {
 		String query = """
-				SELECT wp FROM WorkPeriod wp WHERE
-				wp.provider.id = :pId
-				ORDER BY wp.day, wp.startTime
+				SELECT wp FROM WorkInfo wi WHERE
+				wi.provider.id = :pId
+				ORDER BY wi.day, wi.startTime
 				""";
 
-		List<WorkPeriod> wPs = em.createQuery(query, WorkPeriod.class)
+		List<WorkInfo> wPs = em.createQuery(query, WorkInfo.class)
 				.setParameter("pId", pId)
 				.getResultList();
 
 		List<Map<String, Object>> resp = new ArrayList<>();
-		for (WorkPeriod wP : wPs)
+		for (WorkInfo wI : wPs)
 			resp.add(Map.of(
-					"id", wP.getId(),
-					"day", wP.getDay(),
-					"startTime", wP.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-					"endTime", wP.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+					"id", wI.getId(),
+					"day", wI.getDay(),
+					"startTime", wI.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+					"endTime", wI.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))
 			));
-		//			resp.add(new WorkPeriodDto()
-//					.setId(wP.getId())
-//					.setDay(wP.getDay())
-//					.setStartTime(wP.getStartTime())
-//					.setEndTime(wP.getEndTime())
-//			);
 
 		return resp;
 	}
 
-	public List<WorkPeriod> getWorkPeriodsAtDay(List<Integer> eIds, int pId, int day) {
+	public List<WorkInfo> getWorkInfoAtDay(List<Integer> eIds, int pId, int day) {
 
 		boolean hasEIds = eIds != null && !eIds.isEmpty();
 
 		String query = """
-				SELECT wp FROM WorkPeriod wp WHERE
-				:day = wp.day AND
+				SELECT wp FROM WorkInfo wi WHERE
+				:day = wi.day AND
 				(wp.provider.id = :pId
 				""";
 
@@ -259,7 +253,7 @@ public class ProviderRepository {
 
 		query = query + ")";
 
-		TypedQuery<WorkPeriod> jpaQuery = em.createQuery(query, WorkPeriod.class)
+		TypedQuery<WorkInfo> jpaQuery = em.createQuery(query, WorkInfo.class)
 				.setParameter("day", day)
 				.setParameter("pId", pId);
 

@@ -23,20 +23,18 @@ public class ServiceEmployee implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="employee_id", referencedColumnName="id")
-	@JsonbTransient
-	private Employee employee ; 
+	private Employee employee; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="service_id", referencedColumnName="id")
-	@JsonbTransient
-	private Service service ; 
+	private Service service; 
 
 	public ServiceEmployee() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {

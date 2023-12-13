@@ -1,6 +1,6 @@
-@DbTable(busy_period)
+@DbTable(custom_period)
 @DbCatalog(tap)
-BusyPeriod {
+CustomPeriod {
   // attributes
   id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
   start : timestamp { @DbName(start) @DbType(DATETIME) @NotNull @NotEmpty };

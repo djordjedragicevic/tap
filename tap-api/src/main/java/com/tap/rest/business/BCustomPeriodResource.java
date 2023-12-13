@@ -42,7 +42,7 @@ public class BCustomPeriodResource {
 	@Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
 	public Response rejectAppointment(
 			@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer,
-			BusyPeriod bp
+			CustomPeriod bp
 	) {
 
 		Token token = new Token(bearer);

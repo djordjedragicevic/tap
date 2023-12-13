@@ -8,6 +8,6 @@ PeriodType {
   open : boolean { @DbName(open) @DbType(BIT) @NotNull @NotEmpty };
   description : string { @DbName(description) @DbType("VARCHAR(512)") @Size(512) @MaxLen(512) };
   // links
-  busyperiodList : BusyPeriod[];
-  workperiodList : WorkPeriod[];
+  customperiodList : CustomPeriod[];
+  workinfoList : WorkInfo[];
 }

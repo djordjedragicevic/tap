@@ -10,9 +10,9 @@ Employee {
   active : byte { @DbName(active) @DbType(TINYINT) @DbDefaultValue(1) @NotNull @NotEmpty };
   // links
   appointmentList : Appointment[];
-  busyperiodList : BusyPeriod[];
+  customperiodList : CustomPeriod[];
   provider : Provider { @LinkByFK(fk_provider_employee_provider1) };
   user : User { @LinkByFK(fk_provider_employee_user1) };
   serviceemployeeList : ServiceEmployee[];
-  workperiodList : WorkPeriod[];
+  workinfoList : WorkInfo[];
 }

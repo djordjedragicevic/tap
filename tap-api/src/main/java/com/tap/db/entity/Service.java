@@ -9,6 +9,7 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name="service", catalog="tap" )
@@ -46,27 +47,32 @@ public class Service implements Serializable {
 	private boolean active;
 
 
+    @OneToMany(mappedBy="service")
+	@JsonbTransient
+	private List<Appointment> appointmentList; 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="category_id", referencedColumnName="id")
-	@JsonbTransient
-	private Category category ; 
+	private Category category; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="group_id", referencedColumnName="id")
-	@JsonbTransient
-	private Group group ; 
+	private Group group; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="provider_id", referencedColumnName="id")
+	private Provider provider; 
+
+    @OneToMany(mappedBy="service")
 	@JsonbTransient
-	private Provider provider ; 
+	private List<ServiceEmployee> serviceemployeeList; 
 
 	public Service() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -74,7 +80,7 @@ public class Service implements Serializable {
 	}
 
 	public void setName( String name ) {
-		this.name = name ;
+		this.name = name;
 	}
 
 	public String getName() {
@@ -82,7 +88,7 @@ public class Service implements Serializable {
 	}
 
 	public void setNote( String note ) {
-		this.note = note ;
+		this.note = note;
 	}
 
 	public String getNote() {
@@ -90,7 +96,7 @@ public class Service implements Serializable {
 	}
 
 	public void setPrice( BigDecimal price ) {
-		this.price = price ;
+		this.price = price;
 	}
 
 	public BigDecimal getPrice() {
@@ -98,7 +104,7 @@ public class Service implements Serializable {
 	}
 
 	public void setPriceTo( BigDecimal priceTo ) {
-		this.priceTo = priceTo ;
+		this.priceTo = priceTo;
 	}
 
 	public BigDecimal getPriceTo() {
@@ -106,7 +112,7 @@ public class Service implements Serializable {
 	}
 
 	public void setDuration( short duration ) {
-		this.duration = duration ;
+		this.duration = duration;
 	}
 
 	public short getDuration() {
@@ -114,7 +120,7 @@ public class Service implements Serializable {
 	}
 
 	public void setDurationTo( Short durationTo ) {
-		this.durationTo = durationTo ;
+		this.durationTo = durationTo;
 	}
 
 	public Short getDurationTo() {
@@ -122,7 +128,7 @@ public class Service implements Serializable {
 	}
 
 	public void setDescription( String description ) {
-		this.description = description ;
+		this.description = description;
 	}
 
 	public String getDescription() {
@@ -130,13 +136,20 @@ public class Service implements Serializable {
 	}
 
 	public void setActive( boolean active ) {
-		this.active = active ;
+		this.active = active;
 	}
 
 	public boolean isActive() {
 		return this.active;
 	}
 
+	public List<Appointment> getAppointmentList() {
+		return this.appointmentList;
+	}
+	
+	public void setAppointmentList(List<Appointment> appointmentList) {
+		this.appointmentList = appointmentList;
+	}
 	public Category getCategory() {
 		return this.category;
 	}
@@ -157,5 +170,12 @@ public class Service implements Serializable {
 	
 	public void setProvider(Provider provider) {
 		this.provider = provider;
+	}
+	public List<ServiceEmployee> getServiceemployeeList() {
+		return this.serviceemployeeList;
+	}
+	
+	public void setServiceemployeeList(List<ServiceEmployee> serviceemployeeList) {
+		this.serviceemployeeList = serviceemployeeList;
 	}
 }

@@ -41,9 +41,9 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
 #foreach( $import in $java.imports($entity) )
-#if(!$import.toString().contains("List"))
+## #if(!$import.toString().contains("List"))
 import $import;
-#end
+## #end
 #end
 ## #foreach( $import in $jpa.imports($entity) )
 ## import $import;
@@ -75,21 +75,23 @@ $jpa.fieldAnnotations(4, $attribute)
 
 ##	//--- ENTITY LINKS ( RELATIONSHIP )
 #foreach( $link in $entity.links )
-#if($link.isOwningSide())
+## #if($link.isOwningSide())
 ## all annotations : Cardinality, JoinColumn(s), etc
 ##--- with "insertable=false, updatable=false" if attribute already mapped
 ##$jpa.linkAnnotations(4, $link, $entity.attributes)
 ##--- no "insertable=false, updatable=false" if already mapped
 $jpa.linkAnnotations(4, $link)
+#if(!$link.isOwningSide())	
 	@JsonbTransient
+#end
 ##--- Just @Cardinality annotation
 ## $jpa.linkCardinalityAnnotation(4, $link) 
 ##--- Just @JoinColumn(s) annotation(s)
 ## $jpa.linkJoinAnnotation(4, $link) 
 ## $jpa.linkJoinAnnotation(4, $link, $entity.attributes)
-	private ${link.formattedFieldType(1)} $link.fieldName ; 
+	private ${link.formattedFieldType(1)} $link.fieldName; 
 
-#end
+## #end
 #end
 	public ${entity.name}() {
 		super();
@@ -98,7 +100,7 @@ $jpa.linkAnnotations(4, $link)
 ##	//--- GETTERS & SETTERS FOR FIELDS
 #foreach( $attribute in $entity.keyAttributes )
 	public void ${attribute.setter}( $attribute.type $attribute.name ) {
-		this.$attribute.name = $attribute.name ;
+		this.$attribute.name = $attribute.name;
 	}
 
 	public $attribute.type ${attribute.getter}() {
@@ -109,7 +111,7 @@ $jpa.linkAnnotations(4, $link)
 #foreach( $attribute in $entity.nonKeyAttributes )
 #if(!$attribute.isFK())
 	public void ${attribute.setter}( $attribute.type $attribute.name ) {
-		this.$attribute.name = $attribute.name ;
+		this.$attribute.name = $attribute.name;
 	}
 
 	public $attribute.type ${attribute.getter}() {
@@ -120,7 +122,7 @@ $jpa.linkAnnotations(4, $link)
 #end
 ##	//--- GETTERS FOR LINKS
 #foreach( $link in $entity.selectedLinks )
-#if($link.isOwningSide())
+## #if($link.isOwningSide())
 	public ${link.formattedFieldType(1)} ${link.getter}() {
 		return this.${link.formattedFieldName(1)};
 	}
@@ -129,7 +131,7 @@ $jpa.linkAnnotations(4, $link)
 		this.$link.fieldName = $link.fieldName;
 	}
 #end
-#end
+## #end
 ##	//--- toString specific method
 ##	@Override
 ## This function generates a 'toString' method with indentation level = 1 (1 tab)

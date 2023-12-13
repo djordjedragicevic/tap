@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
+import java.util.List;
 
 @Entity
 @Table(name="period_type", catalog="tap" )
@@ -33,12 +34,20 @@ public class PeriodType implements Serializable {
 	private String description;
 
 
+    @OneToMany(mappedBy="periodtype")
+	@JsonbTransient
+	private List<CustomPeriod> customperiodList; 
+
+    @OneToMany(mappedBy="periodtype")
+	@JsonbTransient
+	private List<WorkInfo> workinfoList; 
+
 	public PeriodType() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -46,7 +55,7 @@ public class PeriodType implements Serializable {
 	}
 
 	public void setName( String name ) {
-		this.name = name ;
+		this.name = name;
 	}
 
 	public String getName() {
@@ -54,7 +63,7 @@ public class PeriodType implements Serializable {
 	}
 
 	public void setActive( boolean active ) {
-		this.active = active ;
+		this.active = active;
 	}
 
 	public boolean isActive() {
@@ -62,7 +71,7 @@ public class PeriodType implements Serializable {
 	}
 
 	public void setOpen( boolean open ) {
-		this.open = open ;
+		this.open = open;
 	}
 
 	public boolean isOpen() {
@@ -70,11 +79,25 @@ public class PeriodType implements Serializable {
 	}
 
 	public void setDescription( String description ) {
-		this.description = description ;
+		this.description = description;
 	}
 
 	public String getDescription() {
 		return this.description;
 	}
 
+	public List<CustomPeriod> getCustomperiodList() {
+		return this.customperiodList;
+	}
+	
+	public void setCustomperiodList(List<CustomPeriod> customperiodList) {
+		this.customperiodList = customperiodList;
+	}
+	public List<WorkInfo> getWorkinfoList() {
+		return this.workinfoList;
+	}
+	
+	public void setWorkinfoList(List<WorkInfo> workinfoList) {
+		this.workinfoList = workinfoList;
+	}
 }

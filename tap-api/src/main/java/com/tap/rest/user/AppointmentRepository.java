@@ -239,8 +239,7 @@ public class AppointmentRepository {
 
 	}
 
-	private static List<NamedTimePeriod> calculateFreePeriods
-			(List<TimePeriod> workPeriods, List<NamedTimePeriod> timeline) {
+	private static List<NamedTimePeriod> calculateFreePeriods (List<TimePeriod> workPeriods, List<NamedTimePeriod> timeline) {
 
 		List<NamedTimePeriod> freePeriods = new ArrayList<>();
 		List<TimeDot> timeDots = new ArrayList<>();
@@ -303,32 +302,32 @@ public class AppointmentRepository {
 		ProviderWorkInfo pWI = new ProviderWorkInfo(pId, date);
 
 		int day = date.getDayOfWeek().getValue();
-		List<WorkPeriod> workPeriod = providerRepository.getWorkPeriodsAtDay(eIds, pId, day);
+		List<WorkInfo> workInfo = providerRepository.getWorkInfoAtDay(eIds, pId, day);
 
-		if (workPeriod == null || workPeriod.isEmpty())
+		if (workInfo == null || workInfo.isEmpty())
 			return pWI;
 
 
-		workPeriod.forEach(wP -> {
+		workInfo.forEach(wI -> {
 
-			boolean isOpen = wP.getPeriodtype().isOpen();
-			LocalTime start = wP.getStartTime();
-			LocalTime end = wP.getEndTime();
+			boolean isOpen = wI.getPeriodtype().isOpen();
+			LocalTime start = wI.getStartTime();
+			LocalTime end = wI.getEndTime();
 
-			if (wP.getProvider() != null) {
+			if (wI.getProvider() != null) {
 				if (isOpen)
 					pWI.getWorkPeriods().add(new TimePeriod(start, end));
 				else
 					pWI.getBreakPeriods().add(new TimePeriod(start, end));
 
-				pWI.setProviderName(wP.getProvider().getName());
-				pWI.setProviderAddress(wP.getProvider().getAddress().getAddress1());
-				pWI.setProviderCity(wP.getProvider().getAddress().getCity().getName());
-				pWI.setProviderType(wP.getProvider().getProvidertype().getName());
+				pWI.setProviderName(wI.getProvider().getName());
+				pWI.setProviderAddress(wI.getProvider().getAddress().getAddress1());
+				pWI.setProviderCity(wI.getProvider().getAddress().getCity().getName());
+				pWI.setProviderType(wI.getProvider().getProvidertype().getName());
 
-			} else if (wP.getEmployee() != null) {
-				int eId = wP.getEmployee().getId();
-				User u = wP.getEmployee().getUser();
+			} else if (wI.getEmployee() != null) {
+				int eId = wI.getEmployee().getId();
+				User u = wI.getEmployee().getUser();
 				ProviderWorkInfo.Employee eInfo = pWI.getEmployees()
 						.stream()
 						.filter(e -> e.getEmployeeId() == eId)
@@ -359,11 +358,11 @@ public class AppointmentRepository {
 		//----------------Create Employee timeline----------------------------------
 
 		List<AppointmentDtoSimple> appointments = appointmentRep.getAppointmentsAtDayWAStatus(eIds, date);
-		List<BusyPeriod> busyPeriods = cAppointmentRepository.getBusyPeriodsAtDay(pId, eIds, date);
+		List<CustomPeriod> customPeriods = cAppointmentRepository.getCustomPeriodsAtDay(pId, eIds, date);
 
 		List<TimePeriod> providerBTP = new ArrayList<>();
-		List<BusyPeriod> employeeBP = new ArrayList<>();
-		busyPeriods.forEach(bP -> {
+		List<CustomPeriod> employeeBP = new ArrayList<>();
+		customPeriods.forEach(bP -> {
 			if (bP.getProvider() != null)
 				providerBTP.add(bP.getRepeattype() != null ?
 						Utils.adjustRepeatablePeriodToOnaDate(date, bP.getStart(), bP.getEnd(), bP.getRepeattype().getName())

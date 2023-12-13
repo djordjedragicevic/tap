@@ -9,6 +9,7 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="provider", catalog="tap" )
@@ -55,22 +56,36 @@ public class Provider implements Serializable {
 	private byte active;
 
 
+    @OneToMany(mappedBy="provider")
+	@JsonbTransient
+	private List<CustomPeriod> customperiodList; 
+
+    @OneToMany(mappedBy="provider")
+	@JsonbTransient
+	private List<Employee> employeeList; 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="address_id", referencedColumnName="id")
-	@JsonbTransient
-	private Address address ; 
+	private Address address; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="provider_type_id", referencedColumnName="id")
+	private ProviderType providertype; 
+
+    @OneToMany(mappedBy="provider")
 	@JsonbTransient
-	private ProviderType providertype ; 
+	private List<Service> serviceList; 
+
+    @OneToMany(mappedBy="provider")
+	@JsonbTransient
+	private List<WorkInfo> workinfoList; 
 
 	public Provider() {
 		super();
 	}
 	
 	public void setId( int id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public int getId() {
@@ -78,7 +93,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setName( String name ) {
-		this.name = name ;
+		this.name = name;
 	}
 
 	public String getName() {
@@ -86,7 +101,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setDescription( String description ) {
-		this.description = description ;
+		this.description = description;
 	}
 
 	public String getDescription() {
@@ -94,7 +109,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setPhone( String phone ) {
-		this.phone = phone ;
+		this.phone = phone;
 	}
 
 	public String getPhone() {
@@ -102,7 +117,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setIdNumber( String idNumber ) {
-		this.idNumber = idNumber ;
+		this.idNumber = idNumber;
 	}
 
 	public String getIdNumber() {
@@ -110,7 +125,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setLegalEntity( byte legalEntity ) {
-		this.legalEntity = legalEntity ;
+		this.legalEntity = legalEntity;
 	}
 
 	public byte getLegalEntity() {
@@ -118,7 +133,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setApproved( byte approved ) {
-		this.approved = approved ;
+		this.approved = approved;
 	}
 
 	public byte getApproved() {
@@ -126,7 +141,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setApprovedDate( LocalDateTime approvedDate ) {
-		this.approvedDate = approvedDate ;
+		this.approvedDate = approvedDate;
 	}
 
 	public LocalDateTime getApprovedDate() {
@@ -134,7 +149,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setApprovedBy( Integer approvedBy ) {
-		this.approvedBy = approvedBy ;
+		this.approvedBy = approvedBy;
 	}
 
 	public Integer getApprovedBy() {
@@ -142,7 +157,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setMark( Float mark ) {
-		this.mark = mark ;
+		this.mark = mark;
 	}
 
 	public Float getMark() {
@@ -150,7 +165,7 @@ public class Provider implements Serializable {
 	}
 
 	public void setReviewCount( Integer reviewCount ) {
-		this.reviewCount = reviewCount ;
+		this.reviewCount = reviewCount;
 	}
 
 	public Integer getReviewCount() {
@@ -158,13 +173,27 @@ public class Provider implements Serializable {
 	}
 
 	public void setActive( byte active ) {
-		this.active = active ;
+		this.active = active;
 	}
 
 	public byte getActive() {
 		return this.active;
 	}
 
+	public List<CustomPeriod> getCustomperiodList() {
+		return this.customperiodList;
+	}
+	
+	public void setCustomperiodList(List<CustomPeriod> customperiodList) {
+		this.customperiodList = customperiodList;
+	}
+	public List<Employee> getEmployeeList() {
+		return this.employeeList;
+	}
+	
+	public void setEmployeeList(List<Employee> employeeList) {
+		this.employeeList = employeeList;
+	}
 	public Address getAddress() {
 		return this.address;
 	}
@@ -178,5 +207,19 @@ public class Provider implements Serializable {
 	
 	public void setProvidertype(ProviderType providertype) {
 		this.providertype = providertype;
+	}
+	public List<Service> getServiceList() {
+		return this.serviceList;
+	}
+	
+	public void setServiceList(List<Service> serviceList) {
+		this.serviceList = serviceList;
+	}
+	public List<WorkInfo> getWorkinfoList() {
+		return this.workinfoList;
+	}
+	
+	public void setWorkinfoList(List<WorkInfo> workinfoList) {
+		this.workinfoList = workinfoList;
 	}
 }

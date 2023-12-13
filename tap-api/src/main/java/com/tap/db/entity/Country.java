@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
+import java.util.List;
 
 @Entity
 @Table(name="country", catalog="tap" )
@@ -39,12 +40,16 @@ public class Country implements Serializable {
 	private byte active;
 
 
+    @OneToMany(mappedBy="country")
+	@JsonbTransient
+	private List<City> cityList; 
+
 	public Country() {
 		super();
 	}
 	
 	public void setId( short id ) {
-		this.id = id ;
+		this.id = id;
 	}
 
 	public short getId() {
@@ -52,7 +57,7 @@ public class Country implements Serializable {
 	}
 
 	public void setName( String name ) {
-		this.name = name ;
+		this.name = name;
 	}
 
 	public String getName() {
@@ -60,7 +65,7 @@ public class Country implements Serializable {
 	}
 
 	public void setCode( String code ) {
-		this.code = code ;
+		this.code = code;
 	}
 
 	public String getCode() {
@@ -68,7 +73,7 @@ public class Country implements Serializable {
 	}
 
 	public void setPhone( int phone ) {
-		this.phone = phone ;
+		this.phone = phone;
 	}
 
 	public int getPhone() {
@@ -76,7 +81,7 @@ public class Country implements Serializable {
 	}
 
 	public void setCurrency( String currency ) {
-		this.currency = currency ;
+		this.currency = currency;
 	}
 
 	public String getCurrency() {
@@ -84,7 +89,7 @@ public class Country implements Serializable {
 	}
 
 	public void setCurrencySymbol( String currencySymbol ) {
-		this.currencySymbol = currencySymbol ;
+		this.currencySymbol = currencySymbol;
 	}
 
 	public String getCurrencySymbol() {
@@ -92,11 +97,18 @@ public class Country implements Serializable {
 	}
 
 	public void setActive( byte active ) {
-		this.active = active ;
+		this.active = active;
 	}
 
 	public byte getActive() {
 		return this.active;
 	}
 
+	public List<City> getCityList() {
+		return this.cityList;
+	}
+	
+	public void setCityList(List<City> cityList) {
+		this.cityList = cityList;
+	}
 }
