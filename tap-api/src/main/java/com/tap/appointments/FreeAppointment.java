@@ -1,7 +1,7 @@
 package com.tap.appointments;
 
-import com.tap.db.dto.EmployeeDto;
-import com.tap.db.dto.ServiceDto;
+import com.tap.rest.dto.EmployeeDto;
+import com.tap.rest.dto.ServiceDto;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 
 import java.time.LocalDate;

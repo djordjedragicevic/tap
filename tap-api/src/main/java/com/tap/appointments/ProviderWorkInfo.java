@@ -1,154 +1,50 @@
 package com.tap.appointments;
 
-import com.tap.common.NamedTimePeriod;
-import com.tap.common.TimePeriod;
+import com.tap.common.*;
+import com.tap.rest.dto.EmployeeDto;
+import com.tap.rest.dtor.AppointmentDtoSimple;
+import com.tap.rest.entity.CustomPeriod;
+import com.tap.rest.entity.Provider;
+import com.tap.rest.entity.WorkInfo;
+import com.tap.exception.ErrID;
+import com.tap.exception.TAPException;
 
+import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.*;
 
 public class ProviderWorkInfo {
 	public static class Employee {
-		private final Integer employeeId;
-		private Boolean isWorking;
-		private String email;
-		private List<TimePeriod> workPeriods;
-		private List<TimePeriod> breakPeriods;
-		private String name;
-		private String firstName;
-		private String lastName;
-		private String imagePath;
-		private List<NamedTimePeriod> timeline;
-		private List<NamedTimePeriod> freePeriods;
-		private Integer freeTimeSum;
-		private Integer workTimeSum;
+		public Integer employeeId;
+		public String name;
+		public String imagePath;
+		public Boolean isWorking;
+		public List<TimePeriod> workPeriods;
+		public List<TimePeriod> breakPeriods;
+		public List<NamedTimePeriod> timeline;
+		public List<NamedTimePeriod> freePeriods;
+		public Integer freeTimeSum;
+		public Integer workTimeSum;
 
-		public Employee(Integer eId, String email, String fName, String lName) {
-			this.employeeId = eId;
-			this.isWorking = false;
-			this.workPeriods = new ArrayList<>();
-			this.breakPeriods = new ArrayList<>();
-			this.timeline = new ArrayList<>();
-			this.email = email;
-			this.firstName = fName;
-			this.lastName = lName;
+		public Employee() {
+			workPeriods = new ArrayList<>();
+			breakPeriods = new ArrayList<>();
+			timeline = new ArrayList<>();
 		}
 
-		public Employee(Integer employeeId) {
-			this.employeeId = employeeId;
+		public Employee(EmployeeDto eDto) {
+			this();
+			this.employeeId = eDto.getId();
+			this.name = eDto.getName();
+			this.imagePath = eDto.getImagePath();
 		}
 
-		public Integer getEmployeeId() {
-			return employeeId;
-		}
-
-		public Boolean getWorking() {
-			return isWorking;
-		}
-
-		public Employee setWorking(Boolean working) {
-			isWorking = working;
-			return this;
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
-		public Employee setEmail(String email) {
-			this.email = email;
-			return this;
-		}
-
-		public List<TimePeriod> getWorkPeriods() {
-			return workPeriods;
-		}
-
-		public Employee setWorkPeriods(List<TimePeriod> workPeriods) {
-			this.workPeriods = workPeriods;
-			return this;
-		}
-
-		public List<TimePeriod> getBreakPeriods() {
-			return breakPeriods;
-		}
-
-		public Employee setBreakPeriods(List<TimePeriod> breakPeriods) {
-			this.breakPeriods = breakPeriods;
-			return this;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public Employee setName(String name) {
-			this.name = name;
-			return this;
-		}
-
-		public String getFirstName() {
-			return firstName;
-		}
-
-		public Employee setFirstName(String firstName) {
-			this.firstName = firstName;
-			return this;
-		}
-
-		public String getLastName() {
-			return lastName;
-		}
-
-		public Employee setLastName(String lastName) {
-			this.lastName = lastName;
-			return this;
-		}
-
-		public String getImagePath() {
-			return imagePath;
-		}
-
-		public Employee setImagePath(String imagePath) {
-			this.imagePath = imagePath;
-			return this;
-		}
-
-		public List<NamedTimePeriod> getTimeline() {
-			return timeline;
-		}
-
-		public Employee setTimeline(List<NamedTimePeriod> timeline) {
-			this.timeline = timeline;
-			return this;
-		}
-
-		public List<NamedTimePeriod> getFreePeriods() {
-			return freePeriods;
-		}
-
-		public Employee setFreePeriods(List<NamedTimePeriod> freePeriods) {
-			this.freePeriods = freePeriods;
-			return this;
-		}
-
-		public Integer getFreeTimeSum() {
-			return freeTimeSum;
-		}
-
-		public Employee setFreeTimeSum(Integer freeTimeSum) {
-			this.freeTimeSum = freeTimeSum;
-			return this;
-		}
-
-		public Integer getWorkTimeSum() {
-			return workTimeSum;
-		}
-
-		public Employee setWorkTimeSum(Integer workTimeSum) {
-			this.workTimeSum = workTimeSum;
-			return this;
+		public Employee(com.tap.rest.entity.Employee eEnt) {
+			this();
+			this.employeeId = eEnt.getId();
+			this.name = eEnt.getName();
+			this.imagePath = eEnt.getImagePath();
 		}
 	}
 
@@ -172,13 +68,233 @@ public class ProviderWorkInfo {
 		this.workPeriods = new ArrayList<>();
 	}
 
-	public ProviderWorkInfo(Integer providerId) {
+	public ProviderWorkInfo(Integer providerId, LocalDate date, List<?> emps, List<AppointmentDtoSimple> apps, List<CustomPeriod> bps, List<WorkInfo> wps) {
 		this.providerId = providerId;
+		this.isWorking = false;
+		this.atDay = date;
+		this.employees = new ArrayList<>();
+		this.breakPeriods = new ArrayList<>();
+		this.workPeriods = new ArrayList<>();
+		this.setEmployees(new ArrayList<>());
+		this.setWorkPeriods(new ArrayList<>());
+		this.fillData(emps, apps, bps, wps);
 	}
+
+
+	public void fillData(List<?> emps, List<AppointmentDtoSimple> apps, List<CustomPeriod> cps, List<WorkInfo> wis) {
+		this.fillEmps(emps);
+		this.fillWorkInfoPeriods(wis);
+		this.fillApps(apps);
+		this.fillCustomPeriods(cps);
+		this.sortPeriods();
+	}
+
+	public void generateFreePeriods(boolean addToTimeline) {
+
+		for (Employee e : this.getEmployees()) {
+
+			e.freePeriods = new ArrayList<>();
+			List<TimeDot> timeDots = new ArrayList<>();
+
+			e.workPeriods.forEach(tP -> {
+				timeDots.add(new TimeDot(tP.getStart(), true, true));
+				timeDots.add(new TimeDot(tP.getEnd(), false, true));
+			});
+
+
+			e.timeline.forEach(eTP -> {
+				timeDots.add(new TimeDot(eTP.getStart(), true, false));
+				timeDots.add(new TimeDot(eTP.getEnd(), false, false));
+			});
+			timeDots.sort(Comparator.comparing(TimeDot::getTime));
+
+			//Calculate free periods
+			int lockCounter = 0;
+			LocalTime startOfFree = null;
+			LocalTime endOfFree = null;
+
+			System.out.println("-------------------");
+			for (TimeDot dot : timeDots) {
+				System.out.println("TIME DOT - " + dot.getTime() + " " + (dot.isStart() ? " START " : " END ") + (dot.isOpen() ? " OPEN " : " CLOSE "));
+				if (dot.isOpen()) {
+					if (dot.isStart()) {
+						if (lockCounter > 0)
+							lockCounter -= 1;
+						if (lockCounter == 0) {
+							startOfFree = dot.getTime();
+						}
+					} else {
+						if (lockCounter == 0)
+							endOfFree = dot.getTime();
+						lockCounter += 1;
+					}
+				} else {
+					if (dot.isStart()) {
+						if (lockCounter == 0 && startOfFree != null)
+							endOfFree = dot.getTime();
+						lockCounter += 1;
+					} else {
+						lockCounter -= 1;
+						if (lockCounter == 0)
+							startOfFree = dot.getTime();
+					}
+				}
+
+				if (startOfFree != null && endOfFree != null) {
+					System.out.println("FREE TIME " + startOfFree + " " + endOfFree);
+					e.freePeriods.add(new NamedTimePeriod(startOfFree, endOfFree, TypedTimePeriod.OPEN, NamedTimePeriod.OPEN_FREE_TIME));
+					startOfFree = null;
+					endOfFree = null;
+				}
+			}
+
+			e.freePeriods.sort(Comparator.comparing(TimePeriod::getStart));
+
+			if (addToTimeline) {
+				e.timeline.addAll(e.freePeriods);
+				e.timeline.sort(Comparator.comparing(TimePeriod::getStart));
+			}
+
+			//Calculate free time sum
+			long freeSum = e.freePeriods.stream().mapToLong(fP -> Duration.between(fP.getStart(), fP.getEnd()).toMinutes()).sum();
+			e.freeTimeSum = (int) freeSum;
+		}
+	}
+
+	private void fillEmps(List<?> emps) {
+
+		emps.forEach(e -> {
+					ProviderWorkInfo.Employee emp;
+					if (e instanceof com.tap.rest.entity.Employee empEntity) {
+						emp = new ProviderWorkInfo.Employee(empEntity);
+					} else if (e instanceof EmployeeDto empDto) {
+						emp = new ProviderWorkInfo.Employee(empDto);
+					} else {
+						throw new TAPException(ErrID.TAP_0);
+					}
+
+					this.getEmployees().add(emp);
+				}
+		);
+	}
+
+	private void fillApps(List<AppointmentDtoSimple> apps) {
+		TimePeriod tmpTP;
+		for (AppointmentDtoSimple a : apps) {
+			tmpTP = Utils.adjustPeriodToOnaDate(this.getAtDay(), a.start(), a.end());
+			this.getEmployeeById(a.eId())
+					.timeline
+					.add(new NamedTimePeriodExt(
+							tmpTP.getStart(),
+							tmpTP.getEnd(),
+							TypedTimePeriod.CLOSE,
+							NamedTimePeriod.CLOSE_APPOINTMENT,
+							a
+					));
+		}
+	}
+
+	private void fillCustomPeriods(List<CustomPeriod> cps) {
+		TimePeriod tmpTP;
+		NamedTimePeriodExt tmpNTPE;
+		boolean isProviderLevel;
+		Map<String, Object> tmpData;
+		for (CustomPeriod bP : cps) {
+			isProviderLevel = bP.getEmployee() == null;
+			tmpTP = bP.getRepeattype() != null ?
+					Utils.adjustRepeatablePeriodToOnaDate(this.getAtDay(), bP.getStart(), bP.getEnd(), bP.getRepeattype().getName())
+					:
+					Utils.adjustPeriodToOnaDate(this.getAtDay(), bP.getStart(), bP.getEnd());
+
+			tmpData = new HashMap<>();
+			tmpData.put("id", bP.getId());
+			tmpData.put("comment", bP.getComment());
+			tmpData.put("periodType", bP.getPeriodtype().getName());
+
+			tmpNTPE = new NamedTimePeriodExt(
+					tmpTP.getStart(),
+					tmpTP.getEnd(),
+					TypedTimePeriod.CLOSE,
+					isProviderLevel ? NamedTimePeriod.CLOSE_PROVIDER_BUSY : NamedTimePeriod.CLOSE_EMPLOYEE_BUSY,
+					tmpData
+			);
+			if (isProviderLevel)
+				for (ProviderWorkInfo.Employee e : this.getEmployees())
+					e.timeline.add(tmpNTPE);
+			else
+				this.getEmployeeById(bP.getEmployee().getId()).timeline.add(tmpNTPE);
+		}
+	}
+
+	private void fillWorkInfoPeriods(List<WorkInfo> wis) {
+		boolean isClose;
+		boolean isProviderLevel;
+
+		WorkInfo providerWI = wis.stream().filter(wI -> wI.getEmployee() == null).findFirst().orElseThrow();
+		Provider p = providerWI.getProvider();
+		this.setProviderName(p.getName());
+		this.setProviderAddress(p.getAddress().getAddress1());
+		this.setProviderCity(p.getAddress().getCity().getName());
+		this.setProviderType(p.getProvidertype().getName());
+
+		for (WorkInfo wI : wis) {
+			isProviderLevel = wI.getEmployee() == null;
+			isClose = !wI.getPeriodtype().isOpen();
+
+			//Breaks
+			if (isClose) {
+				if (isProviderLevel) {
+					for (ProviderWorkInfo.Employee e : this.getEmployees()) {
+						e.timeline.add(new NamedTimePeriodExt(
+								wI.getStartTime(),
+								wI.getEndTime(),
+								TypedTimePeriod.CLOSE,
+								NamedTimePeriod.CLOSE_PROVIDER_BREAK,
+								Map.of(
+										"id", wI.getId(),
+										"periodType", wI.getPeriodtype().getName()
+								)
+						));
+					}
+
+					this.getBreakPeriods().add(new TimePeriod(wI.getStartTime(), wI.getEndTime()));
+
+				} else
+					this.getEmployeeById(wI.getEmployee().getId()).timeline.add(new NamedTimePeriodExt(
+							wI.getStartTime(),
+							wI.getEndTime(),
+							TypedTimePeriod.CLOSE,
+							NamedTimePeriod.CLOSE_EMPLOYEE_BREAK,
+							Map.of(
+									"id", wI.getId(),
+									"periodType", wI.getPeriodtype().getName()
+							)
+					));
+
+			}
+			//Working time
+			else {
+				if (isProviderLevel) {
+					this.getWorkPeriods().add(new TimePeriod(wI.getStartTime(), wI.getEndTime()));
+				} else {
+					this.getEmployeeById(wI.getEmployee().getId())
+							.workPeriods
+							.add(new TimePeriod(wI.getStartTime(), wI.getEndTime()));
+				}
+			}
+
+		}
+	}
+
+	private void sortPeriods() {
+		this.getWorkPeriods().sort(Comparator.comparing(TimePeriod::getStart));
+		this.getEmployees().forEach(e -> e.timeline.sort(Comparator.comparing(TimePeriod::getStart)));
+	}
+
 
 	public Employee getEmployeeById(Integer id) {
 		for (Employee e : this.getEmployees())
-			if (e.getEmployeeId().equals(id))
+			if (e.employeeId.equals(id))
 				return e;
 		return null;
 	}

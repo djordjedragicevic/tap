@@ -1,9 +1,10 @@
 package com.tap.security;
 
-import com.tap.db.entity.User;
-import com.tap.rest.common.CUtilRepository;
+import com.tap.rest.entity.User;
+import com.tap.rest.repository.CommonRepository;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -24,9 +25,9 @@ public class AuthFilter implements ContainerRequestFilter {
 
 	@Context
 	ResourceInfo resourceInfo;
-
 	@Inject
-	CUtilRepository cUtilRepository;
+	@Named("commonRepository")
+	private CommonRepository commonRepository;
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -51,7 +52,7 @@ public class AuthFilter implements ContainerRequestFilter {
 				}
 
 				//Check is user verified
-				if(!isUserVerified(t)){
+				if (!isUserVerified(t)) {
 					requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
 					return;
 				}
@@ -94,7 +95,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	}
 
 	private boolean isValidOnDb(Token t) {
-		Optional<com.tap.db.entity.Token> tokenRec = cUtilRepository.getEntity(com.tap.db.entity.Token.class, t.getRid());
+		Optional<com.tap.rest.entity.Token> tokenRec = commonRepository.getEntity(com.tap.rest.entity.Token.class, t.getRid());
 		return tokenRec.isPresent() &&
 			   tokenRec.get().getTokenstatus().getName().equals(Token.VALID) &&
 			   tokenRec.get().getJti() != null &&
@@ -102,7 +103,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	}
 
 	private boolean isUserVerified(Token t) {
-		Optional<User> user = cUtilRepository.getEntity(User.class, t.getSub());
+		Optional<User> user = commonRepository.getEntity(User.class, t.getSub());
 		return user.isPresent() && user.get().getVerified() == 1;
 	}
 }
