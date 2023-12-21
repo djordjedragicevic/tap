@@ -197,7 +197,7 @@ public class AppointmentRepository extends CommonRepository {
 	}
 
 	private static final String APP_PRE_QUERY = """
-			SELECT new com.tap.db.dtor.AppointmentDtoSimple(
+			SELECT new com.tap.rest.dtor.AppointmentDtoSimple(
 			a.id, a.start, a.end, a.userName,
 			u.id, u.username, u.email,
 			s.id, s.name, s.price, s.duration,

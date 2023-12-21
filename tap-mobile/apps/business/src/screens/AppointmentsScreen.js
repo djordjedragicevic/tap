@@ -20,9 +20,6 @@ import I18nT from 'xapp/src/i18n/i18n';
 import XButtonExtend from 'xapp/src/components/basic/XButtonExtend';
 import { useIsRoleOwner } from '../store/concreteStores';
 
-
-const HOUR_HEIGHT = 60;
-
 const findOverlapIndex = (tps, idx) => {
 	const tP = tps[idx];
 	for (let i = idx - 1; i >= 0; i--) {
@@ -132,7 +129,7 @@ const getModalData = (employee, item) => {
 
 const AppointmentsScreen = ({ navigation, route }) => {
 
-	const sizeCoef = useState(2)[0];
+	const sizeCoef = useState(1)[0];
 
 	const pId = useStore(gS => gS.user.employee.provider.id);
 
@@ -279,7 +276,6 @@ const AppointmentsScreen = ({ navigation, route }) => {
 					sizeCoef={sizeCoef}
 					startHour={9}
 					endHour={22}
-					rowHeight={HOUR_HEIGHT}
 					items={data?.employees[selectedEmpIdx].timeline}
 					arrangedItems={getArrangedTimeline(data?.employees[selectedEmpIdx])}
 					onItemPress={onItemPress}

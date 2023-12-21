@@ -6,13 +6,13 @@ import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 import TimePeriod from "./TimePeriod";
 
-const HOUR_HEIGHT = 60;
+const HOUR_HEIGHT = 100;
 const CT_HEIGHT = 10;
 const CT_DOT_SIZE = 8;
 
 
 const getDateState = () => {
-	//const d = new Date('2020-05-12T14:00:00.000Z');
+	//const d = new Date('2023-21-12T00:00:00.000Z');
 	const d = new Date();
 	return {
 		h: d.getHours(),
@@ -35,7 +35,7 @@ const CurrentTime = memo(({ sizeCoef, hourHeight, topOffset }) => {
 	}, []);
 
 	const top = useMemo(() => {
-		return (((dateState.h * hourHeight) + dateState.m + (hourHeight / 2) - (CT_HEIGHT / 2)) * sizeCoef) + topOffset;
+		return (((dateState.h * hourHeight) + dateState.m + (hourHeight / 2)) * sizeCoef) + topOffset - (CT_HEIGHT / 2);
 	}, [dateState, hourHeight, topOffset]);
 
 	return (
@@ -65,14 +65,13 @@ const RowRight = memo(({ height }) => {
 });
 
 const Gropu = ({ children, top, height }) => {
-
 	return (
 		<View
 			style={{
 				position: 'absolute',
 				flexDirection: 'row',
-				height: height,
-				top: top,
+				height,
+				top,
 				end: 5,
 				start: 5
 			}}>
@@ -127,8 +126,8 @@ const TimePeriodsPanel = ({
 					{arrangedItems?.map((group) => (
 						<Gropu
 							key={group.id}
-							top={((DateUtils.getMinutesOfDay(group.start) + (hourHeight / 2)) * sizeCoef) + topOffset}
-							height={DateUtils.calculateHeightFromTime(group.start, group.end) * sizeCoef}
+							height={DateUtils.calculateHeightFromTime(group.start, group.end, hourHeight) * sizeCoef}
+							top={((DateUtils.getMinutesOfDay(group.start, hourHeight) + (hourHeight / 2)) * sizeCoef) + topOffset}
 						>
 							{group.columns.map((c, cIdx) => (
 								<Column key={`${group.id}_${cIdx.toString()}`}>
@@ -136,7 +135,7 @@ const TimePeriodsPanel = ({
 										<TimePeriod
 											key={`${cI.data.id}#${cI.name}`}
 											item={cI}
-											height={DateUtils.calculateHeightFromTime(cI.start, cI.end) * sizeCoef}
+											height={DateUtils.calculateHeightFromTime(cI.start, cI.end, hourHeight) * sizeCoef}
 											top={((DateUtils.getMinutesOfDay(cI.start) - DateUtils.getMinutesOfDay(group.start)) * sizeCoef)}
 											onPress={onItemPress}
 										/>

@@ -1,37 +1,11 @@
 import I18nT from "../i18n/i18n";
 
 
-
 export const emptyFn = function () { };
-
-const getMinutesOfDay = (timeString) => {
-	const t = timeString.split(":");
-	return (parseInt(t[0]) * 60) + parseInt(t[1]);
-};
-
-export const calculateHeightFromDate = (startDate, endDate, coef = 1) => {
-	const startTime = startDate.split('T')[1];
-	const endTime = endDate.split('T')[1];
-	return (getMinutesOfDay(endTime) * coef - getMinutesOfDay(startTime) * coef)
-};
-
-export const calculateTopFromDate = (startDate, offset = 0, coef = 1, fromDate, HOUR_HEIGHT = 60) => {
-	const dateOffset = fromDate ? ((new Date(startDate).getDay() - fromDate.getDay()) * 24 * HOUR_HEIGHT * coef) : 0;
-	return (getMinutesOfDay(startDate.split('T')[1]) * coef + offset) + dateOffset
-};
 
 export const getUserDisplayName = (user) => {
 	return user.username || ((user.firstName || '') + ' ' + (user.lastName || ''));
 };
-
-export const formatTime = (date, loc) => {
-	return date.toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit', hour12: false });
-};
-
-export const measureDuration = (fn) => {
-	fn();
-}
-
 
 export const DateUtils = {
 	hoursDiff: (start, end) => {
@@ -45,12 +19,12 @@ export const DateUtils = {
 		const diff = DateUtils.getMinutesOfDay(to) - DateUtils.getMinutesOfDay(from);
 		return DateUtils.minToHMin(diff);
 	},
-	getMinutesOfDay: (timeString) => {
+	getMinutesOfDay: (timeString, hourLength = 60) => {
 		const t = timeString.split(":");
-		return (parseInt(t[0]) * 60) + parseInt(t[1]);
+		return (parseInt(t[0]) * hourLength) + parseInt(t[1]);
 	},
-	calculateHeightFromTime: (startTime, endTime) => {
-		return DateUtils.getMinutesOfDay(endTime) - DateUtils.getMinutesOfDay(startTime);
+	calculateHeightFromTime: (startTime, endTime, hourLength = 60) => {
+		return (DateUtils.getMinutesOfDay(endTime) - DateUtils.getMinutesOfDay(startTime)) * (hourLength / 60);
 	},
 
 	getDayHours: (from = 0, to = 23) => {

@@ -327,7 +327,7 @@ public class ProviderRepository extends CommonRepository {
 	public List<com.tap.rest.dtor.ServiceDto> getServicesOfEmployee(Integer eId) {
 
 		String query = """
-				SELECT new com.tap.db.dtor.ServiceDto(s.id, s.name, g.name, s.duration, s.price) FROM Service s
+				SELECT new com.tap.rest.dtor.ServiceDto(s.id, s.name, g.name, s.duration, s.price) FROM Service s
 				INNER JOIN ServiceEmployee se ON se.service.id = s.id
 				LEFT JOIN s.group g
 				JOIN se.employee e

@@ -61,10 +61,10 @@ public class BAppService {
 		}
 	}
 
-	@GET
-	@Path("asset/download")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getImage(@QueryParam("lct") String location) {
-		return FSAsset.readFile(location).build();
-	}
+//	@GET
+//	@Path("asset/download")
+//	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+//	public Response getImage(@QueryParam("lct") String location) {
+//		return FSAsset.readFile(location).build();
+//	}
 }
