@@ -10,9 +10,12 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 const getPeriodColor = (item) => {
 
+	if (item.id.startsWith('V_FT#'))
+		return Theme.vars.green;
+
 	switch (item.name) {
-		case PERIOD.CLOSE_APPOINTMENT:
-		case PERIOD.CLOSE_APPOINTMENT_BY_PROVIDER:
+		case PERIOD.APP_BY_USER:
+		case PERIOD.APP_BY_PROVIDER:
 			if (item.data.status === STATUS.WAITING)
 				return Theme.vars.red;
 			else if (!item.data.userId)
@@ -20,28 +23,8 @@ const getPeriodColor = (item) => {
 			else
 				return Theme.vars.green;
 
-		case PERIOD.CLOSE_EMPLOYEE_BREAK:
-		case PERIOD.CLOSE_PROVIDER_BREAK:
-			return Theme.vars.gray;
-		default:
-			return Theme.vars.gray;
-	}
-};
-
-const getPeriodStyle = (item, theme) => {
-
-	switch (item.name) {
-		case PERIOD.CLOSE_APPOINTMENT:
-		case PERIOD.CLOSE_APPOINTMENT_BY_PROVIDER:
-			if (item.data.status === STATUS.WAITING)
-				return Theme.vars.red;
-			else if (!item.data.userId)
-				return Theme.vars.blue;
-			else
-				return Theme.vars.green;
-
-		case PERIOD.CLOSE_EMPLOYEE_BREAK:
-		case PERIOD.CLOSE_PROVIDER_BREAK:
+		case PERIOD.WI_EMPLOYEE_BREAK:
+		case PERIOD.WI_PROVIDER_BREAK:
 			return Theme.vars.gray;
 		default:
 			return Theme.vars.gray;
@@ -52,24 +35,24 @@ const getPeriodText = (item) => {
 	let text = item.start + '-' + item.end;
 
 	switch (item.name) {
-		case PERIOD.CLOSE_APPOINTMENT:
-		case PERIOD.CLOSE_APPOINTMENT_BY_PROVIDER:
+		case PERIOD.APP_BY_USER:
+		case PERIOD.APP_BY_PROVIDER:
 			text += ' ' + item.data.sName + ' ' + (item.data.uUsername || '')
 			break;
-		case PERIOD.CLOSE_EMPLOYEE_BREAK:
-		case PERIOD.CLOSE_PROVIDER_BREAK:
+		case PERIOD.WI_EMPLOYEE_BREAK:
+		case PERIOD.WI_PROVIDER_BREAK:
 			text += ' ' + I18nT.t('Break');
 			break;
 		default:
-			text += ' ' + (item.data.comment ? item.data.comment : I18nT.t('Reserved time'));
+			text += ' ' + (item.data?.comment || I18nT.t('Reserved time'));
 			break;
 	}
 
-	return text;
+	return text + " (" + item.id + ")";
 };
 
 
-const TimePeriod = ({ item, height, top, onPress }) => {
+const TimePeriod = ({ item, height, top, onPress, showFreeTime }) => {
 
 	const styles = useThemedStyle(createStyle, height, top, getPeriodColor(item));
 	const cRed = useColor('red');
@@ -79,6 +62,9 @@ const TimePeriod = ({ item, height, top, onPress }) => {
 	}, [onPress, item]);
 
 	const getExclamationIcon = useCallback(() => <FontAwesome5 name="exclamation" size={15} color={cRed} />, [cRed]);
+
+	if (!showFreeTime && item.id.startsWith("V_FT"))
+		return null;
 
 	return (
 		<TouchableOpacity style={styles.itemContainer} onPress={onPressHandler}>

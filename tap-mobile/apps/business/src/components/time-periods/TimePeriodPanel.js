@@ -6,37 +6,91 @@ import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 import TimePeriod from "./TimePeriod";
 
-const HOUR_HEIGHT = 100;
+const HOUR_HEIGHT = 60;
 const CT_HEIGHT = 10;
 const CT_DOT_SIZE = 8;
 
-
-const getDateState = () => {
-	//const d = new Date('2023-21-12T00:00:00.000Z');
-	const d = new Date();
-	return {
-		h: d.getHours(),
-		m: d.getMinutes()
-		//timeString: DateUtils.dateToTimeString(d, false)
+const findOverlapIndex = (tps, idx) => {
+	const tP = tps[idx];
+	for (let i = idx - 1; i >= 0; i--) {
+		if (DateUtils.isTimeBefore(tP.start, tps[i].end))
+			return i;
 	}
+	return -1;
 };
 
 
+const arrangeTimeline = (tl, zoomCoef, rowHCoef, topOffset) => {
+	const resp = [];
+	const groups = {};
+	let g = {
+		id: '',
+		start: '',
+		end: '',
+		columns: []
+	};
 
-const CurrentTime = memo(({ sizeCoef, hourHeight, topOffset }) => {
+	let gIdx = 0;
+
+	let tmpC;
+	let tmpOver;
+	let tmpOverIdx;
+
+	for (let i = 0, s = tl.length; i < s; i++) {
+		tmpC = tl[i];
+		tmpOverIdx = findOverlapIndex(tl, i);
+
+		if (tmpOverIdx === -1) {
+			g = {
+				id: 'g' + (++gIdx),
+				start: tmpC.start,
+				end: tmpC.end,
+				columns: [[tmpC]]
+			};
+			groups[g.id] = g;
+			resp.push(g);
+			tmpC._gId = g.id;
+		}
+		else {
+			tmpOver = tl[tmpOverIdx];
+			groups[tmpOver._gId].end = tmpC.end;
+			tmpC._gId = tmpOver._gId;
+			let addedInC = false;
+			for (let c of groups[tmpOver._gId].columns) {
+				if (!DateUtils.isTimeBefore(tmpC.start, c[c.length - 1].end)) {
+					c.push(tmpC);
+					addedInC = true;
+					break;
+				}
+			}
+			if (!addedInC)
+				groups[tmpOver._gId].columns.push([tmpC]);
+		}
+	}
+
+	Object.values(groups).forEach(g => {
+		g.top = ((DateUtils.getMinutesOfDay(g.start) * rowHCoef) * zoomCoef) + topOffset;
+		g.height = DateUtils.timeDuration(g.start, g.end) * rowHCoef * zoomCoef;
+	});
+
+	return resp;
+};
+
+
+const CurrentTime = memo(({ zoomCoef, topOffset, rowHCoef }) => {
 
 	const styles = useThemedStyle(createStyle);
 
-	const [dateState, setDateState] = useState(getDateState());
+	const [date, setDate] = useState(new Date());
 
 	useEffect(() => {
-		const intId = setInterval(() => setDateState(getDateState()), 60000);
+		const intId = setInterval(() => setDate(new Date()), 60000);
 		return () => clearInterval(intId);
 	}, []);
 
 	const top = useMemo(() => {
-		return (((dateState.h * hourHeight) + dateState.m + (hourHeight / 2)) * sizeCoef) + topOffset - (CT_HEIGHT / 2);
-	}, [dateState, hourHeight, topOffset]);
+		return (((date.getHours() * 60) + date.getMinutes()) * zoomCoef * rowHCoef) + topOffset - (CT_HEIGHT / 2);
+	}, [date, rowHCoef, zoomCoef, topOffset]);
 
 	return (
 		<View style={[styles.currentTimeContainer, { top }]}>
@@ -89,23 +143,25 @@ const Column = ({ children }) => {
 };
 
 const TimePeriodsPanel = ({
-	sizeCoef = 1,
+	zoomCoef = 1,
 	showCurrentTime = true,
 	startHour = 0,
 	endHour = 23,
 	hourHeight = HOUR_HEIGHT,
-	items = [],
-	arrangedItems,
+	timeline = [],
 	style,
 	refreshing = false,
+	showFreeTime = false,
 	onRefresh = emptyFn,
 	onItemPress = emptyFn
 }) => {
-
 	const styles = useThemedStyle(createStyle);
-	const height = useMemo(() => sizeCoef * hourHeight, [sizeCoef])
+
+	const rowHeight = useMemo(() => zoomCoef * hourHeight, [zoomCoef])
+	const rowHCoef = useMemo(() => (hourHeight / 60), [hourHeight]);
 	const hours = useMemo(() => DateUtils.getDayHours(startHour, endHour), [startHour, endHour]);
-	const topOffset = useMemo(() => (hourHeight * startHour * sizeCoef) * -1, [hourHeight, startHour, sizeCoef]);
+	const topOffset = useMemo(() => ((hourHeight * startHour * zoomCoef) * -1) + ((hourHeight / 2) * zoomCoef), [hourHeight, startHour, zoomCoef]);
+	const arrangedItems = useMemo(() => arrangeTimeline(timeline, zoomCoef, rowHCoef, topOffset), [timeline, zoomCoef, rowHCoef, topOffset]);
 
 	return (
 		<ScrollView
@@ -118,47 +174,43 @@ const TimePeriodsPanel = ({
 		>
 			<View style={[styles.container, style]}>
 				<View style={styles.rowLeftContainer}>
-					{hours.map(h => <RowLeft key={h} height={height} hour={h} />)}
+					{hours.map(h => <RowLeft key={h} height={rowHeight} hour={h} />)}
 				</View>
 				<View style={styles.rowRightContainer}>
-					{hours.map(h => <RowRight key={h} height={height} />)}
+					{hours.map(h => <RowRight key={h} height={rowHeight} />)}
 
-					{arrangedItems?.map((group) => (
-						<Gropu
-							key={group.id}
-							height={DateUtils.calculateHeightFromTime(group.start, group.end, hourHeight) * sizeCoef}
-							top={((DateUtils.getMinutesOfDay(group.start, hourHeight) + (hourHeight / 2)) * sizeCoef) + topOffset}
-						>
-							{group.columns.map((c, cIdx) => (
-								<Column key={`${group.id}_${cIdx.toString()}`}>
-									{c.map(cI => (
-										<TimePeriod
-											key={`${cI.data.id}#${cI.name}`}
-											item={cI}
-											height={DateUtils.calculateHeightFromTime(cI.start, cI.end, hourHeight) * sizeCoef}
-											top={((DateUtils.getMinutesOfDay(cI.start) - DateUtils.getMinutesOfDay(group.start)) * sizeCoef)}
-											onPress={onItemPress}
-										/>
-									))}
-								</Column>
-							))}
-						</Gropu>
-					))}
-
-					{!arrangedItems && items.map((i) =>
-						<TimePeriod
-							key={`${i.data.id}#${i.name}`}
-							item={i}
-							height={DateUtils.calculateHeightFromTime(i.start, i.end) * sizeCoef}
-							top={((DateUtils.getMinutesOfDay(i.start) + (hourHeight / 2)) * sizeCoef) + topOffset}
-							onPress={onItemPress}
-						/>)}
+					{arrangedItems?.map((group) => {
+						return (
+							<Gropu
+								key={group.id}
+								height={group.height}
+								top={group.top}
+							>
+								{group.columns.map((c, cIdx) => (
+									<Column key={`${group.id}_${cIdx.toString()}`}>
+										{c.map(cI => {
+											return (
+												<TimePeriod
+													key={cI.id}
+													item={cI}
+													height={DateUtils.timeDuration(cI.start, cI.end) * rowHCoef * zoomCoef}
+													top={DateUtils.timeDuration(group.start, cI.start) * rowHCoef * zoomCoef}
+													onPress={onItemPress}
+													showFreeTime={showFreeTime}
+												/>
+											)
+										})}
+									</Column>
+								))}
+							</Gropu>
+						)
+					})}
 
 					{showCurrentTime &&
 						<CurrentTime
-							hourHeight={hourHeight}
-							sizeCoef={sizeCoef}
+							zoomCoef={zoomCoef}
 							topOffset={topOffset}
+							rowHCoef={rowHCoef}
 						/>
 					}
 				</View>

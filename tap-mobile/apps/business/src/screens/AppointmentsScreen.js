@@ -20,78 +20,6 @@ import I18nT from 'xapp/src/i18n/i18n';
 import XButtonExtend from 'xapp/src/components/basic/XButtonExtend';
 import { useIsRoleOwner } from '../store/concreteStores';
 
-const findOverlapIndex = (tps, idx) => {
-	const tP = tps[idx];
-	for (let i = idx - 1; i >= 0; i--) {
-		if (DateUtils.isTimeBefore(tP.start, tps[i].end))
-			return i;
-	}
-	return -1;
-};
-
-const arrangeTimeline = (tl) => {
-
-	const resp = [];
-	const groups = {};
-	let g = {
-		id: '',
-		start: '',
-		end: '',
-		columns: []
-	};
-
-	let gIdx = 0;
-
-	let tmpC;
-	let tmpOver;
-	let tmpOverIdx;
-
-	for (let i = 0, s = tl.length; i < s; i++) {
-		tmpC = tl[i];
-		tmpOverIdx = findOverlapIndex(tl, i);
-
-		if (tmpOverIdx === -1) {
-			g = {
-				id: 'g' + (++gIdx),
-				start: tmpC.start,
-				end: tmpC.end,
-				columns: [[tmpC]]
-			};
-			groups[g.id] = g;
-			resp.push(g);
-			tmpC._gId = g.id;
-		}
-		else {
-			tmpOver = tl[tmpOverIdx];
-			groups[tmpOver._gId].end = tmpC.end;
-			tmpC._gId = tmpOver._gId;
-			let addedInC = false;
-			for (let c of groups[tmpOver._gId].columns) {
-				if (!DateUtils.isTimeBefore(tmpC.start, c[c.length - 1].end)) {
-					c.push(tmpC);
-					addedInC = true;
-					break;
-				}
-			}
-			if (!addedInC)
-				groups[tmpOver._gId].columns.push([tmpC]);
-		}
-	}
-
-	return resp;
-};
-
-let empsTimeline = {};
-const getArrangedTimeline = (emp) => {
-
-	if (emp) {
-		if (!emp[emp.employeeId])
-			empsTimeline[emp.employeeId] = arrangeTimeline(emp.timeline);
-
-		return empsTimeline[emp.employeeId];
-	}
-};
-
 const getModalData = (employee, item) => {
 
 	const data = {
@@ -129,7 +57,7 @@ const getModalData = (employee, item) => {
 
 const AppointmentsScreen = ({ navigation, route }) => {
 
-	const sizeCoef = useState(1)[0];
+	const zoomCoef = useState(2)[0];
 
 	const pId = useStore(gS => gS.user.employee.provider.id);
 
@@ -192,14 +120,13 @@ const AppointmentsScreen = ({ navigation, route }) => {
 			)
 		}
 
-	}, [selectedPeriod, redColor, onAppStateChange])
+	}, [selectedPeriod, redColor, onAppStateChange]);
 
 	useEffect(() => {
 		setLoading(true);
 		let finish = true;
 		Http.get('/appointments', { date: DateUtils.dateToString(date) })
 			.then(resp => {
-				empsTimeline = {};
 				if (finish) {
 					const eId = storeGetValue(gS => gS.user.employee.id);
 					if (isOwner && resp.employees?.length > 1) {
@@ -273,11 +200,10 @@ const AppointmentsScreen = ({ navigation, route }) => {
 				<TimePeriodsPanel
 					refreshing={loading}
 					onRefresh={() => setLoadCount(loadCount + 1)}
-					sizeCoef={sizeCoef}
+					zoomCoef={zoomCoef}
 					startHour={9}
 					endHour={22}
-					items={data?.employees[selectedEmpIdx].timeline}
-					arrangedItems={getArrangedTimeline(data?.employees[selectedEmpIdx])}
+					timeline={data?.employees[selectedEmpIdx].timeline}
 					onItemPress={onItemPress}
 				/>
 

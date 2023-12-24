@@ -6,12 +6,16 @@ export const STATUS = {
 };
 
 export const PERIOD = {
-	CLOSE_APPOINTMENT: 'CLOSE_APPOINTMENT',
-	CLOSE_APPOINTMENT_BY_PROVIDER: 'CLOSE_APPOINTMENT_BY_PROVIDER',
-	CLOSE_EMPLOYEE_BREAK: 'CLOSE_EMPLOYEE_BREAK',
-	CLOSE_PROVIDER_BREAK: 'CLOSE_PROVIDER_BREAK',
-	CLOSE_EMPLOYEE_BUSY: 'CLOSE_EMPLOYEE_BUSY',
-	CLOSE_PROVIDER_BUSY: 'CLOSE_PROVIDER_BUSY'
+	APP_BY_USER: 'APP_BY_USER',
+	APP_BY_PROVIDER: 'APP_BY_PROVIDER',
+	WI_PROVIDER_WORK: 'WI_PROVIDER_WORK',
+	WI_EMPLOYEE_WORK: 'WI_EMPLOYEE_WORK',
+	WI_PROVIDER_BREAK: 'WI_PROVIDER_BREAK',
+	WI_EMPLOYEE_BREAK: 'WI_EMPLOYEE_BREAK',
+	C_LOCK_TIME: 'C_LOCK_TIME',
+	C_DAY_OFF: 'C_DAY_OFF',
+	V_FREE_TIME: 'V_FREE_TIME'
+
 };
 
 export const PERIOD_NAME = {
@@ -22,16 +26,16 @@ export const PERIOD_NAME = {
 };
 
 export const isWaitingAppointment = (item) => {
-	return item?.name === PERIOD.CLOSE_APPOINTMENT && item?.data.status === STATUS.WAITING;
+	return item?.name === PERIOD.APP_BY_USER && item?.data.status === STATUS.WAITING;
 };
 
 export const getFrendlyName = (item) => {
-	if (item?.name === PERIOD.CLOSE_APPOINTMENT)
+	if (item?.id.startsWith('APP_'))
 		if (item.userId)
 			return 'Appointment';
 		else
 			return 'Appointment - manually entered';
-	else if (item?.name === PERIOD.CLOSE_EMPLOYEE_BREAK || item?.name === PERIOD.CLOSE_PROVIDER_BREAK)
+	else if (item?.name === PERIOD.WI_EMPLOYEE_BREAK || item?.name === PERIOD.WI_PROVIDER_BREAK)
 		return 'Break';
 	else
 		return 'Reserved time';

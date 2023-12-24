@@ -50,7 +50,7 @@ public class BCustomPeriodService {
 		int pId = token.getProviderId();
 		int eId = token.getEmployeeId();
 
-		PeriodType pT = providerRepository.getSingleEntityBy(PeriodType.class, Map.of("active", true, "name", Statics.PT_CLOSE_LOCK_TIME));
+		PeriodType pT = providerRepository.getSingleEntityBy(PeriodType.class, Map.of("active", true, "name", Statics.PT_C_LOCK_TIME));
 		Provider provider = providerRepository.getSingleEntityBy(Provider.class, Map.of("id", pId, "active", 1));
 		Employee e = providerRepository.getSingleActiveEntityById(Employee.class, eId);
 
@@ -90,6 +90,7 @@ public class BCustomPeriodService {
 
 		Employee employee = providerRepository.getSingleEntityBy(Employee.class, Map.of("active", (byte) 1, "id", eId));
 		AppointmentStatus status = providerRepository.getSingleEntityBy(AppointmentStatus.class, Map.of("name", Statics.A_STATUS_ACCEPTED));
+		PeriodType periodType = providerRepository.getSingleEntityBy(PeriodType.class, Map.of("name", Statics.PT_APP_BY_USER, "active", 1));
 
 		if (employee == null || services.isEmpty() || status == null)
 			throw new TAPException(ErrID.B_APP_1);
@@ -101,6 +102,7 @@ public class BCustomPeriodService {
 			Appointment a = new Appointment();
 			a.setStart(start.plusMinutes(startOffset));
 			a.setEnd(a.getStart().plusMinutes(s.getDuration()));
+			a.setPeriodtype(periodType);
 			a.setUserName(user);
 			a.setService(s);
 			a.setEmployee(employee);

@@ -19,12 +19,12 @@ export const DateUtils = {
 		const diff = DateUtils.getMinutesOfDay(to) - DateUtils.getMinutesOfDay(from);
 		return DateUtils.minToHMin(diff);
 	},
-	getMinutesOfDay: (timeString, hourLength = 60) => {
+	getMinutesOfDay: (timeString) => {
 		const t = timeString.split(":");
-		return (parseInt(t[0]) * hourLength) + parseInt(t[1]);
+		return (parseInt(t[0]) * 60) + parseInt(t[1]);
 	},
-	calculateHeightFromTime: (startTime, endTime, hourLength = 60) => {
-		return (DateUtils.getMinutesOfDay(endTime) - DateUtils.getMinutesOfDay(startTime)) * (hourLength / 60);
+	timeDuration: (startTime, endTime) => {
+		return (DateUtils.getMinutesOfDay(endTime) - DateUtils.getMinutesOfDay(startTime))
 	},
 
 	getDayHours: (from = 0, to = 23) => {

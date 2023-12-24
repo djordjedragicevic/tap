@@ -27,12 +27,13 @@ public class PeriodType implements Serializable {
     @Column(name="active", nullable=false)
 	private boolean active;
 
-    @Column(name="open", nullable=false)
-	private boolean open;
-
     @Column(name="description", length=512)
 	private String description;
 
+
+    @OneToMany(mappedBy="periodtype")
+	@JsonbTransient
+	private List<Appointment> appointmentList; 
 
     @OneToMany(mappedBy="periodtype")
 	@JsonbTransient
@@ -70,14 +71,6 @@ public class PeriodType implements Serializable {
 		return this.active;
 	}
 
-	public void setOpen( boolean open ) {
-		this.open = open;
-	}
-
-	public boolean isOpen() {
-		return this.open;
-	}
-
 	public void setDescription( String description ) {
 		this.description = description;
 	}
@@ -86,6 +79,13 @@ public class PeriodType implements Serializable {
 		return this.description;
 	}
 
+	public List<Appointment> getAppointmentList() {
+		return this.appointmentList;
+	}
+	
+	public void setAppointmentList(List<Appointment> appointmentList) {
+		this.appointmentList = appointmentList;
+	}
 	public List<CustomPeriod> getCustomperiodList() {
 		return this.customperiodList;
 	}

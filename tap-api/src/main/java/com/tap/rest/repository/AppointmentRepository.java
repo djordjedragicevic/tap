@@ -83,11 +83,13 @@ public class AppointmentRepository extends CommonRepository {
 				Employee e = em.find(Employee.class, ser.getEmployee().getId());
 				LocalDateTime start = LocalDateTime.of(app.getDate(), ser.getTime());
 				LocalDateTime end = start.plusMinutes(ser.getService().getDuration());
+				PeriodType pT = getSingleEntityBy(PeriodType.class, Map.of("name", Statics.PT_APP_BY_USER, "active", 1));
 
 				System.out.println(app.getDate() + "  ---  " + end);
 
 				fApp.setStart(start);
 				fApp.setEnd(end);
+				fApp.setPeriodtype(pT);
 				fApp.setAppointmentstatus(aS);
 				fApp.setEmployee(e);
 				fApp.setService(s);
@@ -199,6 +201,7 @@ public class AppointmentRepository extends CommonRepository {
 	private static final String APP_PRE_QUERY = """
 			SELECT new com.tap.rest.dtor.AppointmentDtoSimple(
 			a.id, a.start, a.end, a.userName,
+			pt.name,
 			u.id, u.username, u.email,
 			s.id, s.name, s.price, s.duration,
 			e.id, e.name, e.imagePath,
@@ -208,6 +211,7 @@ public class AppointmentRepository extends CommonRepository {
 			)
 			FROM Appointment a
 			JOIN a.appointmentstatus status
+			JOIN a.periodtype pt
 			JOIN a.employee e
 			LEFT JOIN a.user u
 			JOIN a.service s
@@ -438,6 +442,7 @@ public class AppointmentRepository extends CommonRepository {
 			em.persist(app);
 		}
 	}
+
 	private boolean isFreeTime(Integer pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 		return getAppointmentsAtDayWAStatus(eIds, from, to).isEmpty()
 			   &&

@@ -14,6 +14,7 @@ public class AppointmentDto {
 	private String comment;
 	private AppointmentStatusDto appointmentstatus; 
 	private EmployeeDto employee; 
+	private PeriodTypeDto periodtype; 
 	private ServiceDto service; 
 	private UserDto user; 
 	private UserDto user2; 
@@ -105,6 +106,14 @@ public class AppointmentDto {
 
 	public AppointmentDto setEmployee(EmployeeDto employee) {
 		this.employee = employee;
+		return this;
+	}
+	public PeriodTypeDto getPeriodtype() {
+		return this.periodtype;
+	}
+
+	public AppointmentDto setPeriodtype(PeriodTypeDto periodtype) {
+		this.periodtype = periodtype;
 		return this;
 	}
 	public ServiceDto getService() {

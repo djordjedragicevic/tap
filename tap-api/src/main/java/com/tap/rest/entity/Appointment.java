@@ -52,6 +52,10 @@ public class Appointment implements Serializable {
 	private Employee employee; 
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="period_type_id", referencedColumnName="id")
+	private PeriodType periodtype; 
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="service_id", referencedColumnName="id")
 	private Service service; 
 
@@ -144,6 +148,13 @@ public class Appointment implements Serializable {
 	
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+	}
+	public PeriodType getPeriodtype() {
+		return this.periodtype;
+	}
+	
+	public void setPeriodtype(PeriodType periodtype) {
+		this.periodtype = periodtype;
 	}
 	public Service getService() {
 		return this.service;

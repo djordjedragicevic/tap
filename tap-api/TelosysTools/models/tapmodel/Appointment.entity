@@ -3,6 +3,7 @@
 Appointment {
   // attributes
   id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
+  periodTypeId : int { @DbName(period_type_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_period_type1, PeriodType.id) };
   start : timestamp { @DbName(start) @DbType(DATETIME) @NotNull @NotEmpty };
   end : timestamp { @DbName(end) @DbType(DATETIME) @NotNull @NotEmpty };
   userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @FK(fk_appointment_user1, User.id) };
@@ -18,6 +19,7 @@ Appointment {
   // links
   appointmentstatus : AppointmentStatus { @LinkByFK(fk_appointment_appointment_status1) };
   employee : Employee { @LinkByFK(fk_appointment_employee1) };
+  periodtype : PeriodType { @LinkByFK(fk_appointment_period_type1) };
   service : Service { @LinkByFK(fk_appointment_service1) };
   user : User { @LinkByFK(fk_appointment_user1) };
   user2 : User { @LinkByFK(fk_appointment_user2) };

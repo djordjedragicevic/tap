@@ -4,6 +4,7 @@ import com.tap.common.*;
 import com.tap.rest.dto.EmployeeDto;
 import com.tap.rest.dtor.AppointmentDtoSimple;
 import com.tap.rest.entity.CustomPeriod;
+import com.tap.rest.entity.PeriodType;
 import com.tap.rest.entity.Provider;
 import com.tap.rest.entity.WorkInfo;
 import com.tap.exception.ErrID;
@@ -19,13 +20,11 @@ public class ProviderWorkInfo {
 		public Integer employeeId;
 		public String name;
 		public String imagePath;
-		public Boolean isWorking;
 		public List<TimePeriod> workPeriods;
 		public List<TimePeriod> breakPeriods;
-		public List<NamedTimePeriod> timeline;
-		public List<NamedTimePeriod> freePeriods;
+		public List<TimePeriod> timeline;
+		public List<TimePeriod> freePeriods;
 		public Integer freeTimeSum;
-		public Integer workTimeSum;
 
 		public Employee() {
 			workPeriods = new ArrayList<>();
@@ -58,6 +57,7 @@ public class ProviderWorkInfo {
 	private List<TimePeriod> breakPeriods;
 	private LocalDate atDay;
 	private List<Employee> employees;
+	private int freeTimeCount = 1;
 
 	public ProviderWorkInfo(Integer providerId, LocalDate date) {
 		this.providerId = providerId;
@@ -82,7 +82,7 @@ public class ProviderWorkInfo {
 
 
 	public void fillData(List<?> emps, List<AppointmentDtoSimple> apps, List<CustomPeriod> cps, List<WorkInfo> wis) {
-		this.fillEmps(emps);
+		this.fillEmps(emps); //Must go first
 		this.fillWorkInfoPeriods(wis);
 		this.fillApps(apps);
 		this.fillCustomPeriods(cps);
@@ -142,7 +142,13 @@ public class ProviderWorkInfo {
 
 				if (startOfFree != null && endOfFree != null) {
 					System.out.println("FREE TIME " + startOfFree + " " + endOfFree);
-					e.freePeriods.add(new NamedTimePeriod(startOfFree, endOfFree, TypedTimePeriod.OPEN, NamedTimePeriod.OPEN_FREE_TIME));
+					e.freePeriods.add(new TimePeriodData(
+							startOfFree,
+							endOfFree,
+							TimePeriodData.OPEN,
+							TimePeriodData.FREE_TIME,
+							Statics.PT_SHORT.get(Statics.PTV_FREE_TIME) + "#" + this.freeTimeCount++
+					));
 					startOfFree = null;
 					endOfFree = null;
 				}
@@ -184,11 +190,12 @@ public class ProviderWorkInfo {
 			tmpTP = Utils.adjustPeriodToOnaDate(this.getAtDay(), a.start(), a.end());
 			this.getEmployeeById(a.eId())
 					.timeline
-					.add(new NamedTimePeriodExt(
+					.add(new TimePeriodData(
 							tmpTP.getStart(),
 							tmpTP.getEnd(),
-							TypedTimePeriod.CLOSE,
-							NamedTimePeriod.CLOSE_APPOINTMENT,
+							TimePeriodData.CLOSE,
+							a.typeName(),
+							a.id(),
 							a
 					));
 		}
@@ -196,7 +203,7 @@ public class ProviderWorkInfo {
 
 	private void fillCustomPeriods(List<CustomPeriod> cps) {
 		TimePeriod tmpTP;
-		NamedTimePeriodExt tmpNTPE;
+		TimePeriodData tmpTPD;
 		boolean isProviderLevel;
 		Map<String, Object> tmpData;
 		for (CustomPeriod bP : cps) {
@@ -211,27 +218,35 @@ public class ProviderWorkInfo {
 			tmpData.put("comment", bP.getComment());
 			tmpData.put("periodType", bP.getPeriodtype().getName());
 
-			tmpNTPE = new NamedTimePeriodExt(
+			tmpTPD = new TimePeriodData(
 					tmpTP.getStart(),
 					tmpTP.getEnd(),
-					TypedTimePeriod.CLOSE,
-					isProviderLevel ? NamedTimePeriod.CLOSE_PROVIDER_BUSY : NamedTimePeriod.CLOSE_EMPLOYEE_BUSY,
+					TimePeriodData.CLOSE,
+					bP.getPeriodtype().getName(),
+					bP.getId(),
 					tmpData
 			);
 			if (isProviderLevel)
 				for (ProviderWorkInfo.Employee e : this.getEmployees())
-					e.timeline.add(tmpNTPE);
+					e.timeline.add(tmpTPD);
 			else
-				this.getEmployeeById(bP.getEmployee().getId()).timeline.add(tmpNTPE);
+				this.getEmployeeById(bP.getEmployee().getId()).timeline.add(tmpTPD);
 		}
 	}
 
 	private void fillWorkInfoPeriods(List<WorkInfo> wis) {
-		boolean isClose;
 		boolean isProviderLevel;
+		String pTName;
 
-		WorkInfo providerWI = wis.stream().filter(wI -> wI.getEmployee() == null).findFirst().orElseThrow();
-		Provider p = providerWI.getProvider();
+		Optional<WorkInfo> providerWI = wis.stream().filter(wI -> wI.getEmployee() == null).findFirst();
+		if (providerWI.isEmpty()) {
+			this.isWorking = false;
+			return;
+		} else {
+			this.isWorking = true;
+		}
+
+		Provider p = providerWI.get().getProvider();
 		this.setProviderName(p.getName());
 		this.setProviderAddress(p.getAddress().getAddress1());
 		this.setProviderCity(p.getAddress().getCity().getName());
@@ -239,38 +254,34 @@ public class ProviderWorkInfo {
 
 		for (WorkInfo wI : wis) {
 			isProviderLevel = wI.getEmployee() == null;
-			isClose = !wI.getPeriodtype().isOpen();
+			pTName = wI.getPeriodtype().getName();
 
 			//Breaks
-			if (isClose) {
+			if (pTName.equals(Statics.PT_WI_PROVIDER_BREAK) || pTName.equals(Statics.PT_WI_EMPLOYEE_BREAK)) {
 				if (isProviderLevel) {
 					for (ProviderWorkInfo.Employee e : this.getEmployees()) {
-						e.timeline.add(new NamedTimePeriodExt(
+						e.timeline.add(new TimePeriodData(
 								wI.getStartTime(),
 								wI.getEndTime(),
-								TypedTimePeriod.CLOSE,
-								NamedTimePeriod.CLOSE_PROVIDER_BREAK,
-								Map.of(
-										"id", wI.getId(),
-										"periodType", wI.getPeriodtype().getName()
-								)
+								TimePeriodData.CLOSE,
+								pTName,
+								Integer.toUnsignedLong(wI.getId())
 						));
 					}
 
 					this.getBreakPeriods().add(new TimePeriod(wI.getStartTime(), wI.getEndTime()));
 
-				} else
-					this.getEmployeeById(wI.getEmployee().getId()).timeline.add(new NamedTimePeriodExt(
-							wI.getStartTime(),
-							wI.getEndTime(),
-							TypedTimePeriod.CLOSE,
-							NamedTimePeriod.CLOSE_EMPLOYEE_BREAK,
-							Map.of(
-									"id", wI.getId(),
-									"periodType", wI.getPeriodtype().getName()
-							)
-					));
-
+				} else {
+					this.getEmployeeById(wI.getEmployee().getId())
+							.timeline
+							.add(new TimePeriodData(
+									wI.getStartTime(),
+									wI.getEndTime(),
+									TimePeriodData.CLOSE,
+									pTName,
+									Integer.toUnsignedLong(wI.getId())
+							));
+				}
 			}
 			//Working time
 			else {

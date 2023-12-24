@@ -5,7 +5,6 @@ package com.tap.rest.dto;
 public class PeriodTypeDto {	
 	private Integer id;
 	private String name;
-	private Boolean open;
 	private String description;
 	public PeriodTypeDto() {}
 
@@ -25,15 +24,6 @@ public class PeriodTypeDto {
 
 	public String getName() {
 		return this.name;
-	}
-
-	public PeriodTypeDto setOpen( boolean open ) {
-		this.open = open;
-		return this;
-	}
-
-	public boolean isOpen() {
-		return this.open;
 	}
 
 	public PeriodTypeDto setDescription( String description ) {

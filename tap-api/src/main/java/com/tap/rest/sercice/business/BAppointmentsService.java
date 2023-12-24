@@ -29,7 +29,6 @@ public class BAppointmentsService {
 	private ProviderRepository providerRepository;
 
 	public BAppointmentsService() {
-
 	}
 
 	@Inject
@@ -61,6 +60,7 @@ public class BAppointmentsService {
 		List<Integer> eIds = emps.stream().mapToInt(Employee::getId).boxed().toList();
 		List<AppointmentDtoSimple> apps = appointmentRepository.getWAAppointmentsAtDay(eIds, date);
 		List<CustomPeriod> bps = appointmentRepository.getCustomPeriodsAtDay(pId, eIds, date);
+
 		List<WorkInfo> wps = appointmentRepository.getBreaksPeriodsAtDay(pId, eIds, date.getDayOfWeek().getValue());
 
 		ProviderWorkInfo pWI = new ProviderWorkInfo(pId, date, emps, apps, bps, wps);
