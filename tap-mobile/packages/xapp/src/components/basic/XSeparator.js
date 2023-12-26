@@ -12,7 +12,7 @@ const createStyle = (theme, vertical, margin, color) => StyleSheet.create({
 	separator: {
 		flex: 1,
 		backgroundColor: color || theme.colors.textTertiary,
-		...(vertical ? { width: 0.7, height: '100%', marginVertical: margin } : { height: 0.7, width: '100%', marginHorizontal: margin })
+		...(vertical ? { width: 0.7, flex: 1, marginVertical: margin } : { height: 0.7, flex: 1, marginHorizontal: margin })
 	}
 })
 

@@ -72,8 +72,8 @@ const createStyle = (theme, font, focused) => StyleSheet.create({
 		color: focused ? theme.colors.primary : theme.colors.textSecondary
 	},
 	titleContainer: {
-		paddingHorizontal: 4,
-		paddingVertical: 4
+		paddingHorizontal: 10,
+		paddingVertical: 3
 	},
 	field: {
 		fontFamily: font,

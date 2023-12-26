@@ -14,8 +14,8 @@ import XBottomSheetModal from 'xapp/src/components/basic/XBottomSheetModal';
 import XToolbar from 'xapp/src/components/XToolbar';
 import XTextLabels from 'xapp/src/components/XTextLabels';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
-import { PERIOD, getFrendlyName, isWaitingAppointment } from '../common/general';
-import { CREATE_APPOINTMENT_SCREEN, CREATE_PERIOD_SCREEN } from '../navigators/routes';
+import { PERIOD, P_TYPE, getFrendlyName, isCustomPeriod, isWaitingAppointment } from '../common/general';
+import { APPOINTMENT_SCREEN, CUSTOM_PERIOD_SCREEN } from '../navigators/routes';
 import I18nT from 'xapp/src/i18n/i18n';
 import XButtonExtend from 'xapp/src/components/basic/XButtonExtend';
 import { useIsRoleOwner } from '../store/concreteStores';
@@ -55,7 +55,7 @@ const getModalData = (employee, item) => {
 	return data;
 }
 
-const AppointmentsScreen = ({ navigation, route }) => {
+const AppointmentsCalendarScreen = ({ navigation, route }) => {
 
 	const zoomCoef = useState(2)[0];
 
@@ -125,7 +125,7 @@ const AppointmentsScreen = ({ navigation, route }) => {
 	useEffect(() => {
 		setLoading(true);
 		let finish = true;
-		Http.get('/appointments', { date: DateUtils.dateToString(date) })
+		Http.get('/appointment/calendar', { date: DateUtils.dateToString(date) })
 			.then(resp => {
 				if (finish) {
 					const eId = storeGetValue(gS => gS.user.employee.id);
@@ -146,9 +146,14 @@ const AppointmentsScreen = ({ navigation, route }) => {
 
 
 	const onItemPress = useCallback((item) => {
-		setSelectedPeriod(item);
-		modalRef?.current?.present();
-	}, [setSelectedPeriod, modalRef]);
+		if (isCustomPeriod(item)) {
+			navigation.navigate(CUSTOM_PERIOD_SCREEN, { id: item.id });
+		}
+		else {
+			setSelectedPeriod(item);
+			modalRef?.current?.present();
+		}
+	}, [setSelectedPeriod, modalRef, navigation]);
 
 	const renderAvatar = useCallback((item) => {
 		return (
@@ -217,13 +222,13 @@ const AppointmentsScreen = ({ navigation, route }) => {
 							icon: 'calendar',
 							primary: true,
 							titleLeft: t('Appointment'),
-							onPress: () => navigation.navigate(CREATE_APPOINTMENT_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId })
+							onPress: () => navigation.navigate(APPOINTMENT_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId })
 						},
 						{
 							icon: 'book',
 							primary: true,
 							titleLeft: t('Period'),
-							onPress: () => navigation.navigate(CREATE_PERIOD_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId })
+							onPress: () => navigation.navigate(CUSTOM_PERIOD_SCREEN, { pId, eId: data?.employees[selectedEmpIdx].employeeId })
 						},
 					]}
 				/>
@@ -275,4 +280,4 @@ const styleCreator = (theme) => {
 	});
 }
 
-export default AppointmentsScreen;
+export default AppointmentsCalendarScreen;

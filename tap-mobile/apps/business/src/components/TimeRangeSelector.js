@@ -1,20 +1,21 @@
-import { Pressable } from "react-native";
-import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
+import { StyleSheet, View } from "react-native";
 import XSection from "xapp/src/components/basic/XSection";
-import XText from "xapp/src/components/basic/XText";
+import XSelectField from "xapp/src/components/basic/XSelectField";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { emptyFn } from "xapp/src/common/utils";
 import { useState } from "react";
-import { useDateCode } from "xapp/src/i18n/I18nContext";
+import { useDateCode, useTranslation } from "xapp/src/i18n/I18nContext";
 
-const TimeRange = ({
+const TimeRangeSelector = ({
 	fromDate = new Date(),
 	toDate = new Date(),
 	onFromChange = emptyFn,
-	onToChange = emptyFn
+	onToChange = emptyFn,
+	toDisabled
 }) => {
 
 	const dateCode = useDateCode();
+	const t = useTranslation();
 
 	const [fromDateVisible, setFromDateVisible] = useState(false);
 	const [fromTimeVisible, setFromTimeVisible] = useState(false);
@@ -22,39 +23,46 @@ const TimeRange = ({
 	const [toTimeVisible, setToTimeVisible] = useState(false);
 
 	return (
-		<XSection title={'Vrijeme'}>
-			<XFieldContainer
-				iconLeft={'clockcircleo'}
-				styleCenterContainer={{
-					flexDirection: 'row',
-					alignItems: 'center',
-					justifyContent: 'space-between'
-				}}
-			>
-				<Pressable onPress={() => setFromDateVisible(true)}>
-					<XText>{fromDate.toLocaleDateString(dateCode, { year: 'numeric', month: 'short', weekday: 'short', day: '2-digit' })}</XText>
-				</Pressable>
-				<Pressable onPress={() => setFromTimeVisible(true)}>
-					<XText>{fromDate.toLocaleTimeString(dateCode, { hour: "2-digit", minute: '2-digit', hour12: false })}</XText>
-				</Pressable>
-			</XFieldContainer>
+		<>
+			<XSection title={t('Time period')} transparent styleContent={styles.section}>
+				<View style={styles.row}>
+					<XSelectField
+						flex
+						iconLeft={'calendar'}
+						outline
+						value={fromDate.toLocaleDateString(dateCode, { year: 'numeric', month: 'short', weekday: 'short', day: '2-digit' })}
+						onPress={() => setFromDateVisible(true)}
+					/>
 
-			<XFieldContainer
-				iconLeft={'clockcircleo'}
-				styleCenterContainer={{
-					flexDirection: 'row',
-					alignItems: 'center',
-					justifyContent: 'space-between'
-				}}
-			>
-				<Pressable onPress={() => setToDateVisible(true)}>
-					<XText>{toDate.toLocaleDateString(dateCode, { year: 'numeric', month: 'short', weekday: 'short', day: '2-digit' })}</XText>
-				</Pressable>
-				<Pressable onPress={() => setToTimeVisible(true)}>
-					<XText>{toDate.toLocaleTimeString(dateCode, { hour: "2-digit", minute: '2-digit', hour12: false })}</XText>
-				</Pressable>
-			</XFieldContainer>
+					<XSelectField
+						style={styles.time}
+						outline
+						iconLeft={'clockcircleo'}
+						value={fromDate.toLocaleTimeString(dateCode, { hour: "2-digit", minute: '2-digit', hour12: false })}
+						onPress={() => setFromTimeVisible(true)}
+					/>
+				</View>
 
+				<View style={styles.row}>
+					<XSelectField
+						flex
+						iconLeft={'calendar'}
+						outline
+						disabled={toDisabled}
+						value={toDate.toLocaleDateString(dateCode, { year: 'numeric', month: 'short', weekday: 'short', day: '2-digit' })}
+						onPress={() => setToDateVisible(true)}
+					/>
+
+					<XSelectField
+						style={styles.time}
+						outline
+						disabled={toDisabled}
+						iconLeft={'clockcircleo'}
+						value={toDate.toLocaleTimeString(dateCode, { hour: "2-digit", minute: '2-digit', hour12: false })}
+						onPress={() => setToTimeVisible(true)}
+					/>
+				</View>
+			</XSection>
 
 			<DateTimePickerModal
 				isVisible={fromDateVisible}
@@ -104,8 +112,23 @@ const TimeRange = ({
 				onCancel={() => setToTimeVisible(false)}
 				onHide={() => setToTimeVisible(false)}
 			/>
-		</XSection>
+		</>
 	);
-}
+};
 
-export default TimeRange;
+const styles = StyleSheet.create({
+	section: {
+		rowGap: 5,
+		padding: 0
+	},
+	row: {
+		flexDirection: 'row',
+		flex: 1,
+		columnGap: 5
+	},
+	time: {
+		minWidth: 130
+	}
+})
+
+export default TimeRangeSelector;

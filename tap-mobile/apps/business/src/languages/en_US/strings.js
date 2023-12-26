@@ -44,5 +44,8 @@ export const strings = {
 	"Invalid time period": "Invalid time period",
 	"Duration of time period must be at least one minute": "Duration of time period must be at least one minute",
 	"Me": "Me",
-	"Service management": "Service management"
+	"Service management": "Service management",
+	"Time period": "Time period",
+	"Comment": "Comment",
+	"Services": "Services"
 };

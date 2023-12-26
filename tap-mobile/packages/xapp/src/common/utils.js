@@ -108,7 +108,7 @@ export const CurrencyUtils = {
 	convert: (v) => {
 		return (v ?? ' - ') + ' KM';
 	}
-}
+};
 
 export const findFirstUpperLetter = (text) => {
 	for (let i = 0, s = text.length; i < s; i++)

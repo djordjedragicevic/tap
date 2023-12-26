@@ -2,15 +2,15 @@ import { Pressable } from "react-native";
 import XIcon from "./basic/XIcon";
 import { useColor } from "../style/ThemeContext";
 
-const XHeaderButtonBack = ({ navigation, ...rest }) => {
+const XHeaderButtonDelete = ({ navigation, ...rest }) => {
 
 	const color = useColor('textLight');
 
 	return (
 		<Pressable {...rest} style={{ marginHorizontal: 15 }}>
-			<XIcon icon='arrowleft' color={color} />
+			<XIcon icon='delete' color={color} />
 		</Pressable>
 	);
 }
 
-export default XHeaderButtonBack;
+export default XHeaderButtonDelete;

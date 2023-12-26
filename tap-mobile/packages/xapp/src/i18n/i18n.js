@@ -1,4 +1,8 @@
 import { Storage } from "../store/deviceStorage";
+import { strings as en_US_str } from './en_US/strings';
+import { errors as en_US_err } from './en_US/errors';
+import { strings as sr_SP_str } from './sr_SP/strings';
+import { errors as sr_SP_err } from './sr_SP/errors';
 
 export default class I18nT {
 	static lngs = '';
@@ -30,6 +34,29 @@ export default class I18nT {
 
 	static init({ langs, defautlLng, fallbackLng, fallbackError }) {
 		I18nT.langs = langs;
+
+		if (I18nT.langs.hasOwnProperty('en_US')) {
+			I18nT.langs.en_US.strings = {
+				...I18nT.langs.en_US.strings,
+				...en_US_str
+			};
+			I18nT.langs.en_US.errors = {
+				...I18nT.langs.en_US.errors,
+				...en_US_err
+			};
+		}
+
+		if (I18nT.langs.hasOwnProperty('sr_SP')) {
+			I18nT.langs.sr_SP.strings = {
+				...I18nT.langs.sr_SP.strings,
+				...sr_SP_str
+			};
+			I18nT.langs.sr_SP.errors = {
+				...I18nT.langs.sr_SP.errors,
+				...sr_SP_err
+			};
+		}
+
 		I18nT.lng = langs[defautlLng];
 		I18nT.fallback = !!fallbackLng;
 		I18nT.fallbackError = fallbackError;

@@ -13,6 +13,7 @@ const XButton = ({
 	textStyle,
 	children,
 	color,
+	colorName,
 	textColor,
 	iconRight,
 	iconLeft,
@@ -36,7 +37,8 @@ const XButton = ({
 		color,
 		textColor,
 		uppercase,
-		flex
+		flex,
+		colorName
 	}, primary, secondary);
 
 	const getTextColor = () => {
@@ -134,6 +136,10 @@ const createStyle = (theme, params, primary, secondary) => {
 
 	if (params.color) {
 		btnStyle.backgroundColor = params.color;
+		textStyle.color = theme.colors.textLight;
+	}
+	else if (params.colorName) {
+		btnStyle.backgroundColor = theme.colors[params.colorName];
 		textStyle.color = theme.colors.textLight;
 	}
 

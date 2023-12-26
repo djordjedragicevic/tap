@@ -35,8 +35,8 @@ public class BProviderService {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEmployeeServices(@Context SecurityContext sC) {
-		long eId = Security.getEmployeeId(sC);
-		return Response.ok(providerRepository.getServicesOfEmployee((int) eId)).build();
+		int eId = Security.getEmployeeId(sC);
+		return Response.ok(providerRepository.getServicesOfEmployee(eId)).build();
 	}
 
 	@Path("employee-data")

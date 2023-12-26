@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useThemedStyle } from "../../style/ThemeContext";
 import XMask from "./XMask";
@@ -29,13 +29,21 @@ const XFieldContainer = ({
 }) => {
 
 	const styles = useThemedStyle(createStyle, outline, focused, flex);
-	const RootCmp = onPress ? TouchableOpacity : View;
+	const RootCmp = onPress && !disabled ? TouchableOpacity : View;
 	const IconRightCmp = onIconRightPress ? TouchableOpacity : View;
 	const IconLeftCmp = onIconLeftPress ? TouchableOpacity : View;
 	const CenterCmp = onCenterPress ? TouchableOpacity : View;
 
+	const onPressInt = useCallback(() => {
+		if (!disabled)
+			onPress?.(meta);
+	}, [onPress, disabled, meta])
+
 	return (
-		<RootCmp style={[styles.container, style]} onPress={() => onPress?.(meta)}>
+		<RootCmp
+			style={[styles.container, style]}
+			onPress={onPressInt}
+		>
 			{
 				!!iconLeft &&
 				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.icon, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }]} onPress={onIconLeftPress}>
@@ -46,7 +54,10 @@ const XFieldContainer = ({
 					}
 				</IconLeftCmp>
 			}
-			<CenterCmp style={[styles.centerContainer, styleCenterContainer]} onPress={() => onCenterPress?.(meta)}>
+			<CenterCmp style={[styles.centerContainer, styleCenterContainer]} onPress={() => {
+				if (!disabled)
+					onCenterPress?.(meta)
+			}}>
 				{children}
 			</CenterCmp>
 			{

@@ -136,6 +136,30 @@ export class Http {
 		return resp;
 	}
 
+	static async post(url, data, hideErrors) {
+		const resp = await Http.send(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		}, hideErrors);
+
+		return resp;
+	}
+
+	static async delete(url, data, hideErrors) {
+		const resp = await Http.send(url, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		}, hideErrors);
+
+		return resp;
+	}
+
 	static async getToken() {
 		if (_token == null) {
 			const t = await SecureStorage.get(S_KEY_TOKEN, '');
@@ -155,18 +179,6 @@ export class Http {
 		_token = null;
 	}
 
-
-	static async post(url, data, hideErrors) {
-		const resp = await Http.send(url, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(data)
-		}, hideErrors);
-
-		return resp;
-	}
 
 	static async postFormData(url, data, hideErrors) {
 		const form = new FormData();

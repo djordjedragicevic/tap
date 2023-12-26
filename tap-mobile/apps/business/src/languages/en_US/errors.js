@@ -1,29 +1,4 @@
 export const errors = {
-	UNAUTHENTICATE: {
-		title: 'Authentication error',
-		message: 'You need to be loged in to proceed this action'
-	},
-	FORBIDEN: {
-		title: 'Forbiden error',
-		message: 'You are not allowed to access this part of application'
-	},
-	CONNECTION_TIMEOUT: {
-		title: 'Connection timed out error',
-		message: 'The server is taking too long to respond'
-	},
-	TAP_0: {
-		title: 'Unexpected error',
-		message: 'The application has encountered an unknown error. Help us improve your experience by sending an error report'
-	},
-
-	INV_EMAIL_1: {
-		title: 'Invalid data',
-		message: 'Invalid email'
-	},
-	SIGN_IN_1: {
-		title: 'Sign In error',
-		message: 'Invalide username/email or password'
-	},
 	U_UVFY_1: {
 		title: 'Unverified account',
 		message: 'Your account in not verified'
@@ -43,5 +18,9 @@ export const errors = {
 	B_APP_2: {
 		title: 'Create time period error',
 		message: 'Error occurred while trying to create time period'
+	},
+	B_TP: {
+		title: 'Invalid time period',
+		message: 'Minimum duration of the time period is {:duration} min.'
 	}
-}
+};

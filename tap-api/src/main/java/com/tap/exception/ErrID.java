@@ -1,7 +1,8 @@
 package com.tap.exception;
 
 public enum ErrID {
-	TAP_0,
+	TAP_0, //General error
+	TAP_1, //Access denied
 	APPO_1,
 	PROV_1,
 
@@ -26,6 +27,7 @@ public enum ErrID {
 	B_APP_ST_1,
 	B_APP_ST_2,
 	B_APP_1,//Create custom appoint
-	B_APP_2 //Create custom time period
+	B_APP_2, //Create custom time period
+	B_TP //Invalid time period
 
 }

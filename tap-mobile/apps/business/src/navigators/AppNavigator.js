@@ -4,16 +4,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
 import { AntDesign } from '@expo/vector-icons';
 import { useIsUserLogged } from '../store/concreteStores';
-import { CREATE_APPOINTMENT_SCREEN, CREATE_PERIOD_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_APPOINTMENTS, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS, SERVICE_MANAGEMENT_SCREEN } from './routes';
+import { APPOINTMENT_SCREEN, CUSTOM_PERIOD_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_APPOINTMENTS_CALENDAR, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS, SERVICE_MANAGEMENT_SCREEN } from './routes';
 import SettingsScreen from '../screens/SettingsScreen';
 import { useColor, usePrimaryColor } from 'xapp/src/style/ThemeContext';
-import AppointmentsScreen from '../screens/AppointmentsScreen';
+import AppointmentsCalendarScreen from '../screens/AppointmentsCalendarScreen';
 import RequestsScreen from '../screens/RequestsScreen';
-import CreatePeriodScreen from '../screens/CreatePeriodScreen';
+import CustomPeriodScreen from '../screens/CustomPeriodScreen';
 import { useHeaderBackButton } from 'xapp/src/common/hooks';
-import CreateAppointmentScreen from '../screens/CreateAppointmentScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ServiceManagementScreen from '../screens/ServiceManagementScreen';
+import AppointmentScreen from '../screens/AppointmentScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -31,11 +31,11 @@ const MainBottomTabNavigator = ({ navigation }) => {
 					borderTopRightRadius: 10
 				}
 			}}
-			initialRouteName={MAIN_TAB_APPOINTMENTS}
+			initialRouteName={MAIN_TAB_APPOINTMENTS_CALENDAR}
 		>
 			<BottomTab.Screen
-				name={MAIN_TAB_APPOINTMENTS}
-				component={AppointmentsScreen}
+				name={MAIN_TAB_APPOINTMENTS_CALENDAR}
+				component={AppointmentsCalendarScreen}
 				options={{
 					title: t("Appointments"),
 					headerShown: false,
@@ -91,16 +91,16 @@ const AppNavigator = ({ }) => {
 						/>
 
 						<Stack.Screen
-							name={CREATE_PERIOD_SCREEN}
-							component={CreatePeriodScreen}
+							name={CUSTOM_PERIOD_SCREEN}
+							component={CustomPeriodScreen}
 							options={{
-								title: t('Add time period'),
+								title: t('Period'),
 
 							}}
 						/>
 						<Stack.Screen
-							name={CREATE_APPOINTMENT_SCREEN}
-							component={CreateAppointmentScreen}
+							name={APPOINTMENT_SCREEN}
+							component={AppointmentScreen}
 							options={{
 								title: t('Create appointment')
 							}}

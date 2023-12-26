@@ -29,6 +29,27 @@ class XAlert {
 	static showYesNo(title, msg, btns) {
 		XAlert.show(title, msg, btns, XAlert.YESNO);
 	}
+
+	static askEdit(cb) {
+		XAlert.showYesNo(I18nT.t("Edit item"), I18nT.t("Edit item_MSG"), [
+			true,
+			{ onPress: cb }
+		]);
+	}
+
+	static askAdd(cb) {
+		XAlert.showYesNo(I18nT.t("Add item"), I18nT.t("Add item_MSG"), [
+			true,
+			{ onPress: cb }
+		]);
+	}
+
+	static askDelete(cb) {
+		XAlert.showYesNo(I18nT.t("Delete item"), I18nT.t("Delete item_MSG"), [
+			true,
+			{ onPress: cb }
+		]);
+	}
 };
 
 export default XAlert;

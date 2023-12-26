@@ -18,6 +18,12 @@ export const PERIOD = {
 
 };
 
+export const P_TYPE = {
+	CUSTOM: 'C_',
+	APP: 'A_',
+	WORK: 'W_'
+}
+
 export const PERIOD_NAME = {
 	CLOSE_APPOINTMENT: 'Appintment',
 	CLOSE_APPOINTMENT_BY_PROVIDER: 'Appintment',
@@ -40,6 +46,10 @@ export const getFrendlyName = (item) => {
 	else
 		return 'Reserved time';
 };
+
+export const isCustomPeriod = (item) => {
+	return item?.id.startsWith(P_TYPE.CUSTOM);
+}
 
 export const ROLE = {
 	PROVIDER_OWNER: 'PROVIDER_OWNER',

@@ -32,7 +32,7 @@ public class BServiceManagementResource {
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllServices(@Context SecurityContext sC) {
-		long pId = Security.getProviderId(sC);
+		int pId = Security.getProviderId(sC);
 		return Response.ok(providerRepository.getProviderServices(pId)).build();
 	}
 

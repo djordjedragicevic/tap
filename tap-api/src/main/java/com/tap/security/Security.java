@@ -26,7 +26,7 @@ public class Security {
 		return -1;
 	}
 
-	public static long getProviderId(SecurityContext sC) {
+	public static int getProviderId(SecurityContext sC) {
 		Principal p = sC.getUserPrincipal();
 		if (p != null) {
 			String id = p.getName();
@@ -41,7 +41,7 @@ public class Security {
 		return -1;
 	}
 
-	public static long getEmployeeId(SecurityContext sC) {
+	public static int getEmployeeId(SecurityContext sC) {
 		Principal p = sC.getUserPrincipal();
 		if (p != null) {
 			String id = p.getName();

@@ -1,29 +1,30 @@
 import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 import XTextInput from "xapp/src/components/basic/XTextInput";
-import { useEffect, useMemo, useState } from "react";
-import { Pressable, View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import XSection from "xapp/src/components/basic/XSection";
-import { useDateCode, useTranslation } from "xapp/src/i18n/I18nContext";
+import { useTranslation } from "xapp/src/i18n/I18nContext";
 import XAlert from "xapp/src/components/basic/XAlert";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
 import XButton from "xapp/src/components/basic/XButton";
+import XSeparator from "xapp/src/components/basic/XSeparator";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
 import { DateUtils } from "xapp/src/common/utils";
-import { MAIN_TAB_APPOINTMENTS } from "../navigators/routes";
+import { MAIN_TAB_APPOINTMENTS_CALENDAR } from "../navigators/routes";
 import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 import XBottomSheetSelector from "xapp/src/components/basic/XBottomSheetSelector";
-import TimeRange from "../components/TimeRange";
+import TimeRangeSelector from "../components/TimeRangeSelector";
 
 const calculateServicesDuration = (services) => {
 	return (services?.map(s => s.duration).reduce((prev, curr) => prev + curr, 0) || 0) * 60 * 1000;
 };
 
 
-const CreateAppointmentsScreen = ({ navigation, route }) => {
+const AppointmentScreen = ({ navigation, route }) => {
+	const id = route.params?.id;
+
 	const styles = useThemedStyle(styleCreator);
 	const [cGreen, cRed] = useColor(['green', 'red']);
 	const t = useTranslation();
@@ -48,49 +49,46 @@ const CreateAppointmentsScreen = ({ navigation, route }) => {
 		resp => resp.map(r => ({ ...r, title: r.name + (r.gName ? ' ('.concat(r.gName, ')') : '') }))
 	);
 
+	const addPeriod = () => {
+		XAlert.askAdd(() => {
+			Http.post(`/appointment/add`, {
+				comment,
+				user,
+				services: selectedServices.map(s => s.id),
+				start: DateUtils.dateToString(fromDate)
+			}).then(() => {
+				navigation.navigate(MAIN_TAB_APPOINTMENTS_CALENDAR, { reload: true });
+			});
+		});
 
-	const createPeriod = () => {
+	};
 
-		XAlert.showYesNo(t("Create time period"), t("Are you surre you want to create new time period?"), [
-			true,
-			{
-				onPress: () => {
-					Http.post(`/custom-periods/appointment`, {
-						comment,
-						user,
-						services: selectedServices.map(s => s.id),
-						start: DateUtils.dateToString(fromDate)
-					}).then(() => {
-						navigation.navigate(MAIN_TAB_APPOINTMENTS, { reload: true });
-					});
-				}
-			}
-		]);
+	const editPeriod = () => {
+
+	};
+
+	const removePeriod = () => {
+
 	};
 
 	return (
 		<XScreen scroll>
-			<View style={{ rowGap: 15, paddingBottom: 10 }}>
+			<View style={{ rowGap: 10 }}>
 
-				<TimeRange
+				<TimeRangeSelector
 					fromDate={fromDate}
 					toDate={toDate}
+					toDisabled
 					onFromChange={setFromDate}
 					onToChange={setToDate}
 				/>
 
 				<XSection
-					title={'Servisi'}
-					styleTitle={{
-						backgroundColor: 'white',
-						borderBottomWidth: 1,
-						borderColor: 'lightgray',
-						height: 45
-					}}
-					styleContent={{ minHeight: 45 }}
+					title={t('Services')}
+					styleContent={styles.serviceContainer}
 					titleRight={(
 						<XButtonIcon
-							size={28}
+							size={25}
 							backgroundColor={cGreen}
 							icon={'plus'}
 							onPress={() => setServiceSelectVisible(true)}
@@ -98,30 +96,33 @@ const CreateAppointmentsScreen = ({ navigation, route }) => {
 					)}
 				>
 					{
-						selectedServices?.map(s => (
-							<View key={s.id} style={styles.servicesItem}>
-								<View flex={1}>
-									<XText oneLine>{s.title}</XText>
-									<XText secondary size={12}>{s.duration} {t('min')}</XText>
+						selectedServices?.map((s, idx) => (
+							<View key={s.id}>
+								<View style={styles.servicesItem}>
+									<View flex={1}>
+										<XText oneLine>{s.title}</XText>
+										<XText secondary size={12}>{s.duration} {t('min')}</XText>
+									</View>
+									<XButtonIcon
+										color={cRed}
+										size={28}
+										icon={'close'}
+										onPress={() => {
+											setSelectedServices(old => old.filter(i => i.id != s.id))
+										}}
+									/>
 								</View>
-								<XButtonIcon
-									color={cRed}
-									size={30}
-									icon={'close'}
-									onPress={() => {
-										setSelectedServices(old => old.filter(i => i.id != s.id))
-									}}
-								/>
+
+								{idx < selectedServices.length - 1 && <XSeparator margin={10} />}
 							</View>
 						))
 					}
 				</XSection>
 
-
 				<XBottomSheetSelector
 					visible={serviceSelectVisible}
 					setVisible={setServiceSelectVisible}
-					title={'Services'}
+					title={t('Services')}
 					data={services}
 					multiselect
 					closeOnSelect={false}
@@ -133,12 +134,14 @@ const CreateAppointmentsScreen = ({ navigation, route }) => {
 					title={t('User')}
 					value={user}
 					clearable
+					outline
 					onClear={() => setUser('')}
 					onChangeText={setUser}
 				/>
 
 				<XTextInput
-					title='Comment'
+					title={t('Comment')}
+					outline
 					fieldStyle={{ flex: 1, textAlignVertical: 'top', paddingVertical: 10 }}
 					fieldContainerStyle={{ height: 100 }}
 					value={comment}
@@ -148,11 +151,26 @@ const CreateAppointmentsScreen = ({ navigation, route }) => {
 					onChangeText={setComment}
 				/>
 
-				<XButton
-					title={'Kreiraj'}
-					primary
-					onPress={createPeriod}
-				/>
+
+				<View style={{ marginTop: 15 }}>
+					{
+						id != null ?
+							<XButton
+								iconLeft={'edit'}
+								title={t('Edit')}
+								flex
+								primary
+								onPress={editPeriod}
+							/>
+							:
+							<XButton
+								iconLeft={'plus'}
+								title={t('Add')}
+								primary
+								onPress={addPeriod}
+							/>
+					}
+				</View>
 			</View>
 		</XScreen>
 	);
@@ -160,21 +178,19 @@ const CreateAppointmentsScreen = ({ navigation, route }) => {
 
 const styleCreator = (theme) => {
 	return StyleSheet.create({
-		serviceHeader: {
-			flexDirection: 'row',
-			alignItems: 'center',
-			backgroundColor: theme.colors.backgroundElement,
-			height: 45,
-			borderRadius: Theme.values.borderRadius
-		},
 		servicesItem: {
-			backgroundColor: theme.colors.backgroundElement,
 			height: 48,
 			padding: 5,
 			flexDirection: 'row',
 			alignItems: 'center'
+		},
+		serviceContainer: {
+			paddingVertical: 0,
+			minHeight: 45,
+			borderWidth: Theme.values.borderWidth,
+			borderColor: theme.colors.borderColor
 		}
 	});
 };
 
-export default CreateAppointmentsScreen;
+export default AppointmentScreen;
