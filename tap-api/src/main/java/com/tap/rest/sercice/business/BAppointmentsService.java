@@ -5,6 +5,10 @@ import com.tap.appointments.Utils;
 import com.tap.common.*;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
+import com.tap.rest.dto.AppointmentDto;
+import com.tap.rest.dto.CustomPeriodDto;
+import com.tap.rest.dto.GroupDto;
+import com.tap.rest.dto.ServiceDto;
 import com.tap.rest.dtor.AppointmentDtoSimple;
 import com.tap.rest.entity.*;
 import com.tap.rest.repository.AppointmentRepository;
@@ -113,6 +117,39 @@ public class BAppointmentsService {
 		return Response.ok().build();
 	}
 
+	@GET
+	@Path("/{id}")
+	@Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAppointment(@Context SecurityContext sC, @PathParam("id") Long appId) {
+
+		Appointment app = appointmentRepository.getEntityManager().find(Appointment.class, appId);
+		Validate.checkProvEmpAccess(app.getEmployee().getId(), sC);
+
+
+		ServiceDto sDto = new ServiceDto()
+				.setId(app.getService().getId())
+				.setName(app.getService().getName())
+				.setPrice(app.getService().getPrice())
+				.setDuration(app.getService().getDuration());
+
+		Group g = app.getService().getGroup();
+		if (g != null) {
+			sDto.setGroup(new GroupDto()
+					.setId(g.getId())
+					.setName(g.getName())
+			);
+		}
+
+		AppointmentDto appDto = new AppointmentDto()
+				.setId(app.getId())
+				.setStart(app.getStart())
+				.setEnd(app.getEnd())
+				.setComment(app.getComment())
+				.setService(sDto);
+
+		return Response.ok(appDto).build();
+	}
 
 	@POST
 	@Path("/add")
@@ -124,7 +161,6 @@ public class BAppointmentsService {
 		int pId = Security.getProviderId(sC);
 
 		String comment = params.containsKey("comment") ? params.getString("comment") : null;
-		String user = params.containsKey("user") ? params.getString("user") : null;
 		LocalDateTime start = LocalDateTime.parse(params.getString("start"));
 		List<Integer> sIds = params.getJsonArray("services").stream().mapToInt(s -> Integer.parseInt(s.toString())).boxed().toList();
 
@@ -132,7 +168,7 @@ public class BAppointmentsService {
 
 		Employee employee = providerRepository.getSingleActiveEntityById(Employee.class, eId);
 		AppointmentStatus status = providerRepository.getSingleEntityBy(AppointmentStatus.class, Map.of("name", Statics.A_STATUS_ACCEPTED));
-		PeriodType periodType = providerRepository.getSingleEntityBy(PeriodType.class, Map.of("name", Statics.PT_APP_BY_USER));
+		PeriodType periodType = providerRepository.getSingleEntityBy(PeriodType.class, Map.of("name", Statics.PT_APP_BY_PROVIDER));
 
 		if (employee == null || services.isEmpty() || status == null)
 			throw new TAPException(ErrID.B_APP_1);
@@ -145,7 +181,6 @@ public class BAppointmentsService {
 			a.setStart(start.plusMinutes(startOffset));
 			a.setEnd(a.getStart().plusMinutes(s.getDuration()));
 			a.setPeriodtype(periodType);
-			a.setUserName(user);
 			a.setService(s);
 			a.setEmployee(employee);
 			a.setCreateDate(Util.zonedNow());
@@ -164,5 +199,38 @@ public class BAppointmentsService {
 		return Response.ok().build();
 	}
 
+	@DELETE
+	@Path("/delete/{id}")
+	@Secured({Role.EMPLOYEE})
+	@Transactional
+	public Response deleteAppointment(@Context SecurityContext sC, @PathParam("id") Long appId) {
+
+		Appointment app = appointmentRepository.getEntityManager().find(Appointment.class, appId);
+
+		Validate.checkIsEmpOwnerOfPeriod(app.getEmployee().getId(), sC);
+
+		appointmentRepository.getEntityManager().remove(app);
+
+		return Response.ok().build();
+	}
+
+	@POST
+	@Path("/edit")
+	@Secured({Role.EMPLOYEE})
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
+	public Response editAppointment(@Context SecurityContext sC, AppointmentDto appDto) {
+
+		Appointment app = appointmentRepository.getEntityManager().find(Appointment.class, appDto.getId());
+
+		Validate.checkIsEmpOwnerOfPeriod(app.getEmployee().getId(), sC);
+
+		app.setComment(appDto.getComment());
+		app.setStart(appDto.getStart());
+		app.setEnd(appDto.getStart().plusMinutes(app.getService().getDuration()));
+
+
+		return Response.ok().build();
+	}
 
 }

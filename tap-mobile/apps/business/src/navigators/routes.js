@@ -6,7 +6,6 @@ export const MAIN_TAB_SETTINGS = 'MainTabSettings';
 export const CUSTOM_PERIOD_SCREEN = 'CustomPeriodScreen';
 export const APPOINTMENT_SCREEN = 'AppointmentScreen';
 export const LOGIN_SCREEN = 'LoginScreen';
-export const SERVICE_MANAGEMENT_SCREEN = 'ServiceManagementScreen';
 
 export const MAIN_STACK = 'MainStack';
 

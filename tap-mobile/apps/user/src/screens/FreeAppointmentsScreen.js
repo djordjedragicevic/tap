@@ -13,6 +13,7 @@ import XSelector from "xapp/src/components/basic/XSelector";
 import Footer from "../components/Footer";
 import { AntDesign } from '@expo/vector-icons';
 import { BOOK_APPOINTMENT_SCREEN } from "../navigators/routes";
+import { DateUtils } from "xapp/src/common/utils";
 
 
 const FREE_APP_WIDTH = 66;
@@ -49,7 +50,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 			s: services,
 			emps: services.map(s => selectedEmps[s]?.id || -1),
 			p: providerId,
-			d: date
+			d: DateUtils.dateToString(date)
 		}).then(resp => {
 			if (finish)
 				setData(resp);

@@ -64,7 +64,6 @@ const ProviderScreen = ({ navigation, route }) => {
 		Http.post(`/user/${userId}/state`, { favoriteProviders: newFavs })
 			.then(() => storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId))
 			.catch(err => {
-				console.log("FERR", err)
 			})
 			.finally(() => setFavoriteDisabled(false));
 	};

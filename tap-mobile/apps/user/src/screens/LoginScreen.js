@@ -23,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
 
 		setLoading(true);
 		try {
-			const resp = await Http.post('/app/login', { username, password });
+			const resp = await Http.post('/user/login', { username, password });
 			if (resp?.token) {
 				await Http.setToken(resp.token);
 

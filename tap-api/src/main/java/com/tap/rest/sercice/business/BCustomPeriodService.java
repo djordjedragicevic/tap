@@ -2,10 +2,9 @@ package com.tap.rest.sercice.business;
 
 import com.tap.common.Statics;
 import com.tap.common.Util;
+import com.tap.common.Validate;
 import com.tap.rest.dto.CustomPeriodDto;
 import com.tap.rest.entity.*;
-import com.tap.exception.ErrID;
-import com.tap.exception.TAPException;
 import com.tap.rest.repository.CustomPeriodRepository;
 import com.tap.security.Role;
 import com.tap.security.Secured;
@@ -15,11 +14,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import org.eclipse.microprofile.config.ConfigProvider;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Locale;
 import java.util.Map;
 
 @Path("/business/custom-period")
@@ -43,7 +38,7 @@ public class BCustomPeriodService {
 	public Response getCustomPeriod(@Context SecurityContext sC, @PathParam("id") Long periodId) {
 
 		CustomPeriod cP = customPeriodRepository.getEntityManager().find(CustomPeriod.class, periodId);
-		this.checkProvEmpAccess(cP, sC);
+		Validate.checkProvEmpAccess(cP, sC);
 
 		CustomPeriodDto cPDto = new CustomPeriodDto()
 				.setId(cP.getId())
@@ -62,7 +57,7 @@ public class BCustomPeriodService {
 	public Response deleteCustomPeriod(@Context SecurityContext sC, @PathParam("id") Long periodId) {
 
 		CustomPeriod cP = customPeriodRepository.getEntityManager().find(CustomPeriod.class, periodId);
-		this.checkIsEmpOwnerOfPeriod(cP, sC);
+		Validate.checkIsEmpOwnerOfPeriod(cP, sC);
 
 		customPeriodRepository.getEntityManager().remove(cP);
 
@@ -76,7 +71,7 @@ public class BCustomPeriodService {
 	@Transactional
 	public Response addCustomPeriod(@Context SecurityContext sc, CustomPeriodDto cPDto) {
 
-		this.validateTimePeriod(cPDto.getStart(), cPDto.getEnd());
+		Validate.validateTimePeriod(cPDto.getStart(), cPDto.getEnd());
 
 		int pId = Security.getProviderId(sc);
 		int uId = Security.getUserId(sc);
@@ -110,10 +105,10 @@ public class BCustomPeriodService {
 	@Transactional
 	public Response editCustomPeriod(@Context SecurityContext sC, CustomPeriodDto cPDto) {
 
-		this.validateTimePeriod(cPDto.getStart(), cPDto.getEnd());
+		Validate.validateTimePeriod(cPDto.getStart(), cPDto.getEnd());
 
 		CustomPeriod cP = customPeriodRepository.getEntityManager().find(CustomPeriod.class, cPDto.getId());
-		this.checkIsEmpOwnerOfPeriod(cP, sC);
+		Validate.checkIsEmpOwnerOfPeriod(cP, sC);
 		cP.setComment(cPDto.getComment());
 		if (cPDto.getStart() != null)
 			cP.setStart(cPDto.getStart());
@@ -124,25 +119,6 @@ public class BCustomPeriodService {
 	}
 
 
-	private void checkIsEmpOwnerOfPeriod(CustomPeriod cP, SecurityContext sC) {
-		if (cP.getEmployee().getId() != Security.getEmployeeId(sC))
-			throw new TAPException(ErrID.TAP_1);
-	}
-
-	private void checkProvEmpAccess(CustomPeriod cP, SecurityContext sC) {
-		boolean isOwner = sC.isUserInRole(Role.PROVIDER_OWNER.getName());
-
-		if (isOwner && cP.getProvider().getId() != Security.getProviderId(sC))
-			throw new TAPException(ErrID.TAP_1);
-		if (!isOwner && cP.getEmployee().getId() != Security.getEmployeeId(sC))
-			throw new TAPException(ErrID.TAP_1);
-	}
-
-	private void validateTimePeriod(LocalDateTime start, LocalDateTime end) {
-		int dur = ConfigProvider.getConfig().getValue("tap.business.minimum.timeperiod.duration", Integer.class);
-		if (ChronoUnit.MINUTES.between(start, end) < dur)
-			throw new TAPException(ErrID.B_TP, null, Map.of("duration", String.valueOf(dur)));
-	}
 //	@POST
 //	@Path("/add")
 //	@Transactional

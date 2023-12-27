@@ -10,16 +10,19 @@ import XButton from "xapp/src/components/basic/XButton";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import { Http, useHTTPGet } from "xapp/src/common/Http";
-import { DateUtils } from "xapp/src/common/utils";
+import { DateUtils, emptyFn } from "xapp/src/common/utils";
 import { MAIN_TAB_APPOINTMENTS_CALENDAR } from "../navigators/routes";
 import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 import XBottomSheetSelector from "xapp/src/components/basic/XBottomSheetSelector";
 import TimeRangeSelector from "../components/TimeRangeSelector";
+import XHeaderButtonDelete from "xapp/src/components/XHeaderButtonDelete";
 
 const calculateServicesDuration = (services) => {
 	return (services?.map(s => s.duration).reduce((prev, curr) => prev + curr, 0) || 0) * 60 * 1000;
 };
+
+const createSTitile = (s) => s.name + (s.gName ? ' ('.concat(s.gName, ')') : '');
 
 
 const AppointmentScreen = ({ navigation, route }) => {
@@ -30,7 +33,6 @@ const AppointmentScreen = ({ navigation, route }) => {
 	const t = useTranslation();
 
 	const [comment, setComment] = useState();
-	const [user, setUser] = useState();
 	const [selectedServices, setSelectedServices] = useState([]);
 	const [serviceSelectVisible, setServiceSelectVisible] = useState(false);
 
@@ -38,43 +40,76 @@ const AppointmentScreen = ({ navigation, route }) => {
 	const [toDate, setToDate] = useState(new Date(fromDate.getTime() + calculateServicesDuration(selectedServices)));
 
 	useEffect(() => {
+		if (id) {
+			Http.get(`/appointment/${id.split('#').pop()}`)
+				.then(resp => {
+					setFromDate(new Date(resp.start));
+					setToDate(new Date(resp.end));
+					setComment(resp.comment);
+					setSelectedServices([{
+						id: resp.service.id,
+						duration: resp.service.duration,
+						title: resp.service.name + (resp.service.group ? (' (' + resp.service.group.name + ')') : '')
+					}])
+				})
+				.catch(emptyFn);
+		}
+	}, [id]);
+
+	useEffect(() => {
 		setToDate(new Date(fromDate.getTime() + calculateServicesDuration(selectedServices)));
 	}, [selectedServices, fromDate]);
 
-	const [services] = useHTTPGet(
-		`/provider/services`,
-		null,
-		[],
-		false,
-		resp => resp.map(r => ({ ...r, title: r.name + (r.gName ? ' ('.concat(r.gName, ')') : '') }))
+	useEffect(() => {
+		if (id) {
+			navigation.setOptions({
+				headerRight: () => <XHeaderButtonDelete onPress={deletePeriod} />
+			})
+		}
+	}, [id, deletePeriod, navigation])
+
+	const [services] = useHTTPGet(`/provider/services`, null, [], false,
+		resp => resp.map(r => ({ ...r, title: createSTitile(r) }))
 	);
 
 	const addPeriod = () => {
 		XAlert.askAdd(() => {
-			Http.post(`/appointment/add`, {
+			Http.post('/appointment/add', {
 				comment,
-				user,
 				services: selectedServices.map(s => s.id),
 				start: DateUtils.dateToString(fromDate)
 			}).then(() => {
 				navigation.navigate(MAIN_TAB_APPOINTMENTS_CALENDAR, { reload: true });
-			});
+			}).catch(emptyFn);
 		});
 
 	};
 
 	const editPeriod = () => {
-
+		XAlert.askEdit(() => {
+			Http.post('/appointment/edit', {
+				id: id.split('#').pop(),
+				comment,
+				start: DateUtils.dateToString(fromDate)
+			}).then(() => {
+				navigation.navigate(MAIN_TAB_APPOINTMENTS_CALENDAR, { reload: true });
+			}).catch(emptyFn);
+		});
 	};
 
-	const removePeriod = () => {
-
+	const deletePeriod = () => {
+		XAlert.askDelete(() => {
+			Http.delete(`/appointment/delete/${id.split('#').pop()}`)
+				.then(() => {
+					navigation.navigate(MAIN_TAB_APPOINTMENTS_CALENDAR, { reload: true });
+				})
+				.catch(emptyFn);
+		})
 	};
 
 	return (
 		<XScreen scroll>
 			<View style={{ rowGap: 10 }}>
-
 				<TimeRangeSelector
 					fromDate={fromDate}
 					toDate={toDate}
@@ -87,12 +122,17 @@ const AppointmentScreen = ({ navigation, route }) => {
 					title={t('Services')}
 					styleContent={styles.serviceContainer}
 					titleRight={(
-						<XButtonIcon
-							size={25}
-							backgroundColor={cGreen}
-							icon={'plus'}
-							onPress={() => setServiceSelectVisible(true)}
-						/>
+						<>
+							{
+								!id &&
+								<XButtonIcon
+									size={25}
+									backgroundColor={cGreen}
+									icon={'plus'}
+									onPress={() => setServiceSelectVisible(true)}
+								/>
+							}
+						</>
 					)}
 				>
 					{
@@ -103,14 +143,17 @@ const AppointmentScreen = ({ navigation, route }) => {
 										<XText oneLine>{s.title}</XText>
 										<XText secondary size={12}>{s.duration} {t('min')}</XText>
 									</View>
-									<XButtonIcon
-										color={cRed}
-										size={28}
-										icon={'close'}
-										onPress={() => {
-											setSelectedServices(old => old.filter(i => i.id != s.id))
-										}}
-									/>
+									{
+										!id &&
+										<XButtonIcon
+											color={cRed}
+											size={28}
+											icon={'closecircle'}
+											onPress={() => {
+												setSelectedServices(old => old.filter(i => i.id != s.id))
+											}}
+										/>
+									}
 								</View>
 
 								{idx < selectedServices.length - 1 && <XSeparator margin={10} />}
@@ -128,15 +171,6 @@ const AppointmentScreen = ({ navigation, route }) => {
 					closeOnSelect={false}
 					selected={selectedServices}
 					onItemSelect={setSelectedServices}
-				/>
-
-				<XTextInput
-					title={t('User')}
-					value={user}
-					clearable
-					outline
-					onClear={() => setUser('')}
-					onChangeText={setUser}
 				/>
 
 				<XTextInput

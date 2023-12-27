@@ -4,7 +4,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
 import { AntDesign } from '@expo/vector-icons';
 import { useIsUserLogged } from '../store/concreteStores';
-import { APPOINTMENT_SCREEN, CUSTOM_PERIOD_SCREEN, LOGIN_SCREEN, MAIN_STACK, MAIN_TAB_APPOINTMENTS_CALENDAR, MAIN_TAB_REQUESTS, MAIN_TAB_SETTINGS, SERVICE_MANAGEMENT_SCREEN } from './routes';
+import {
+	APPOINTMENT_SCREEN,
+	CUSTOM_PERIOD_SCREEN,
+	LOGIN_SCREEN, MAIN_STACK,
+	MAIN_TAB_APPOINTMENTS_CALENDAR,
+	MAIN_TAB_REQUESTS,
+	MAIN_TAB_SETTINGS
+} from './routes';
 import SettingsScreen from '../screens/SettingsScreen';
 import { useColor, usePrimaryColor } from 'xapp/src/style/ThemeContext';
 import AppointmentsCalendarScreen from '../screens/AppointmentsCalendarScreen';
@@ -12,7 +19,6 @@ import RequestsScreen from '../screens/RequestsScreen';
 import CustomPeriodScreen from '../screens/CustomPeriodScreen';
 import { useHeaderBackButton } from 'xapp/src/common/hooks';
 import LoginScreen from '../screens/LoginScreen';
-import ServiceManagementScreen from '../screens/ServiceManagementScreen';
 import AppointmentScreen from '../screens/AppointmentScreen';
 
 const BottomTab = createBottomTabNavigator();
@@ -102,14 +108,7 @@ const AppNavigator = ({ }) => {
 							name={APPOINTMENT_SCREEN}
 							component={AppointmentScreen}
 							options={{
-								title: t('Create appointment')
-							}}
-						/>
-						<Stack.Screen
-							name={SERVICE_MANAGEMENT_SCREEN}
-							component={ServiceManagementScreen}
-							options={{
-								title: t('Service management')
+								title: t('Appointment')
 							}}
 						/>
 					</Stack.Group>

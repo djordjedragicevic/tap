@@ -29,6 +29,7 @@ const XBottomSheetSelector = forwardRef(({
 	...rest
 }, outRef) => {
 
+
 	const styles = useThemedStyle(styleCreator);
 	const [selectedIntern, setSelectedIntern] = useState(selected && !Array.isArray(selected) ? [selected] : selected || []);
 	const t = useTranslation();
@@ -36,7 +37,7 @@ const XBottomSheetSelector = forwardRef(({
 
 	useEffect(() => {
 		if (visible) {
-			setSelectedIntern(selected)
+			setSelectedIntern(selected && !Array.isArray(selected) ? [selected] : selected || [])
 			sheetRef?.current?.present();
 		}
 		else
@@ -44,11 +45,12 @@ const XBottomSheetSelector = forwardRef(({
 	}, [visible, selected]);
 
 	const renderItem = useCallback(({ item }) => {
+		const isChecked = Array.isArray(selectedIntern) ? !!selectedIntern?.find(i => i.id === item.id) : selectedIntern?.id === item.id;
 		return (
 			<XFieldContainer
 				title={item.title}
 				style={{ height: rowHeight, marginVertical: rowVerticalMargin }}
-				iconLeft={() => <XCheckBox round checked={!!selectedIntern?.find(i => i.id === item.id)} />}
+				iconLeft={() => <XCheckBox round checked={isChecked} />}
 				onPress={() => {
 					if (multiselect) {
 						const newItems = selectedIntern ? [...selectedIntern] : [];

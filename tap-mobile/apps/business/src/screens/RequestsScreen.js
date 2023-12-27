@@ -53,7 +53,7 @@ const RequestsScreen = () => {
 	useEffect(() => {
 		setLoading(true);
 		let finish = true;
-		Http.get(`/appointments/waiting`)
+		Http.get(`/appointment/waiting`)
 			.then(resp => {
 				if (finish) {
 					let tmpD;
@@ -84,7 +84,7 @@ const RequestsScreen = () => {
 	}, [dateCode, reload, t]);
 
 	const acceptSelected = useCallback(() => {
-		Http.post('/appointments/accept/multi', selected)
+		Http.post('/appointment/accept/multi', selected)
 			.then(() => {
 				setReload(old => old + 1)
 				setSelected([]);

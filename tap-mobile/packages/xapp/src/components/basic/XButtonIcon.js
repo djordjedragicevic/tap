@@ -31,7 +31,6 @@ const ButtonIcon = ({
 			style={[styles.btn, style]}
 			onPress={onPress}
 			{...rest}
-			onBlur={() => console.log("BLURRRR")}
 		>
 			<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 				{!!icon && <XIcon icon={icon} color={iconColor} size={iconSize} />}
