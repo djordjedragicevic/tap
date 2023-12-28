@@ -118,14 +118,56 @@ public class BAppointmentsService {
 	}
 
 	@GET
+	@Path("/{id}/multi")
+	@Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAppointmentMulti(@Context SecurityContext sC, @PathParam("id") Long appId) {
+
+		List<Appointment> apps;
+		List<AppointmentDto> resp = new ArrayList<>();
+		Appointment app = appointmentRepository.getEntityManager().find(Appointment.class, appId);
+
+		if (app.getJoinId() != null && !app.getJoinId().isEmpty())
+			apps = appointmentRepository.getEntityListBy(Appointment.class, "joinId", app.getJoinId());
+		else
+			apps = List.of(app);
+
+		for (Appointment a : apps) {
+
+			Service s = a.getService();
+			Group g = s.getGroup();
+			AppointmentDto appDto = new AppointmentDto()
+					.setId(a.getId())
+					.setStart(a.getStart())
+					.setEnd(a.getEnd())
+					.setComment(a.getComment());
+
+			ServiceDto sDto = new ServiceDto()
+					.setId(s.getId())
+					.setName(s.getName())
+					.setDuration(s.getDuration())
+					.setPrice(s.getPrice());
+			if (g != null) {
+				sDto.setGroup(new GroupDto()
+						.setId(g.getId())
+						.setName(g.getName())
+				);
+			}
+			appDto.setService(sDto);
+		}
+
+		return Response.ok(resp).build();
+	}
+
+	@GET
 	@Path("/{id}")
 	@Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAppointment(@Context SecurityContext sC, @PathParam("id") Long appId) {
 
 		Appointment app = appointmentRepository.getEntityManager().find(Appointment.class, appId);
-		Validate.checkProvEmpAccess(app.getEmployee().getId(), sC);
 
+		Validate.checkProvEmpAccess(app.getEmployee().getId(), sC);
 
 		ServiceDto sDto = new ServiceDto()
 				.setId(app.getService().getId())

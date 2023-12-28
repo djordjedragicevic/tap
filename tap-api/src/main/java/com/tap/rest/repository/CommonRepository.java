@@ -59,8 +59,40 @@ public class CommonRepository {
 		return this.createQuery(ec, paramsMap).getSingleResult();
 	}
 
-	public <T> List<T> getEntitiesBy(Class<T> ec, Map<String, Object> params) {
-		return this.createQuery(ec, params).getResultList();
+	public <T> List<T> getEntityListByIds(Class<T> ec, List<?> ids) {
+		String query = String.format("""
+				SELECT c FROM %s c
+				WHERE c.id IN :ids
+				""", ec.getSimpleName());
+
+		return em.createQuery(query, ec).setParameter("ids", ids).getResultList();
+	}
+
+	public <T> List<T> getEntityListBy(Class<T> ec, Object... params) {
+
+		List<Object> paramValues = new ArrayList<>();
+
+		StringBuilder query = new StringBuilder(String.format("""
+				SELECT c FROM %s c
+				WHERE c.%s = :val1
+				""", ec.getSimpleName(), params[0]));
+
+		paramValues.add(params[1]);
+
+		if (params.length > 2) {
+			int vCount = 2;
+			for (int i = 2, s = params.length; i < s - 1; i += 2) {
+				query.append(String.format(" AND c.%s = val%s", vCount++, params[i].toString()));
+				paramValues.add(params[i + 1]);
+			}
+		}
+
+		TypedQuery<T> q = em.createQuery(query.toString(), ec);
+		int pCount = 1;
+		for (Object p : paramValues)
+			q.setParameter("val" + pCount++, p);
+
+		return q.getResultList();
 	}
 
 	public <T> TypedQuery<T> createQuery(Class<T> ec, Map<String, Object> params) {
