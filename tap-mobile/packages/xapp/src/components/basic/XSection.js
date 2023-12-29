@@ -6,6 +6,7 @@ import XText from "./XText";
 
 const XSection = ({
 	title,
+	titleIcon,
 	children,
 	style,
 	disabled,
@@ -25,7 +26,7 @@ const XSection = ({
 		<View style={[styles.container, style]}>
 			{!!(title || titleRight) &&
 				<View style={[styles.title, styleTitle]}>
-					{!!title && <XText bold secondary>{title}</XText>}
+					{!!title && <XText bold secondary icon={titleIcon}>{title}</XText>}
 					{!!titleRight && titleRight}
 				</View>
 			}

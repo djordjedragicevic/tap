@@ -10,9 +10,12 @@ const XAvatar = ({
 	style,
 	imgPath,
 	initials,
+	outline = false,
+	round = false,
 	local = false
 }) => {
-	const styles = useThemedStyle(styleCreator, color, size);
+
+	const styles = useThemedStyle(styleCreator, color, round, outline);
 
 	return (
 		<View
@@ -35,7 +38,7 @@ const XAvatar = ({
 	);
 };
 
-const styleCreator = (theme, color) => StyleSheet.create({
+const styleCreator = (theme, color, round, outline) => StyleSheet.create({
 	text: {
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -43,10 +46,11 @@ const styleCreator = (theme, color) => StyleSheet.create({
 		flex: 1
 	},
 	avatar: {
-		borderRadius: Theme.values.borderRadius,
+		borderRadius: round === true ? 100 : Theme.values.borderRadius,
 		justifyContent: 'center',
 		borderColor: color || theme.colors.primary,
-		overflow: 'hidden'
+		overflow: 'hidden',
+		borderWidth: outline ? Theme.values.borderWidth : 0
 	},
 	img: {
 		flex: 1

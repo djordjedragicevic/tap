@@ -46,7 +46,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 
 		let finish = true;
 
-		Http.get('/appointments/free', {
+		Http.get('/appointment/free', {
 			s: services,
 			emps: services.map(s => selectedEmps[s]?.id || -1),
 			p: providerId,
@@ -95,84 +95,84 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 				preventPast
 			/>
 
-			{
-				data?.apps.length === 0 ?
-					<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-						<XText>{data.message || 'No appointments'}</XText>
+			{data?.apps?.length === 0 ?
+				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+					<XText>{data.message || 'No appointments'}</XText>
+				</View>
+				:
+				<ScrollView>
+					<View style={{
+						flexWrap: 'wrap',
+						flexDirection: 'row',
+						flex: 1,
+						columnGap: FREE_APP_COL_GAP,
+						rowGap: 10,
+						justifyContent: 'space-around'
+
+					}}>
+						{data?.apps?.map(a =>
+							<XButton
+								key={a.id}
+								title={a.services[0].time}
+								textStyle={selectedApp?.id === a.id ? styles.appTextSelected : styles.appText}
+								style={styles.freeAppointment}
+								primary={selectedApp?.id === a.id}
+								onPress={() => setSelectedApp((curr) => {
+									if (curr?.id === a.id)
+										return null;
+									else
+										return a;
+								})}
+							/>
+						)
+							.concat(getEmptyApps(data.apps.length, width))
+						}
+
 					</View>
-					:
-					<ScrollView>
-						<View style={{
-							flexWrap: 'wrap',
-							flexDirection: 'row',
-							flex: 1,
-							columnGap: FREE_APP_COL_GAP,
-							rowGap: 10,
-							justifyContent: 'space-around'
-
-						}}>
-							{data?.apps
-								.map(a =>
-									<XButton
-										key={a.id}
-										title={a.services[0].time}
-										textStyle={selectedApp?.id === a.id ? styles.appTextSelected : styles.appText}
-										style={styles.freeAppointment}
-										primary={selectedApp?.id === a.id}
-										onPress={() => setSelectedApp((curr) => {
-											if (curr?.id === a.id)
-												return null;
-											else
-												return a;
-										})}
-									/>
-								)
-								.concat(getEmptyApps(data.apps.length, width))
-							}
-
-						</View>
-					</ScrollView>
+				</ScrollView>
 			}
 
-			<XSection transparent
-				title={t('Services')}
-				style={{ marginTop: 10 }}
-				styleContent={{ rowGap: 5 }}
-			>
-				{data?.serEmps.map(({ ser, emps }) => {
-					const data = [{
-						id: -1,
-						title: t('First free'),
-						serviceId: ser.id
-					}].concat(
-						emps.map(e => ({
-							id: e.id,
-							title: e.name,
+			{data?.serEmps &&
+				<XSection transparent
+					title={t('Services')}
+					style={{ marginTop: 10 }}
+					styleContent={{ rowGap: 5 }}
+				>
+					{data.serEmps.map(({ ser, emps }) => {
+						const data = [{
+							id: -1,
+							title: t('First free'),
 							serviceId: ser.id
-						})));
+						}].concat(
+							emps.map(e => ({
+								id: e.id,
+								title: e.name,
+								serviceId: ser.id
+							})));
 
-					const selected = selectedEmps[ser.id] ? data.find(d => d.id === selectedEmps[ser.id].id) : data[0];
-					return (
-						<XSelector
-							title={ser.name}
-							value={selectedEmps[ser.id]?.name || t('First free')}
-							key={ser.id}
-							selector={{
-								title: t('Select employee')
-							}}
-							data={data}
-							selected={selected}
-							onItemSelect={({ id, serviceId, title }) => {
-								setSelectedEmps(curr => ({
-									...curr,
-									[serviceId]: { id, name: title }
-								}));
-							}}
-						/>
-					)
-				})}
-			</XSection>
-		</XScreen >
+						const selected = selectedEmps[ser.id] ? data.find(d => d.id === selectedEmps[ser.id].id) : data[0];
+						return (
+							<XSelector
+								title={ser.name}
+								value={selectedEmps[ser.id]?.name || t('First free')}
+								key={ser.id}
+								selector={{
+									title: t('Select employee')
+								}}
+								data={data}
+								selected={selected}
+								onItemSelect={({ id, serviceId, title }) => {
+									setSelectedEmps(curr => ({
+										...curr,
+										[serviceId]: { id, name: title }
+									}));
+								}}
+							/>
+						)
+					})}
+				</XSection>
+			}
+		</XScreen>
 	);
 };
 

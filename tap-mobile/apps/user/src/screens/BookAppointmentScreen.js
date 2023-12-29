@@ -21,18 +21,26 @@ const BookAppointmentScreen = ({ navigation, route }) => {
 	const priceSum = app.services.map(s => s.service.price).reduce((acc, v) => acc + v, 0);
 	const date = new Date(app.date);
 	const time = app.services[0].time.split(':');
+
 	date.setHours(time[0]);
 	date.setMinutes(time[1]);
-	const dTFormated = date.toLocaleDateString(dCode, { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+
+	const dTFormated = date.toLocaleDateString(dCode, {
+		weekday: 'short',
+		month: 'short',
+		day: '2-digit',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: false
+	});
 
 	const onBookPress = useCallback(() => {
 		storeDispatch('app.mask', { maskText: t('Booking') + '...' });
-		Http.post('/appointments/book', app)
-			.then(succes => {
-				if (succes) {
-					storeDispatch('app.mask', false);
-					navigation.navigate(MAIN_TAB_MY_APPOINTMENTS);
-				}
+		Http.post('/appointment/book', app)
+			.then(() => {
+				storeDispatch('app.mask', false);
+				navigation.navigate(MAIN_TAB_MY_APPOINTMENTS);
 			})
 			.catch(() => storeDispatch('app.mask', false));
 

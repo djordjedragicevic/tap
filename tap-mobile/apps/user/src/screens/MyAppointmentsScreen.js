@@ -1,7 +1,7 @@
 import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 import { useCallback, useMemo, useState } from "react";
-import { Http, useHTTPGet, useHTTPGetOnFocus } from "xapp/src/common/Http";
+import { Http, useHTTPGetOnFocus } from "xapp/src/common/Http";
 import { FlatList, StyleSheet, View } from "react-native";
 import { useDateCode, useTranslation } from "xapp/src/i18n/I18nContext";
 import XButton from "xapp/src/components/basic/XButton";
@@ -128,7 +128,7 @@ const Appointment = ({ item, reload }) => {
 								{ text: t('Quit') },
 								{
 									text: t('Reject appointment'), onPress: () => {
-										Http.post('/appointments/my-appointments/cancel', { appIds: itemIds })
+										Http.post('/appointment/my-appointments/cancel', { appIds: itemIds })
 											.then(reload)
 									}
 								}
@@ -149,7 +149,7 @@ const Appointment = ({ item, reload }) => {
 								{ text: t('Quit') },
 								{
 									text: t('Book'), onPress: () => {
-										Http.post('/appointments/my-appointments/rebook', { appIds: itemIds })
+										Http.post('/appointment/my-appointments/rebook', { appIds: itemIds })
 											.finally(reload)
 									}
 								}
@@ -207,7 +207,7 @@ const MyAppointmentsScreen = () => {
 
 	const dateCode = useDateCode();
 	const t = useTranslation();
-	const [data, refresh, refreshing] = useHTTPGetOnFocus(useFocusEffect, '/appointments/my-appointments');
+	const [data, refresh, refreshing] = useHTTPGetOnFocus(useFocusEffect, '/appointment/my-appointments');
 
 	const itemRenderer = useCallback((param) => (
 		<Appointment

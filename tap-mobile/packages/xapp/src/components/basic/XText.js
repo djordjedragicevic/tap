@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { usePrimaryColor, useThemedStyle } from "../../style/ThemeContext";
 import { useStore } from "../../store/store";
-import { AntDesign } from '@expo/vector-icons';
+import XIcon from "./XIcon";
 
 
 const fontWeights = {
@@ -31,6 +31,7 @@ const XText = ({
 	color,
 	bold,
 	icon,
+	rightIcon,
 	ellipsizeMode = 'tail',
 	numberOfLines = 0,
 	adjustsFontSizeToFit = false,
@@ -61,22 +62,17 @@ const XText = ({
 	});
 	const pColor = usePrimaryColor();
 
-	if (!icon)
+	if (!icon && !rightIcon)
 		return (
 			<Text style={[styles.text, style]} adjustsFontSizeToFit={adjustsFontSizeToFit} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
 		);
-	else if (typeof icon === 'string')
+	else
 		return (
 			<View style={styles.container}>
-				<AntDesign name={icon} size={18} color={pColor} />
+				{!!icon && <XIcon icon={icon} size={18} color={pColor} />}
 				<Text style={[styles.text, style]} adjustsFontSizeToFit={adjustsFontSizeToFit} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
-			</View>
-		);
-	else if (typeof icon === 'function')
-		return (
-			<View style={styles.container}>
-				{icon({ size: 18, color: pColor })}
-				<Text style={[styles.text, style]} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} adjustsFontSizeToFit={adjustsFontSizeToFit} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
+				{!!rightIcon && <XIcon icon={rightIcon} size={18} color={pColor} />}
+				
 			</View>
 		);
 };
@@ -100,7 +96,6 @@ const createStyle = (theme, appFont, { weight, italic, size, color, colorName })
 		const fSplit = appFont.split('_');
 		const w = weight ? weight + fontWeights[weight] : fSplit[1];
 		style.fontFamily = fSplit[0] + '_' + w;
-		//style.fontFamily = fSplit[0] + '_' + w + (italic ? '_Italic' : '');
 	}
 	else if (weight) {
 		style.fontWeight = weight;
@@ -113,7 +108,8 @@ const createStyle = (theme, appFont, { weight, italic, size, color, colorName })
 		text: style,
 		container: {
 			flexDirection: 'row',
-			alignItems: 'center'
+			alignItems: 'center',
+			columnGap: 5
 		}
 	})
 };

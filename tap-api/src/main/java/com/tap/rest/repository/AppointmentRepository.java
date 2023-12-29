@@ -443,7 +443,7 @@ public class AppointmentRepository extends CommonRepository {
 		}
 	}
 
-	private boolean isFreeTime(Integer pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
+	public boolean isFreeTime(Integer pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 		return getAppointmentsAtDayWAStatus(eIds, from, to).isEmpty()
 			   &&
 			   getCustomPeriods(pId, eIds, from, to).isEmpty();

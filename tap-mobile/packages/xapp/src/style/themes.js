@@ -8,7 +8,7 @@ export const Theme = {
 		red: 'red',
 		redLight: 'redLight',
 		redDark: 'redDark',
-		
+
 		green: 'green',
 		greenLight: 'greenLight',
 		yellow: 'yellow',
@@ -44,10 +44,9 @@ export const Theme = {
 	Light: {
 		id: 'Light',
 		colors: {
-
-			primary: 'deepskyblue',
+			primary: 'hsl(195, 100%, 50%)', //'deepskyblue'
 			primaryLight: 'hsl(195, 100%, 97%)',
-			secondary: '#042C4E',
+			secondary: 'hsl(208, 90%, 16%)',
 			background: 'hsl(0, 0%, 95%)',
 			backgroundElement: 'white',
 
@@ -85,9 +84,9 @@ export const Theme = {
 	Dark: {
 		id: 'Dark',
 		colors: {
-			primary: 'deepskyblue',
+			primary: 'hsl(195, 100%, 50%)', //'deepskyblue'
 			primaryLight: 'hsl(195, 100%, 13%)',
-			secondary: '#042C4E',
+			secondary: 'hsl(208, 90%, 16%)',
 			background: 'black',
 			backgroundElement: 'hsl(0, 0%, 10%)',
 

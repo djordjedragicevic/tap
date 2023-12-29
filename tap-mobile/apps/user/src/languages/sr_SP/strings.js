@@ -30,7 +30,7 @@ export const strings = {
 	"Book appointment": "Rezerviši termin",
 	"Book": "Rezerviši",
 	"Select employee": "Izaberite radnika",
-	"Confirm": "Potvrdite",
+	"Confirm": "Potvrdi",
 	"Appointment review": "Pregled rezervacije",
 	"reviews": "ocijena",
 	"About": "O nama",
@@ -95,6 +95,8 @@ export const strings = {
 
 	"Account": "Nalog",
 	"Personal information": "Lični podaci",
-	"Go to login screen": "Idi na logovanje"
+	"Go to login screen": "Idi na logovanje",
+	"Map": "Mapa",
+	"services": "servisa"
 
 };

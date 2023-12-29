@@ -35,6 +35,7 @@ import CreateAccountScreen from '../screens/CreateAccountScreen';
 import VerificationCodeScreen from '../screens/VerificationCodeScreen';
 import MenageAccountScreen from '../screens/MenageAccountScreen';
 import MapScreen from '../screens/MapScreen';
+import { useHeaderBackButton } from 'xapp/src/common/hooks';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -50,7 +51,6 @@ const MainBottomTabNavigator = ({ navigation }) => {
 		<BottomTab.Navigator
 			screenOptions={{
 				tabBarStyle: {
-					//backgroundColor: secondaryColor,
 					borderTopLeftRadius: 10,
 					borderTopRightRadius: 10
 				}
@@ -118,8 +118,14 @@ const AppNavigator = ({ }) => {
 	const font = useStore(s => s.app.font);
 	const t = useTranslation();
 	const logged = useIsUserLogged();
+	const headerBackButton = useHeaderBackButton();
 	return (
-		<Stack.Navigator>
+		<Stack.Navigator
+			screenOptions={{
+				headerTitleStyle: { fontFamily: font },
+				headerLeft: headerBackButton
+			}}
+		>
 			<Stack.Screen
 				name={MAIN_STACK}
 				component={MainBottomTabNavigator}

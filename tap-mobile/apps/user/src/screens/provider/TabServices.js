@@ -11,8 +11,6 @@ import { groupServices } from "xapp/src/common/general";
 
 let lastP = {};
 
-
-
 const areSIEqual = (oldProps, newProps) => {
 	return oldProps.id === newProps.id && oldProps.isSelected === newProps.isSelected;
 };
@@ -28,7 +26,7 @@ const ServiceItem = memo(({
 	id
 }) => {
 
-	const tStyles = useThemedStyle(serviceItemSC, isSelected);
+	const tStyles = useThemedStyle(serviceItemSC);
 	const t = useTranslation();
 
 	const onItemPress = () => {
@@ -37,43 +35,52 @@ const ServiceItem = memo(({
 
 	const dur = (durationTo ? duration + ' - ' + durationTo : duration) + ' ' + t('min') + '.'
 	return (
-		<Pressable
-			onPress={onItemPress}
-			style={tStyles.container}
-		>
-			<View style={{ alignSelf: 'center' }}>
+		<Pressable onPress={onItemPress} style={tStyles.row}>
+			<View style={tStyles.rowChbCnt}>
 				<XCheckBox checked={isSelected} setChecked={onItemPress} size={14} />
 			</View>
 
-			<View style={{ flex: 1 }}>
-				<View style={{ flex: 1, paddingStart: 5, flexDirection: 'row', alignItems: 'center' }}>
+			<View style={tStyles.nameCnt}>
+				<View style={tStyles.rowText}>
+					<XText>{name}</XText>
+					{note && <XText secondary size={12}>{note}</XText>}
+				</View>
 
-					<View style={{ flex: 1 }}>
-						<XText>{name}</XText>
-						{note && <XText secondary style={{ fontSize: 12 }}>{note}</XText>}
-					</View>
-
-					<View style={{ alignItems: 'flex-end' }}>
-						<XText size={16} style={tStyles.price}>{price} KM</XText>
-						<XText size={12} secondary>{dur}</XText>
-					</View>
+				<View style={tStyles.rowRightCnt}>
+					<XText size={16} style={tStyles.price}>{price} KM</XText>
+					<XText size={12} secondary>{dur}</XText>
 				</View>
 			</View>
+
 		</Pressable>
 	)
 }, areSIEqual);
 
-const serviceItemSC = (theme, selected) => StyleSheet.create({
+const serviceItemSC = (theme) => StyleSheet.create({
 	price: {
 		color: theme.colors.primary
 	},
-	container: {
-		padding: 8,
-		elevation: 0,
-		borderRadius: 5,
-		backgroundColor: selected ? theme.colors.primaryLight : theme.colors.backgroundElement,
+	nameCnt: {
+		flex: 1,
+		paddingStart: 5,
 		flexDirection: 'row',
-		minHeight: 55
+		alignItems: 'center'
+	},
+	row: {
+		paddingHorizontal: 8,
+		paddingVertical: 3,
+		borderRadius: Theme.values.borderRadius,
+		backgroundColor: theme.colors.backgroundElement,
+		flexDirection: 'row'
+	},
+	rowText: {
+		flex: 1
+	},
+	rowRightCnt: {
+		alignItems: 'flex-end'
+	},
+	rowChbCnt: {
+		alignSelf: 'center'
 	}
 });
 
@@ -126,7 +133,7 @@ const TabServices = ({
 				{
 					title !== '__default' &&
 					<View style={styles.sHeaderContainer}>
-						<XText size={18}>{title}</XText>
+						<XText size={15}>{title}</XText>
 					</View>
 				}
 			</>
@@ -160,7 +167,7 @@ const TabServices = ({
 					onItemRender={onCategoryRender}
 					minItemWidth={90}
 					tabBarHMargin={5}
-					barHeight={42}
+					barHeight={38}
 				/>
 			}
 
@@ -171,6 +178,7 @@ const TabServices = ({
 				contentContainerStyle={styles.sContentContainerStyle}
 				showsVerticalScrollIndicator={true}
 				scrollEventThrottle={16}
+
 			/>
 		</View>
 	);
@@ -180,11 +188,13 @@ const styleCreator = (theme) => StyleSheet.create({
 	sHeaderContainer: {
 		justifyContent: 'flex-end',
 		padding: 5,
-		backgroundColor: theme.colors.backgroundColor,
+		paddingVertical: 8,
+		backgroundColor: theme.colors.primaryLight,
+		borderRadius: Theme.values.borderRadius
 	},
 	sContentContainerStyle: {
-		paddingHorizontal: 10,
-		marginTop: 5,
+		padding: 10,
+		//marginTop: 5,
 		backgroundColor: theme.colors.backgroundColor,
 	},
 	category: {

@@ -6,7 +6,7 @@ import { Http, useHTTPGet } from "xapp/src/common/Http";
 import { StyleSheet, View } from "react-native"
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import XChip from "xapp/src/components/basic/XChip";
-import { usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import { useColor, usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 import HairSalon from "../components/svg/HairSalon";
 import { storeDispatch, useStore } from "xapp/src/store/store";
@@ -19,7 +19,7 @@ import utils from "../common/utils";
 import TabAbout from "./provider/TabAbout";
 import TabServices from "./provider/TabServices";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
-import { CurrencyUtils } from "xapp/src/common/utils";
+import { CurrencyUtils, emptyFn } from "xapp/src/common/utils";
 import { useIsUserLogged } from "../store/concreteStores";
 import XAlert from "xapp/src/components/basic/XAlert";
 import { handleUnauth } from "../common/general";
@@ -43,7 +43,7 @@ const ProviderScreen = ({ navigation, route }) => {
 
 	const t = useTranslation();
 	const styles = useThemedStyle(styleCreator)
-	const pColor = usePrimaryColor();
+	const [pColor, sColor] = useColor(['primary', 'secondary']);
 
 	const [selectedIds, setSelectedIdxs] = useState([]);
 	const [priceSum, setPriceSum] = useState();
@@ -63,8 +63,7 @@ const ProviderScreen = ({ navigation, route }) => {
 		setFavoriteDisabled(true);
 		Http.post(`/user/${userId}/state`, { favoriteProviders: newFavs })
 			.then(() => storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId))
-			.catch(err => {
-			})
+			.catch(emptyFn)
 			.finally(() => setFavoriteDisabled(false));
 	};
 
@@ -75,11 +74,11 @@ const ProviderScreen = ({ navigation, route }) => {
 					mainImg ?
 						<XImage
 							imgPath={mainImg[0]}
-							style={{ flex: 1 }}
+							style={styles.headerImage}
 							contentFit="cover"
 						/>
 						:
-						<View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+						<View style={styles.headerPlaceHolderImg}>
 							<HairSalon height={150} width={150} />
 						</View>
 				}
@@ -87,32 +86,21 @@ const ProviderScreen = ({ navigation, route }) => {
 				<XButtonIcon
 					icon='arrowleft'
 					onPress={navigation.goBack}
-					style={{
-						position: 'absolute',
-						start: 10,
-						top: 10
-					}}
+					backgroundColor={sColor}
+					style={styles.headerButtonLeft}
+					bgOpacity={0.6}
 				/>
 				<XButtonIcon
 					icon={isFavorite ? 'hearto' : 'heart'}
 					disabled={favoriteDisabled}
 					color={pColor}
+					backgroundColor={sColor}
 					onPress={onFPress}
-					style={{
-						position: 'absolute',
-						end: 10,
-						top: 10
-					}}
+					style={styles.headerButtonRight}
+					bgOpacity={0.6}
 				/>
 
-				<View style={{
-					position: 'absolute',
-					bottom: CHIP_MARK_TOP_MARGIN,
-					zIndex: 10,
-					right: 0,
-					left: 0,
-					alignItems: 'center'
-				}}>
+				<View style={styles.chipMark}>
 					<XChip primary text={utils.generateMarkString(about?.mark, about?.reviewCount)} />
 				</View>
 			</View>
@@ -122,26 +110,17 @@ const ProviderScreen = ({ navigation, route }) => {
 					!!about
 					&&
 					<>
-						<View style={{
-							height: 45,
-							justifyContent: 'center',
-							alignItems: 'center',
-							paddingTop: CHIP_MARK_TOP_MARGIN
-						}}>
-							<View style={{ flexDirection: 'row', alignItems: 'center', columnGap: 5 }}>
-								<XText bold size={18}>{about.name} - {about.type}</XText>
-							</View>
+						<View style={styles.titleCnt}>
+							<XText oneLine bold size={18}>{about.name} - {about.type}</XText>
 						</View>
 
-						<XTabView
-							style={styles.tabView}
-							tabBarStyle={styles.tabBar}
-						>
-							<XTabScreen title={t('About')} style={{ flex: 1 }}>
+						<XTabView style={styles.tabView} tabBarStyle={styles.tabBar}>
+
+							<XTabScreen title={t('About')}>
 								<TabAbout data={about} navigation={navigation} />
 							</XTabScreen>
 
-							<XTabScreen title={t('Services')} style={{ flex: 1 }}>
+							<XTabScreen title={t('Services')} flex={1}>
 								<TabServices
 									navigation={navigation}
 									providerId={providerId}
@@ -167,10 +146,10 @@ const ProviderScreen = ({ navigation, route }) => {
 					backgroundColor='transparent'
 					onPress={onFooterClear}
 				/>
-				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+				<View style={styles.footerServCnt}>
 					{
 						<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-							<XText light>{selectedIds?.length > 0 ? selectedIds.length : '-'} servisa</XText>
+							<XText light>{selectedIds?.length > 0 ? selectedIds.length : '-'} {t('services')}</XText>
 							<XText size={16} bold light>{priceSum ? CurrencyUtils.convert(priceSum) : '-'}</XText>
 						</View>
 					}
@@ -180,7 +159,7 @@ const ProviderScreen = ({ navigation, route }) => {
 					title={t('Find appointment')}
 					primary
 					disabled={!selectedIds?.length}
-					style={{ margin: 5, flex: 1 }}
+					style={styles.footerBtnFind}
 					onPress={() => {
 						if (userLoged)
 							navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selectedIds], providerId });
@@ -212,6 +191,47 @@ const styleCreator = (theme) => StyleSheet.create({
 		borderBottomWidth: Theme.values.borderWidth,
 		borderColor: theme.colors.textTertiary,
 		marginBottom: 8
+	},
+	titleCnt: {
+		height: 50,
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingTop: CHIP_MARK_TOP_MARGIN
+	},
+	footerServCnt: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	footerBtnFind: {
+		margin: 5,
+		flex: 1
+	},
+	chipMark: {
+		position: 'absolute',
+		bottom: CHIP_MARK_TOP_MARGIN,
+		zIndex: 10,
+		right: 0,
+		left: 0,
+		alignItems: 'center'
+	},
+	headerPlaceHolderImg: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		flex: 1
+	},
+	headerImage: {
+		flex: 1
+	},
+	headerButtonLeft: {
+		position: 'absolute',
+		start: 8,
+		top: 8
+	},
+	headerButtonRight: {
+		position: 'absolute',
+		end: 8,
+		top: 8
 	}
 });
 

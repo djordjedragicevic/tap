@@ -69,7 +69,41 @@ public class CommonRepository {
 	}
 
 	public <T> List<T> getEntityListBy(Class<T> ec, Object... params) {
+		return createQuery(ec, params).getResultList();
+	}
 
+	public <T> T getEntityBy(Class<T> ec, Object... params) {
+		return createQuery(ec, params).getSingleResult();
+	}
+
+
+	public EntityManager getEntityManager() {
+		return em;
+	}
+
+	private <T> TypedQuery<T> createQuery(Class<T> ec, Map<String, Object> params) {
+		StringBuilder query = new StringBuilder();
+
+		query.append(String.format("SELECT c FROM %s c WHERE", ec.getSimpleName()));
+
+		int i = 1;
+		List<Object> values = new ArrayList<>();
+		for (Map.Entry<String, Object> k : params.entrySet()) {
+			query.append(" c.").append(k.getKey()).append(" = :val").append(i++);
+			if ((i - 1) < params.size())
+				query.append(" AND");
+			values.add(k.getValue());
+		}
+
+		TypedQuery<T> q = em.createQuery(query.toString(), ec);
+		i = 1;
+		for (Object v : values)
+			q.setParameter("val" + i++, v);
+
+		return q;
+	}
+
+	private <T> TypedQuery<T> createQuery(Class<T> ec, Object... params) {
 		List<Object> paramValues = new ArrayList<>();
 
 		StringBuilder query = new StringBuilder(String.format("""
@@ -92,32 +126,6 @@ public class CommonRepository {
 		for (Object p : paramValues)
 			q.setParameter("val" + pCount++, p);
 
-		return q.getResultList();
-	}
-
-	public <T> TypedQuery<T> createQuery(Class<T> ec, Map<String, Object> params) {
-		StringBuilder query = new StringBuilder();
-
-		query.append(String.format("SELECT c FROM %s c WHERE", ec.getSimpleName()));
-
-		int i = 1;
-		List<Object> values = new ArrayList<>();
-		for (Map.Entry<String, Object> k : params.entrySet()) {
-			query.append(" c.").append(k.getKey()).append(" = :val").append(i++);
-			if ((i - 1) < params.size())
-				query.append(" AND");
-			values.add(k.getValue());
-		}
-
-		TypedQuery<T> q = em.createQuery(query.toString(), ec);
-		i = 1;
-		for (Object v : values)
-			q.setParameter("val" + i++, v);
-
 		return q;
-	}
-
-	public EntityManager getEntityManager() {
-		return em;
 	}
 }

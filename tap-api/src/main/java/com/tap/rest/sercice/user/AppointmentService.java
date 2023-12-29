@@ -3,6 +3,8 @@ package com.tap.rest.sercice.user;
 import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
+import com.tap.exception.ErrID;
+import com.tap.exception.TAPException;
 import com.tap.rest.dto.EmployeeDto;
 import com.tap.rest.dtor.AppointmentDtoSimple;
 import com.tap.rest.repository.AppointmentRepository;
@@ -17,6 +19,7 @@ import com.tap.security.Security;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.json.JsonObject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -27,7 +30,7 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Path("appointments")
+@Path("/appointment")
 @RequestScoped
 public class AppointmentService {
 	private static final int FREE_APP_CREATING_STEP = 15;
@@ -151,17 +154,54 @@ public class AppointmentService {
 	}
 
 	@POST
-	@Path("book")
+	@Path("/book")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
+	@Transactional
 	public Response bookAppointment(@Context SecurityContext sC, FreeAppointment app) {
 
 		int userId = Security.getUserId(sC);
 
-		boolean success = appointmentRepository.saveAppointment(app, userId);
+		List<Integer> eIds = app.getServices().stream().mapToInt(s -> s.getEmployee().getId()).boxed().toList();
+		LocalDateTime from = LocalDateTime.of(app.getDate(), app.getServices().get(0).getTime());
+		LocalDateTime to = from.plusMinutes(app.getDurationSum());
 
-		return Response.ok(success).build();
+		boolean isFree = appointmentRepository.isFreeTime(app.getProviderId(), eIds, from, to);
+		if (!isFree)
+			throw new TAPException(ErrID.TAP_0);
+
+
+		AppointmentStatus aS = appointmentRepository.getEntityBy(AppointmentStatus.class, "name", Statics.A_STATUS_WAITING);
+		User u = appointmentRepository.getSingleActiveEntityById(User.class, userId);
+		app.getServices().sort(Comparator.comparing(FreeAppointment.Service::getTime));
+
+		for (FreeAppointment.Service ser : app.getServices()) {
+			Appointment fApp = new Appointment();
+
+			LocalDateTime start = LocalDateTime.of(app.getDate(), ser.getTime());
+			LocalDateTime end = start.plusMinutes(ser.getService().getDuration());
+
+			Service s = appointmentRepository.getEntityManager().find(Service.class, ser.getService().getId());
+			Employee e = appointmentRepository.getEntityManager().find(Employee.class, ser.getEmployee().getId());
+			PeriodType pT = appointmentRepository.getEntityBy(PeriodType.class, "name", Statics.PT_APP_BY_USER);
+
+			fApp.setStart(start);
+			fApp.setEnd(end);
+			fApp.setPeriodtype(pT);
+			fApp.setAppointmentstatus(aS);
+			fApp.setEmployee(e);
+			fApp.setService(s);
+			fApp.setUser(u);
+			fApp.setUser2(u);
+			fApp.setCreateDate(LocalDateTime.now(Util.zone()));
+			if (app.getServices().size() > 1)
+				fApp.setJoinId(ser.getJoinId());
+
+			appointmentRepository.getEntityManager().persist(fApp);
+		}
+
+		return Response.ok().build();
 	}
 
 	private List<FreeAppointment> generateFreeAppointments(List<Integer> sIds, List<Integer> sEIds, ProviderWorkInfo pWI, Map<ServiceDto, List<EmployeeDto>> serEmpsMap) {
