@@ -6,5 +6,6 @@ export const strings = {
 	"Delete item": "Brisanje stavke",
 	"Delete item_MSG": "Da li ste sigurni da želite da obrišete stavku?",
 	"Edit": "Izmjeni",
-	"Add": "Dodaj"
+	"Add": "Dodaj",
+	"Withdraw": "Odustani"
 };

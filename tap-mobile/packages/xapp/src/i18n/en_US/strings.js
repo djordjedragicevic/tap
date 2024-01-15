@@ -6,5 +6,6 @@ export const strings = {
 	"Delete item": "Delete item",
 	"Delete item_MSG": "Are you surre you want to to delete item?",
 	"Edit": "Edit",
-	"Add": "Add"
+	"Add": "Add",
+	"Withdraw": "Withdraw"
 };

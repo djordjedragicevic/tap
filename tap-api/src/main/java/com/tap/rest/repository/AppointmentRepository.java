@@ -142,6 +142,7 @@ public class AppointmentRepository extends CommonRepository {
 				e.name,
 				p.id AS pId,
 				p.name,
+				p.imagePath,
 				pT.name,
 				add.address1,
 				c.name,
@@ -181,6 +182,7 @@ public class AppointmentRepository extends CommonRepository {
 				"employee.name",
 				"provider.id",
 				"provider.name",
+				"provider.imagePath",
 				"provider.type",
 				"provider.address1",
 				"provider.city",
@@ -443,6 +445,7 @@ public class AppointmentRepository extends CommonRepository {
 		}
 	}
 
+	//TODO Must fix this function, be aware of multi employees appointments
 	public boolean isFreeTime(Integer pId, List<Integer> eIds, LocalDateTime from, LocalDateTime to) {
 		return getAppointmentsAtDayWAStatus(eIds, from, to).isEmpty()
 			   &&

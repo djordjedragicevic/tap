@@ -9,7 +9,8 @@ import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { MAP_SCREEN } from "../../navigators/routes";
 import { Foundation } from '@expo/vector-icons';
 import XSeparator from "xapp/src/components/basic/XSeparator";
-import { useThemedStyle } from "xapp/src/style/ThemeContext";
+import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import { Theme } from "xapp/src/style/themes";
 
 
 const mapWorkPeriods = (workPeriods) => {
@@ -58,11 +59,19 @@ const TabAbout = ({ data = {}, navigation }) => {
 	const styles = useThemedStyle(styleCreator);
 
 	const wPs = useMemo(() => mapWorkPeriods(data.workPeriods), [data?.workPeriods]);
+	const [cGreen] = useColor(['primary', 'greenLight']);
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
 
-			<XSection>
+			{
+				data.description &&
+				<XSection>
+					<XText style={styles.description}>{data.description}</XText>
+				</XSection>
+			}
+
+			<XSection title={t('Address')}>
 				<View style={styles.infoCont}>
 					<XText icon={'enviroment'}>{data.address}, {data.city}</XText>
 
@@ -118,9 +127,9 @@ const TabAbout = ({ data = {}, navigation }) => {
 						const [isDay, isWork] = isOpened(day, wPs[day]);
 						return (
 							<View key={day}>
-								<View style={styles.dayRow}>
+								<View style={[styles.dayRow, isDay && styles.dayRowCurrent]}>
 									<View style={styles.dayRowDay}>
-										<View style={{ width: 20 }}>
+										<View style={styles.dayDotCnt}>
 											{isDay && <View style={[styles.dayDot, { backgroundColor: isWork ? 'hsl(120, 100%, 80%)' : 'red' }]} />}
 										</View>
 
@@ -141,7 +150,6 @@ const TabAbout = ({ data = {}, navigation }) => {
 									</View>
 
 								</View>
-								{idx < 6 && <XSeparator margin={5} />}
 							</View>
 						)
 					})}
@@ -151,7 +159,7 @@ const TabAbout = ({ data = {}, navigation }) => {
 	);
 };
 
-const styleCreator = () => StyleSheet.create({
+const styleCreator = (theme) => StyleSheet.create({
 	container: {
 		rowGap: 20,
 		padding: 10
@@ -170,8 +178,17 @@ const styleCreator = () => StyleSheet.create({
 	},
 	dayRow: {
 		flexDirection: 'row',
-		padding: 8,
-		justifyContent: 'space-between'
+		padding: 6,
+		marginBottom: 4,
+		justifyContent: 'space-between',
+		borderRadius: Theme.values.borderRadius,
+		borderWidth: Theme.values.borderWidth,
+		borderColor: theme.colors.borderColor
+	},
+	dayRowCurrent: {
+		borderColor: theme.colors.primary,
+		backgroundColor: theme.colors.primaryLight
+
 	},
 	dayRowDay: {
 		flexDirection: 'row',
@@ -179,10 +196,17 @@ const styleCreator = () => StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center'
 	},
+	dayDotCnt: {
+		width: 15
+	},
 	dayDot: {
 		width: 10,
 		height: 10,
 		borderRadius: 50
+	},
+	description: {
+		textAlign: 'center',
+		fontStyle: 'italic'
 	}
 });
 

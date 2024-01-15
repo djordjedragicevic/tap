@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Theme } from "../../style/themes";
 import XText from "./XText";
@@ -67,7 +67,7 @@ const XButton = ({
 					{typeof iconLeft === 'string' ? <AntDesign name={iconLeft} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
 				</View>
 			}
-			{!!title && <XText style={[styles.text, textStyle]} secondary>{title}</XText>}
+			{React.isValidElement(title) ? title : (!!title && <XText style={[styles.text, textStyle]} secondary>{title}</XText>)}
 			{!!iconRight &&
 				<View style={styles.iconRight}>
 					{typeof iconRight === 'string' ? <AntDesign name={iconRight} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
@@ -116,7 +116,7 @@ const createStyle = (theme, params, primary, secondary) => {
 
 	if (secondary) {
 		textStyle.color = theme.colors.textLight;
-		btnStyle.backgroundColor = theme.colors.textTertiary;
+		btnStyle.backgroundColor = theme.colors.secondary;
 	}
 
 	if (primary) {
@@ -126,7 +126,7 @@ const createStyle = (theme, params, primary, secondary) => {
 
 
 	if (params.small) {
-		textStyle.fontSize = 12;
+		textStyle.fontSize = 13;
 		btnStyle.height = 28;
 	}
 

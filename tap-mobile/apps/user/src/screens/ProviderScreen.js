@@ -21,7 +21,6 @@ import TabServices from "./provider/TabServices";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import { CurrencyUtils, emptyFn } from "xapp/src/common/utils";
 import { useIsUserLogged } from "../store/concreteStores";
-import XAlert from "xapp/src/components/basic/XAlert";
 import { handleUnauth } from "../common/general";
 
 const TabReviews = () => {
@@ -116,7 +115,7 @@ const ProviderScreen = ({ navigation, route }) => {
 
 						<XTabView style={styles.tabView} tabBarStyle={styles.tabBar}>
 
-							<XTabScreen title={t('About')}>
+							<XTabScreen title={t('About')} flex={1}>
 								<TabAbout data={about} navigation={navigation} />
 							</XTabScreen>
 

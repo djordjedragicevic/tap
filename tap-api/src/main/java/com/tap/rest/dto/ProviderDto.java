@@ -8,6 +8,7 @@ public class ProviderDto {
 	private String name;
 	private String description;
 	private String phone;
+	private String imagePath;
 	private String idNumber;
 	private Byte legalEntity;
 	private Byte approved;
@@ -53,6 +54,15 @@ public class ProviderDto {
 
 	public String getPhone() {
 		return this.phone;
+	}
+
+	public ProviderDto setImagePath( String imagePath ) {
+		this.imagePath = imagePath;
+		return this;
+	}
+
+	public String getImagePath() {
+		return this.imagePath;
 	}
 
 	public ProviderDto setIdNumber( String idNumber ) {

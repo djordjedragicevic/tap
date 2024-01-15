@@ -97,6 +97,7 @@ export const strings = {
 	"Personal information": "Lični podaci",
 	"Go to login screen": "Idi na logovanje",
 	"Map": "Mapa",
-	"services": "servisa"
+	"services": "servisa",
+	"Address": "Adresa"
 
 };

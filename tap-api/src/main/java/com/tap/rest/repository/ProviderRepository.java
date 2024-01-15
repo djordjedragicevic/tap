@@ -210,7 +210,7 @@ public class ProviderRepository extends CommonRepository {
 				FROM ServiceEmployee se
 				JOIN se.service s
 				JOIN se.employee e
-				JOIN s.group g
+				LEFT JOIN s.group g
 				WHERE
 				s.active = 1 AND
 				e.active = 1 AND

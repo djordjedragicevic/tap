@@ -33,7 +33,7 @@ public class Appointment implements Serializable {
     @Column(name="create_date", nullable=false)
 	private LocalDateTime createDate;
 
-    @Column(name="join_id", length=64)
+    @Column(name="join_id", length=65535)
 	private String joinId;
 
     @Column(name="status_response_date")

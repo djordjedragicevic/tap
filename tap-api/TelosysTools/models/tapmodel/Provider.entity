@@ -8,6 +8,7 @@ Provider {
   providerTypeId : short { @DbName(provider_type_id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_provider_type, ProviderType.id) };
   addressId : int { @DbName(address_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_address1, Address.id) };
   phone : string { @DbName(phone) @DbType("VARCHAR(32)") @Size(32) @MaxLen(32) };
+  imagePath : string { @DbName(image_path) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
   idNumber : string { @DbName(id_number) @DbType("VARCHAR(32)") @NotNull @NotEmpty @Size(32) @MaxLen(32) };
   legalEntity : byte { @DbName(legal_entity) @DbType(TINYINT) @NotNull @NotEmpty };
   approved : byte { @DbName(approved) @DbType(TINYINT) @DbDefaultValue(0) @NotNull @NotEmpty };

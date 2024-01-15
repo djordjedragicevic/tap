@@ -48,27 +48,20 @@ public class AppointmentService {
 	}
 
 	@GET
-	@Path("my-appointments")
+	@Path("/my-appointments")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
-	public Map<String, Object> getMyAppointments(
+	public List<Map<String, Object>> getMyAppointments(
 			@Context SecurityContext sC,
 			@QueryParam("f") @DefaultValue("") String filter
 	) {
-		Map<String, Object> resp = new HashMap<>();
+
 		int userId = Security.getUserId(sC);
-
-		if (filter.isEmpty() || filter.equals("coming"))
-			resp.put("comingApps", appointmentRepository.getUserAppointments(userId, false));
-
-		if (filter.isEmpty() || filter.equals("history"))
-			resp.put("historyApps", appointmentRepository.getUserAppointments(userId, true));
-
-		return resp;
+		return appointmentRepository.getUserAppointments(userId, filter.isEmpty() || filter.equals("history"));
 	}
 
 	@POST
-	@Path("my-appointments/cancel")
+	@Path("/my-appointments/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
@@ -86,7 +79,7 @@ public class AppointmentService {
 	}
 
 	@POST
-	@Path("my-appointments/rebook")
+	@Path("/my-appointments/rebook")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})

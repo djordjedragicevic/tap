@@ -21,7 +21,6 @@ const ProvidersScreen = ({ navigation }) => {
 		return (
 			<XSection
 				onPress={() => navigation.navigate(PROVIDER_SCREEN, { id: item.id })}
-				style={styles.section}
 				styleContent={styles.sectionContainer}
 			>
 				<View style={{ height: 150 }}>
@@ -109,11 +108,6 @@ const styleCreator = (theme) => StyleSheet.create({
 	},
 	title: {
 		fontSize: 20
-	},
-	section: {
-		padding: 0,
-		borderColor: theme.colors.borderColor,
-		borderWidth: Theme.values.borderWidth
 	},
 	sectionContainer: {
 		padding: 0

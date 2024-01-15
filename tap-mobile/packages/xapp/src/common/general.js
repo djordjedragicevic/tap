@@ -45,3 +45,10 @@ export const groupServices = (sers) => {
 		sMap
 	};
 };
+
+export const STATUS = {
+	WAITING: 'WAITING',
+	ACCEPTED: 'ACCEPTED',
+	REJECTED: 'REJECTED',
+	CANCELED: 'CANCELED'
+};

@@ -3,6 +3,8 @@ import { Http } from "../../common/Http";
 
 const XImage = (params) => {
 
+	console.log(!params.local ? `${Http.getAPI()}/asset/download?lct=${encodeURIComponent(params.imgPath)}` : params.imgPath);
+
 	if (!params.imgPath)
 		return null;
 

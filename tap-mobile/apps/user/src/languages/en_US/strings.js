@@ -99,5 +99,6 @@ export const strings = {
 	"Personal information": "Personal information",
 	"Go to login screen": "Go to login screen",
 	"Map": "Map",
-	"services": "services"
+	"services": "services",
+	"Address": "Address"
 };

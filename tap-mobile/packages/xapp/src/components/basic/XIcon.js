@@ -3,9 +3,9 @@ import React, { memo, useMemo } from "react";
 import { useColor } from "../../style/ThemeContext";
 
 
-const XIcon = ({ icon, children, color, size = 23 }) => {
+const XIcon = ({ icon, children, color, colorName, size = 23 }) => {
 
-	const tSC = useColor('textSecondary');
+	const tSC = useColor(colorName || 'textSecondary');
 	const iconColor = color || tSC;
 
 	const Icon = useMemo(() => {

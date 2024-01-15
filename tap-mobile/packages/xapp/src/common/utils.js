@@ -45,6 +45,10 @@ export const DateUtils = {
 	dateToString: (date = new Date()) => {
 		return `${date.getFullYear()}-${(date.getMonth() + 1).toLocaleString(undefined, { minimumIntegerDigits: 2 })}-${date.getDate().toLocaleString(undefined, { minimumIntegerDigits: 2 })}T${date.getHours().toLocaleString(undefined, { minimumIntegerDigits: 2 })}:${date.getMinutes().toLocaleString(undefined, { minimumIntegerDigits: 2 })}:${date.getSeconds().toLocaleString(undefined, { minimumIntegerDigits: 2 })}`;
 	},
+	getTimeFromDateTimeString: (date = '') => {
+		const t = date.split('T').pop().split(':');
+		return (t[0] + ':' + t[1]);
+	},
 	roundTo30Min: (date = new Date()) => {
 		const dateOff = new Date(date.getTime() + (1000 * 60 * 5));
 		const min = dateOff.getMinutes();

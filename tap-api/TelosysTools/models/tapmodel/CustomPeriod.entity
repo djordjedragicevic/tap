@@ -5,7 +5,7 @@ CustomPeriod {
   id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
   start : timestamp { @DbName(start) @DbType(DATETIME) @NotNull @NotEmpty };
   end : timestamp { @DbName(end) @DbType(DATETIME) @NotNull @NotEmpty };
-  providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @FK(fk_employee_busy_period_provider1, Provider.id) };
+  providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_employee_busy_period_provider1, Provider.id) };
   employeeId : int { @DbName(employee_id) @DbType(INT UNSIGNED) @FK(fk_employee_busy_period_employee1, Employee.id) };
   periodTypeId : int { @DbName(period_type_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_busy_period_period_type1, PeriodType.id) };
   createdBy : int { @DbName(created_by) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_busy_time_user1, User.id) };

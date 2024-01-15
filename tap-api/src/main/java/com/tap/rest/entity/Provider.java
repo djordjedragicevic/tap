@@ -31,6 +31,9 @@ public class Provider implements Serializable {
     @Column(name="phone", length=32)
 	private String phone;
 
+    @Column(name="image_path", length=128)
+	private String imagePath;
+
     @Column(name="id_number", nullable=false, length=32)
 	private String idNumber;
 
@@ -114,6 +117,14 @@ public class Provider implements Serializable {
 
 	public String getPhone() {
 		return this.phone;
+	}
+
+	public void setImagePath( String imagePath ) {
+		this.imagePath = imagePath;
+	}
+
+	public String getImagePath() {
+		return this.imagePath;
 	}
 
 	public void setIdNumber( String idNumber ) {
