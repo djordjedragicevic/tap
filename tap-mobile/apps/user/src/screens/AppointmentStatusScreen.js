@@ -109,12 +109,10 @@ const AppointmentStatusScreen = ({ navigation, route }) => {
 					<View style={{ paddingStart: 5, paddingTop: 3 }}>
 						<XText size={16} secondary>{data.employee.name}</XText>
 					</View>
-
 				</View>
 
 				<View style={{ flexDirection: 'row', marginTop: 3 }}>
 					<XText>{new Date(data.start).toLocaleDateString(dateCode, { day: 'numeric', month: 'short', year: 'numeric' })}  {DateUtils.getTimeFromDateTimeString(data.start)} - {DateUtils.getTimeFromDateTimeString(data.end)} {'(' + data.service.duration + ' ' + t('min') + ')'}</XText>
-
 				</View>
 
 				<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 30 }}>
@@ -128,7 +126,7 @@ const AppointmentStatusScreen = ({ navigation, route }) => {
 							style={{ height: 30, paddingStart: 10, paddingEnd: 12 }}
 						/>
 						{
-							data.statusComment && <XText>{data.statusComment}</XText>
+							data.statusComment && <XText style={{ marginStart: 5 }} secondary italic>- {data.statusComment}</XText>
 						}
 					</View>
 

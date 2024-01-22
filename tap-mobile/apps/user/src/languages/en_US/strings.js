@@ -64,6 +64,7 @@ export const strings = {
 	"Resend": "Resend",
 	"Creating account": "Creating account",
 	"Closed": "Closed",
+	"Opened": "Opened",
 	"Verifying": "Verifying",
 	"Booking": "Booking",
 	"Saved providers": "Saved providers",
@@ -94,5 +95,6 @@ export const strings = {
 	"services": "services",
 	"Address": "Address",
 	"Appointment": "Appointmnet",
-	"Comment": "Comment"
+	"Comment": "Comment",
+	"Doesn't work": "Doesn't work"
 };

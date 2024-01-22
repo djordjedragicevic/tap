@@ -95,7 +95,8 @@ const TabAbout = ({ data = {}, navigation }) => {
 
 			<XSection
 				title={t('Our team')}
-				titleIcon='user'>
+			//titleIcon='user'
+			>
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
@@ -120,7 +121,7 @@ const TabAbout = ({ data = {}, navigation }) => {
 
 			<XSection
 				title={t('Working hours')}
-				titleIcon='clockcircleo'
+			//titleIcon='clockcircleo'
 			>
 				<View>
 					{Object.keys(wPs).map((day, idx) => {
@@ -132,20 +133,25 @@ const TabAbout = ({ data = {}, navigation }) => {
 										<View style={styles.dayDotCnt}>
 											{isDay && <View style={[styles.dayDot, { backgroundColor: isWork ? cGreen : cRed }]} />}
 										</View>
-
 										<XText>{t(DateUtils.WEEK_DAY[day - 1])}</XText>
+
+										{
+											isDay &&
+											<View>
+												<XText color={isWork ? cGreen : cRed} size={13} secondary> - {t(isWork ? 'Opened' : 'Closed')}</XText>
+											</View>
+										}
+
 									</View>
 
 									<View>
 										{
 											wPs[day] ?
 												<View>
-													{wPs[day].map((d) => {
-														return <XText key={d.id}>{d.startTime} - {d.endTime}</XText>
-													})}
+													{wPs[day].map((d) => <XText key={d.id}>{d.startTime} - {d.endTime}</XText>)}
 												</View>
 												:
-												<XText>{t('Closed')}</XText>
+												<XText>{t('Doesn\'t work')}</XText>
 										}
 									</View>
 

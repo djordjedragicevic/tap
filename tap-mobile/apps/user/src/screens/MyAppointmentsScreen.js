@@ -41,9 +41,9 @@ const arrangeData = (data, dateCode) => {
 	newData.forEach(a => {
 		const sD = new Date(a[0].start);
 		const eD = new Date(a[a.length - 1].end);
-		a[0].startTime = sD.toLocaleDateString(dateCode, { day: 'numeric', month: 'short', year: 'numeric' })
-			+ ' - '
-			+ sD.toLocaleTimeString(dateCode, { hour: '2-digit', minute: '2-digit', hour12: false });
+		a[0]._date = sD.toLocaleDateString(dateCode, { day: 'numeric', month: 'short', year: 'numeric' });
+		a[0]._from = sD.toLocaleTimeString(dateCode, { hour: '2-digit', minute: '2-digit', hour12: false });
+		a[0]._to = eD.toLocaleTimeString(dateCode, { hour: '2-digit', minute: '2-digit', hour12: false });
 
 	});
 
@@ -124,13 +124,8 @@ const AppointmentGroup = ({ item, navigation }) => {
 		<View style={[styles.appContainer]}>
 
 			<View style={[styles.appHeader]} start={item[0].start}>
-				<XText bold>{item[0].startTime}</XText>
-				{/* <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-					<XIcon size={18} icon={ICON[item[0].gropuStatus]} colorName={COLORS[item[0].gropuStatus]} />
-				</View> */}
-				{/* <Pressable>
-					<XIcon colorName={Theme.vars.primary} size={18} icon={'arrowright'} />
-				</Pressable> */}
+				<XText bold>{item[0]._date}</XText>
+				<XText bold>{item[0]._from} - {item[0]._to}</XText>
 			</View>
 
 			<XSeparator />
@@ -155,18 +150,6 @@ const AppointmentGroup = ({ item, navigation }) => {
 			<View style={styles.appCnt}>
 				{item.map(app => <ServiceRow navigation={navigation} key={app.id} item={app} />)}
 			</View>
-
-
-
-			{/* {item[0].gropuStatus !== STATUS.REJECTED &&
-				<>
-					<XSeparator />
-					<View style={{ alignItems: 'flex-end', height: 40, justifyContent: 'center' }}>
-						<ServiceRowButton item={item} />
-					</View>
-				</>
-			} */}
-
 		</View>
 	)
 };

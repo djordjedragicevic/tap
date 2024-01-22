@@ -62,6 +62,7 @@ export const strings = {
 	"Resend": "Ponovo pošalji",
 	"Creating account": "Kreiranje naloga",
 	"Closed": "Zatvoreno",
+	"Opened": "Otvoreno",
 	"Verifying": "Verifikacija",
 	"Booking": "Rezervisanje",
 	"Saved providers": "Sačuvani davaoci usluga",
@@ -92,6 +93,7 @@ export const strings = {
 	"services": "servisa",
 	"Address": "Adresa",
 	"Appointment": "Termin",
-	"Comment": "Komentar"
+	"Comment": "Komentar",
+	"Doesn't work": "Ne radi"
 
 };
