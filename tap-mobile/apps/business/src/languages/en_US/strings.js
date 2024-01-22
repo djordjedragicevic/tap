@@ -29,7 +29,6 @@ export const strings = {
 	"Requests": "Requests",
 	"Accept All": "Accept All",
 	"No items": "No items",
-	"From": "From",
 	"Appointment confirmation": "Appointment confirmation",
 	"Appointment": "Appointment",
 	"Appointment - manually entered": "Appointment - manually entered",

@@ -5,6 +5,8 @@ import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
+import com.tap.rest.dto.AppointmentDto;
+import com.tap.rest.dto.AppointmentStatusDto;
 import com.tap.rest.dto.EmployeeDto;
 import com.tap.rest.dtor.AppointmentDtoSimple;
 import com.tap.rest.repository.AppointmentRepository;
@@ -48,6 +50,50 @@ public class AppointmentService {
 	}
 
 	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	public Response getAppointment(@PathParam("id") Long appId) {
+
+		return Response.ok(appointmentRepository.getAppointmentById(appId)).build();
+	}
+
+	@POST
+	@Path("/{id}/edit-status")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	@Transactional
+	public Response changeAppointmentStatus(
+			@Context SecurityContext sC,
+			@PathParam("id") Long appId,
+			AppointmentDto appointmentDto
+	) {
+
+		String statusName = appointmentDto.getAppointmentstatus().getName();
+		String statusComment = appointmentDto.getStatusComment();
+		long minTBS = 5;
+
+		Appointment app = appointmentRepository.getEntityManager().find(Appointment.class, appId);
+		String currStatus = app.getAppointmentstatus().getName();
+		int userId = Security.getUserId(sC);
+
+		if (app.getUser().getId() != userId)
+			throw new TAPException(ErrID.TAP_1);
+
+		if (!((currStatus.equals(Statics.A_STATUS_WAITING) && statusName.equals(Statics.A_STATUS_DROPPED)) || (currStatus.equals(Statics.A_STATUS_ACCEPTED) && statusName.equals(Statics.A_STATUS_CANCELED))))
+			throw new TAPException(ErrID.APPO_2);
+
+		if (app.getStart().isBefore(Util.zonedNow().plusMinutes(minTBS)))
+			throw new TAPException(ErrID.APPO_3, null, Map.of("min", String.valueOf(minTBS)));
+
+		AppointmentStatus newStatus = appointmentRepository.getEntityBy(AppointmentStatus.class, "name", statusName);
+		app.setAppointmentstatus(newStatus);
+		app.setStatusComment(statusComment);
+
+		return Response.ok().build();
+	}
+
+	@GET
 	@Path("/my-appointments")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
@@ -60,44 +106,8 @@ public class AppointmentService {
 		return appointmentRepository.getUserAppointments(userId, filter.isEmpty() || filter.equals("history"));
 	}
 
-	@POST
-	@Path("/my-appointments/cancel")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured({Role.USER})
-	public Response cancelAppointment(JsonObject params) {
-
-		List<Long> aIds = params.getJsonArray("appIds")
-				.stream()
-				.mapToLong(s -> Long.parseLong(s.toString()))
-				.boxed()
-				.toList();
-
-		boolean success = appointmentRepository.cancelAppointments(aIds);
-
-		return Response.ok(success).build();
-	}
-
-	@POST
-	@Path("/my-appointments/rebook")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured({Role.USER})
-	public Response rebookAppointment(JsonObject params) {
-
-		List<Long> aIds = params.getJsonArray("appIds")
-				.stream()
-				.mapToLong(s -> Long.parseLong(s.toString()))
-				.boxed()
-				.toList();
-
-		boolean success = appointmentRepository.rebookAppointments(aIds);
-
-		return Response.ok(success).build();
-	}
-
 	@GET
-	@Path("free")
+	@Path("/list-free")
 	@Public
 	@Produces(MediaType.APPLICATION_JSON)
 	public Map<String, Object> getFreeAppointments(
@@ -167,6 +177,7 @@ public class AppointmentService {
 
 		AppointmentStatus aS = appointmentRepository.getEntityBy(AppointmentStatus.class, "name", Statics.A_STATUS_WAITING);
 		User u = appointmentRepository.getSingleActiveEntityById(User.class, userId);
+		LocalDateTime now = Util.zonedNow();
 		app.getServices().sort(Comparator.comparing(FreeAppointment.Service::getTime));
 
 		for (FreeAppointment.Service ser : app.getServices()) {
@@ -187,11 +198,11 @@ public class AppointmentService {
 			fApp.setService(s);
 			fApp.setUser(u);
 			fApp.setUser2(u);
-			fApp.setCreateDate(LocalDateTime.now(Util.zone()));
+			fApp.setCreatedAt(now);
 			if (app.getServices().size() > 1)
 				fApp.setJoinId(ser.getJoinId());
-
 			appointmentRepository.getEntityManager().persist(fApp);
+
 		}
 
 		return Response.ok().build();

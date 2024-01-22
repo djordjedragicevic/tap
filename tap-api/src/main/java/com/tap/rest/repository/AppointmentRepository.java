@@ -4,6 +4,7 @@ import com.tap.appointments.FreeAppointment;
 import com.tap.appointments.Utils;
 import com.tap.common.Statics;
 import com.tap.common.Util;
+import com.tap.rest.dto.AppointmentDto;
 import com.tap.rest.dtor.AppointmentDtoSimple;
 import com.tap.rest.entity.*;
 import com.tap.exception.ErrID;
@@ -95,7 +96,7 @@ public class AppointmentRepository extends CommonRepository {
 				fApp.setService(s);
 				fApp.setUser(u);
 				fApp.setUser2(u);
-				fApp.setCreateDate(LocalDateTime.now(Util.zone()));
+				fApp.setCreatedAt(LocalDateTime.now(Util.zone()));
 				if (app.getServices().size() > 1)
 					fApp.setJoinId(ser.getJoinId());
 
@@ -190,6 +191,31 @@ public class AppointmentRepository extends CommonRepository {
 		));
 	}
 
+	public Map<String, Object> getAppointmentById(Long id) {
+
+
+		String[] fields = new String[]{
+				"a.id", "a.start", "a.end",
+				"a.appointmentstatus.name AS status",
+				"a.statusComment",
+				"a.service.id", "a.service.name", "a.service.price", "a.service.duration",
+				"a.employee.id", "a.employee.name"
+		};
+
+		String query = """
+				SELECT %s
+				FROM Appointment a
+				WHERE a.id = :id
+				""";
+
+		Object[] res = this.getEntityManager().createQuery(String.format(query, String.join(",", fields)), Object[].class)
+				.setParameter("id", id).
+				getSingleResult();
+
+		return Util.convertToMap(res, Set.of("a"), fields);
+
+	}
+
 
 	public List<Appointment> getAppointmentsById(List<Long> aIds) {
 
@@ -202,7 +228,7 @@ public class AppointmentRepository extends CommonRepository {
 
 	private static final String APP_PRE_QUERY = """
 			SELECT new com.tap.rest.dtor.AppointmentDtoSimple(
-			a.id, a.start, a.end, a.userName,
+			a.id, a.start, a.end,
 			pt.name,
 			u.id, u.username, u.email,
 			s.id, s.name, s.price, s.duration,

@@ -59,7 +59,7 @@ const TabAbout = ({ data = {}, navigation }) => {
 	const styles = useThemedStyle(styleCreator);
 
 	const wPs = useMemo(() => mapWorkPeriods(data.workPeriods), [data?.workPeriods]);
-	const [cGreen] = useColor(['primary', 'greenLight']);
+	const [cGreen, cRed] = useColor(['green', 'red']);
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
@@ -127,10 +127,10 @@ const TabAbout = ({ data = {}, navigation }) => {
 						const [isDay, isWork] = isOpened(day, wPs[day]);
 						return (
 							<View key={day}>
-								<View style={[styles.dayRow, isDay && styles.dayRowCurrent]}>
+								<View style={[styles.dayRow, isDay && styles.dayRowCurrent, isDay && (isWork ? styles.currentDayOpened : styles.currentDayClosed)]}>
 									<View style={styles.dayRowDay}>
 										<View style={styles.dayDotCnt}>
-											{isDay && <View style={[styles.dayDot, { backgroundColor: isWork ? 'hsl(120, 100%, 80%)' : 'red' }]} />}
+											{isDay && <View style={[styles.dayDot, { backgroundColor: isWork ? cGreen : cRed }]} />}
 										</View>
 
 										<XText>{t(DateUtils.WEEK_DAY[day - 1])}</XText>
@@ -186,9 +186,18 @@ const styleCreator = (theme) => StyleSheet.create({
 		borderColor: theme.colors.borderColor
 	},
 	dayRowCurrent: {
-		borderColor: theme.colors.primary,
-		backgroundColor: theme.colors.primaryLight
+		//borderColor: theme.colors.primary,
+		//backgroundColor: theme.colors.primaryLight
 
+	},
+	currentDayClosed: {
+		borderColor: theme.colors.red,
+		backgroundColor: Theme.opacity(theme.colors.redLight, 0.7)
+
+	},
+	currentDayOpened: {
+		borderColor: theme.colors.green,
+		backgroundColor: Theme.opacity(theme.colors.greenLight, 0.7)
 	},
 	dayRowDay: {
 		flexDirection: 'row',

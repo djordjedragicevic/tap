@@ -3,7 +3,9 @@ package com.tap.exception;
 public enum ErrID {
 	TAP_0, //General error
 	TAP_1, //Access denied
-	APPO_1,
+	APPO_1, //Book appointment
+	APPO_2, //Change status
+	APPO_3, //Change status, times up
 	PROV_1,
 
 	//Create/Edit account
@@ -21,6 +23,8 @@ public enum ErrID {
 
 	//Invalid data
 	INV_EMAIL_1,
+
+	U_APP_ST_1, //Change appointment status
 
 
 	//Accept appointment

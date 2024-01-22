@@ -46,9 +46,18 @@ export const groupServices = (sers) => {
 	};
 };
 
-export const STATUS = {
+export const APP_STATUS = {
 	WAITING: 'WAITING',
 	ACCEPTED: 'ACCEPTED',
 	REJECTED: 'REJECTED',
-	CANCELED: 'CANCELED'
+	CANCELED: 'CANCELED',
+	DROPPED: 'DROPPED'
+};
+
+export const APP_STATUS_ICON = {
+	WAITING: 'hourglass',
+	ACCEPTED: 'checkcircle',
+	REJECTED: 'closecircle',
+	CANCELED: 'close',
+	DROPPED: 'arrowdown'
 };

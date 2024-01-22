@@ -38,16 +38,20 @@ public class Util {
 		List<Map<String, Object>> listOfMap = new ArrayList<>();
 
 		for (Object[] r : data)
-			listOfMap.add(generateMapForConversion(r, keys, new LinkedHashMap<>()));
+			listOfMap.add(generateMapForConversion(r, keys, new LinkedHashMap<>(), null));
 
 		return listOfMap;
 	}
 
 	public static Map<String, Object> convertToMap(Object[] r, String... keys) {
-		return generateMapForConversion(r, Arrays.asList(keys), new LinkedHashMap<>());
+		return generateMapForConversion(r, Arrays.asList(keys), new LinkedHashMap<>(), null);
 	}
 
-	private static Map<String, Object> generateMapForConversion(Object[] r, List<Object> keys, Map<String, Object> map) {
+	public static Map<String, Object> convertToMap(Object[] r, Set<String> escape, String... keys) {
+		return generateMapForConversion(r, Arrays.asList(keys), new LinkedHashMap<>(), escape);
+	}
+
+	private static Map<String, Object> generateMapForConversion(Object[] r, List<Object> keys, Map<String, Object> map, Set<String> escape) {
 
 		if (r == null || r.length == 0)
 			return map;
@@ -60,24 +64,32 @@ public class Util {
 		List<Object> subK;
 		String[] keyPath;
 		String key;
+		String[] asSplit;
 
 		for (int i = 0, s = keys.size(); i < s; i++) {
 			if (r[i] == null)
 				continue;
 			tmpK = keys.get(i);
+			if (tmpK.toString().contains(" AS ")) {
+				asSplit = tmpK.toString().split("AS");
+				tmpK = asSplit[asSplit.length - 1].trim();
+			}
 
 			if (tmpK instanceof List<?>) {
 				lK = (List<Object>) tmpK;
 				subR = Arrays.copyOfRange(r, i, i + lK.size() - 1);
 				subK = lK.subList(1, lK.size());
-				map.put(lK.get(0).toString(), generateMapForConversion(subR, subK, new LinkedHashMap<>()));
+				map.put(lK.get(0).toString(), generateMapForConversion(subR, subK, new LinkedHashMap<>(), escape));
 			} else if (tmpK.toString().contains(".")) {
 				keyPath = tmpK.toString().split("\\.");
 				key = keyPath[keyPath.length - 1];
 
 				tmpV = map;
-				for (int kI = 0; kI < keyPath.length - 1; kI++)
+				for (int kI = 0; kI < keyPath.length - 1; kI++) {
+					if (escape != null && !escape.isEmpty() && escape.contains(keyPath[kI]))
+						continue;
 					tmpV = (Map<String, Object>) tmpV.computeIfAbsent(keyPath[kI], k -> new LinkedHashMap<String, Object>());
+				}
 
 				tmpV.put(key, r[i]);
 

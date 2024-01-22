@@ -7,5 +7,23 @@ export const strings = {
 	"Delete item_MSG": "Are you surre you want to to delete item?",
 	"Edit": "Edit",
 	"Add": "Add",
-	"Withdraw": "Withdraw"
+	"Withdraw": "Withdraw",
+	"From": "From",
+	"To": "To",
+	//-----------------------
+
+	"Canceled": "Canceled",
+	"Waiting": "Waiting",
+	"Rejected": "Rejected",
+	"Accepted": "Accepted",
+	"Dropped": "Dropped",
+	"CANCELED": "CANCELED",
+	"WAITING": "WAITING",
+	"REJECTED": "REJECTED",
+	"ACCEPTED": "ACCEPTED",
+	"DROPPED": "DROPPED",
+
+	"Service": "Service",
+	"Price": "Price",
+	"Status": "Status"
 };

@@ -5,13 +5,13 @@ package com.tap.rest.dto;
 import java.time.LocalDateTime;
 public class AppointmentDto {	
 	private Long id;
+	private String joinId;
 	private LocalDateTime start;
 	private LocalDateTime end;
-	private String userName;
-	private LocalDateTime createDate;
-	private String joinId;
-	private LocalDateTime statusResponseDate;
+	private LocalDateTime createdAt;
 	private String comment;
+	private String statusComment;
+	private LocalDateTime statusUpdatedAt;
 	private AppointmentStatusDto appointmentstatus; 
 	private EmployeeDto employee; 
 	private PeriodTypeDto periodtype; 
@@ -27,6 +27,15 @@ public class AppointmentDto {
 
 	public Long getId() {
 		return this.id;
+	}
+
+	public AppointmentDto setJoinId( String joinId ) {
+		this.joinId = joinId;
+		return this;
+	}
+
+	public String getJoinId() {
+		return this.joinId;
 	}
 
 	public AppointmentDto setStart( LocalDateTime start ) {
@@ -47,40 +56,13 @@ public class AppointmentDto {
 		return this.end;
 	}
 
-	public AppointmentDto setUserName( String userName ) {
-		this.userName = userName;
+	public AppointmentDto setCreatedAt( LocalDateTime createdAt ) {
+		this.createdAt = createdAt;
 		return this;
 	}
 
-	public String getUserName() {
-		return this.userName;
-	}
-
-	public AppointmentDto setCreateDate( LocalDateTime createDate ) {
-		this.createDate = createDate;
-		return this;
-	}
-
-	public LocalDateTime getCreateDate() {
-		return this.createDate;
-	}
-
-	public AppointmentDto setJoinId( String joinId ) {
-		this.joinId = joinId;
-		return this;
-	}
-
-	public String getJoinId() {
-		return this.joinId;
-	}
-
-	public AppointmentDto setStatusResponseDate( LocalDateTime statusResponseDate ) {
-		this.statusResponseDate = statusResponseDate;
-		return this;
-	}
-
-	public LocalDateTime getStatusResponseDate() {
-		return this.statusResponseDate;
+	public LocalDateTime getCreatedAt() {
+		return this.createdAt;
 	}
 
 	public AppointmentDto setComment( String comment ) {
@@ -90,6 +72,24 @@ public class AppointmentDto {
 
 	public String getComment() {
 		return this.comment;
+	}
+
+	public AppointmentDto setStatusComment( String statusComment ) {
+		this.statusComment = statusComment;
+		return this;
+	}
+
+	public String getStatusComment() {
+		return this.statusComment;
+	}
+
+	public AppointmentDto setStatusUpdatedAt( LocalDateTime statusUpdatedAt ) {
+		this.statusUpdatedAt = statusUpdatedAt;
+		return this;
+	}
+
+	public LocalDateTime getStatusUpdatedAt() {
+		return this.statusUpdatedAt;
 	}
 
 	public AppointmentStatusDto getAppointmentstatus() {

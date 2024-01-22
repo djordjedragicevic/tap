@@ -2,19 +2,22 @@ import XScreen from "xapp/src/components/XScreen";
 import XText from "xapp/src/components/basic/XText";
 import { useCallback, useMemo, useState } from "react";
 import { Http } from "xapp/src/common/Http";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useDateCode, useTranslation } from "xapp/src/i18n/I18nContext";
 import XButton from "xapp/src/components/basic/XButton";
 import { Theme } from "xapp/src/style/themes";
 import XSegmentedButton from "xapp/src/components/basic/XSegmentedButton";
-import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import { useColor, usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { useFocusEffect } from '@react-navigation/native';
 import { DateUtils, emptyFn } from "xapp/src/common/utils";
 import XImage from "xapp/src/components/basic/XImage";
 import XSeparator from "xapp/src/components/basic/XSeparator";
-import { STATUS } from "xapp/src/common/general";
 import XEmptyListIcon from "xapp/src/components/XEmptyListIcon";
 import XIcon from "xapp/src/components/basic/XIcon";
+import XChip from "xapp/src/components/basic/XChip";
+import { APPOINTMENT_STATUS_SCREEN } from "../navigators/routes";
+import { APP_STATUS } from "xapp/src/common/general";
+import { STATUS_COLOR } from "../common/general";
 
 const arrangeData = (data, dateCode) => {
 
@@ -23,70 +26,30 @@ const arrangeData = (data, dateCode) => {
 
 	for (const a of data) {
 		//newData.push([a]);
-		a.allAccepted = a.status === STATUS.ACCEPTED;
-		a.allRejected = a.status === STATUS.REJECTED;
-
 		if (a.joinId == null) {
 			newData.push([a]);
 		}
 		else if (!g[a.joinId]) {
 			g[a.joinId] = [a];
-			a.allAccepted = a.status === STATUS.ACCEPTED;
-			a.allRejected = a.status === STATUS.REJECTED;
 			newData.push(g[a.joinId]);
 		}
 		else {
 			g[a.joinId].push(a);
-			if (a.status !== STATUS.ACCEPTED && g[a.joinId][0].allAccepted)
-				g[a.joinId][0].allAccepted = false;
-			if (a.status !== STATUS.REJECTED && g[a.joinId][0].allRejected)
-				g[a.joinId][0].allRejected = false;
 		}
 	}
-
 
 	newData.forEach(a => {
 		const sD = new Date(a[0].start);
 		const eD = new Date(a[a.length - 1].end);
 		a[0].startTime = sD.toLocaleDateString(dateCode, { day: 'numeric', month: 'short', year: 'numeric' })
 			+ ' - '
-			+ sD.toLocaleTimeString(dateCode, { hour: '2-digit', minute: '2-digit', hour12: false })
-			+ '  '
-			+ eD.toLocaleTimeString(dateCode, { hour: '2-digit', minute: '2-digit', hour12: false });
-
-		a[0].gropuStatus = STATUS.WAITING;
-
-		if (a[0].allAccepted)
-			a[0].gropuStatus = STATUS.ACCEPTED;
-
-		if (a[0].allRejected)
-			a[0].gropuStatus = STATUS.REJECTED;
+			+ sD.toLocaleTimeString(dateCode, { hour: '2-digit', minute: '2-digit', hour12: false });
 
 	});
 
 	return newData;
 };
 
-const STATUS_TEXT = {
-	WAITING: 'Waiting',
-	CANCELED: 'Canceled',
-	ACCEPTED: 'Accepted',
-	REJECTED: 'Rejected'
-};
-
-const ICON = {
-	WAITING: 'hourglass',
-	CANCELED: 'closecircleo',
-	ACCEPTED: 'checkcircle',
-	REJECTED: 'closecircle'
-};
-
-const COLORS = {
-	WAITING: Theme.vars.yellow,
-	CANCELED: Theme.vars.blue,
-	ACCEPTED: Theme.vars.green,
-	REJECTED: Theme.vars.red
-};
 
 const getStatus = (apps) => {
 	if (!Array.isArray(apps))
@@ -103,52 +66,28 @@ const getStatus = (apps) => {
 };
 
 
-const ServiceRowButton = ({ item, statusColor }) => {
+const ServiceRow = ({ item, navigation }) => {
+
+	const statusColor = useColor(STATUS_COLOR[item.status]);
 	const t = useTranslation();
-	const [title, colorN] = useMemo(() => {
-		let ti = '';
-		let cN = '';
-
-		if (item[0].allAccepted) {
-			ti = 'Reject';
-			cN = Theme.vars.red;
-		}
-		else if (item[0].allRejected)
-			ti = STATUS_TEXT.REJECTED;
-		else
-			ti = 'Withdraw';
-
-		return [ti, cN];
-	}, [item]);
-
-	if (item[0].gropuStatus === STATUS.REJECTED)
-		return null;
-
-
-	return (
-		<XButton
-			colorName={colorN}
-			small
-			secondary
-			style={{ width: 100 }}
-			uppercase={false}
-			title={t(title)}
-		/>
-	)
-};
-
-const ServiceRow = ({ item }) => {
-
-	const statusColor = useColor(COLORS[item.status]);
-	const t = useTranslation();
+	const pColor = useColor('textSecondary');
 
 	return (
 
-		<View style={{ flexDirection: 'row', alignItems: 'center', paddingEnd: 5, minHeight: 35 }}>
+		<TouchableOpacity
+			style={{
+				flexDirection: 'row',
+				alignItems: 'center',
+				minHeight: 37,
+				borderWidth: 0,
+				opacity: item.status === APP_STATUS.DROPPED || item.status === APP_STATUS.CANCELED ? 1 : 1
+			}}
+			onPress={() => navigation.navigate(APPOINTMENT_STATUS_SCREEN, { id: item.id })}
+		>
 
 			<View style={{ width: 5, height: '100%', backgroundColor: statusColor, borderRadius: 50, marginEnd: 5 }} />
 
-			<View style={{ minWidth: 45, alignItems: 'center' }}>
+			<View style={{ minWidth: 42, alignItems: 'center' }}>
 				<XText secondary>{DateUtils.getTimeFromDateTimeString(item.start)}</XText>
 			</View>
 
@@ -158,19 +97,25 @@ const ServiceRow = ({ item }) => {
 
 
 			{/* <XChip
-						style={{ width: 110 }}
-						text={t(STATUS_TEXT[item.status])}
-						color={COLORS[item.status]}
-					// icon={<XIcon icon={ICON[item.status]} color={COLORS[item.status]} size={15} />}
-					/> */}
+				style={{ width: 110 }}
+				text={t(STATUS_TEXT[item.status])}
+				color={COLORS[item.status]}
+				// icon={<XIcon icon={ICON[item.status]} color={COLORS[item.status]} size={15} />}
+			/> */}
 
-			<XText secondary>{item.employee.name}</XText>
-		</View>
+			<View style={{ paddingHorizontal: 5 }}>
+				<XText secondary>{item.employee.name}</XText>
+			</View>
+
+			<XIcon icon='right' size={12} color={pColor} />
+
+		</TouchableOpacity>
+
 	)
 };
 
 
-const AppointmentGroup = ({ item }) => {
+const AppointmentGroup = ({ item, navigation }) => {
 
 	const styles = useThemedStyle(styleCreator);
 
@@ -208,7 +153,7 @@ const AppointmentGroup = ({ item }) => {
 			{/* <XSeparator margin={5} style={{ marginVertical: 5 }} /> */}
 
 			<View style={styles.appCnt}>
-				{item.map(app => <ServiceRow key={app.id} item={app} />)}
+				{item.map(app => <ServiceRow navigation={navigation} key={app.id} item={app} />)}
 			</View>
 
 
@@ -228,7 +173,7 @@ const AppointmentGroup = ({ item }) => {
 
 
 
-const MyAppointmentsScreen = () => {
+const MyAppointmentsScreen = ({ navigation }) => {
 
 	const [filter, setFilter] = useState('coming');
 	const [refresh, setRefresh] = useState(1);
@@ -253,14 +198,13 @@ const MyAppointmentsScreen = () => {
 	useFocusEffect(loadApps);
 
 
-	const itemRenderer = useCallback(({ item }) => <AppointmentGroup item={item} />, []);
-
+	const itemRenderer = useCallback(({ item }) => <AppointmentGroup item={item} navigation={navigation} />, [navigation]);
 
 	return (
 		<XScreen loading={loading} flat>
 			<XSegmentedButton
 				options={[
-					{ id: 1, text: t('Upcoming'), value: 'commint' },
+					{ id: 1, text: t('Upcoming'), value: 'comming' },
 					{ id: 2, text: t('History'), value: 'history' }
 				]}
 				onSelect={(o) => setFilter(o.value)}
@@ -310,7 +254,7 @@ const styleCreator = (theme) => StyleSheet.create({
 		height: 40
 	},
 	appCnt: {
-		rowGap: 3,
+		rowGap: 5,
 		//paddingHorizontal: 5,
 		paddingVertical: 10
 	},

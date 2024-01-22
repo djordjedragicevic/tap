@@ -9,6 +9,7 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import jakarta.json.bind.annotation.JsonbTransient;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="appointment", catalog="tap" )
@@ -21,26 +22,26 @@ public class Appointment implements Serializable {
     @Column(name="id", nullable=false)
 	private long id;
 
+    @Column(name="join_id", length=65535)
+	private String joinId;
+
     @Column(name="start", nullable=false)
 	private LocalDateTime start;
 
     @Column(name="end", nullable=false)
 	private LocalDateTime end;
 
-    @Column(name="user_name", length=32)
-	private String userName;
-
-    @Column(name="create_date", nullable=false)
-	private LocalDateTime createDate;
-
-    @Column(name="join_id", length=65535)
-	private String joinId;
-
-    @Column(name="status_response_date")
-	private LocalDateTime statusResponseDate;
+    @Column(name="created_at", nullable=false)
+	private LocalDateTime createdAt;
 
     @Column(name="comment", length=65535)
 	private String comment;
+
+    @Column(name="status_comment", length=65535)
+	private String statusComment;
+
+    @Column(name="status_updated_at")
+	private LocalDateTime statusUpdatedAt;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -67,6 +68,10 @@ public class Appointment implements Serializable {
     @JoinColumn(name="created_by_id", referencedColumnName="id")
 	private User user2; 
 
+    @OneToMany(mappedBy="appointment")
+	@JsonbTransient
+	private List<StatusHistory> statushistoryList; 
+
 	public Appointment() {
 		super();
 	}
@@ -77,6 +82,14 @@ public class Appointment implements Serializable {
 
 	public long getId() {
 		return this.id;
+	}
+
+	public void setJoinId( String joinId ) {
+		this.joinId = joinId;
+	}
+
+	public String getJoinId() {
+		return this.joinId;
 	}
 
 	public void setStart( LocalDateTime start ) {
@@ -95,36 +108,12 @@ public class Appointment implements Serializable {
 		return this.end;
 	}
 
-	public void setUserName( String userName ) {
-		this.userName = userName;
+	public void setCreatedAt( LocalDateTime createdAt ) {
+		this.createdAt = createdAt;
 	}
 
-	public String getUserName() {
-		return this.userName;
-	}
-
-	public void setCreateDate( LocalDateTime createDate ) {
-		this.createDate = createDate;
-	}
-
-	public LocalDateTime getCreateDate() {
-		return this.createDate;
-	}
-
-	public void setJoinId( String joinId ) {
-		this.joinId = joinId;
-	}
-
-	public String getJoinId() {
-		return this.joinId;
-	}
-
-	public void setStatusResponseDate( LocalDateTime statusResponseDate ) {
-		this.statusResponseDate = statusResponseDate;
-	}
-
-	public LocalDateTime getStatusResponseDate() {
-		return this.statusResponseDate;
+	public LocalDateTime getCreatedAt() {
+		return this.createdAt;
 	}
 
 	public void setComment( String comment ) {
@@ -133,6 +122,22 @@ public class Appointment implements Serializable {
 
 	public String getComment() {
 		return this.comment;
+	}
+
+	public void setStatusComment( String statusComment ) {
+		this.statusComment = statusComment;
+	}
+
+	public String getStatusComment() {
+		return this.statusComment;
+	}
+
+	public void setStatusUpdatedAt( LocalDateTime statusUpdatedAt ) {
+		this.statusUpdatedAt = statusUpdatedAt;
+	}
+
+	public LocalDateTime getStatusUpdatedAt() {
+		return this.statusUpdatedAt;
 	}
 
 	public AppointmentStatus getAppointmentstatus() {
@@ -176,5 +181,12 @@ public class Appointment implements Serializable {
 	
 	public void setUser2(User user2) {
 		this.user2 = user2;
+	}
+	public List<StatusHistory> getStatushistoryList() {
+		return this.statushistoryList;
+	}
+	
+	public void setStatushistoryList(List<StatusHistory> statushistoryList) {
+		this.statushistoryList = statushistoryList;
 	}
 }

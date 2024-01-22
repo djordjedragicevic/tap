@@ -3,6 +3,14 @@ export const errors = {
 		title: 'Book appointment error',
 		message: 'Requested time for appointment is not free anymore'
 	},
+	APPO_2: {
+		title: 'Change appointment status error',
+		message: 'It is not possible to change appointment status'
+	},
+	APPO_3: {
+		title: 'Change appointment status error',
+		message: 'Time to changing status has expired. The minimum time to change an status is {:min} minutes before the start of the appointment'
+	},
 	PROV_1: {
 		title: 'Load provider error',
 		message: 'It is not possible to load provider information'

@@ -225,11 +225,10 @@ public class BAppointmentsService {
 			a.setPeriodtype(periodType);
 			a.setService(s);
 			a.setEmployee(employee);
-			a.setCreateDate(Util.zonedNow());
+			a.setCreatedAt(Util.zonedNow());
 			a.setUser2(employee.getUser());
 			a.setAppointmentstatus(status);
 			a.setJoinId(joinId);
-			a.setStatusResponseDate(a.getCreateDate());
 			a.setComment(comment);
 
 			providerRepository.getEntityManager().persist(a);

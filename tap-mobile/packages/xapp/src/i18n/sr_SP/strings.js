@@ -7,5 +7,23 @@ export const strings = {
 	"Delete item_MSG": "Da li ste sigurni da želite da obrišete stavku?",
 	"Edit": "Izmjeni",
 	"Add": "Dodaj",
-	"Withdraw": "Odustani"
+	"Withdraw": "Odustani",
+	"From": "Od",
+	"To": "Do",
+	//-------------------
+
+	"Canceled": "Otkazano",
+	"Waiting": "Čeka se",
+	"Rejected": "Odbijeno",
+	"Accepted": "Prihvaćeno",
+	"Dropped": "Odustao",
+	"CANCELED": "OTKAZANO",
+	"WAITING": "ČEKA SE",
+	"REJECTED": "ODBIJENO",
+	"ACCEPTED": "PRIHVAĆENO",
+	"DROPPED": "ODUSTAO",
+
+	"Service": "Usluga",
+	"Price": "Cijena",
+	"Status": "Status"
 };

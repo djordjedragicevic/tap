@@ -48,7 +48,7 @@ const UserSettingsScreen = ({ navigation }) => {
 	const pLColor = useColor('secondary');
 	return (
 		<XScreen flat scroll>
-			<View style={{ height: 200, justifyContent: 'center', alignItems: 'center', rowGap: 15, backgroundColor: pLColor }}>
+			<View style={{ height: 220, justifyContent: 'space-around', alignItems: 'center', backgroundColor: pLColor, padding: 10 }}>
 				{
 					isLogged ?
 						<>
@@ -58,26 +58,27 @@ const UserSettingsScreen = ({ navigation }) => {
 								size={82}
 							/>
 							<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-								{/* <XText secondary style={{ color: 'lightgreen' }}>{roles.join(', ')}</XText> */}
 								<XText light size={16}>{username}</XText>
 								<XText light size={16}>{email}</XText>
 							</View>
 						</>
 						:
 						<>
-							<XButtonIcon
-								icon='login'
-								size={50}
-								primary
-							/>
-							<XText
-								light
-								style={{ textAlign: 'center' }}
-							>
-								{'Sing in or create accoutn to manage your appointments, and more'}
-							</XText>
+							<View style={{ alignItems: 'center', rowGap: 5 }}>
+								<XButtonIcon
+									icon='login'
+									size={50}
+									primary
+								/>
+								<XText
+									light
+									style={{ textAlign: 'center' }}
+								>
+									{t('Sing in or create accoutn to manage your appointments, and more')}
+								</XText>
+							</View>
 							<XButton
-								title={'Sing In'}
+								title={t('Sing In')}
 								primary
 								onPress={() => navigation.navigate(LOGIN_SCREEN)}
 							/>

@@ -85,20 +85,14 @@ export const strings = {
 	"Book again": "Book again",
 	"rebook_appointment_msg": "Are you sure you want to re-book appointment?",
 	"No appointments": "No appointments",
-
-	"Canceled": "Canceled",
-	"Waiting": "Waiting",
-	"Rejected": "Rejected",
-	"Accepted": "Accepted",
-	"CANCELED": "CANCELED",
-	"WAITING": "WAITING",
-	"REJECTED": "REJECTED",
-	"ACCEPTED": "ACCEPTED",
+	"Sing in or create accoutn to manage your appointments, and more": 'Sing in or create accoutn to manage your appointments, and more',
 
 	"Account": "Account",
 	"Personal information": "Personal information",
 	"Go to login screen": "Go to login screen",
 	"Map": "Map",
 	"services": "services",
-	"Address": "Address"
+	"Address": "Address",
+	"Appointment": "Appointmnet",
+	"Comment": "Comment"
 };

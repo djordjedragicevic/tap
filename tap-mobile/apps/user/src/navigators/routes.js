@@ -5,6 +5,7 @@ export const FAVORITE_PROVIDERS_SCREEN = 'FavoriteProvidersScreen';
 export const MANAGE_ACCOUNT_SCREEN = 'ManageAccountScreen';
 export const FREE_APPOINTMENTS_SCREEN = 'FreeAppoinmentsScreen';
 export const BOOK_APPOINTMENT_SCREEN = 'BookAppointmentScreen';
+export const APPOINTMENT_STATUS_SCREEN = 'AppointmentStatusScreen';
 export const MAP_SCREEN = 'MapScreen';
 
 export const MAIN_TAB_HOME = 'MainTabHome';

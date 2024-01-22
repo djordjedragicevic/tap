@@ -4,8 +4,12 @@ export const errors = {
 		message: 'Vrijeme za traženi termin više nije dostupno'
 	},
 	APPO_2: {
-		title: '',
-		message: ''
+		title: 'Greška pri promjeni statusa',
+		message: 'Nije moguće promijeniti status termina'
+	},
+	APPO_3: {
+		title: 'Greška pri promjeni statusa',
+		message: 'Vrijeme za promjenu termina je isteklo. Minimalno vrijeme za promjenu statusa je {:min} minuta prije početka termina.'
 	},
 	PROV_1: {
 		title: 'Greška učitavanja davaoca usluga',

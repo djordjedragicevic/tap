@@ -21,6 +21,8 @@ export const Theme = {
 		purpleLight: 'purpleLight',
 		gray: 'gray',
 		grayLight: 'grayLight',
+		brown: 'brown',
+		brownLight: 'brown',
 
 		primary: 'primary',
 		primaryLight: 'primaryLight',
@@ -77,7 +79,10 @@ export const Theme = {
 			blueLight: 'hsl(225, 100%, 95%)',
 
 			purple: 'hsl(330, 100%, 30%)',
-			purpleLight: 'hsl(330, 100%, 95%)'
+			purpleLight: 'hsl(330, 100%, 95%)',
+
+			brown: 'hsl(25, 76%, 31%)',
+			brownLight: 'hsl(25, 76%, 95%)'
 		}
 	},
 
@@ -118,7 +123,10 @@ export const Theme = {
 			blueLight: 'hsl(225, 100%, 95%)',
 
 			purple: 'hsl(330, 100%, 30%)',
-			purpleLight: 'hsl(330, 100%, 95%)'
+			purpleLight: 'hsl(330, 100%, 95%)',
+
+			brown: 'hsl(25, 76%, 31%)',
+			brownLight: 'hsl(25, 76%, 95%)'
 		}
 	},
 	opacity: (color, v) => {

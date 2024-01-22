@@ -83,21 +83,15 @@ export const strings = {
 	"Rebook": "Ponovo rezerviši",
 	"rebook_appointment_msg": "Da li ste sigurni da želite ponovo zakazati rezervaciju?",
 	"No appointments": "Nema termina",
-
-	"Canceled": "Otkazano",
-	"Waiting": "Čeka se",
-	"Rejected": "Odbijeno",
-	"Accepted": "Prihvaćeno",
-	"CANCELED": "OTKAZANO",
-	"WAITING": "ČEKA SE",
-	"REJECTED": "ODBIJENO",
-	"ACCEPTED": "PRIHVAĆENO",
+	"Sing in or create accoutn to manage your appointments, and more": "Prijavi se ili kreiraj korisnički nalog da bi upravljao/la svojim terminima, i mnogo više od toga.",
 
 	"Account": "Nalog",
 	"Personal information": "Lični podaci",
 	"Go to login screen": "Idi na logovanje",
 	"Map": "Mapa",
 	"services": "servisa",
-	"Address": "Adresa"
+	"Address": "Adresa",
+	"Appointment": "Termin",
+	"Comment": "Komentar"
 
 };

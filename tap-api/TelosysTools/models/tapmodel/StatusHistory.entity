@@ -1,0 +1,13 @@
+@DbTable(status_history)
+@DbCatalog(tap)
+StatusHistory {
+  // attributes
+  id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
+  appointmentId : long { @DbName(appointment_id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty @FK(fk_status_history_appointment1, Appointment.id) };
+  appointmentStatusId : int { @DbName(appointment_status_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_status_history_appointment_status1, AppointmentStatus.id) };
+  createdAt : timestamp { @DbName(created_at) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
+  comment : string { @DbName(comment) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
+  // links
+  appointment : Appointment { @LinkByFK(fk_status_history_appointment1) };
+  appointmentstatus : AppointmentStatus { @LinkByFK(fk_status_history_appointment_status1) };
+}

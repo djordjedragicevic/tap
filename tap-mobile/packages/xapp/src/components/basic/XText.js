@@ -29,6 +29,7 @@ const XText = ({
 	italic,
 	size,
 	color,
+	colorName,
 	bold,
 	icon,
 	rightIcon,
@@ -58,7 +59,7 @@ const XText = ({
 		italic,
 		size,
 		color,
-		colorName: textColor
+		colorName: colorName || textColor
 	});
 	const pColor = usePrimaryColor();
 
@@ -72,7 +73,7 @@ const XText = ({
 				{!!icon && <XIcon icon={icon} size={18} color={pColor} />}
 				<Text style={[styles.text, style]} adjustsFontSizeToFit={adjustsFontSizeToFit} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
 				{!!rightIcon && <XIcon icon={rightIcon} size={18} color={pColor} />}
-				
+
 			</View>
 		);
 };

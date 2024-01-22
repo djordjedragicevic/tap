@@ -40,7 +40,6 @@ const XTextLabels = ({
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		flexDirection: 'row',
 		columnGap: 10
 	},

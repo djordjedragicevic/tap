@@ -46,7 +46,7 @@ const FreeAppointmentsScreen = ({ navigation, route: { params: { services, provi
 
 		let finish = true;
 
-		Http.get('/appointment/free', {
+		Http.get('/appointment/list-free', {
 			s: services,
 			emps: services.map(s => selectedEmps[s]?.id || -1),
 			p: providerId,

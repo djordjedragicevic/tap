@@ -3,7 +3,9 @@
 AppointmentStatus {
   // attributes
   id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
-  name : string { @DbName(name) @DbType("VARCHAR(16)") @Size(16) @MaxLen(16) };
+  name : string { @DbName(name) @DbType("VARCHAR(16)") @NotNull @NotEmpty @Size(16) @MaxLen(16) };
+  userSide : boolean { @DbName(user_side) @DbType(BIT) @NotNull @NotEmpty };
   // links
   appointmentList : Appointment[];
+  statushistoryList : StatusHistory[];
 }
