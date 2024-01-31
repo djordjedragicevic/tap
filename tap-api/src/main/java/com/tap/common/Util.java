@@ -32,56 +32,70 @@ public class Util {
 	public static List<Map<String, Object>> convertToListOfMap(List<Object[]> data, String... keys) {
 		return convertToListOfMap(data, Arrays.asList(keys));
 	}
+	public static List<Map<String, Object>> convertToListOfMap(List<Object[]> data, List<String> keys) {
+		return convertToListOfMap(data, keys, null);
+	}
+	public static List<Map<String, Object>> convertToListOfMap(List<Object[]> data, List<String> keys, Set<String> escape) {
+		return convertToListOfMap(data, keys.toArray(String[]::new), escape);
+	}
+	public static List<Map<String, Object>> convertToListOfMap(List<Object[]> data, String[] keys,String escape) {
+		return convertToListOfMap(data,keys, Set.of(escape));
+	}
 
-	public static List<Map<String, Object>> convertToListOfMap(List<Object[]> data, List<Object> keys) {
+	public static List<Map<String, Object>> convertToListOfMap(List<Object[]> data, String[] keys, Set<String> escape) {
 
 		List<Map<String, Object>> listOfMap = new ArrayList<>();
 
 		for (Object[] r : data)
-			listOfMap.add(generateMapForConversion(r, keys, new LinkedHashMap<>(), null));
+			listOfMap.add(generateMapForConversion(r, keys, new LinkedHashMap<>(), escape));
 
 		return listOfMap;
 	}
 
 	public static Map<String, Object> convertToMap(Object[] r, String... keys) {
-		return generateMapForConversion(r, Arrays.asList(keys), new LinkedHashMap<>(), null);
+		return generateMapForConversion(r, keys, new LinkedHashMap<>(), null);
 	}
-
 	public static Map<String, Object> convertToMap(Object[] r, Set<String> escape, String... keys) {
-		return generateMapForConversion(r, Arrays.asList(keys), new LinkedHashMap<>(), escape);
+		return generateMapForConversion(r, keys, new LinkedHashMap<>(), escape);
+	}
+	public static Map<String, Object> convertToMap(Object[] r, String[] keys,String escape) {
+		return generateMapForConversion(r, keys, new LinkedHashMap<>(), Set.of(escape));
 	}
 
-	private static Map<String, Object> generateMapForConversion(Object[] r, List<Object> keys, Map<String, Object> map, Set<String> escape) {
+
+	private static Map<String, Object> generateMapForConversion(Object[] r, String[] keys, Map<String, Object> map, Set<String> escape) {
 
 		if (r == null || r.length == 0)
 			return map;
 
-		Object tmpK;
+		String tmpK;
 		Map<String, Object> tmpV;
 
-		List<Object> lK;
-		Object[] subR;
-		List<Object> subK;
+//		List<Object> lK;
+//		Object[] subR;
+//		List<Object> subK;
 		String[] keyPath;
 		String key;
 		String[] asSplit;
 
-		for (int i = 0, s = keys.size(); i < s; i++) {
+		for (int i = 0, s = keys.length; i < s; i++) {
 			if (r[i] == null)
 				continue;
-			tmpK = keys.get(i);
-			if (tmpK.toString().contains(" AS ")) {
-				asSplit = tmpK.toString().split("AS");
+			tmpK = keys[i];
+			if (tmpK.contains(" AS ")) {
+				asSplit = tmpK.split("AS");
 				tmpK = asSplit[asSplit.length - 1].trim();
 			}
 
-			if (tmpK instanceof List<?>) {
-				lK = (List<Object>) tmpK;
-				subR = Arrays.copyOfRange(r, i, i + lK.size() - 1);
-				subK = lK.subList(1, lK.size());
-				map.put(lK.get(0).toString(), generateMapForConversion(subR, subK, new LinkedHashMap<>(), escape));
-			} else if (tmpK.toString().contains(".")) {
-				keyPath = tmpK.toString().split("\\.");
+//			if (tmpK instanceof List<?>) {
+//				lK = (List<Object>) tmpK;
+//				subR = Arrays.copyOfRange(r, i, i + lK.size() - 1);
+//				subK = lK.subList(1, lK.size());
+//				map.put(lK.get(0).toString(), generateMapForConversion(subR, subK.toArray(String[]::new), new LinkedHashMap<>(), escape));
+//			}
+//			else
+			if (tmpK.contains(".")) {
+				keyPath = tmpK.split("\\.");
 				key = keyPath[keyPath.length - 1];
 
 				tmpV = map;
@@ -94,7 +108,7 @@ public class Util {
 				tmpV.put(key, r[i]);
 
 			} else {
-				map.put(tmpK.toString(), r[i]);
+				map.put(tmpK, r[i]);
 			}
 		}
 

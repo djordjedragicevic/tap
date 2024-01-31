@@ -10,6 +10,7 @@ export const strings = {
 	"Withdraw": "Odustani",
 	"From": "Od",
 	"To": "Do",
+	"No items": "Nema stavki",
 	//-------------------
 
 	"Canceled": "Otkazano",

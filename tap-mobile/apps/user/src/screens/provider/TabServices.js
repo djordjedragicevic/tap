@@ -168,6 +168,7 @@ const TabServices = ({
 					minItemWidth={90}
 					tabBarHMargin={5}
 					barHeight={38}
+					tabBarVMargin={10}
 				/>
 			}
 

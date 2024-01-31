@@ -17,12 +17,14 @@ const XScreen = ({
 	bigTitle = null,
 	keyboard = false,
 	bigSubTitle = null,
-	Footer
+	Footer,
+	rowGap = 0
 }) => {
 
 	const dynStyle = useMemo(() => {
 		const dS = {
-			flex: 1
+			flex: 1,
+			rowGap: rowGap
 		};
 		if (center) {
 			dS.alignItems = 'center';
@@ -35,7 +37,7 @@ const XScreen = ({
 				dS.marginBottom = marginTop;
 		}
 		return dS;
-	}, [center, flat, marginTop, scroll]);
+	}, [center, flat, marginTop, scroll, rowGap]);
 
 	const VCmp = scroll ? ScrollView : View;
 

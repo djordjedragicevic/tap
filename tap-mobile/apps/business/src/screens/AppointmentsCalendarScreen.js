@@ -14,7 +14,7 @@ import XBottomSheetModal from 'xapp/src/components/basic/XBottomSheetModal';
 import XToolbar from 'xapp/src/components/XToolbar';
 import XTextLabels from 'xapp/src/components/XTextLabels';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
-import { PERIOD, P_TYPE, getFrendlyName, isCustomPeriod, isWaitingAppointment } from '../common/general';
+import { PERIOD, getFrendlyName, isCustomPeriod, isWaitingAppointment } from '../common/general';
 import { APPOINTMENT_SCREEN, CUSTOM_PERIOD_SCREEN } from '../navigators/routes';
 import I18nT from 'xapp/src/i18n/i18n';
 import XButtonExtend from 'xapp/src/components/basic/XButtonExtend';

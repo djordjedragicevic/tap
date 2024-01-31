@@ -18,18 +18,12 @@ import XImage from "xapp/src/components/basic/XImage";
 import utils from "../common/utils";
 import TabAbout from "./provider/TabAbout";
 import TabServices from "./provider/TabServices";
+import TabReviews from "./provider/TabReviews";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import { CurrencyUtils, emptyFn } from "xapp/src/common/utils";
 import { useIsUserLogged } from "../store/concreteStores";
 import { handleUnauth } from "../common/general";
-
-const TabReviews = () => {
-	return (
-		<View flex={1} justifyContent='center' alignItems='center'>
-			<XText>Reviews</XText>
-		</View>
-	)
-};
+import { useFocusEffect } from "@react-navigation/native";
 
 const HEADER_IMAGE_HEIGHT = 230;
 const CNT_NEG_TOP_MARGIN = -20;
@@ -38,15 +32,23 @@ const CHIP_MARK_TOP_MARGIN = (Theme.values.chipHeight / 2 * -1) - CNT_NEG_TOP_MA
 const ProviderScreen = ({ navigation, route }) => {
 
 	const providerId = route.params.id;
-	const [{ mainImg, about }] = useHTTPGet(`/provider/${providerId}`, null, {}, true);
 
 	const t = useTranslation();
 	const styles = useThemedStyle(styleCreator)
 	const [pColor, sColor] = useColor(['primary', 'secondary']);
 
+	const [data, setData] = useState({
+		about: {
+			workPeriods: [],
+			employees: []
+		},
+		services: []
+	});
 	const [selectedIds, setSelectedIdxs] = useState([]);
 	const [priceSum, setPriceSum] = useState();
 	const [favoriteDisabled, setFavoriteDisabled] = useState(false);
+	const [loadCount, setLoadCount] = useState(1);
+
 	const userLoged = useIsUserLogged();
 
 	const userId = useStore(st => st.user.id);
@@ -56,6 +58,16 @@ const ProviderScreen = ({ navigation, route }) => {
 	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
 	const onFooterClear = useCallback(() => setSelectedIdxs([]), []);
 
+	const loadData = useCallback(() => {
+		setLoadCount(c => c + 1);
+		Http.get(`/provider/${providerId}`)
+			.then(resp => {
+				setData(resp);
+			})
+			.catch(emptyFn);
+	}, [providerId]);
+
+	useFocusEffect(loadData);
 
 	const onFPress = () => {
 		const newFavs = isFavorite ? fProviders.filter(pId => pId !== providerId) : [...(fProviders || []), providerId];
@@ -70,9 +82,9 @@ const ProviderScreen = ({ navigation, route }) => {
 		<>
 			<View style={{ height: HEADER_IMAGE_HEIGHT }}>
 				{
-					mainImg ?
+					data.about.mainImg ?
 						<XImage
-							imgPath={mainImg[0]}
+							imgPath={data.about.mainImg}
 							style={styles.headerImage}
 							contentFit="cover"
 						/>
@@ -100,23 +112,26 @@ const ProviderScreen = ({ navigation, route }) => {
 				/>
 
 				<View style={styles.chipMark}>
-					<XChip primary text={utils.generateMarkString(about?.mark, about?.reviewCount)} />
+					<XChip primary text={utils.generateMarkString(data.about.mark, data.about.reviewCount)} />
 				</View>
 			</View>
 
 			<View style={styles.content}>
 				{
-					!!about
+					!!data
 					&&
 					<>
 						<View style={styles.titleCnt}>
-							<XText oneLine bold size={18}>{about.name} - {about.type}</XText>
+							<XText oneLine bold size={18}>{data.about.name} - {data.about.providerType}</XText>
 						</View>
 
 						<XTabView style={styles.tabView} tabBarStyle={styles.tabBar}>
 
 							<XTabScreen title={t('About')} flex={1}>
-								<TabAbout data={about} navigation={navigation} />
+								<TabAbout
+									data={data.about}
+									navigation={navigation}
+								/>
 							</XTabScreen>
 
 							<XTabScreen title={t('Services')} flex={1}>
@@ -129,8 +144,12 @@ const ProviderScreen = ({ navigation, route }) => {
 								/>
 							</XTabScreen>
 
-							<XTabScreen title={t('Reviews')}>
-								<TabReviews />
+							<XTabScreen title={t('Review')} flex={1}>
+								<TabReviews
+									providerId={providerId}
+									navigation={navigation}
+									reload={loadCount}
+								/>
 							</XTabScreen>
 						</XTabView>
 					</>
@@ -145,6 +164,7 @@ const ProviderScreen = ({ navigation, route }) => {
 					backgroundColor='transparent'
 					onPress={onFooterClear}
 				/>
+
 				<View style={styles.footerServCnt}>
 					{
 						<View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -168,7 +188,6 @@ const ProviderScreen = ({ navigation, route }) => {
 					iconRight={bookBtnRightIcon}
 				/>
 			</Footer>
-
 		</>
 	)
 };
@@ -188,8 +207,7 @@ const styleCreator = (theme) => StyleSheet.create({
 	},
 	tabBar: {
 		borderBottomWidth: Theme.values.borderWidth,
-		borderColor: theme.colors.textTertiary,
-		marginBottom: 8
+		borderColor: theme.colors.borderColor
 	},
 	titleCnt: {
 		height: 50,

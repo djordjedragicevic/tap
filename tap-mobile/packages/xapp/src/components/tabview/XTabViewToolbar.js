@@ -70,8 +70,8 @@ const styleCreator = (theme, minItemWidth) => StyleSheet.create({
 	},
 	tabMarker: {
 		backgroundColor: 'transparent',
-		width: '50%',
-		maxWidth: 50,
+		width: '70%',
+		maxWidth: 70,
 		height: 5,
 		alignSelf: 'center',
 		borderTopEndRadius: Theme.values.borderRadius,

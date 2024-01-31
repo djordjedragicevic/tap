@@ -37,9 +37,20 @@ export const strings = {
 	"reviews": "reviewes",
 	"About": "About",
 	"Reviews": "Reviews",
+	"Review": "Review",
+	"Add review": "Add review",
+
 	"min": "min",
-	"Sing In": "Sing In",
-	"Welcome back": "Welcome back",
+	"hours": "hours",
+	"days": "days",
+	"months": "months",
+	"years": "years",
+
+	"tgMin": "min.",
+	"tgHour": "hour",
+	"tgDay": "day",
+	"tgMonth": "month",
+	"tgYear": "year",
 
 	"Monday": "Monday",
 	"Tuesday": "Tuesday",
@@ -49,6 +60,8 @@ export const strings = {
 	"Saturday": "Saturday",
 	"Sunday": "Sunday",
 
+	"Sing In": "Sing In",
+	"Welcome back": "Welcome back",
 	"Password": "Password",
 	"Username or email": "Username or email",
 	"Don't have an account?": "Don't have an account?",
@@ -96,5 +109,9 @@ export const strings = {
 	"Address": "Address",
 	"Appointment": "Appointmnet",
 	"Comment": "Comment",
-	"Doesn't work": "Doesn't work"
+	"Doesn't work": "Doesn't work",
+	"timesAgo": "{:time} {:measure} ago",
+	"Your raiting is": "Your raiting is",
+	"Overall raiting": "Overall raiting",
+	"Submit": "Submit"
 };

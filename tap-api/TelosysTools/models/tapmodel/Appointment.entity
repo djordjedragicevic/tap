@@ -13,8 +13,8 @@ Appointment {
   appointmentStatusId : int { @DbName(appointment_status_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_appointment_status1, AppointmentStatus.id) };
   createdById : int { @DbName(created_by_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_appointment_user2, User.id) };
   createdAt : timestamp { @DbName(created_at) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) @NotNull @NotEmpty };
-  comment : string { @DbName(comment) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
-  statusComment : string { @DbName(status_comment) @DbType("TEXT(65535)") @Size(65535) @MaxLen(65535) @LongText };
+  comment : string { @DbName(comment) @DbType("VARCHAR(256)") @Size(256) @MaxLen(256) };
+  statusComment : string { @DbName(status_comment) @DbType("VARCHAR(256)") @Size(256) @MaxLen(256) };
   statusUpdatedAt : timestamp { @DbName(status_updated_at) @DbType(DATETIME) @DbDefaultValue(CURRENT_TIMESTAMP) };
   // links
   appointmentstatus : AppointmentStatus { @LinkByFK(fk_appointment_appointment_status1) };

@@ -7,6 +7,7 @@ export const FREE_APPOINTMENTS_SCREEN = 'FreeAppoinmentsScreen';
 export const BOOK_APPOINTMENT_SCREEN = 'BookAppointmentScreen';
 export const APPOINTMENT_STATUS_SCREEN = 'AppointmentStatusScreen';
 export const MAP_SCREEN = 'MapScreen';
+export const ADD_REVIEW_SCREEN = 'AddReviewScreen';
 
 export const MAIN_TAB_HOME = 'MainTabHome';
 export const MAIN_TAB_FIND = 'MainTabFind';

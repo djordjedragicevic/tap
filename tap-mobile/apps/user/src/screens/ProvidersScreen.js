@@ -48,12 +48,12 @@ const ProvidersScreen = ({ navigation }) => {
 								{item.name}
 							</XText>
 							<XText secondary style={styles.titleType}>
-								{item.type}
+								{item.providerType}
 							</XText>
 						</View>
 					</View>
 
-					<XMarkStars mark={item.mark} reviewCound={item.reviewCount} />
+					<XMarkStars mark={item.mark} reviewCount={item.reviewCount} />
 
 					<XSeparator style={{ marginVertical: 10 }} />
 

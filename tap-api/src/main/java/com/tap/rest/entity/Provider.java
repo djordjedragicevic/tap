@@ -77,6 +77,10 @@ public class Provider implements Serializable {
 
     @OneToMany(mappedBy="provider")
 	@JsonbTransient
+	private List<Review> reviewList; 
+
+    @OneToMany(mappedBy="provider")
+	@JsonbTransient
 	private List<Service> serviceList; 
 
     @OneToMany(mappedBy="provider")
@@ -218,6 +222,13 @@ public class Provider implements Serializable {
 	
 	public void setProvidertype(ProviderType providertype) {
 		this.providertype = providertype;
+	}
+	public List<Review> getReviewList() {
+		return this.reviewList;
+	}
+	
+	public void setReviewList(List<Review> reviewList) {
+		this.reviewList = reviewList;
 	}
 	public List<Service> getServiceList() {
 		return this.serviceList;

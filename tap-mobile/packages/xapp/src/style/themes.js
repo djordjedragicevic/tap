@@ -53,8 +53,8 @@ export const Theme = {
 			backgroundElement: 'white',
 
 			textPrimary: 'hsl(0, 0%, 15%)',
-			textSecondary: 'hsl(0, 0%, 60%)',
-			textTertiary: 'hsl(0, 0%, 85%)',
+			textSecondary: 'hsl(0, 0%, 35%)',
+			textTertiary: 'hsl(0, 0%, 70%)',
 			textLight: 'white',
 
 			borderColor: 'hsl(0, 0%, 85%)',
@@ -96,8 +96,8 @@ export const Theme = {
 			backgroundElement: 'hsl(0, 0%, 10%)',
 
 			textPrimary: 'hsl(0, 0%, 95%)',  //white wariant
-			textSecondary: 'hsl(0, 0%, 70%)',//white wariant
-			textTertiary: 'hsl(0, 0%, 50%)', //white wariant
+			textSecondary: 'hsl(0, 0%, 75%)',//white wariant
+			textTertiary: 'hsl(0, 0%, 40%)', //white wariant
 			//textLight: '#f2f2f3',
 			textLight: 'white',
 

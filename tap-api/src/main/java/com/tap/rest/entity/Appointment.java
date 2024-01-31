@@ -34,10 +34,10 @@ public class Appointment implements Serializable {
     @Column(name="created_at", nullable=false)
 	private LocalDateTime createdAt;
 
-    @Column(name="comment", length=65535)
+    @Column(name="comment", length=256)
 	private String comment;
 
-    @Column(name="status_comment", length=65535)
+    @Column(name="status_comment", length=256)
 	private String statusComment;
 
     @Column(name="status_updated_at")

@@ -34,9 +34,21 @@ export const strings = {
 	"Appointment review": "Pregled rezervacije",
 	"reviews": "ocijena",
 	"About": "O nama",
-	"Reviews": "Ocjene",
+	"Reviews": "Recenzije",
+	"Review": "Recenzija",
+	"Add review": "Dodaj recenziju",
+
 	"min": "min",
-	"Welcome back": "Dobro došli nazad",
+	"hours": "sati",
+	"days": "dana",
+	"months": "mjeseci",
+	"years": "godina",
+
+	"tgMin": "min.",
+	"tgHour": "čas.",
+	"tgDay": "dana",
+	"tgMonth": "mj.",
+	"tgYear": "god.",
 
 	"Monday": "Ponedjeljak",
 	"Tuesday": "Utorak",
@@ -46,6 +58,7 @@ export const strings = {
 	"Saturday": "Subota",
 	"Sunday": "Nedjelja",
 
+	"Welcome back": "Dobro došli nazad",
 	"Password": "Lozinka",
 	"Username or email": "Korisničko ime ili email",
 	"Don't have an account?": "Još uvijek nemate nalog?",
@@ -94,6 +107,11 @@ export const strings = {
 	"Address": "Adresa",
 	"Appointment": "Termin",
 	"Comment": "Komentar",
-	"Doesn't work": "Ne radi"
+	"Doesn't work": "Ne radi",
+	"timesAgo": "prije {:time} {:measure}",
+	"Overall raiting": "Ukupna ocjena",
+	"Add detailed review": "Dodajte detaljnu recenzija",
+	"Submit": "Pošalji"
+
 
 };

@@ -28,7 +28,6 @@ export const strings = {
 	"Yesterday": "Yesterday",
 	"Requests": "Requests",
 	"Accept All": "Accept All",
-	"No items": "No items",
 	"Appointment confirmation": "Appointment confirmation",
 	"Appointment": "Appointment",
 	"Appointment - manually entered": "Appointment - manually entered",

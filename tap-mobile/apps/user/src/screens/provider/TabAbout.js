@@ -24,7 +24,7 @@ const mapWorkPeriods = (workPeriods) => {
 		7: false
 	};
 
-	workPeriods.forEach(p => {
+	(workPeriods || []).forEach(p => {
 		if (!wPMap[p.day])
 			wPMap[p.day] = [];
 

@@ -14,100 +14,86 @@ import java.util.*;
 @ApplicationScoped
 public class ProviderRepository extends CommonRepository {
 
+	public List<Map<String, Object>> getReviews(int pId) {
+		String[] fields = new String[]{
+				"r.id", "r.mark", "r.comment",
+				"r.user.username AS username",
+				"r.createdAt"
+		};
+
+		String query = """
+				SELECT %s FROM Review r
+				WHERE r.user2 IS NOT NULL AND r.provider.id = :pId
+				ORDER BY r.createdAt DESC
+				""";
+
+		List<Object[]> dbReps = this.getEntityManager()
+				.createQuery(String.format(query, String.join(",", fields)), Object[].class)
+				.setParameter("pId", pId)
+				.getResultList();
+
+		return Util.convertToListOfMap(dbReps, fields, "r");
+	}
+
 	public Object getProviders(long cityId) {
+		String[] fields = new String[]{
+				"p.id", "p.name", "p.imagePath AS mainImg", "p.legalEntity",
+				"p.providertype.name AS providerType",
+				"p.address.address1 AS address1",
+				"p.address.city.name AS city",
+				"ROUND(AVG(r.mark), 1) AS mark",
+				"COUNT(r.id) AS reviewCount"
+		};
+
 		String qS = """
 				SELECT
-				p.id,
-				p.name,
-				p.mark,
-				p.reviewCount,
-				pt.name,
-				p.legalEntity,
-				ad.address1,
-				c.name,
-				FUNCTION('GROUP_CONCAT', a.location) AS mainImg
+				%s
 				FROM Provider p
-				LEFT OUTER JOIN Asset a ON p.id = a.entityIdentifier
-				LEFT OUTER JOIN a.assettype asType
-				JOIN p.providertype pt
-				JOIN p.address ad
-				JOIN ad.city c
+				LEFT JOIN Review r ON p = r.provider
 				WHERE p.active = 1
-				AND p.approved = 1
-				AND pt.active = 1
-				AND c.active = 1
-				AND c.id = :cityId
-				AND (asType IS NULL OR asType.name = :asTypeName)
+				AND p.providertype.active = 1
+				AND p.address.city.id = :cityId
+				AND p.address.city.active = 1
 				GROUP BY p.id
 				""";
 
-		List<Object[]> dbRes = em.createQuery(qS, Object[].class)
+		List<Object[]> dbRes = em.createQuery(String.format(qS, String.join(",", fields)), Object[].class)
 				.setParameter("cityId", cityId)
-				.setParameter("asTypeName", Statics.AT_PROVIDER_IMG)
 				.getResultList();
 
-		return Util.convertToListOfMap(dbRes,
-				"id",
-				"name",
-				"mark",
-				"reviewCount",
-				"type",
-				"legalEntity",
-				"address1",
-				"city",
-				"mainImg"
-		);
+		return Util.convertToListOfMap(dbRes, fields, "p");
+
 	}
 
 	public Map<String, Object> getProviderData(int id) {
+		String[] fields = new String[]{
+				"p.id", "p.name", "p.phone", "p.description", "p.imagePath AS mainImg",
+				"p.providertype.name AS providerType",
+				"p.address.address1 AS address1", "p.address.latitude AS lat", "p.address.longitude AS lon",
+				"p.address.city.name AS city",
+				"p.address.city.country.name AS country", "p.address.city.country.code AS countryCode",
+				"ROUND(AVG(r.mark), 1) AS mark",
+				"COUNT(r.id) AS reviewCount"
+		};
+
 		String query = """
 				SELECT
-				p.id,
-				p.name,
-				p.phone,
-				p.description,
-				p.mark,
-				p.reviewCount,
-				t.name,
-				a.address1,
-				a.latitude,
-				a.longitude,
-				c.name,
-				cou.name,
-				cou.code
-								
+				%s
 				FROM Provider p
-				JOIN p.providertype t
-				JOIN p.address a
-				JOIN a.city c
-				JOIN c.country cou
-								
-				WHERE p.active = 1 AND p.id = :id
+				LEFT JOIN Review r ON p = r.provider
+				WHERE p.active = 1
+				AND p.id = :id
+				AND p.providertype.active = 1
+				AND p.address.city.active = 1
+				GROUP BY p.id
 				""";
 
-		Object[] prov = em.createQuery(query, Object[].class)
+		Object[] prov = em.createQuery(String.format(query, String.join(",", fields)), Object[].class)
 				.setParameter("id", id)
 				.getSingleResult();
 
+		return Util.convertToMap(prov, fields, "p");
 
-		return Util.convertToMap(prov, "id", "name", "phone", "description", "mark", "reviewCount", "type", "address", "lat", "lon", "city", "country", "countryCode");
-
-	}
-
-	public List<String> getProviderMainImgs(int id) {
-
-		String query = """
-				SELECT a.location AS mainImg
-				FROM Asset a
-				JOIN a.assettype at
-				WHERE a.entityIdentifier = :pId
-				AND at.name = :aTName
-				""";
-
-		return em.createQuery(query, String.class)
-				.setParameter("pId", id)
-				.setParameter("aTName", Statics.AT_PROVIDER_IMG)
-				.getResultList();
 	}
 
 	public List<Map<String, Object>> getProviderServices(long pId) {

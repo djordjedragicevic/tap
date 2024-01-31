@@ -14,7 +14,8 @@ import {
 	VERIFICATION_CODE_SCREEN,
 	MANAGE_ACCOUNT_SCREEN,
 	MAP_SCREEN,
-	APPOINTMENT_STATUS_SCREEN
+	APPOINTMENT_STATUS_SCREEN,
+	ADD_REVIEW_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
@@ -38,6 +39,7 @@ import MenageAccountScreen from '../screens/MenageAccountScreen';
 import MapScreen from '../screens/MapScreen';
 import { useHeaderBackButton } from 'xapp/src/common/hooks';
 import AppointmentStatusScreen from '../screens/AppointmentStatusScreen';
+import AddReviewScreen from '../screens/AddReviewScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -216,6 +218,13 @@ const AppNavigator = ({ }) => {
 						component={AppointmentStatusScreen}
 						options={{
 							title: t('Appointment')
+						}}
+					/>
+					<Stack.Screen
+						name={ADD_REVIEW_SCREEN}
+						component={AddReviewScreen}
+						options={{
+							title: t('Add review')
 						}}
 					/>
 				</>

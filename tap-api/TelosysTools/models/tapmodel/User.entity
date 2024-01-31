@@ -22,6 +22,8 @@ User {
   appointmentList2 : Appointment[];
   customperiodList : CustomPeriod[];
   employeeList : Employee[];
+  reviewList : Review[];
+  reviewList2 : Review[];
   tokenList : Token[];
   address : Address { @LinkByFK(fk_user_address1) };
   userstate : UserState { @LinkByFK(fk_user_user_state1) };
