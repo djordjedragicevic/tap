@@ -77,7 +77,6 @@ const createStyle = (theme, font, focused) => StyleSheet.create({
 	},
 	field: {
 		fontFamily: font,
-		fontSize: 15,
 		color: theme.colors.textPrimary
 	}
 });

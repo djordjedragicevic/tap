@@ -11,6 +11,7 @@ const XSelector = ({
 	selected,
 	multiselect = false,
 	closeOnSelect = true,
+	translateDataTitle = false,
 	selector = {
 		title: ''
 	},
@@ -28,6 +29,7 @@ const XSelector = ({
 		<>
 			<XSelectField
 				{...rest}
+				translateValue={translateDataTitle}
 				onPress={onPress}
 			/>
 			{data &&
@@ -38,6 +40,7 @@ const XSelector = ({
 					title={selector.title}
 					data={data}
 					multiselect={multiselect}
+					translateDataTitle={translateDataTitle}
 					closeOnSelect={closeOnSelect}
 					selected={selected}
 					onItemSelect={onItemSelect}

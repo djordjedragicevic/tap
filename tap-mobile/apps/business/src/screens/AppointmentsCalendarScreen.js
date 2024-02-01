@@ -146,7 +146,6 @@ const AppointmentsCalendarScreen = ({ navigation, route }) => {
 
 
 	const onItemPress = useCallback((item) => {
-		console.log(item.id);
 		if (isCustomPeriod(item)) {
 			navigation.navigate(CUSTOM_PERIOD_SCREEN, { id: item.id });
 		}

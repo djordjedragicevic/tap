@@ -113,5 +113,8 @@ export const strings = {
 	"timesAgo": "{:time} {:measure} ago",
 	"Your raiting is": "Your raiting is",
 	"Overall raiting": "Overall raiting",
-	"Submit": "Submit"
+	"Submit": "Submit",
+	"Latest": "Latest",
+	"The best": "The best",
+	"Worst": "Worst"
 };

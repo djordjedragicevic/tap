@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import XFieldContainer from "./XFieldContainer";
 import XText from "./XText";
 import { useColor, useThemedStyle } from "../../style/ThemeContext";
+import { useTranslation } from "../../i18n/I18nContext";
 
 
 const XSelectField = ({
@@ -15,11 +16,13 @@ const XSelectField = ({
 	vertical = false,
 	valueParams = {},
 	titleParams = {},
+	translateValue = false,
 	...rest
 }) => {
 
 	const iRC = useColor('textSecondary');
 	const styles = useThemedStyle(styleCreator, vertical);
+	const t = useTranslation();
 
 	const T = useMemo(() => {
 		if (React.isValidElement(title))
@@ -50,7 +53,7 @@ const XSelectField = ({
 						numberOfLines={1}
 						{...valueParams}
 					>
-						{value}
+						{translateValue ? t(value) : value}
 					</XText>
 				}
 			</View>
@@ -63,6 +66,7 @@ const styleCreator = (theme, vertical) => {
 	return StyleSheet.create({
 		textContainer: !vertical ?
 			{
+				//flex: 1,
 				flexDirection: 'row',
 				alignItems: 'center',
 				justifyContent: 'space-between'

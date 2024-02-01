@@ -73,9 +73,13 @@ public class ProviderService {
 	@Path("/{id}/review/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
-	public Response getProviderReviews(@PathParam("id") int pId) {
+	public Response getProviderReviews(
+			@PathParam("id") int pId,
+			@QueryParam("sortBy") String sortBy,
+			@QueryParam("sortKey") String sortKey
+	) {
 
-		return Response.ok(providerRepository.getReviews(pId)).build();
+		return Response.ok(providerRepository.getReviews(pId, sortBy, sortKey)).build();
 	}
 
 	@POST

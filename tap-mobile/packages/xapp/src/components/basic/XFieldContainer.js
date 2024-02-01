@@ -16,6 +16,8 @@ const XFieldContainer = ({
 	iconLeftColor,
 	iconLeftSize = 18,
 	iconRightSize = 18,
+	iconRightStyle = {},
+	iconLeftStyle = {},
 	style = {},
 	styleCenterContainer = {},
 	disabled = false,
@@ -25,10 +27,11 @@ const XFieldContainer = ({
 	meta,
 	outline,
 	focused,
-	flex = false
+	flex = false,
+	flexCenter = true
 }) => {
 
-	const styles = useThemedStyle(createStyle, outline, focused, flex);
+	const styles = useThemedStyle(createStyle, outline, focused, flex, flexCenter);
 	const RootCmp = onPress && !disabled ? TouchableOpacity : View;
 	const IconRightCmp = onIconRightPress ? TouchableOpacity : View;
 	const IconLeftCmp = onIconLeftPress ? TouchableOpacity : View;
@@ -46,7 +49,7 @@ const XFieldContainer = ({
 		>
 			{
 				!!iconLeft &&
-				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.icon, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }]} onPress={onIconLeftPress}>
+				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.icon, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }, iconLeftStyle]} onPress={onIconLeftPress}>
 					{typeof iconLeft === 'string' ?
 						<AntDesign name={iconLeft} size={iconLeftSize} color={iconLeftColor || styles.iconColor} />
 						:
@@ -62,7 +65,7 @@ const XFieldContainer = ({
 			</CenterCmp>
 			{
 				!!iconRight &&
-				<IconRightCmp disabled={iconRightDisabled} style={[styles.icon, { opacity: iconRightDisabled ? Theme.values.disabledOpacity : 1 }]} onPress={onIconRightPress}>
+				<IconRightCmp disabled={iconRightDisabled} style={[styles.icon, { opacity: iconRightDisabled ? Theme.values.disabledOpacity : 1 }, iconRightStyle]} onPress={onIconRightPress}>
 					{typeof iconRight === 'string' ?
 						<AntDesign name={iconRight} size={iconRightSize} color={iconRightColor || styles.iconColor} />
 						:
@@ -75,7 +78,7 @@ const XFieldContainer = ({
 	);
 };
 
-const createStyle = (theme, outline, focused, flex) => {
+const createStyle = (theme, outline, focused, flex, flexCenter) => {
 	return StyleSheet.create({
 		container: {
 			borderRadius: Theme.values.borderRadius,
@@ -92,7 +95,7 @@ const createStyle = (theme, outline, focused, flex) => {
 			justifyContent: 'center'
 		},
 		centerContainer: {
-			flex: 1,
+			flex: flexCenter ? 1 : undefined,
 			paddingHorizontal: 8,
 			justifyContent: 'center'
 		},

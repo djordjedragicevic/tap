@@ -59,7 +59,7 @@ const ProviderScreen = ({ navigation, route }) => {
 	const onFooterClear = useCallback(() => setSelectedIdxs([]), []);
 
 	const loadData = useCallback(() => {
-		setLoadCount(c => c + 1);
+		//setLoadCount(c => c + 1);
 		Http.get(`/provider/${providerId}`)
 			.then(resp => {
 				setData(resp);
@@ -148,7 +148,7 @@ const ProviderScreen = ({ navigation, route }) => {
 								<TabReviews
 									providerId={providerId}
 									navigation={navigation}
-									reload={loadCount}
+									reload={data}
 								/>
 							</XTabScreen>
 						</XTabView>

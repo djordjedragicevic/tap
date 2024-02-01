@@ -14,7 +14,7 @@ import java.util.*;
 @ApplicationScoped
 public class ProviderRepository extends CommonRepository {
 
-	public List<Map<String, Object>> getReviews(int pId) {
+	public List<Map<String, Object>> getReviews(int pId, String sortBy, String sortKey) {
 		String[] fields = new String[]{
 				"r.id", "r.mark", "r.comment",
 				"r.user.username AS username",
@@ -24,11 +24,11 @@ public class ProviderRepository extends CommonRepository {
 		String query = """
 				SELECT %s FROM Review r
 				WHERE r.user2 IS NOT NULL AND r.provider.id = :pId
-				ORDER BY r.createdAt DESC
+				ORDER BY r.%s %s
 				""";
 
 		List<Object[]> dbReps = this.getEntityManager()
-				.createQuery(String.format(query, String.join(",", fields)), Object[].class)
+				.createQuery(String.format(query, String.join(",", fields), sortBy, sortKey), Object[].class)
 				.setParameter("pId", pId)
 				.getResultList();
 
@@ -69,7 +69,7 @@ public class ProviderRepository extends CommonRepository {
 		String[] fields = new String[]{
 				"p.id", "p.name", "p.phone", "p.description", "p.imagePath AS mainImg",
 				"p.providertype.name AS providerType",
-				"p.address.address1 AS address1", "p.address.latitude AS lat", "p.address.longitude AS lon",
+				"p.address.address1 AS address", "p.address.latitude AS lat", "p.address.longitude AS lon",
 				"p.address.city.name AS city",
 				"p.address.city.country.name AS country", "p.address.city.country.code AS countryCode",
 				"ROUND(AVG(r.mark), 1) AS mark",

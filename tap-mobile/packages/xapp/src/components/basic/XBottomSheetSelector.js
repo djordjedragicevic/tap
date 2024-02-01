@@ -25,6 +25,7 @@ const XBottomSheetSelector = forwardRef(({
 	initSelectedIdx,
 	closeOnSelect = true,
 	visible = false,
+	translateDataTitle = false,
 	setVisible = emptyFn,
 	...rest
 }, outRef) => {
@@ -46,9 +47,11 @@ const XBottomSheetSelector = forwardRef(({
 
 	const renderItem = useCallback(({ item }) => {
 		const isChecked = Array.isArray(selectedIntern) ? !!selectedIntern?.find(i => i.id === item.id) : selectedIntern?.id === item.id;
+		const internTitle = translateDataTitle ? t(item.title || item.name) : item.title || item.name;
+
 		return (
 			<XFieldContainer
-				title={item.title}
+				translateTitle={translateDataTitle}
 				style={{ height: rowHeight, marginVertical: rowVerticalMargin }}
 				iconLeft={() => <XCheckBox round checked={isChecked} />}
 				onPress={() => {
@@ -69,11 +72,11 @@ const XBottomSheetSelector = forwardRef(({
 				}}
 			>
 				<View style={{ flex: 1, justifyContent: 'center' }}>
-					<XText>{item.title || item.name}</XText>
+					<XText>{internTitle}</XText>
 				</View>
 			</XFieldContainer>
 		)
-	}, [onItemSelect, selectedIntern, multiselect]);
+	}, [onItemSelect, selectedIntern, multiselect, translateDataTitle, t]);
 
 	const keyExtractor = useCallback(i => i.id);
 

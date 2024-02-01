@@ -170,7 +170,7 @@ const createStyle = (theme, params, primary, secondary) => {
 			alignContent: 'center',
 			justifyContent: 'center',
 			marginEnd: 5,
-			marginStart: -10
+			//marginStart: -10
 		}
 	});
 };

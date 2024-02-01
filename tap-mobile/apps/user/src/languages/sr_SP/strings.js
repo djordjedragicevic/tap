@@ -111,7 +111,10 @@ export const strings = {
 	"timesAgo": "prije {:time} {:measure}",
 	"Overall raiting": "Ukupna ocjena",
 	"Add detailed review": "Dodajte detaljnu recenzija",
-	"Submit": "Pošalji"
+	"Submit": "Pošalji",
+	"Latest": "Najnoviji",
+	"The best": "Najbolji",
+	"Worst": "Najlošiji"
 
 
 };

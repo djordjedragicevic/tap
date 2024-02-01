@@ -11,6 +11,7 @@ export const strings = {
 	"From": "From",
 	"To": "To",
 	"No items": "No items",
+	"Sort by": "Sort by",
 	//-----------------------
 
 	"Canceled": "Canceled",

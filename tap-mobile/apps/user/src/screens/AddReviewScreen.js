@@ -8,8 +8,8 @@ import XText from "xapp/src/components/basic/XText";
 import XTextInput from "xapp/src/components/basic/XTextInput";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { Http } from 'xapp/src/common/Http';
-import { PROVIDER_SCREEN } from "../navigators/routes";
 import { emptyFn } from "xapp/src/common/utils";
+import Footer from "../components/Footer";
 
 const AddReviewScreen = ({ navigation, route }) => {
 
@@ -28,7 +28,16 @@ const AddReviewScreen = ({ navigation, route }) => {
 	};
 
 	return (
-		<XScreen rowGap={25}>
+		<XScreen rowGap={25} Footer={<Footer>
+			<XButton
+				title={t('Submit')}
+				disabled={!selectedMark}
+				style={{ flex: 1 }}
+				primary
+				onPress={submintReview}
+			/>
+		</Footer>
+		}>
 
 			<View style={styles.starCnt}>
 				<XText>{t('Overall raiting')}  <XText bold>{selectedMark || '-'}</XText></XText>
@@ -44,7 +53,9 @@ const AddReviewScreen = ({ navigation, route }) => {
 			<XSeparator />
 
 			<View style={styles.commentCnt}>
-				<XText>{t('Add detailed review')}</XText>
+				<View style={styles.commentTextCnt}>
+					<XText>{t('Add detailed review')}</XText>
+				</View>
 				<XTextInput
 					outline
 					fieldStyle={styles.commentFieldStyle}
@@ -57,13 +68,6 @@ const AddReviewScreen = ({ navigation, route }) => {
 				/>
 			</View>
 
-			<XButton
-				title={t('Submit')}
-				disabled={!selectedMark}
-				primary
-				onPress={submintReview}
-			/>
-
 		</XScreen>
 	);
 };
@@ -72,21 +76,23 @@ const styles = StyleSheet.create({
 	starCnt: {
 		rowGap: 20,
 		alignItems: 'center',
-		height: 150,
+		height: 140,
 		justifyContent: 'center'
 	},
 	commentCnt: {
-		rowGap: 20,
-		alignItems: 'center'
+		paddingHorizontal: 20,
+		rowGap: 20
 	},
 	commentFieldStyle: {
 		flex: 1,
 		textAlignVertical: 'top',
 		paddingVertical: 10
 	},
+	commentTextCnt: {
+		alignSelf: 'center'
+	},
 	commentFieldCntStyle: {
-		height: 100,
-		width: '100%'
+		height: 100
 	}
 });
 
