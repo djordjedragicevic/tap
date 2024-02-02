@@ -11,6 +11,7 @@ let _token = null;
 let _API_URL = '';
 let _HOST = '';
 let _HTTP_TIMEOUT = 5000;
+let _onUNAUTHENTICATE = null;
 
 export class Http {
 
@@ -20,9 +21,10 @@ export class Http {
 		CONNECTION_TIMEOUT: 'CONNECTION_TIMEOUT'
 	}
 
-	static init(host, apiUrl, timeout) {
+	static init(host, apiUrl, timeout, onUNAUTHENTICATE) {
 		_HOST = host;
 		_API_URL = apiUrl;
+		_onUNAUTHENTICATE = onUNAUTHENTICATE;
 		if (timeout != null)
 			_HTTP_TIMEOUT = timeout;
 	}
@@ -99,8 +101,14 @@ export class Http {
 
 
 		if (err) {
-			if (hideErrors !== true)
-				XAlert.show(err.title, err.message);
+			if (hideErrors !== true) {
+				if (errId === Http.ERR.UNAUTHENTICATE && _onUNAUTHENTICATE instanceof Function) {
+					_onUNAUTHENTICATE(err.title, err.message);
+				}
+				else {
+					XAlert.show(err.title, err.message);
+				}
+			}
 
 			throw new Error(err.title, { cause: { title: err.title, message: err.message, id: errId } });
 		}

@@ -1,6 +1,7 @@
 package com.tap.rest.sercice.user;
 
 import com.tap.common.FSAsset;
+import com.tap.common.Mail;
 import com.tap.common.Util;
 import com.tap.rest.dto.UserDto;
 import com.tap.rest.entity.User;
@@ -23,7 +24,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Path("user")
+@Path("/user")
 @RequestScoped
 public class UserService {
 
@@ -43,7 +44,7 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Public
-	@Path("login")
+	@Path("/login")
 	@Transactional
 	public Response login(
 			@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer,
@@ -53,7 +54,7 @@ public class UserService {
 		return Response.ok(Map.of("token", t)).build();
 	}
 
-	@Path("create-account")
+	@Path("/create-account")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
@@ -108,8 +109,9 @@ public class UserService {
 			userRepository.getEntityManager().persist(u);
 			userRepository.getEntityManager().persist(validation);
 			userRepository.getEntityManager().persist(uR);
+			userRepository.getEntityManager().flush();
 
-			//Mail.sendCode(code, email);
+			Mail.sendCode(code, email);
 
 			return Response.ok(u.getId()).build();
 
@@ -119,7 +121,7 @@ public class UserService {
 	}
 
 
-	@Path("profile")
+	@Path("/profile")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
@@ -133,7 +135,7 @@ public class UserService {
 		return Response.ok(userData).build();
 	}
 
-	@Path("profile")
+	@Path("/profile")
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -177,12 +179,17 @@ public class UserService {
 
 	}
 
-	@Path("{id}/state")
+	@Path("/state")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
 	@Transactional
-	public void changeUserState(@PathParam("id") int userId, JsonObject userState) {
+	public void changeUserState(
+			@Context SecurityContext sC,
+			JsonObject userState
+	) {
+
+		int userId = Security.getUserId(sC);
 		userRepository.updateState(userId, userState);
 	}
 

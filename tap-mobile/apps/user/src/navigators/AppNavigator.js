@@ -141,8 +141,7 @@ const AppNavigator = ({ }) => {
 
 			<Stack.Screen
 				options={{
-					headerTransparent: true,
-					title: ''
+					headerShown: false
 				}}
 				name={LOGIN_SCREEN}
 				component={LoginScreen}
@@ -151,18 +150,14 @@ const AppNavigator = ({ }) => {
 				name={CREATE_ACCOUNT_SCREEN}
 				component={CreateAccountScreen}
 				options={{
-					headerShown: true,
-					headerTransparent: true,
-					title: ''
+					headerShown: false
 				}}
 			/>
 			<Stack.Screen
 				name={VERIFICATION_CODE_SCREEN}
 				component={VerificationCodeScreen}
 				options={{
-					headerShown: true,
-					headerTransparent: true,
-					title: ''
+					headerShown: false
 				}}
 			/>
 

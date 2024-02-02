@@ -10,6 +10,8 @@ import XLink from "xapp/src/components/basic/XLink";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { CREATE_ACCOUNT_SCREEN, VERIFICATION_CODE_SCREEN } from "../navigators/routes";
 import { Http } from 'xapp/src/common/Http';
+import XHeaderButtonBackAbsolute from "xapp/src/components/XHeaderButtonBackAbsolute";
+import { Theme } from "xapp/src/style/themes";
 
 const LoginScreen = ({ navigation }) => {
 	const [username, setUsername] = useState('');
@@ -62,6 +64,12 @@ const LoginScreen = ({ navigation }) => {
 			flat
 			bigTitle={t('Sing In')}
 		>
+			<XHeaderButtonBackAbsolute
+				navigation={navigation}
+				bgOpacity={0}
+				iconColorName={Theme.vars.textSecondary}
+			/>
+
 			<View style={{
 				rowGap: 10,
 				paddingTop: 20

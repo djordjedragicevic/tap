@@ -2,11 +2,11 @@
 import XText from "xapp/src/components/basic/XText";
 import XButton from "xapp/src/components/basic/XButton";
 import { useCallback, useState } from "react";
-import { Http, useHTTPGet } from "xapp/src/common/Http";
+import { Http } from "xapp/src/common/Http";
 import { StyleSheet, View } from "react-native"
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import XChip from "xapp/src/components/basic/XChip";
-import { useColor, usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 import HairSalon from "../components/svg/HairSalon";
 import { storeDispatch, useStore } from "xapp/src/store/store";
@@ -24,6 +24,7 @@ import { CurrencyUtils, emptyFn } from "xapp/src/common/utils";
 import { useIsUserLogged } from "../store/concreteStores";
 import { handleUnauth } from "../common/general";
 import { useFocusEffect } from "@react-navigation/native";
+import XHeaderButtonBackAbsolute from "xapp/src/components/XHeaderButtonBackAbsolute";
 
 const HEADER_IMAGE_HEIGHT = 230;
 const CNT_NEG_TOP_MARGIN = -20;
@@ -47,11 +48,9 @@ const ProviderScreen = ({ navigation, route }) => {
 	const [selectedIds, setSelectedIdxs] = useState([]);
 	const [priceSum, setPriceSum] = useState();
 	const [favoriteDisabled, setFavoriteDisabled] = useState(false);
-	const [loadCount, setLoadCount] = useState(1);
 
 	const userLoged = useIsUserLogged();
 
-	const userId = useStore(st => st.user.id);
 	const fProviders = useStore(st => st.user.state.favoriteProviders);
 	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
 
@@ -72,7 +71,7 @@ const ProviderScreen = ({ navigation, route }) => {
 	const onFPress = () => {
 		const newFavs = isFavorite ? fProviders.filter(pId => pId !== providerId) : [...(fProviders || []), providerId];
 		setFavoriteDisabled(true);
-		Http.post(`/user/${userId}/state`, { favoriteProviders: newFavs })
+		Http.post(`/user/state`, { favoriteProviders: newFavs })
 			.then(() => storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId))
 			.catch(emptyFn)
 			.finally(() => setFavoriteDisabled(false));
@@ -93,16 +92,10 @@ const ProviderScreen = ({ navigation, route }) => {
 							<HairSalon height={150} width={150} />
 						</View>
 				}
+				<XHeaderButtonBackAbsolute navigation={navigation} />
 
 				<XButtonIcon
-					icon='arrowleft'
-					onPress={navigation.goBack}
-					backgroundColor={sColor}
-					style={styles.headerButtonLeft}
-					bgOpacity={0.6}
-				/>
-				<XButtonIcon
-					icon={isFavorite ? 'hearto' : 'heart'}
+					icon={isFavorite ? 'heart' : 'hearto'}
 					disabled={favoriteDisabled}
 					color={pColor}
 					backgroundColor={sColor}
@@ -239,11 +232,6 @@ const styleCreator = (theme) => StyleSheet.create({
 	},
 	headerImage: {
 		flex: 1
-	},
-	headerButtonLeft: {
-		position: 'absolute',
-		start: 8,
-		top: 8
 	},
 	headerButtonRight: {
 		position: 'absolute',

@@ -21,7 +21,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Optional;
 
-@Path("verification")
+@Path("/verification")
 @RequestScoped
 public class UserVerificationService {
 	private UserVerificationRepository userVerificationRepository;
@@ -35,7 +35,7 @@ public class UserVerificationService {
 		this.userVerificationRepository = userVerificationRepository;
 	}
 
-	@Path("data/{userId}")
+	@Path("/data/{userId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -61,7 +61,7 @@ public class UserVerificationService {
 		)).build();
 	}
 
-	@Path("resend/{userId}")
+	@Path("/resend/{userId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -83,7 +83,7 @@ public class UserVerificationService {
 		return Response.ok().build();
 	}
 
-	@Path("verify")
+	@Path("/verify")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)

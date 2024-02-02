@@ -12,6 +12,8 @@ import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { MAIN_TAB_HOME } from "../navigators/routes";
 import { throwUnexpected } from "../common/general";
 import { storeDispatch } from "xapp/src/store/store";
+import { Theme } from "xapp/src/style/themes";
+import XHeaderButtonBackAbsolute from "xapp/src/components/XHeaderButtonBackAbsolute";
 
 
 const VerificationCodeScreen = ({ navigation, route }) => {
@@ -65,7 +67,7 @@ const VerificationCodeScreen = ({ navigation, route }) => {
 		Http.post('/verification/verify', { userId: userId, code: code.join('') })
 			.then(async () => {
 				if (username && password) {
-					const resp = await Http.post('/app/login', { username, password });
+					const resp = await Http.post('/user/login', { username, password });
 					if (resp.token) {
 						await Http.setToken(resp.token);
 
@@ -96,7 +98,14 @@ const VerificationCodeScreen = ({ navigation, route }) => {
 			bigTitle={t('Verify Code')}
 			loading={loading}
 		>
+			<XHeaderButtonBackAbsolute
+				navigation={navigation}
+				bgOpacity={0}
+				iconColorName={Theme.vars.textSecondary}
+			/>
 			<View>
+
+
 				<View style={styles.subtitleCnt}>
 					<XText style={styles.subtitleText}>{t('verCodeSubTitle')}</XText>
 					<XText style={styles.subtitleMail}>{t('mail', { mail: data.mail })}</XText>

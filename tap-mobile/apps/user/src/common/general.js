@@ -18,7 +18,7 @@ export const handleUnauth = () => {
 			onPress: () => RootAppNavigation.navigate(LOGIN_SCREEN)
 		}
 
-	])
+	]);
 };
 
 export const STATUS_COLOR = {

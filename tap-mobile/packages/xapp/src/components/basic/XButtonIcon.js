@@ -9,6 +9,7 @@ const ButtonIcon = ({
 	icon,
 	style,
 	color,
+	colorName,
 	primary,
 	backgroundColor,
 	size = 36,
@@ -20,9 +21,9 @@ const ButtonIcon = ({
 	...rest
 }) => {
 
-	const [tPColor, pLCorlor] = useColor(['textPrimary', 'primaryLight']);
+	const [tPColor, pLCorlor, cByName] = useColor(['textPrimary', 'primaryLight', colorName]);
 
-	const iconColor = color || ((primary || backgroundColor) && pLCorlor) || tPColor;
+	const iconColor = cByName || color || ((primary || backgroundColor) && pLCorlor) || tPColor;
 	const styles = useThemedStyle(styleCreator, title ? size + 5 : size, backgroundColor, primary, disabled, bgOpacity);
 	const iconSize = Math.round(size * 0.6);
 

@@ -41,12 +41,13 @@ import { strings as sr_SP_str } from './src/languages/sr_SP/strings';
 import { errors as sr_SP_err } from './src/languages/sr_SP/errors';
 import I18nT from 'xapp/src/i18n/i18n';
 import { emptyFn } from 'xapp/src/common/utils';
+import { handleUnauth } from './src/common/general';
 
 storeInit(appStore());
 storeInit(userStore());
 storeInit(testStore());
 
-Http.init(HOST, API_URL, HTTP_TIMEOUT);
+Http.init(HOST, API_URL, HTTP_TIMEOUT, handleUnauth);
 I18nT.init({
 	langs: {
 		en_US: {

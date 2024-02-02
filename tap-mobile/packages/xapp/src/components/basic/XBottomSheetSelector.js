@@ -67,7 +67,9 @@ const XBottomSheetSelector = forwardRef(({
 					else {
 						if (closeOnSelect)
 							setVisible(false);
-						onItemSelect(item);
+
+						// TODO Check somethime is there better way to optimize modal closing
+						setTimeout(() => onItemSelect(item), 1);
 					}
 				}}
 			>

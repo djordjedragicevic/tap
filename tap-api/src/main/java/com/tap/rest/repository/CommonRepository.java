@@ -38,7 +38,6 @@ public class CommonRepository {
 							.getSingleResult()
 			);
 		} catch (Exception e) {
-			System.err.println("ERROR FIND BY PARAM " + e);
 			return Optional.empty();
 		}
 	}

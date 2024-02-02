@@ -9,11 +9,13 @@ import { Http } from "xapp/src/common/Http";
 import { VERIFICATION_CODE_SCREEN } from "../navigators/routes";
 import { useLockNavigation } from "../common/useLockNavigation";
 import { emptyFn } from 'xapp/src/common/utils';
+import { Theme } from "xapp/src/style/themes";
+import XHeaderButtonBackAbsolute from "xapp/src/components/XHeaderButtonBackAbsolute";
 
 const CreateAccountScreen = ({ navigation }) => {
-	const [username, setUsername] = useState('djoka');
-	const [email, setEmail] = useState('djordje.dragicevic89@gmail.com');
-	const [password, setPassword] = useState('djoka');
+	const [username, setUsername] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 
 	const styles = useThemedStyle(styleCreator);
@@ -46,6 +48,12 @@ const CreateAccountScreen = ({ navigation }) => {
 			bigTitle={t('Sing Up')}
 			loading={loading}
 		>
+			<XHeaderButtonBackAbsolute
+				navigation={navigation}
+				bgOpacity={0}
+				iconColorName={Theme.vars.textSecondary}
+			/>
+
 			<XTextInput
 				style={styles.input}
 				value={username}

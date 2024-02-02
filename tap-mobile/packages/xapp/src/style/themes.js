@@ -29,6 +29,11 @@ export const Theme = {
 		secondary: 'secondary',
 		background: 'background',
 		backgroundElement: 'backgroundElement',
+
+		textPrimary: 'textPrimary',
+		textSecondary: 'textSecondary',
+		textTertiary: 'textTertiary',
+		textLight: 'textLight'
 	},
 
 	values: {
