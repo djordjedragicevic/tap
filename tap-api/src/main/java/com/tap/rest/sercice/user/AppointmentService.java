@@ -53,9 +53,15 @@ public class AppointmentService {
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.USER})
-	public Response getAppointment(@PathParam("id") Long appId) {
+	public Response getAppointment(
+			@PathParam("id") Long appId,
+			@Context SecurityContext sC
+	) {
 
-		return Response.ok(appointmentRepository.getAppointmentById(appId)).build();
+		int uId = Security.getUserId(sC);
+		Map<String, Object> app = appointmentRepository.getUserAppointmentByIdFlat(appId, uId);
+
+		return Response.ok(app).build();
 	}
 
 	@POST

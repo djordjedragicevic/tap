@@ -15,6 +15,7 @@ const ButtonIcon = ({
 	size = 36,
 	disabled = false,
 	standard = false,
+	outline = false,
 	title,
 	bgOpacity = 1,
 	onPress = emptyFn,
@@ -24,7 +25,7 @@ const ButtonIcon = ({
 	const [tPColor, pLCorlor, cByName] = useColor(['textPrimary', 'primaryLight', colorName]);
 
 	const iconColor = cByName || color || ((primary || backgroundColor) && pLCorlor) || tPColor;
-	const styles = useThemedStyle(styleCreator, title ? size + 5 : size, backgroundColor, primary, disabled, bgOpacity);
+	const styles = useThemedStyle(styleCreator, title ? size + 5 : size, backgroundColor, primary, disabled, bgOpacity, outline, iconColor);
 	const iconSize = Math.round(size * 0.6);
 
 	return (
@@ -42,7 +43,7 @@ const ButtonIcon = ({
 	)
 };
 
-const styleCreator = (theme, size, backgroundColor, primary, disabled, bgOpacity) => {
+const styleCreator = (theme, size, backgroundColor, primary, disabled, bgOpacity, outline, iconColor) => {
 	let bgColor = theme.colors.backgroundElement;
 	if (backgroundColor)
 		bgColor = backgroundColor;
@@ -53,7 +54,9 @@ const styleCreator = (theme, size, backgroundColor, primary, disabled, bgOpacity
 	return StyleSheet.create({
 		btn: {
 			borderRadius: Theme.values.borderRadius,
-			backgroundColor: Theme.opacity(bgColor, bgOpacity),
+			backgroundColor: outline ? undefined : Theme.opacity(bgColor, bgOpacity),
+			borderWidth: outline ? Theme.values.borderWidth : 0,
+			borderColor: iconColor,
 			width: size,
 			height: size,
 			alignItems: 'center',

@@ -114,7 +114,6 @@ export const strings = {
 	"Submit": "Pošalji",
 	"Latest": "Najnoviji",
 	"The best": "Najbolji",
-	"Worst": "Najlošiji"
-
-
+	"Worst": "Najlošiji",
+	"Appointment time": "Vrijeme termina"
 };

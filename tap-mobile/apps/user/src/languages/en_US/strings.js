@@ -116,5 +116,6 @@ export const strings = {
 	"Submit": "Submit",
 	"Latest": "Latest",
 	"The best": "The best",
-	"Worst": "Worst"
+	"Worst": "Worst",
+	"Appointment time": "Appointment time"
 };

@@ -130,24 +130,13 @@ public class AppointmentRepository extends CommonRepository {
 
 		String query = """
 				SELECT
-				a.id,
-				a.joinId,
-				a.start,
-				a.end,
+				a.id, a.joinId, a.start, a.end,
 				status.name,
-				s.id,
-				s.name,
-				s.duration,
-				s.price,
-				e.id,
-				e.name,
-				p.id AS pId,
-				p.name,
-				p.imagePath,
-				pT.name,
+				s.id, s.name, s.duration, s.price,
+				e.id, e.name,
+				p.id AS pId, p.name, p.imagePath, pT.name,
 				add.address1,
-				c.name,
-				c.postCode
+				c.name, c.postCode
 				FROM Appointment a
 				JOIN a.service s
 				JOIN a.appointmentstatus status
@@ -191,26 +180,39 @@ public class AppointmentRepository extends CommonRepository {
 		));
 	}
 
-	public Map<String, Object> getAppointmentById(Long id) {
-
+	public Map<String, Object> getUserAppointmentByIdFlat(Long id, int uId) {
 
 		String[] fields = new String[]{
 				"a.id", "a.start", "a.end",
 				"a.appointmentstatus.name AS status",
 				"a.statusComment",
-				"a.service.id", "a.service.name", "a.service.price", "a.service.duration",
-				"a.employee.id", "a.employee.name"
+
+				"a.service.id AS serviceId",
+				"a.service.name AS serviceName",
+				"a.service.price AS servicePrice",
+				"a.service.duration AS serviceDuration",
+
+				"a.employee.id AS employeeId",
+				"a.employee.name AS employeeName",
+
+				"a.employee.provider.name AS providerName",
+				"a.employee.provider.providertype.name AS providerType",
+				"a.employee.provider.address.address1 AS providerAddress",
+				"a.employee.provider.address.city.name AS providerCity",
+
+				"a.user.id AS userId",
 		};
 
 		String query = """
 				SELECT %s
 				FROM Appointment a
-				WHERE a.id = :id
+				WHERE a.id = :id AND a.user.id = :uId
 				""";
 
 		Object[] res = this.getEntityManager().createQuery(String.format(query, String.join(",", fields)), Object[].class)
-				.setParameter("id", id).
-				getSingleResult();
+				.setParameter("id", id)
+				.setParameter("uId", uId)
+				.getSingleResult();
 
 		return Util.convertToMap(res, Set.of("a"), fields);
 

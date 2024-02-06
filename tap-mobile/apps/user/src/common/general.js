@@ -22,7 +22,7 @@ export const handleUnauth = () => {
 };
 
 export const STATUS_COLOR = {
-	WAITING: Theme.vars.yellow,
+	WAITING: Theme.vars.orange,
 	ACCEPTED: Theme.vars.green,
 	REJECTED: Theme.vars.red,
 	DROPPED: Theme.vars.gray,

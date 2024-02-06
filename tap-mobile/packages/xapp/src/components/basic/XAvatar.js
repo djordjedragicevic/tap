@@ -42,7 +42,7 @@ const styleCreator = (theme, color, round, outline) => StyleSheet.create({
 	text: {
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: 'lightcoral',
+		backgroundColor: color ? theme.colors[color] : 'lightcoral',
 		flex: 1
 	},
 	avatar: {

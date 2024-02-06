@@ -40,7 +40,7 @@ public class ProviderService {
 	}
 
 	@GET
-	@Path("{id}")
+	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
 	public Object getProviderById(@PathParam("id") int id) {
@@ -121,7 +121,7 @@ public class ProviderService {
 	}
 
 	@GET
-	@Path("list")
+	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
 	public Object getProviders(@QueryParam("cId") long cityId) {

@@ -4,8 +4,8 @@ import XText from "./XText";
 import { Theme } from "../../style/themes";
 import XIcon from "./XIcon";
 
-const XChip = ({ text, style, textStyle, textProps = {}, children, color, icon, primary, ...rest }) => {
-	const styles = useThemedStyle(createStyle, color, primary);
+const XChip = ({ text, style, textStyle, textProps = {}, children, color, icon, primary, bgOpacity = 1, ...rest }) => {
+	const styles = useThemedStyle(createStyle, color, primary, bgOpacity);
 	const themedColor = useColor(color || (primary ? 'textLight' : 'textSecondary'));
 	return (
 		<View style={[styles.container, style]} {...rest}>
@@ -15,7 +15,7 @@ const XChip = ({ text, style, textStyle, textProps = {}, children, color, icon, 
 	)
 };
 
-const createStyle = (theme, color, primary) => {
+const createStyle = (theme, color, primary, bgOpacity) => {
 
 	let bColor = theme.colors.backgroundElement;
 
@@ -33,7 +33,7 @@ const createStyle = (theme, color, primary) => {
 			columnGap: 5,
 			justifyContent: 'center',
 			alignItems: 'center',
-			backgroundColor: bColor,
+			backgroundColor: Theme.opacity(bColor, bgOpacity),
 			borderRadius: Theme.values.borderRadius,
 			offset: 'hidden',
 			flexDirection: 'row'

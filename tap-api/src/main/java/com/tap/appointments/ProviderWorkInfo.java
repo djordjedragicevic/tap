@@ -95,7 +95,7 @@ public class ProviderWorkInfo {
 
 			e.freePeriods = new ArrayList<>();
 			List<TimeDot> timeDots = new ArrayList<>();
-
+			
 			e.workPeriods.forEach(tP -> {
 				timeDots.add(new TimeDot(tP.getStart(), true, true));
 				timeDots.add(new TimeDot(tP.getEnd(), false, true));

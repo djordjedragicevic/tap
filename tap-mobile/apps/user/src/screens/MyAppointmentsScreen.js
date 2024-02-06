@@ -9,24 +9,29 @@ import { Theme } from "xapp/src/style/themes";
 import XSegmentedButton from "xapp/src/components/basic/XSegmentedButton";
 import { useColor, usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { useFocusEffect } from '@react-navigation/native';
-import { DateUtils, emptyFn } from "xapp/src/common/utils";
+import { DateUtils, emptyFn, getInitials } from "xapp/src/common/utils";
 import XImage from "xapp/src/components/basic/XImage";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XEmptyListIcon from "xapp/src/components/XEmptyListIcon";
 import XIcon from "xapp/src/components/basic/XIcon";
 import XChip from "xapp/src/components/basic/XChip";
-import { APPOINTMENT_STATUS_SCREEN } from "../navigators/routes";
-import { APP_STATUS } from "xapp/src/common/general";
+import { APPOINTMENT_SCREEN } from "../navigators/routes";
+import { APP_STATUS, APP_STATUS_ICON } from "xapp/src/common/general";
 import { STATUS_COLOR } from "../common/general";
+import HairSalon from "../components/svg/HairSalon";
+import XAvatar from "xapp/src/components/basic/XAvatar";
+import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 
-const arrangeData = (data, dateCode) => {
+const arrangeData = (data, dateCode, grouped) => {
 
 	const g = {};
 	const newData = [];
 
 	for (const a of data) {
-		//newData.push([a]);
-		if (a.joinId == null) {
+		if (!grouped) {
+			newData.push([a]);
+		}
+		else if (a.joinId == null) {
 			newData.push([a]);
 		}
 		else if (!g[a.joinId]) {
@@ -82,7 +87,7 @@ const ServiceRow = ({ item, navigation }) => {
 				borderWidth: 0,
 				opacity: item.status === APP_STATUS.DROPPED || item.status === APP_STATUS.CANCELED ? 1 : 1
 			}}
-			onPress={() => navigation.navigate(APPOINTMENT_STATUS_SCREEN, { id: item.id })}
+			onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
 		>
 
 			<View style={{ width: 5, height: '100%', backgroundColor: statusColor, borderRadius: 50, marginEnd: 5 }} />
@@ -119,7 +124,6 @@ const AppointmentGroup = ({ item, navigation }) => {
 
 	const styles = useThemedStyle(styleCreator);
 
-
 	return (
 		<View style={[styles.appContainer]}>
 
@@ -154,6 +158,82 @@ const AppointmentGroup = ({ item, navigation }) => {
 	)
 };
 
+const Appointment = ({ item, navigation }) => {
+
+	const styles = useThemedStyle(styleCreator);
+	const sColor = useColor(Theme.vars.primaryLight)
+	const t = useTranslation();
+
+	const btnData = useMemo(() => {
+		if (item.status === APP_STATUS.ACCEPTED) {
+			return {
+				title: 'Cancel',
+				color: Theme.vars.red,
+				onPress: () => changeStatus(APP_STATUS.CANCELED)
+			}
+		}
+		else if (item.status === APP_STATUS.WAITING) {
+			return {
+				title: 'Withdraw',
+				color: Theme.vars.red,
+				onPress: () => changeStatus(APP_STATUS.DROPPED)
+			}
+		}
+
+	}, [item.status]);
+
+	return (
+		<Pressable
+			style={[styles.appContainer]}
+			onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
+		>
+
+			<View style={[styles.appHeader]}>
+				<XText bold>{item._date} - {item._from}</XText>
+				<XButtonIcon
+					icon='edit'
+					size={32}
+					colorName={Theme.vars.primary}
+					onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
+				/>
+			</View>
+
+			<XSeparator />
+
+			<View style={styles.appMiddle}>
+
+				<XAvatar
+					imgPath={item.provider.imagePath}
+					size={70}
+					color={Theme.vars.green}
+					initials={getInitials(null, null, item.provider.name, null)}
+				/>
+
+				<View style={{ justifyContent: 'space-evenly', flex: 1, paddingHorizontal: 10, paddingEnd: 15 }}>
+					<XText oneLine icon='isv' bold>{item.provider.name}</XText>
+					<XText oneLine icon='enviroment' secondary>{item.provider.address1}, {item.provider.city}</XText>
+					<XText oneLine icon='tag' secondary>{item.service.name}</XText>
+				</View>
+
+			</View>
+
+			{/* <XSeparator /> */}
+
+			<View style={[styles.appFooter]}>
+				<XChip
+					color={STATUS_COLOR[item.status]}
+					text={t(item.status)}
+					textProps={{ bold: false }}
+					//bgOpacity={0}
+					icon={APP_STATUS_ICON[item.status]}
+				/>
+
+			</View>
+
+		</Pressable>
+	)
+};
+
 
 
 const MyAppointmentsScreen = ({ navigation }) => {
@@ -162,6 +242,7 @@ const MyAppointmentsScreen = ({ navigation }) => {
 	const [refresh, setRefresh] = useState(1);
 	const [loading, setLoading] = useState(false);
 	const [apps, setApps] = useState([]);
+	const [grouped, setGrouped] = useState(false);
 
 	const dateCode = useDateCode();
 	const t = useTranslation();
@@ -172,16 +253,23 @@ const MyAppointmentsScreen = ({ navigation }) => {
 		setLoading(true);
 		Http.get(`/appointment/my-appointments`, { f: filter })
 			.then(resp => {
-				setApps(arrangeData(resp, dateCode));
+				setApps(arrangeData(resp, dateCode, grouped));
 			})
 			.catch(emptyFn)
 			.finally(() => setLoading(false));
-	}, [filter, refresh, dateCode]);
+	}, [filter, refresh, dateCode, grouped]);
 
 	useFocusEffect(loadApps);
 
 
-	const itemRenderer = useCallback(({ item }) => <AppointmentGroup item={item} navigation={navigation} />, [navigation]);
+	const itemRenderer = useCallback(({ item }) => {
+
+		return grouped ?
+			<AppointmentGroup item={item} navigation={navigation} />
+			:
+			<Appointment item={item[0]} navigation={navigation} />
+
+	}, [navigation, grouped]);
 
 	return (
 		<XScreen loading={loading} flat>
@@ -207,7 +295,7 @@ const MyAppointmentsScreen = ({ navigation }) => {
 					renderItem={itemRenderer}
 					keyExtractor={(item) => item[0].id}
 					contentContainerStyle={{
-						rowGap: Theme.values.mainPaddingHorizontal,
+						rowGap: 10,
 						padding: Theme.values.mainPaddingHorizontal
 					}}
 					refreshing={loading}
@@ -221,24 +309,35 @@ const MyAppointmentsScreen = ({ navigation }) => {
 
 const styleCreator = (theme) => StyleSheet.create({
 	appContainer: {
-		paddingHorizontal: 10,
+		//paddingHorizontal: 10,
 		//borderWidth: Theme.values.borderWidth,
 		borderColor: theme.colors.borderColor,
 		borderRadius: Theme.values.borderRadius,
 		backgroundColor: theme.colors.backgroundElement
 	},
 	appHeader: {
-		// borderBottomWidth: Theme.values.borderWidth,
-		// borderColor: theme.colors.borderColor,
+		paddingHorizontal: 10,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		//paddingHorizontal: 10,
-		height: 40
+		height: 40,
+		//backgroundColor: theme.colors.yellowLight
+	},
+	appMiddle: {
+		flexDirection: 'row',
+		padding: 10,
+		paddingBottom: 0
+	},
+	appFooter: {
+		flexDirection: 'row',
+		paddingHorizontal: 10,
+		justifyContent: 'flex-end',
+		alignItems: 'center',
+		height: 45
 	},
 	appCnt: {
 		rowGap: 5,
-		//paddingHorizontal: 5,
+		paddingHorizontal: 10,
 		paddingVertical: 10
 	},
 })

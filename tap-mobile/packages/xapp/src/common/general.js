@@ -55,9 +55,9 @@ export const APP_STATUS = {
 };
 
 export const APP_STATUS_ICON = {
-	WAITING: 'hourglass',
+	WAITING: 'clockcircle',
 	ACCEPTED: 'checkcircle',
 	REJECTED: 'closecircle',
-	CANCELED: 'close',
+	CANCELED: 'exception1',
 	DROPPED: 'arrowdown'
 };

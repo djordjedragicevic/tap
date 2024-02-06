@@ -45,6 +45,11 @@ export const DateUtils = {
 	dateToString: (date = new Date()) => {
 		return `${date.getFullYear()}-${(date.getMonth() + 1).toLocaleString(undefined, { minimumIntegerDigits: 2 })}-${date.getDate().toLocaleString(undefined, { minimumIntegerDigits: 2 })}T${date.getHours().toLocaleString(undefined, { minimumIntegerDigits: 2 })}:${date.getMinutes().toLocaleString(undefined, { minimumIntegerDigits: 2 })}:${date.getSeconds().toLocaleString(undefined, { minimumIntegerDigits: 2 })}`;
 	},
+	getTimeFromDateTime: (date = new Date()) => {
+		date = DateUtils.dateToString(date);
+		const t = date.split('T').pop().split(':');
+		return (t[0] + ':' + t[1]);
+	},
 	getTimeFromDateTimeString: (date = '') => {
 		const t = date.split('T').pop().split(':');
 		return (t[0] + ':' + t[1]);
@@ -115,7 +120,7 @@ export const CurrencyUtils = {
 
 export const findFirstUpperLetter = (text) => {
 	for (let i = 0, s = text.length; i < s; i++)
-		if (text[i] === text[i].toUpperCase())
+		if (text[i] !== ' ' && text[i] === text[i].toUpperCase())
 			return text[i];
 }
 
