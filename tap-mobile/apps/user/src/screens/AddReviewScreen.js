@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
 	commentFieldStyle: {
 		flex: 1,
 		textAlignVertical: 'top',
-		paddingVertical: 10
+		//paddingVertical: 10
 	},
 	commentTextCnt: {
 		alignSelf: 'center'

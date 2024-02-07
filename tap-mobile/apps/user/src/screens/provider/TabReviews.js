@@ -170,8 +170,8 @@ const styleCreator = (theme) => {
 			alignItems: 'center'
 		},
 		selectorField: {
-			height: undefined,
-			padding: 3
+			padding: 3,
+			minHeight: 25
 		},
 		selectorFieldTitle: {
 			marginEnd: 10

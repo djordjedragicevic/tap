@@ -11,7 +11,7 @@ const XImage = (params) => {
 	return (
 		<Image
 			source={{ uri: !params.local ? `${Http.getAPI()}/asset/download?lct=${encodeURIComponent(params.imgPath)}` : params.imgPath }}
-			cachePolicy='disk'
+			cachePolicy='memory'
 			{...params}
 		/>
 	)
