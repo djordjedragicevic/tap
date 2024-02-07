@@ -9,6 +9,14 @@ import Footer from "../components/Footer";
 import AppointmentInfo from "../components/AppointmentInfo";
 import { DateUtils } from "xapp/src/common/utils";
 
+const calculateTimeTo = (app) => {
+	return DateUtils.getTimeFromDateTime(new Date(
+		new Date(app.date + 'T' + app.services[app.services.length - 1].time).getTime()
+		+
+		(app.services[app.services.length - 1].service.duration * 60 * 1000)
+	));
+};
+
 const BookAppointmentScreen = ({ navigation, route }) => {
 	const t = useTranslation();
 	const mask = useStore(gS => gS.app.maskShown);
@@ -48,17 +56,15 @@ const BookAppointmentScreen = ({ navigation, route }) => {
 				providerAddress={provider.address}
 				providerCity={provider.city}
 				timeFrom={app.services[0].time}
-				timeTo={DateUtils.getTimeFromDateTime(new Date(
-					new Date(app.date + 'T' + app.services[app.services.length - 1].time).getTime()
-					+
-					(app.services[app.services.length - 1].service.duration * 60 * 1000)
-				))}
+				timeTo={calculateTimeTo(app)}
 				date={app.date}
 				services={app.services.map(s => ({
 					id: s.service.id,
 					name: s.service.name,
 					price: s.service.price,
 					employeeName: s.employee.name,
+					duration: s.service.duration,
+					note: s.service.note,
 					start: s.time
 				}))}
 			/>

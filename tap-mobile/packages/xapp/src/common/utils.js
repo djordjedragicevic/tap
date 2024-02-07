@@ -8,6 +8,9 @@ export const getUserDisplayName = (user) => {
 };
 
 export const DateUtils = {
+	formatDuration: (duration) => {
+		return duration + ' ' + I18nT.t('min')
+	},
 	hoursDiff: (start, end) => {
 		if (end < start)
 			return (24 - start) + end;

@@ -49,8 +49,6 @@ const XSelectField = ({
 				{!!value &&
 					<XText
 						primary
-						ellipsizeMode={'tail'}
-						numberOfLines={1}
 						{...valueParams}
 					>
 						{translateValue ? t(value) : value}
@@ -74,7 +72,7 @@ const styleCreator = (theme, vertical) => {
 			:
 			{
 				flexDirection: 'column',
-				height: '100%',
+				//height: '100%',
 				justifyContent: 'space-evenly'
 			}
 	})

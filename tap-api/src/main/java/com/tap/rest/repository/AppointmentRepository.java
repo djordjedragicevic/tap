@@ -132,7 +132,7 @@ public class AppointmentRepository extends CommonRepository {
 				SELECT
 				a.id, a.joinId, a.start, a.end,
 				status.name,
-				s.id, s.name, s.duration, s.price,
+				s.id, s.name, s.duration, s.price, s.note,
 				e.id, e.name,
 				p.id AS pId, p.name, p.imagePath, pT.name,
 				add.address1,
@@ -168,6 +168,7 @@ public class AppointmentRepository extends CommonRepository {
 				"service.name",
 				"service.duration",
 				"service.price",
+				"service.note",
 				"employee.id",
 				"employee.name",
 				"provider.id",
@@ -189,6 +190,7 @@ public class AppointmentRepository extends CommonRepository {
 
 				"a.service.id AS serviceId",
 				"a.service.name AS serviceName",
+				"a.service.note AS serviceNote",
 				"a.service.price AS servicePrice",
 				"a.service.duration AS serviceDuration",
 

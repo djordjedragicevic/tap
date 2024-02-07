@@ -65,7 +65,7 @@ export const Theme = {
 			borderColor: 'hsl(0, 0%, 85%)',
 
 			gray: 'hsl(0, 0%, 60%)',
-			grayLight: 'hsl(0, 0%, 95%)',
+			grayLight: 'hsl(0, 0%, 90%)',
 
 			red: 'hsl(0, 100%, 50%)',
 			redLight: 'hsl(0, 100%, 95%)',
@@ -75,7 +75,7 @@ export const Theme = {
 			greenLight: 'hsl(177, 70%, 92%)',
 
 			yellow: 'hsl(45, 100%, 50%)',
-			yellowLight: 'hsl(45, 100%, 95%)',
+			yellowLight: 'hsl(50, 100%, 97%)',
 
 			orange: 'hsl(28, 100%, 50%)',
 			orangeLight: 'hsl(28, 100%, 95%)',
@@ -109,29 +109,29 @@ export const Theme = {
 			borderColor: 'hsl(0, 0%, 25%)',
 
 			gray: 'hsl(0, 0%, 60%)',
-			grayLight: 'hsl(0, 0%, 95%)',
+			grayLight: 'hsl(0, 0%, 25%)',
 
-			red: 'hsl(0, 100%, 40%)',
-			redLight: 'hsl(0, 100%, 95%)',
+			red: 'hsl(0, 100%, 45%)',
+			redLight: 'hsl(0, 100%, 15%)',
 			redDark: 'hsl(0, 100%, 27%)',
 
 			green: 'hsl(177, 70%, 41%)',
-			greenLight: 'hsl(177, 70%, 92%)',
+			greenLight: 'hsl(177, 70%, 15%)',
 
 			yellow: 'hsl(51, 100%, 40%)',
-			yellowLight: 'hsl(51, 100%, 95%)',
+			yellowLight: 'hsl(51, 100%, 15%)',
 
 			orange: 'hsl(28, 100%, 50%)',
-			orangeLight: 'hsl(28, 100%, 95%)',
+			orangeLight: 'hsl(28, 100%, 15%)',
 
 			blue: 'hsl(225, 100%, 45%)',
-			blueLight: 'hsl(225, 100%, 95%)',
+			blueLight: 'hsl(225, 100%, 15%)',
 
 			purple: 'hsl(330, 100%, 30%)',
-			purpleLight: 'hsl(330, 100%, 95%)',
+			purpleLight: 'hsl(330, 100%, 15%)',
 
-			brown: 'hsl(25, 76%, 31%)',
-			brownLight: 'hsl(25, 76%, 95%)'
+			brown: 'hsl(25, 76%, 41%)',
+			brownLight: 'hsl(25, 76%, 15%)'
 		}
 	},
 	opacity: (color, v) => {

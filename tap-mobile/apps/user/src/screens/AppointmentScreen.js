@@ -1,14 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import { Http } from "xapp/src/common/Http";
-import { APP_STATUS } from "xapp/src/common/general";
+import { APP_STATUS, APP_STATUS_ICON } from "xapp/src/common/general";
 import { DateUtils, emptyFn } from "xapp/src/common/utils";
 import XScreen from "xapp/src/components/XScreen";
 import XButton from "xapp/src/components/basic/XButton";
-import { useDateCode, useTranslation } from "xapp/src/i18n/I18nContext";
+import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { Theme } from "xapp/src/style/themes";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XTextInput from "xapp/src/components/basic/XTextInput";
 import AppointmentInfo from "../components/AppointmentInfo";
+import XAlert from "xapp/src/components/basic/XAlert";
+import { useColor } from "xapp/src/style/ThemeContext";
+import { STATUS_COLOR } from "../common/general";
+import { View } from "react-native";
+import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
+import XText from "xapp/src/components/basic/XText";
+import XSection from "xapp/src/components/basic/XSection";
+import utils from "../common/utils";
 
 const ChangeStatusSection = ({ status, appointmentId, navigation }) => {
 	const t = useTranslation();
@@ -16,13 +24,11 @@ const ChangeStatusSection = ({ status, appointmentId, navigation }) => {
 
 	const changeStatus = (newStatus) => {
 
-		Http.post(`/appointment/${appointmentId}/edit-status`,
-			{
-				appointmentstatus: { name: newStatus },
-				statusComment: comment
-			})
-			.then(() => navigation.goBack())
-			.catch(emptyFn);
+		XAlert.askEdit(() => {
+			Http.post(`/appointment/${appointmentId}/edit-status`, { appointmentstatus: { name: newStatus }, statusComment: comment })
+				.then(() => navigation.goBack())
+				.catch(emptyFn);
+		})
 	};
 
 	const btnData = useMemo(() => {
@@ -51,26 +57,29 @@ const ChangeStatusSection = ({ status, appointmentId, navigation }) => {
 		<>
 			<XSeparator margin={10} style={{ marginBottom: 10, marginTop: 20 }} />
 
-			<XTextInput
+			<XSection
 				title={t('Comment')}
-				outline
-				fieldStyle={{ flex: 1, textAlignVertical: 'top', paddingVertical: 10 }}
-				fieldContainerStyle={{ height: 80 }}
-				value={comment}
-				multiline
-				clearable
-				onClear={() => setComment('')}
-				onChangeText={setComment}
-			/>
+				transparent
+			>
+				<XTextInput
+					outline
+					fieldStyle={{ flex: 1, textAlignVertical: 'top', paddingVertical: 10 }}
+					fieldContainerStyle={{ height: 80 }}
+					value={comment}
+					multiline
+					clearable
+					onClear={() => setComment('')}
+					onChangeText={setComment}
+				/>
 
-			<XButton
-				style={{ marginTop: 10 }}
-				colorName={btnData.color}
-				secondary
-				uppercase={false}
-				title={t(btnData.title)}
-				onPress={btnData.onPress}
-			/>
+				<XButton
+					style={{ marginTop: 10 }}
+					colorName={btnData.color}
+					secondary
+					title={t(btnData.title)}
+					onPress={btnData.onPress}
+				/>
+			</XSection>
 		</>
 	)
 };
@@ -79,8 +88,10 @@ const ChangeStatusSection = ({ status, appointmentId, navigation }) => {
 const AppointmentScreen = ({ navigation, route }) => {
 
 	const id = route.params.id;
+	const t = useTranslation();
 
 	const [data, setData] = useState({ services: [{ id: -1 }] });
+	const statusColor = useColor(STATUS_COLOR[data.status]);
 
 	useEffect(() => {
 		Http.get(`/appointment/${id}`)
@@ -88,9 +99,14 @@ const AppointmentScreen = ({ navigation, route }) => {
 			.catch(emptyFn);
 	}, []);
 
+	console.log(utils.isHistoryServices(data?.start));
+
+	if (!data)
+		return null;
 
 	return (
 		<XScreen scroll>
+
 			<AppointmentInfo
 				providerName={data.providerName}
 				providerType={data.providerType}
@@ -104,15 +120,44 @@ const AppointmentScreen = ({ navigation, route }) => {
 					name: data.serviceName,
 					price: data.servicePrice,
 					start: DateUtils.getTimeFromDateTimeString(data.start),
-					employeeName: data.employeeName
+					duration: data.serviceDuration,
+					employeeName: data.employeeName,
+					note: data.serviceNote
 				}]}
+				extraFields={
+					<XFieldContainer
+						iconLeftSize={24}
+						iconLeft={APP_STATUS_ICON[data.status]}
+						iconLeftColor={statusColor}
+					>
+						<View>
+							<XText secondary>{t('Status')}</XText>
+							<XText bold color={statusColor}>{t(data.status)}</XText>
+						</View>
+						{
+							data.statusComment &&
+							<View style={{ marginTop: 8 }}>
+								<XText secondary>{data.statusComment}</XText>
+							</View>
+						}
+
+					</XFieldContainer>
+
+				}
 			/>
 
-			<ChangeStatusSection
-				status={data.status}
-				appointmentId={id}
-				navigation={navigation}
-			/>
+
+
+			{
+				utils.isHistoryServices(data?.start) ?
+					null
+					:
+					<ChangeStatusSection
+						status={data.status}
+						appointmentId={id}
+						navigation={navigation}
+					/>
+			}
 
 		</XScreen>
 	);

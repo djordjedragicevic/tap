@@ -12,6 +12,8 @@ export const strings = {
 	"To": "To",
 	"No items": "No items",
 	"Sort by": "Sort by",
+	"h": "h",
+	"min": "min",
 	//-----------------------
 
 	"Canceled": "Canceled",
@@ -27,5 +29,6 @@ export const strings = {
 
 	"Service": "Service",
 	"Price": "Price",
+	"Price Sum": "Price Sum",
 	"Status": "Status"
 };

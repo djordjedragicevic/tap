@@ -7,7 +7,7 @@ import { useDateCode, useTranslation } from "xapp/src/i18n/I18nContext";
 import XButton from "xapp/src/components/basic/XButton";
 import { Theme } from "xapp/src/style/themes";
 import XSegmentedButton from "xapp/src/components/basic/XSegmentedButton";
-import { useColor, usePrimaryColor, useThemedStyle } from "xapp/src/style/ThemeContext";
+import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { useFocusEffect } from '@react-navigation/native';
 import { DateUtils, emptyFn, getInitials } from "xapp/src/common/utils";
 import XImage from "xapp/src/components/basic/XImage";
@@ -18,7 +18,6 @@ import XChip from "xapp/src/components/basic/XChip";
 import { APPOINTMENT_SCREEN } from "../navigators/routes";
 import { APP_STATUS, APP_STATUS_ICON } from "xapp/src/common/general";
 import { STATUS_COLOR } from "../common/general";
-import HairSalon from "../components/svg/HairSalon";
 import XAvatar from "xapp/src/components/basic/XAvatar";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 
@@ -55,26 +54,9 @@ const arrangeData = (data, dateCode, grouped) => {
 	return newData;
 };
 
-
-const getStatus = (apps) => {
-	if (!Array.isArray(apps))
-		return apps.status;
-	if (apps.filter(a => a.status === STATUS.ACCEPTED).length === apps.length)
-		return STATUS.ACCEPTED;
-	else if (apps.filter(a => a.status === STATUS.REJECTED).length > 0)
-		return STATUS.REJECTED;
-	else if (apps.filter(a => a.status === STATUS.CANCELED).length > 0)
-		return STATUS.CANCELED;
-	else
-		return STATUS.WAITING;
-
-};
-
-
 const ServiceRow = ({ item, navigation }) => {
 
 	const statusColor = useColor(STATUS_COLOR[item.status]);
-	const t = useTranslation();
 	const pColor = useColor('textSecondary');
 
 	return (
@@ -151,7 +133,7 @@ const AppointmentGroup = ({ item, navigation }) => {
 			</View>
 			{/* <XSeparator margin={5} style={{ marginVertical: 5 }} /> */}
 
-			<View style={styles.appCnt}>
+			<View style={styles.gropedServicesContainer}>
 				{item.map(app => <ServiceRow navigation={navigation} key={app.id} item={app} />)}
 			</View>
 		</View>
@@ -161,26 +143,7 @@ const AppointmentGroup = ({ item, navigation }) => {
 const Appointment = ({ item, navigation }) => {
 
 	const styles = useThemedStyle(styleCreator);
-	const sColor = useColor(Theme.vars.primaryLight)
 	const t = useTranslation();
-
-	const btnData = useMemo(() => {
-		if (item.status === APP_STATUS.ACCEPTED) {
-			return {
-				title: 'Cancel',
-				color: Theme.vars.red,
-				onPress: () => changeStatus(APP_STATUS.CANCELED)
-			}
-		}
-		else if (item.status === APP_STATUS.WAITING) {
-			return {
-				title: 'Withdraw',
-				color: Theme.vars.red,
-				onPress: () => changeStatus(APP_STATUS.DROPPED)
-			}
-		}
-
-	}, [item.status]);
 
 	return (
 		<Pressable
@@ -217,14 +180,11 @@ const Appointment = ({ item, navigation }) => {
 
 			</View>
 
-			{/* <XSeparator /> */}
-
 			<View style={[styles.appFooter]}>
 				<XChip
 					color={STATUS_COLOR[item.status]}
 					text={t(item.status)}
 					textProps={{ bold: false }}
-					//bgOpacity={0}
 					icon={APP_STATUS_ICON[item.status]}
 				/>
 
@@ -241,7 +201,7 @@ const MyAppointmentsScreen = ({ navigation }) => {
 	const [filter, setFilter] = useState('coming');
 	const [refresh, setRefresh] = useState(1);
 	const [loading, setLoading] = useState(false);
-	const [apps, setApps] = useState([]);
+	const [apps, setApps] = useState();
 	const [grouped, setGrouped] = useState(false);
 
 	const dateCode = useDateCode();
@@ -287,20 +247,23 @@ const MyAppointmentsScreen = ({ navigation }) => {
 				initialIndex={0}
 			/>
 
-			{!apps?.length ?
-				<XEmptyListIcon text={t('No appointments')} />
-				:
-				<FlatList
-					data={apps}
-					renderItem={itemRenderer}
-					keyExtractor={(item) => item[0].id}
-					contentContainerStyle={{
-						rowGap: 10,
-						padding: Theme.values.mainPaddingHorizontal
-					}}
-					refreshing={loading}
-					onRefresh={() => setRefresh(old => old + 1)}
-				/>
+			{apps ?
+				apps.length ?
+					<FlatList
+						data={apps}
+						renderItem={itemRenderer}
+						keyExtractor={(item) => item[0].id}
+						style={{ flex: 1 }}
+						contentContainerStyle={{
+							rowGap: 10,
+							padding: Theme.values.mainPaddingHorizontal
+						}}
+						refreshing={loading}
+						onRefresh={() => setRefresh(old => old + 1)}
+					/>
+					:
+					<XEmptyListIcon text={t('No appointments')} />
+				: null
 			}
 
 		</XScreen>
@@ -309,8 +272,6 @@ const MyAppointmentsScreen = ({ navigation }) => {
 
 const styleCreator = (theme) => StyleSheet.create({
 	appContainer: {
-		//paddingHorizontal: 10,
-		//borderWidth: Theme.values.borderWidth,
 		borderColor: theme.colors.borderColor,
 		borderRadius: Theme.values.borderRadius,
 		backgroundColor: theme.colors.backgroundElement
@@ -320,8 +281,7 @@ const styleCreator = (theme) => StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		height: 40,
-		//backgroundColor: theme.colors.yellowLight
+		height: 40
 	},
 	appMiddle: {
 		flexDirection: 'row',
@@ -335,11 +295,11 @@ const styleCreator = (theme) => StyleSheet.create({
 		alignItems: 'center',
 		height: 45
 	},
-	appCnt: {
+	gropedServicesContainer: {
 		rowGap: 5,
 		paddingHorizontal: 10,
 		paddingVertical: 10
-	},
+	}
 })
 
 export default MyAppointmentsScreen;
