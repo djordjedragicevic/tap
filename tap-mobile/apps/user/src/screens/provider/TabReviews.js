@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState, memo } from 'react';
 import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Http } from 'xapp/src/common/Http';
 import { emptyFn } from 'xapp/src/common/utils';
@@ -8,10 +8,8 @@ import XSeparator from 'xapp/src/components/basic/XSeparator';
 import { usePrimaryColor, useThemedStyle } from 'xapp/src/style/ThemeContext';
 import I18nT from 'xapp/src/i18n/i18n';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
-import { Theme } from 'xapp/src/style/themes';
 import { ADD_REVIEW_SCREEN } from '../../navigators/routes';
 import { useIsUserLogged } from '../../store/concreteStores';
-import XButton from 'xapp/src/components/basic/XButton';
 import XSelector from 'xapp/src/components/basic/XSelector';
 
 const calculateTimeAgo = (data) => {
@@ -183,4 +181,4 @@ const styleCreator = (theme) => {
 	})
 };
 
-export default TabReviews;
+export default memo(TabReviews);

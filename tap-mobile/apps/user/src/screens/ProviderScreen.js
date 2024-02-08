@@ -13,7 +13,7 @@ import { storeDispatch, useStore } from "xapp/src/store/store";
 import { FREE_APPOINTMENTS_SCREEN } from "../navigators/routes";
 import { AntDesign } from '@expo/vector-icons';
 import Footer from "../components/Footer";
-import { XTabView, XTabScreen } from "xapp/src/components/tabview/XTabView";
+import { XTabView } from "xapp/src/components/tabview/XTabView";
 import XImage from "xapp/src/components/basic/XImage";
 import utils from "../common/utils";
 import TabAbout from "./provider/TabAbout";
@@ -30,24 +30,22 @@ const HEADER_IMAGE_HEIGHT = 230;
 const CNT_NEG_TOP_MARGIN = -20;
 const CHIP_MARK_TOP_MARGIN = (Theme.values.chipHeight / 2 * -1) - CNT_NEG_TOP_MARGIN;
 
-const ProviderScreen = ({ navigation, route }) => {
+const getPriceSum = (selected) => {
+	return selected?.length ? CurrencyUtils.convert(selected.map(s => s.price).reduce((accumulator, price) => accumulator + price, 0)) : '-';
+};
 
-	const providerId = route.params.id;
+
+const ProviderScreen = ({ navigation, route }) => {
 
 	const t = useTranslation();
 	const styles = useThemedStyle(styleCreator)
 	const [pColor, sColor] = useColor(['primary', 'secondary']);
 
-	const [data, setData] = useState({
-		about: {
-			workPeriods: [],
-			employees: []
-		},
-		services: []
-	});
-	const [selectedIds, setSelectedIdxs] = useState([]);
-	const [priceSum, setPriceSum] = useState();
+	const providerId = route.params.item.id;
+	const [data, setData] = useState({ about: { ...route.params.item } });
+
 	const [favoriteDisabled, setFavoriteDisabled] = useState(false);
+	const [selectedServices, setSelectedServices] = useState([]);
 
 	const userLoged = useIsUserLogged();
 
@@ -55,16 +53,13 @@ const ProviderScreen = ({ navigation, route }) => {
 	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
 
 	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
-	const onFooterClear = useCallback(() => setSelectedIdxs([]), []);
+	const onFooterClear = useCallback(() => setSelectedServices([]), []);
 
 	const loadData = useCallback(() => {
-		//setLoadCount(c => c + 1);
 		Http.get(`/provider/${providerId}`)
-			.then(resp => {
-				setData(resp);
-			})
+			.then(setData)
 			.catch(emptyFn);
-	}, [providerId]);
+	}, []);
 
 	useFocusEffect(loadData);
 
@@ -81,7 +76,7 @@ const ProviderScreen = ({ navigation, route }) => {
 		<>
 			<View style={{ height: HEADER_IMAGE_HEIGHT }}>
 				{
-					data.about.mainImg ?
+					data?.about.mainImg ?
 						<XImage
 							imgPath={data.about.mainImg}
 							style={styles.headerImage}
@@ -105,54 +100,51 @@ const ProviderScreen = ({ navigation, route }) => {
 				/>
 
 				<View style={styles.chipMark}>
-					<XChip primary text={utils.generateMarkString(data.about.mark, data.about.reviewCount)} />
+					<XChip primary text={utils.generateMarkString(data?.about.mark, data?.about.reviewCount)} />
 				</View>
 			</View>
 
 			<View style={styles.content}>
-				{
-					!!data
-					&&
-					<>
-						<View style={styles.titleCnt}>
-							<XText oneLine bold size={18}>{data.about.name} - {data.about.providerType}</XText>
-						</View>
 
-						<XTabView style={styles.tabView} tabBarStyle={styles.tabBar}>
+				<View style={styles.titleCnt}>
+					<XText oneLine bold size={18}>{data?.about.name} - {data?.about.providerType}</XText>
+				</View>
 
-							<XTabScreen title={t('About')} flex={1}>
-								<TabAbout
-									data={data.about}
+				<XTabView
+					routes={[
+						{ key: 'about', title: t('About') },
+						{ key: 'services', title: t('Services') },
+						{ key: 'reviews', title: t('Reviews') }
+					]}
+					renderScene={({ route }) => {
+						switch (route.key) {
+							case 'about':
+								return <TabAbout
 									navigation={navigation}
-								/>
-							</XTabScreen>
-
-							<XTabScreen title={t('Services')} flex={1}>
-								<TabServices
+									data={data}
+								/>;
+							case 'services':
+								return <TabServices
 									navigation={navigation}
-									providerId={providerId}
-									selected={selectedIds}
-									setSelected={setSelectedIdxs}
-									setPriceSum={setPriceSum}
-								/>
-							</XTabScreen>
-
-							<XTabScreen title={t('Review')} flex={1}>
-								<TabReviews
+									setSelected={setSelectedServices}
+									selected={selectedServices}
+									servicesRaw={data.services}
+								/>;
+							case 'reviews':
+								return <TabReviews
 									providerId={providerId}
 									navigation={navigation}
 									reload={data}
-								/>
-							</XTabScreen>
-						</XTabView>
-					</>
-				}
+								/>;
+						}
+					}}
+				/>
 			</View>
 
 			<Footer>
 
 				<XButtonIcon
-					disabled={!selectedIds?.length}
+					disabled={!selectedServices?.length}
 					icon='close'
 					backgroundColor='transparent'
 					onPress={onFooterClear}
@@ -161,8 +153,8 @@ const ProviderScreen = ({ navigation, route }) => {
 				<View style={styles.footerServCnt}>
 					{
 						<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-							<XText light>{selectedIds?.length > 0 ? selectedIds.length : '-'} {t('services')}</XText>
-							<XText size={16} bold light>{priceSum ? CurrencyUtils.convert(priceSum) : '-'}</XText>
+							<XText light>{selectedServices?.length > 0 ? selectedServices.length : '-'} {t('services')}</XText>
+							<XText size={16} bold light>{getPriceSum(selectedServices)}</XText>
 						</View>
 					}
 				</View>
@@ -170,11 +162,11 @@ const ProviderScreen = ({ navigation, route }) => {
 				<XButton
 					title={t('Find appointment')}
 					primary
-					disabled={!selectedIds?.length}
+					disabled={!selectedServices?.length}
 					style={styles.footerBtnFind}
 					onPress={() => {
 						if (userLoged)
-							navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: [...selectedIds], providerId });
+							navigation.navigate(FREE_APPOINTMENTS_SCREEN, { services: selectedServices.map(s => s.id), providerId });
 						else
 							handleUnauth()
 					}}

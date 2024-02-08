@@ -44,8 +44,8 @@ const AddReviewScreen = ({ navigation, route }) => {
 				<XMarkStars
 					mark={selectedMark}
 					showChip={false}
-					starSize={32}
-					starsGap={10}
+					starSize={36}
+					starStyle={styles.star}
 					onStarPress={setSelectedMark}
 				/>
 			</View>
@@ -78,6 +78,10 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		height: 140,
 		justifyContent: 'center'
+	},
+	star: {
+		paddingVertical: 10,
+		paddingHorizontal: 5,
 	},
 	commentCnt: {
 		paddingHorizontal: 20,

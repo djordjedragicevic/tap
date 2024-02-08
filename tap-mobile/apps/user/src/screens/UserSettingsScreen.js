@@ -87,24 +87,25 @@ const UserSettingsScreen = ({ navigation }) => {
 			</View>
 
 			<View style={{ padding: 10, rowGap: 10 }}>
-				{
-					isLogged &&
-					<XSection>
-						<XSelectField
-							title={t('Manage account')}
-							iconLeft='user'
-							iconRight='right'
-							onPress={() => navigation.navigate(MANAGE_ACCOUNT_SCREEN)}
-						/>
-						<XSelectField
-							title={t('Saved providers')}
-							iconLeft='heart'
-							iconRight='right'
-							onPress={() => navigation.navigate(FAVORITE_PROVIDERS_SCREEN)}
-						/>
-					</XSection>
-				}
-				<XSection>
+
+				<View style={{ rowGap: 8 }}>
+					{
+						isLogged &&
+						<>
+							<XSelectField
+								title={t('Manage account')}
+								iconLeft='user'
+								iconRight='right'
+								onPress={() => navigation.navigate(MANAGE_ACCOUNT_SCREEN)}
+							/>
+							<XSelectField
+								title={t('Saved providers')}
+								iconLeft='heart'
+								iconRight='right'
+								onPress={() => navigation.navigate(FAVORITE_PROVIDERS_SCREEN)}
+							/>
+						</>
+					}
 					<XSelector
 						title={t('Appearance')}
 						iconLeft='bulb1'
@@ -127,7 +128,7 @@ const UserSettingsScreen = ({ navigation }) => {
 							title: t('Language')
 						}}
 					/>
-				</XSection>
+				</View>
 
 				{isLogged &&
 					<XButton

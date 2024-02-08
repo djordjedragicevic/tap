@@ -86,7 +86,7 @@ const createStyle = (theme, outline, focused, flex, flexCenter) => {
 			borderColor: focused ? theme.colors.primary : theme.colors.borderColor,
 			flexDirection: 'row',
 			backgroundColor: theme.colors.backgroundElement,
-			minHeight: 40,
+			minHeight: 44,
 			paddingVertical: 5,
 			flex: flex ? 1 : undefined
 		},

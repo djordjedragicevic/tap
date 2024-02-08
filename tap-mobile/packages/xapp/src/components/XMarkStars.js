@@ -6,7 +6,16 @@ import { AntDesign } from "@expo/vector-icons";
 import XText from "./basic/XText";
 import React from "react";
 
-const XMarkStars = ({ mark, reviewCount, style, starsGap = 0, showChip = true, starSize = 18, onStarPress }) => {
+const XMarkStars = ({
+	mark,
+	reviewCount,
+	style,
+	starsGap = 0,
+	showChip = true,
+	starSize = 18,
+	onStarPress,
+	starStyle
+}) => {
 
 	const starCount = Math.floor(mark);
 	const stars = Array.from({ length: 5 }, (_, idx) => idx + 1);
@@ -20,6 +29,7 @@ const XMarkStars = ({ mark, reviewCount, style, starsGap = 0, showChip = true, s
 				{stars.map(c => (
 					<Pressable
 						key={c}
+						style={starStyle}
 						onPress={() => {
 							if (onStarPress instanceof Function)
 								onStarPress(c);

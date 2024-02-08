@@ -20,7 +20,16 @@ const ProvidersScreen = ({ navigation }) => {
 	const renderCompany = useCallback(({ item, index }) => {
 		return (
 			<XSection
-				onPress={() => navigation.navigate(PROVIDER_SCREEN, { id: item.id })}
+				onPress={() => navigation.navigate(PROVIDER_SCREEN, {
+					item: {
+						id: item.id,
+						name: item.name,
+						providerType: item.providerType,
+						mark: item.mark,
+						reviewCount: item.reviewCount,
+						mainImg: item.mainImg
+					}
+				})}
 				styleContent={styles.sectionContainer}
 			>
 				<View style={{ height: 150 }}>
