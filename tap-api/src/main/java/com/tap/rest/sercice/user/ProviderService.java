@@ -53,7 +53,7 @@ public class ProviderService {
 
 		Map<String, Object> resp = new HashMap<>();
 		boolean noFilters = getAbout == null && getEmployees == null && getWPs == null && getServices == null;
-
+		
 		try {
 			if (noFilters || (getAbout != null && getAbout == 1))
 				resp.put("about", providerRepository.getProviderData(id));
