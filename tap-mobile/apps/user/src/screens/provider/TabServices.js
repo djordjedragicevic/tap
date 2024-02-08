@@ -1,5 +1,4 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { useHTTPGet } from "xapp/src/common/Http";
 import { StyleSheet, Pressable, View, SectionList } from "react-native";
 import { Theme } from "xapp/src/style/themes";
 import XCheckBox from "xapp/src/components/basic/XCheckBox";
@@ -8,8 +7,6 @@ import XToolbarContainer from "xapp/src/components/XToolbarContainer";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { groupServices } from "xapp/src/common/general";
-
-let lastP = {};
 
 const areSIEqual = (oldProps, newProps) => {
 	return oldProps.id === newProps.id && oldProps.isSelected === newProps.isSelected;
@@ -86,27 +83,24 @@ const serviceItemSC = (theme) => StyleSheet.create({
 
 
 const TabServices = ({
-	providerId,
 	selected,
 	setSelected,
-	setPriceSum
+	setPriceSum,
+	servicesRaw
 }) => {
 
 	const [selectedCatIdx, setSelectedCatIdx] = useState(0);
+
 	const styles = useThemedStyle(styleCreator);
 
-	const [provider] = useHTTPGet(`/provider/${providerId}`, undefined, lastP[providerId]);
-	lastP[providerId] = provider;
+	const services = useMemo(() => groupServices(servicesRaw), [servicesRaw]);
 
-	const services = useMemo(() => groupServices(provider?.services), [provider]);
 	const hasCats = services?.categoryList.length > 1;
 
 	useEffect(() => {
 		const priceSum = selected.map(sId => services.sMap[sId].price).reduce((accumulator, price) => accumulator + price, 0);
 		setPriceSum(priceSum)
 	}, [selected, services, setPriceSum]);
-
-
 
 	const onItemPress = useCallback((itemId) => {
 		const selectedIdx = selected.indexOf(itemId);
@@ -132,8 +126,11 @@ const TabServices = ({
 			<>
 				{
 					title !== '__default' &&
+
 					<View style={styles.sHeaderContainer}>
-						<XText size={15}>{title}</XText>
+						<View style={styles.sHeaderLineBef} />
+						<XText bold size={15} secondary>{title}</XText>
+						<View style={styles.sHeaderLineAf} />
 					</View>
 				}
 			</>
@@ -154,7 +151,7 @@ const TabServices = ({
 		)
 	}, [setSelectedCatIdx, selectedCatIdx]);
 
-	if (!provider)
+	if (!services)
 		return null;
 
 
@@ -179,7 +176,6 @@ const TabServices = ({
 				contentContainerStyle={styles.sContentContainerStyle}
 				showsVerticalScrollIndicator={true}
 				scrollEventThrottle={16}
-
 			/>
 		</View>
 	);
@@ -187,15 +183,27 @@ const TabServices = ({
 
 const styleCreator = (theme) => StyleSheet.create({
 	sHeaderContainer: {
-		justifyContent: 'flex-end',
+		flexDirection: 'row',
+		alignItems: 'center',
 		padding: 5,
-		paddingVertical: 8,
-		backgroundColor: theme.colors.primaryLight,
+		paddingTop: 15,
+		paddingBottom: 0,
 		borderRadius: Theme.values.borderRadius
+	},
+	sHeaderLineBef: {
+		borderBottomWidth: Theme.values.borderWidth,
+		borderColor: theme.colors.borderColor,
+		width: 30,
+		marginEnd: 15
+	},
+	sHeaderLineAf: {
+		borderBottomWidth: Theme.values.borderWidth,
+		borderColor: theme.colors.borderColor,
+		flex: 1,
+		marginStart: 15
 	},
 	sContentContainerStyle: {
 		padding: 10,
-		//marginTop: 5,
 		backgroundColor: theme.colors.backgroundColor,
 	},
 	category: {

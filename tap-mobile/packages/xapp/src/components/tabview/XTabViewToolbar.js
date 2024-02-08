@@ -7,7 +7,7 @@ import { Theme } from "../../style/themes";
 
 
 
-const XTabViewToolbarItem = ({ title, onPress, selected, minItemWidth }) => {
+export const XTabViewToolbarItem = ({ title, onPress, selected, minItemWidth }) => {
 
 	const styles = useThemedStyle(styleCreator, minItemWidth);
 

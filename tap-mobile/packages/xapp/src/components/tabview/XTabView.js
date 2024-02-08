@@ -1,49 +1,50 @@
-import React, { Children, useCallback, useMemo, useState } from "react";
-import XTabViewToolbar from "./XTabViewToolbar";
-import { emptyFn } from "../../common/utils";
-import { View } from "react-native";
+import React, { useCallback, useState } from "react";
+import { StyleSheet, useWindowDimensions } from "react-native";
+import { TabView, TabBar } from 'react-native-tab-view';
+import { Theme } from "../../style/themes";
+import XText from "../basic/XText";
+import { useThemedStyle } from "../../style/ThemeContext";
 
-export const XTabScreen = ({ component = emptyFn }) => null;
+export const XTabView = ({ routes, renderScene }) => {
 
-export const XTabView = ({ onTabPress = emptyFn, children, tabBarStyle, ...other }) => {
+	const [index, setIndex] = useState(0);
 
-	const [selectedTabIdx, setSelectedTabIdx] = useState(0);
+	const layout = useWindowDimensions();
 
-	const onTabPressIntern = useCallback((index) => {
-		setSelectedTabIdx(index)
-		onTabPress(index);
-	}, [setSelectedTabIdx, onTabPress]);
+	const styles = useThemedStyle(styleCreator);
 
-	const tabsData = useMemo(() => {
-		let currIdx = 0;
-
-		return Children.map(children, (c) => {
-			if (!React.isValidElement(c) || (c.type.name !== XTabScreen.name))
-				console.error('Expected type of children is "XTabScreen". Got wrong type at index: ' + currIdx);
-
-			return {
-				title: c.props.title,
-				id: c.props.id,
-				idx: currIdx++
-			}
-		});
-	}, [children, onTabPressIntern]);
+	const renderLabel = useCallback(({ route, focused }) => (
+		<XText bold colorPrimary={focused}>{route.title}</XText>
+	), []);
 
 	return (
-		<View {...other}>
-			<XTabViewToolbar
-				items={tabsData}
-				onItemPress={onTabPressIntern}
-				selectedIdx={selectedTabIdx}
-				style={tabBarStyle}
-			/>
-			<View
-				{...children[selectedTabIdx].props}
-				style={[children[selectedTabIdx].props.style]}
-			>
-				{children[selectedTabIdx].props.component?.() || children[selectedTabIdx].props.children}
-			</View>
-		</View>
+		<TabView
+			navigationState={{ index, routes }}
+			renderTabBar={props => (
+				<TabBar
+					{...props}
+					style={styles.tabBar}
+					pressColor='transparent'
+					renderLabel={renderLabel}
+					indicatorStyle={styles.indicator}
+				/>
+			)}
+			renderScene={renderScene}
+			onIndexChange={setIndex}
+			initialLayout={{ width: layout.width }}
+		/>
 	);
 };
 
+const styleCreator = (theme) => StyleSheet.create({
+	indicator: {
+		backgroundColor: theme.colors.primary,
+		height: 5,
+		borderTopEndRadius: Theme.values.borderRadius,
+		borderTopStartRadius: Theme.values.borderRadius
+	},
+	tabBar: {
+		backgroundColor: theme.colors.backgroundElement,
+		elevation: 0
+	}
+});

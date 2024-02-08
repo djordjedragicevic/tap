@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { DateUtils } from "xapp/src/common/utils";
 import XAvatar from "xapp/src/components/basic/XAvatar";
@@ -8,10 +7,8 @@ import XLink from "xapp/src/components/basic/XLink";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { MAP_SCREEN } from "../../navigators/routes";
 import { Foundation } from '@expo/vector-icons';
-import XSeparator from "xapp/src/components/basic/XSeparator";
 import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
-
 
 const mapWorkPeriods = (workPeriods) => {
 	const wPMap = {
@@ -50,41 +47,43 @@ const isOpened = (day, values) => {
 	}
 
 	return [isDay, isWorking];
-
 };
 
+const TabAbout = ({ data, navigation }) => {
 
-const TabAbout = ({ data = {}, navigation }) => {
-	const t = useTranslation();
 	const styles = useThemedStyle(styleCreator);
-
-	const wPs = useMemo(() => mapWorkPeriods(data.workPeriods), [data?.workPeriods]);
+	const t = useTranslation();
 	const [cGreen, cRed] = useColor(['green', 'red']);
+
+	if (!data?.workPeriods || !data?.employees)
+		return null;
+
+	const wPs = mapWorkPeriods(data.workPeriods);
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
 
 			{
-				data.description &&
+				data.about.description &&
 				<XSection>
-					<XText style={styles.description}>{data.description}</XText>
+					<XText style={styles.description}>{data.about.description}</XText>
 				</XSection>
 			}
 
 			<XSection title={t('Address')}>
 				<View style={styles.infoCont}>
-					<XText icon={'enviroment'}>{data.address}, {data.city}</XText>
+					<XText icon={'enviroment'}>{data.about.address}, {data.about.city}</XText>
 
-					{!!data?.phone && <XText icon={'phone'}>{data.phone}</XText>}
+					{!!data?.about?.phone && <XText icon={'phone'}>{data.about.phone}</XText>}
 					{
-						!!(data.lat && data.lon) &&
+						!!(data.about.lat && data.about.lon) &&
 						<XLink
 							icon={({ size, color }) => <Foundation name="map" size={size} color={color} />}
 							onPress={() => navigation.navigate(MAP_SCREEN, {
-								lat: data.lat,
-								lon: data.lon,
-								title: data.name,
-								description: data.type
+								lat: data.about.lat,
+								lon: data.about.lon,
+								title: data.about.name,
+								description: data.about.type
 							})}
 						>
 							{t('Map')}
@@ -93,16 +92,13 @@ const TabAbout = ({ data = {}, navigation }) => {
 				</View>
 			</XSection>
 
-			<XSection
-				title={t('Our team')}
-			//titleIcon='user'
-			>
+			<XSection title={t('Our team')}>
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
 					contentContainerStyle={styles.teamCont}
 				>
-					{data.employees?.map(e => {
+					{data.employees.map(e => {
 						return (
 							<View key={e.id} style={styles.avatarCont}>
 								<XAvatar
@@ -119,16 +115,13 @@ const TabAbout = ({ data = {}, navigation }) => {
 				</ScrollView>
 			</XSection>
 
-			<XSection
-				title={t('Working hours')}
-			//titleIcon='clockcircleo'
-			>
+			<XSection title={t('Working hours')}>
 				<View>
 					{Object.keys(wPs).map((day, idx) => {
 						const [isDay, isWork] = isOpened(day, wPs[day]);
 						return (
 							<View key={day}>
-								<View style={[styles.dayRow, isDay && styles.dayRowCurrent, isDay && (isWork ? styles.currentDayOpened : styles.currentDayClosed)]}>
+								<View style={[styles.dayRow, isDay && (isWork ? styles.currentDayOpened : styles.currentDayClosed)]}>
 									<View style={styles.dayRowDay}>
 										<View style={styles.dayDotCnt}>
 											{isDay && <View style={[styles.dayDot, { backgroundColor: isWork ? cGreen : cRed }]} />}
@@ -190,11 +183,6 @@ const styleCreator = (theme) => StyleSheet.create({
 		borderRadius: Theme.values.borderRadius,
 		borderWidth: Theme.values.borderWidth,
 		borderColor: theme.colors.borderColor
-	},
-	dayRowCurrent: {
-		//borderColor: theme.colors.primary,
-		//backgroundColor: theme.colors.primaryLight
-
 	},
 	currentDayClosed: {
 		borderColor: theme.colors.red,

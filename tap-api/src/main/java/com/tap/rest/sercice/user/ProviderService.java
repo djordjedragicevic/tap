@@ -25,7 +25,7 @@ import jakarta.ws.rs.core.SecurityContext;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Path("provider")
+@Path("/provider")
 @RequestScoped
 public class ProviderService {
 	private ProviderRepository providerRepository;
@@ -43,24 +43,29 @@ public class ProviderService {
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
-	public Object getProviderById(@PathParam("id") int id) {
+	public Object getProviderById(
+			@PathParam("id") int id,
+			@QueryParam("a") Byte getAbout,
+			@QueryParam("e") Byte getEmployees,
+			@QueryParam("w") Byte getWPs,
+			@QueryParam("s") Byte getServices
+	) {
 
 		Map<String, Object> resp = new HashMap<>();
-		Map<String, Object> about;
-
+		boolean noFilters = getAbout == null && getEmployees == null && getWPs == null && getServices == null;
+		
 		try {
+			if (noFilters || (getAbout != null && getAbout == 1))
+				resp.put("about", providerRepository.getProviderData(id));
 
-			about = providerRepository.getProviderData(id);
-			resp.put("about", about);
+			if (noFilters || (getEmployees != null && getEmployees == 1))
+				resp.put("employees", providerRepository.getProviderEmployeesDto(id));
 
-			List<EmployeeDto> emps = providerRepository.getProviderEmployeesDto(id);
-			about.put("employees", emps);
+			if (noFilters || (getWPs != null && getWPs == 1))
+				resp.put("workPeriods", providerRepository.getProviderWorkPeriods(id));
 
-			List<Map<String, Object>> wPs = providerRepository.getProviderWorkPeriods(id);
-			about.put("workPeriods", wPs);
-
-			Object services = providerRepository.getProviderServices(id);
-			resp.put("services", services);
+			if (noFilters || (getServices != null && getServices == 1))
+				resp.put("services", providerRepository.getProviderServices(id));
 
 		} catch (Exception e) {
 			throw new TAPException(ErrID.PROV_1);
