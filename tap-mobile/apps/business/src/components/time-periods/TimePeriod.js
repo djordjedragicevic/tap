@@ -4,9 +4,10 @@ import { useColor, useTheme, useThemedStyle } from "xapp/src/style/ThemeContext"
 import { Theme } from "xapp/src/style/themes";
 import XText from "xapp/src/components/basic/XText";
 import XIcon from "xapp/src/components/basic/XIcon";
-import { PERIOD, STATUS, isWaitingAppointment } from "../../common/general";
+import { PERIOD, isWaitingAppointment } from "../../common/general";
 import I18nT from "xapp/src/i18n/i18n";
 import { FontAwesome5 } from '@expo/vector-icons';
+import { APP_STATUS } from "xapp/src/common/general";
 
 const getPeriodColor = (item) => {
 
@@ -16,7 +17,7 @@ const getPeriodColor = (item) => {
 	switch (item.name) {
 		case PERIOD.APP_BY_USER:
 		case PERIOD.APP_BY_PROVIDER:
-			if (item.data.status === STATUS.WAITING)
+			if (item.data.status === APP_STATUS.WAITING)
 				return Theme.vars.red;
 			else if (!item.data.userId)
 				return Theme.vars.blue;

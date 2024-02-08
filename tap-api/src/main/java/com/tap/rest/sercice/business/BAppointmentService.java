@@ -6,7 +6,6 @@ import com.tap.common.*;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.rest.dto.AppointmentDto;
-import com.tap.rest.dto.CustomPeriodDto;
 import com.tap.rest.dto.GroupDto;
 import com.tap.rest.dto.ServiceDto;
 import com.tap.rest.dtor.AppointmentDtoSimple;
@@ -32,15 +31,15 @@ import java.util.*;
 @Path("/business/appointment")
 @RequestScoped
 @Secured({Role.PROVIDER_OWNER, Role.EMPLOYEE})
-public class BAppointmentsService {
+public class BAppointmentService {
 	private AppointmentRepository appointmentRepository;
 	private ProviderRepository providerRepository;
 
-	public BAppointmentsService() {
+	public BAppointmentService() {
 	}
 
 	@Inject
-	public BAppointmentsService(AppointmentRepository appointmentRepository, ProviderRepository providerRepository) {
+	public BAppointmentService(AppointmentRepository appointmentRepository, ProviderRepository providerRepository) {
 		this.appointmentRepository = appointmentRepository;
 		this.providerRepository = providerRepository;
 	}

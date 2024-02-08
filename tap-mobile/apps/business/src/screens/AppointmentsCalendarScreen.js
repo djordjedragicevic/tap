@@ -170,7 +170,7 @@ const AppointmentsCalendarScreen = ({ navigation, route }) => {
 
 	const onAppStateChange = useCallback((item, state) => {
 		storeDispatch('app.mask', { maskTransparent: true });
-		Http.post(`/appointments/${state}/${item.data.id}/${item.data.sId}`)
+		Http.post(`/appointment/${state}/${item.data.id}/${item.data.sId}`)
 			.catch(emptyFn)
 			.then(() => {
 				setLoadCount(old => old + 1);

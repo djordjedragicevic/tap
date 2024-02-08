@@ -1,3 +1,5 @@
+import { APP_STATUS } from "xapp/src/common/general";
+
 export const PERIOD = {
 	APP_BY_USER: 'APP_BY_USER',
 	APP_BY_PROVIDER: 'APP_BY_PROVIDER',
@@ -25,7 +27,7 @@ export const PERIOD_NAME = {
 };
 
 export const isWaitingAppointment = (item) => {
-	return item?.name === PERIOD.APP_BY_USER && item?.data.status === STATUS.WAITING;
+	return item?.name === PERIOD.APP_BY_USER && item?.data.status === APP_STATUS.WAITING;
 };
 
 export const getFrendlyName = (item) => {
