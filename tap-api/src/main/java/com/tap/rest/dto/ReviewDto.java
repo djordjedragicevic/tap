@@ -9,9 +9,10 @@ public class ReviewDto {
 	private String comment;
 	private LocalDateTime createdAt;
 	private LocalDateTime approvedAt;
-	private UserDto user2; 
+	private AppointmentDto appointment; 
 	private ProviderDto provider; 
 	private UserDto user; 
+	private UserDto user2; 
 	public ReviewDto() {}
 
 	public ReviewDto setId( Long id ) {
@@ -59,12 +60,12 @@ public class ReviewDto {
 		return this.approvedAt;
 	}
 
-	public UserDto getUser2() {
-		return this.user2;
+	public AppointmentDto getAppointment() {
+		return this.appointment;
 	}
 
-	public ReviewDto setUser2(UserDto user2) {
-		this.user2 = user2;
+	public ReviewDto setAppointment(AppointmentDto appointment) {
+		this.appointment = appointment;
 		return this;
 	}
 	public ProviderDto getProvider() {
@@ -81,6 +82,14 @@ public class ReviewDto {
 
 	public ReviewDto setUser(UserDto user) {
 		this.user = user;
+		return this;
+	}
+	public UserDto getUser2() {
+		return this.user2;
+	}
+
+	public ReviewDto setUser2(UserDto user2) {
+		this.user2 = user2;
 		return this;
 	}
 }

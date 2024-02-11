@@ -35,8 +35,8 @@ public class Review implements Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="approved_by", referencedColumnName="id")
-	private User user2; 
+    @JoinColumn(name="appointment_id", referencedColumnName="id")
+	private Appointment appointment; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="provider_id", referencedColumnName="id")
@@ -45,6 +45,10 @@ public class Review implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", referencedColumnName="id")
 	private User user; 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="approved_by", referencedColumnName="id")
+	private User user2; 
 
 	public Review() {
 		super();
@@ -90,12 +94,12 @@ public class Review implements Serializable {
 		return this.approvedAt;
 	}
 
-	public User getUser2() {
-		return this.user2;
+	public Appointment getAppointment() {
+		return this.appointment;
 	}
 	
-	public void setUser2(User user2) {
-		this.user2 = user2;
+	public void setAppointment(Appointment appointment) {
+		this.appointment = appointment;
 	}
 	public Provider getProvider() {
 		return this.provider;
@@ -110,5 +114,12 @@ public class Review implements Serializable {
 	
 	public void setUser(User user) {
 		this.user = user;
+	}
+	public User getUser2() {
+		return this.user2;
+	}
+	
+	public void setUser2(User user2) {
+		this.user2 = user2;
 	}
 }

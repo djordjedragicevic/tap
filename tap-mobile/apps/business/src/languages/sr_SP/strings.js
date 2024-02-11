@@ -33,8 +33,6 @@ export const strings = {
 	"Appointment - manually entered": "Termin - ručno unešen",
 	"Add time period": "Dodajte period",
 	"Create appointment": "Kreiraj termin",
-	"Yes": "Da",
-	"No": "Ne",
 	"Period": "Period",
 	"Create time period": "Create time period",
 	"Are you surre you want to create new time period?": "Are you surre you want to create new time period?",

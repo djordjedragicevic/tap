@@ -10,8 +10,6 @@ export const strings = {
 	"Sign in": "Uloguj se",
 	"OK": "Uredu",
 	"Cancel": "Otkaži",
-	"Yes": "Yes",
-	"No": "No",
 	"Quit": "Odustani",
 	"Use device theme": "Koristi temu telefona",
 	"Appearance": "Teme",
@@ -110,10 +108,18 @@ export const strings = {
 	"Doesn't work": "Ne radi",
 	"timesAgo": "prije {:time} {:measure}",
 	"Overall raiting": "Ukupna ocjena",
-	"Add detailed review": "Dodajte detaljnu recenzija",
+	"Add detailed review": "Dodajte detaljnu recenziju",
+	"Detailed review": "Detaljna recenzija",
+
 	"Submit": "Pošalji",
 	"Latest": "Najnoviji",
 	"The best": "Najbolji",
 	"Worst": "Najlošiji",
-	"Appointment time": "Vrijeme termina"
+	"Appointment time": "Vrijeme termina",
+	"Submit review": "Pošalji recenziju",
+	"Approved": "Odobreno",
+	"Pending approval": "Čeka odobrenje",
+	"Cancelation reason": "Razlog otkazivanja",
+	"Withdrawing reason": "Razlog odustajanja",
+	"Rate it": "Ocijenite"
 };

@@ -15,13 +15,13 @@ import XSeparator from "xapp/src/components/basic/XSeparator";
 import XEmptyListIcon from "xapp/src/components/XEmptyListIcon";
 import XIcon from "xapp/src/components/basic/XIcon";
 import XChip from "xapp/src/components/basic/XChip";
-import { APPOINTMENT_SCREEN } from "../navigators/routes";
-import { APP_STATUS, APP_STATUS_ICON } from "xapp/src/common/general";
-import { STATUS_COLOR } from "../common/general";
+import { ADD_REVIEW_SCREEN, APPOINTMENT_SCREEN, CANCEL_APPOINTMENT_SCREEN } from "../navigators/routes";
+import { APP_STATUS, APP_STATUS_COLOR, APP_STATUS_ICON } from "xapp/src/common/general";
 import XAvatar from "xapp/src/components/basic/XAvatar";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
+import { FontAwesome5 } from '@expo/vector-icons';
 
-const arrangeData = (data, dateCode, grouped) => {
+const arrangeData = (data, dateCode, grouped, filter) => {
 
 	const g = {};
 	const newData = [];
@@ -48,6 +48,7 @@ const arrangeData = (data, dateCode, grouped) => {
 		a[0]._date = sD.toLocaleDateString(dateCode, { day: 'numeric', month: 'short', year: 'numeric' });
 		a[0]._from = sD.toLocaleTimeString(dateCode, { hour: '2-digit', minute: '2-digit', hour12: false });
 		a[0]._to = eD.toLocaleTimeString(dateCode, { hour: '2-digit', minute: '2-digit', hour12: false });
+		a[0]._isHistory = filter === FILTER.HISTORY
 
 	});
 
@@ -56,7 +57,7 @@ const arrangeData = (data, dateCode, grouped) => {
 
 const ServiceRow = ({ item, navigation }) => {
 
-	const statusColor = useColor(STATUS_COLOR[item.status]);
+	const statusColor = useColor(APP_STATUS_COLOR[item.status]);
 	const pColor = useColor('textSecondary');
 
 	return (
@@ -82,14 +83,6 @@ const ServiceRow = ({ item, navigation }) => {
 				<XText>{item.service.name}</XText>
 			</View>
 
-
-			{/* <XChip
-				style={{ width: 110 }}
-				text={t(STATUS_TEXT[item.status])}
-				color={COLORS[item.status]}
-				// icon={<XIcon icon={ICON[item.status]} color={COLORS[item.status]} size={15} />}
-			/> */}
-
 			<View style={{ paddingHorizontal: 5 }}>
 				<XText secondary>{item.employee.name}</XText>
 			</View>
@@ -97,8 +90,7 @@ const ServiceRow = ({ item, navigation }) => {
 			<XIcon icon='right' size={12} color={pColor} />
 
 		</TouchableOpacity>
-
-	)
+	);
 };
 
 
@@ -131,7 +123,6 @@ const AppointmentGroup = ({ item, navigation }) => {
 					<XText icon='enviroment' secondary>{item[0].provider.address1}, {item[0].provider.city}</XText>
 				</View>
 			</View>
-			{/* <XSeparator margin={5} style={{ marginVertical: 5 }} /> */}
 
 			<View style={styles.gropedServicesContainer}>
 				{item.map(app => <ServiceRow navigation={navigation} key={app.id} item={app} />)}
@@ -144,61 +135,91 @@ const Appointment = ({ item, navigation }) => {
 
 	const styles = useThemedStyle(styleCreator);
 	const t = useTranslation();
+	const [pColor, cRed, cRedLight, statusColor, hIconColor, cGray] = useColor(['primary', 'red', 'redLight', APP_STATUS_COLOR[item.status]], 'textTertiary', 'gray')
+	const hIcon = useCallback((props) => {
+		return item._isHistory && <FontAwesome5 name="history" {...props} color={hIconColor} />;
+	}, [item._isHistory, hIconColor]);
 
 	return (
 		<Pressable
 			style={[styles.appContainer]}
 			onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
 		>
-
 			<View style={[styles.appHeader]}>
-				<XText bold>{item._date} - {item._from}</XText>
-				<XButtonIcon
-					icon='edit'
-					size={32}
-					colorName={Theme.vars.primary}
-					onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
-				/>
+				<XText icon={hIcon} bold>{item._date} - {item._from}</XText>
+				<View style={[styles.statusCnt, { backgroundColor: statusColor }]}>
+					<View style={styles.triangle} />
+					<XText light size={13}>{t(item.status)}</XText>
+				</View>
+
 			</View>
 
-			<XSeparator />
-
 			<View style={styles.appMiddle}>
-
 				<XAvatar
 					imgPath={item.provider.imagePath}
 					size={70}
 					color={Theme.vars.green}
 					initials={getInitials(null, null, item.provider.name, null)}
 				/>
-
 				<View style={{ justifyContent: 'space-evenly', flex: 1, paddingHorizontal: 10, paddingEnd: 15 }}>
 					<XText oneLine icon='isv' bold>{item.provider.name}</XText>
 					<XText oneLine icon='enviroment' secondary>{item.provider.address1}, {item.provider.city}</XText>
 					<XText oneLine icon='tag' secondary>{item.service.name}</XText>
 				</View>
-
 			</View>
 
 			<View style={[styles.appFooter]}>
-				<XChip
-					color={STATUS_COLOR[item.status]}
-					text={t(item.status)}
-					textProps={{ bold: false }}
-					icon={APP_STATUS_ICON[item.status]}
+
+				{(item._isHistory && item.status === APP_STATUS.ACCEPTED && !item.mark) &&
+					<XButton
+						title={t('Rate it')}
+						iconLeft={'star'}
+						uppercase={false}
+						primary
+						outline
+						small
+						onPress={() => navigation.navigate(ADD_REVIEW_SCREEN, { appId: item.id })}
+					/>
+					// <XButtonIcon
+					// 	icon='star'
+					// 	size={30}
+					// 	outline
+					// 	color={pColor}
+					// 	onPress={() => navigation.navigate(ADD_REVIEW_SCREEN, { appId: item.id })}
+					// />
+				}
+				{(!item._isHistory && (item.status === APP_STATUS.ACCEPTED || item.status === APP_STATUS.WAITING)) &&
+					<XButton
+						title={t(item.status === APP_STATUS.WAITING ? 'Withdraw' : 'Cancel')}
+						uppercase={false}
+						outline
+						iconLeft={item.status === APP_STATUS.WAITING ? 'arrowdown' : 'close'}
+						small
+						colorName={Theme.vars.red}
+						onPress={() => navigation.navigate(CANCEL_APPOINTMENT_SCREEN, { appId: item.id, status: item.status })}
+					/>
+				}
+				<XButtonIcon
+					icon='arrowsalt'
+					size={30}
+					outline
+					color={pColor}
+					onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
 				/>
 
 			</View>
-
 		</Pressable>
-	)
+	);
 };
 
-
+const FILTER = {
+	COMING: 'coming',
+	HISTORY: 'history'
+}
 
 const MyAppointmentsScreen = ({ navigation }) => {
 
-	const [filter, setFilter] = useState('coming');
+	const [filter, setFilter] = useState(FILTER.COMING);
 	const [refresh, setRefresh] = useState(1);
 	const [loading, setLoading] = useState(false);
 	const [apps, setApps] = useState();
@@ -206,14 +227,12 @@ const MyAppointmentsScreen = ({ navigation }) => {
 
 	const dateCode = useDateCode();
 	const t = useTranslation();
-	//const [data, refresh, refreshing] = useHTTPGetOnFocus(useFocusEffect, '/appointment/my-appointments', null, false, arrangeData);
-
 
 	const loadApps = useCallback(() => {
 		setLoading(true);
 		Http.get(`/appointment/my-appointments`, { f: filter })
 			.then(resp => {
-				setApps(arrangeData(resp, dateCode, grouped));
+				setApps(arrangeData(resp, dateCode, grouped, filter));
 			})
 			.catch(emptyFn)
 			.finally(() => setLoading(false));
@@ -235,8 +254,8 @@ const MyAppointmentsScreen = ({ navigation }) => {
 		<XScreen loading={loading} flat>
 			<XSegmentedButton
 				options={[
-					{ id: 1, text: t('Upcoming'), value: 'comming' },
-					{ id: 2, text: t('History'), value: 'history' }
+					{ id: 1, text: t('Upcoming'), value: FILTER.COMING },
+					{ id: 2, text: t('History'), value: FILTER.HISTORY }
 				]}
 				onSelect={(o) => setFilter(o.value)}
 				style={{
@@ -255,8 +274,8 @@ const MyAppointmentsScreen = ({ navigation }) => {
 						keyExtractor={(item) => item[0].id}
 						style={{ flex: 1 }}
 						contentContainerStyle={{
-							rowGap: 10,
-							padding: Theme.values.mainPaddingHorizontal
+							rowGap: 15,
+							padding: 15
 						}}
 						refreshing={loading}
 						onRefresh={() => setRefresh(old => old + 1)}
@@ -265,7 +284,6 @@ const MyAppointmentsScreen = ({ navigation }) => {
 					<XEmptyListIcon text={t('No appointments')} />
 				: null
 			}
-
 		</XScreen>
 	)
 };
@@ -277,7 +295,7 @@ const styleCreator = (theme) => StyleSheet.create({
 		backgroundColor: theme.colors.backgroundElement
 	},
 	appHeader: {
-		paddingHorizontal: 10,
+		paddingStart: 10,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
@@ -291,14 +309,32 @@ const styleCreator = (theme) => StyleSheet.create({
 	appFooter: {
 		flexDirection: 'row',
 		paddingHorizontal: 10,
+		paddingVertical: 10,
 		justifyContent: 'flex-end',
 		alignItems: 'center',
-		height: 45
+		columnGap: 10
 	},
 	gropedServicesContainer: {
 		rowGap: 5,
 		paddingHorizontal: 10,
 		paddingVertical: 10
+	},
+	triangle: {
+		width: 0,
+		height: 0,
+		marginEnd: 15,
+		borderTopWidth: 13,
+		borderTopColor: 'transparent',
+		borderBottomWidth: 13,
+		borderBottomColor: 'transparent',
+		borderLeftWidth: 13,
+		borderLeftColor: theme.colors.backgroundElement
+	},
+	statusCnt: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		height: 26,
+		paddingEnd: 15
 	}
 })
 

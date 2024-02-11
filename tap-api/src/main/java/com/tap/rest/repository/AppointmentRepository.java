@@ -132,6 +132,7 @@ public class AppointmentRepository extends CommonRepository {
 				SELECT
 				a.id, a.joinId, a.start, a.end,
 				status.name,
+				r.mark AS mark,
 				s.id, s.name, s.duration, s.price, s.note,
 				e.id, e.name,
 				p.id AS pId, p.name, p.imagePath, pT.name,
@@ -146,11 +147,13 @@ public class AppointmentRepository extends CommonRepository {
 				JOIN p.address add
 				JOIN add.city c
 				JOIN p.providertype pT
+				LEFT JOIN Review r ON a = r.appointment
 				WHERE a.user.id = :uId
 				AND a.end
 				""";
 		query = query
 				+ (history ? " < " : " > ") + ":curr "
+				+ "GROUP BY a.id "
 				+ "ORDER BY a.start, a.joinId";
 
 		List<Object[]> apps = em.createQuery(query, Object[].class)
@@ -164,6 +167,7 @@ public class AppointmentRepository extends CommonRepository {
 				"start",
 				"end",
 				"status",
+				"mark",
 				"service.id",
 				"service.name",
 				"service.duration",
@@ -203,11 +207,16 @@ public class AppointmentRepository extends CommonRepository {
 				"a.employee.provider.address.city.name AS providerCity",
 
 				"a.user.id AS userId",
+
+				"r.mark AS mark",
+				"r.comment AS reviewComment",
+				"r.approvedAt AS reviewApprovedAt"
 		};
 
 		String query = """
 				SELECT %s
 				FROM Appointment a
+				LEFT JOIN Review r ON a = r.appointment
 				WHERE a.id = :id AND a.user.id = :uId
 				""";
 

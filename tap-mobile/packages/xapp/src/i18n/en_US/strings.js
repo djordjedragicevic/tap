@@ -14,6 +14,8 @@ export const strings = {
 	"Sort by": "Sort by",
 	"h": "h",
 	"min": "min",
+	"Yes": "Yes",
+	"No": "No",
 	//-----------------------
 
 	"Canceled": "Canceled",

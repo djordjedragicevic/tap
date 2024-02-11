@@ -15,7 +15,8 @@ import {
 	MANAGE_ACCOUNT_SCREEN,
 	MAP_SCREEN,
 	APPOINTMENT_SCREEN,
-	ADD_REVIEW_SCREEN
+	ADD_REVIEW_SCREEN,
+	CANCEL_APPOINTMENT_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
@@ -40,6 +41,7 @@ import MapScreen from '../screens/MapScreen';
 import { useHeaderBackButton } from 'xapp/src/common/hooks';
 import AppointmentScreen from '../screens/AppointmentScreen';
 import AddReviewScreen from '../screens/AddReviewScreen';
+import CancelAppointmentScreen from '../screens/CancelAppointmentScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -220,6 +222,13 @@ const AppNavigator = ({ }) => {
 						component={AddReviewScreen}
 						options={{
 							title: t('Add review')
+						}}
+					/>
+					<Stack.Screen
+						name={CANCEL_APPOINTMENT_SCREEN}
+						component={CancelAppointmentScreen}
+						options={{
+							title: t('Status')
 						}}
 					/>
 				</>

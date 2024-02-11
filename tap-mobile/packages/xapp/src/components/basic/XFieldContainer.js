@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { useThemedStyle } from "../../style/ThemeContext";
+import { useColor, useThemedStyle } from "../../style/ThemeContext";
 import XMask from "./XMask";
 import { Theme } from "../../style/themes";
 import { AntDesign } from "@expo/vector-icons";
@@ -14,6 +14,7 @@ const XFieldContainer = ({
 	onIconLeftPress,
 	iconRightColor,
 	iconLeftColor,
+	iconLeftColorName,
 	iconLeftSize = 18,
 	iconRightSize = 18,
 	iconRightStyle = {},
@@ -36,6 +37,7 @@ const XFieldContainer = ({
 	const IconRightCmp = onIconRightPress ? TouchableOpacity : View;
 	const IconLeftCmp = onIconLeftPress ? TouchableOpacity : View;
 	const CenterCmp = onCenterPress ? TouchableOpacity : View;
+	const iLColor = useColor(iconLeftColorName);
 
 	const onPressInt = useCallback(() => {
 		if (!disabled)
@@ -51,9 +53,9 @@ const XFieldContainer = ({
 				!!iconLeft &&
 				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.icon, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }, iconLeftStyle]} onPress={onIconLeftPress}>
 					{typeof iconLeft === 'string' ?
-						<AntDesign name={iconLeft} size={iconLeftSize} color={iconLeftColor || styles.iconColor} />
+						<AntDesign name={iconLeft} size={iconLeftSize} color={iconLeftColor || iLColor || styles.iconColor} />
 						:
-						iconLeft({ size: iconLeftSize, color: iconLeftColor || styles.iconColor })
+						iconLeft({ size: iconLeftSize, color: iconLeftColor || styles.iconColor || iLColor })
 					}
 				</IconLeftCmp>
 			}

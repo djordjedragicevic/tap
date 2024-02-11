@@ -3,15 +3,17 @@
 Review {
   // attributes
   id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
+  appointmentId : long { @DbName(appointment_id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty @FK(fk_review_appointment1, Appointment.id) };
   providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_review_provider1, Provider.id) };
   userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_review_user1, User.id) };
   mark : short { @DbName(mark) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty };
   comment : string { @DbName(comment) @DbType("VARCHAR(256)") @Size(256) @MaxLen(256) };
   createdAt : timestamp { @DbName(created_at) @DbType(DATETIME) @NotNull @NotEmpty };
   approvedAt : timestamp { @DbName(approved_at) @DbType(DATETIME) };
-  approvedBy : int { @DbName(approved_by) @DbType(INT UNSIGNED) @FK(fk_review_approved_by1, User.id) };
+  approvedBy : int { @DbName(approved_by) @DbType(INT UNSIGNED) @FK(fk_review_user2, User.id) };
   // links
-  user : User { @LinkByFK(fk_review_approved_by1) };
+  appointment : Appointment { @LinkByFK(fk_review_appointment1) };
   provider : Provider { @LinkByFK(fk_review_provider1) };
-  user2 : User { @LinkByFK(fk_review_user1) };
+  user : User { @LinkByFK(fk_review_user1) };
+  user2 : User { @LinkByFK(fk_review_user2) };
 }

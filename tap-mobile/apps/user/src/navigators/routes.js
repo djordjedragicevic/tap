@@ -8,6 +8,7 @@ export const BOOK_APPOINTMENT_SCREEN = 'BookAppointmentScreen';
 export const APPOINTMENT_SCREEN = 'AppointmentScreen';
 export const MAP_SCREEN = 'MapScreen';
 export const ADD_REVIEW_SCREEN = 'AddReviewScreen';
+export const CANCEL_APPOINTMENT_SCREEN = 'CancelAppointmentScreen';
 
 export const MAIN_TAB_HOME = 'MainTabHome';
 export const MAIN_TAB_FIND = 'MainTabFind';

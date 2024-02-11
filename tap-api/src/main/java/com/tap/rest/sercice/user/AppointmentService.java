@@ -5,15 +5,12 @@ import com.tap.appointments.ProviderWorkInfo;
 import com.tap.appointments.Utils;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
-import com.tap.rest.dto.AppointmentDto;
-import com.tap.rest.dto.AppointmentStatusDto;
-import com.tap.rest.dto.EmployeeDto;
+import com.tap.rest.dto.*;
 import com.tap.rest.dtor.AppointmentDtoSimple;
 import com.tap.rest.repository.AppointmentRepository;
 import com.tap.rest.repository.ProviderRepository;
 import com.tap.security.Public;
 import com.tap.common.*;
-import com.tap.rest.dto.ServiceDto;
 import com.tap.rest.entity.*;
 import com.tap.security.Role;
 import com.tap.security.Secured;
@@ -95,6 +92,47 @@ public class AppointmentService {
 		AppointmentStatus newStatus = appointmentRepository.getEntityBy(AppointmentStatus.class, "name", statusName);
 		app.setAppointmentstatus(newStatus);
 		app.setStatusComment(statusComment);
+
+		return Response.ok().build();
+	}
+
+	@POST
+	@Path("/{id}/review/add")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Transactional
+	@Public
+	@Secured({Role.USER})
+	public Response addAppointmentReview(
+			@PathParam("id") long appId,
+			@Context SecurityContext sC,
+			ReviewDto reviewDto
+	) {
+
+		Review review = new Review();
+
+		Appointment app = appointmentRepository.getEntityManager().find(Appointment.class, appId);
+		review.setAppointment(app);
+
+		Provider p = app.getEmployee().getProvider();
+		review.setProvider(p);
+
+		int uId = Security.getUserId(sC);
+		User u = providerRepository.getSingleActiveEntityById(User.class, uId);
+		review.setUser(u);
+
+		review.setMark(reviewDto.getMark());
+
+		if (reviewDto.getComment() != null && !reviewDto.getComment().isEmpty())
+			review.setComment(reviewDto.getComment());
+
+		review.setCreatedAt(Util.zonedNow());
+
+		//TODO MUST BE DELETED!!! COMMENT APPROVE
+		User aU = providerRepository.getSingleActiveEntityById(User.class, 1);
+		review.setUser2(aU);
+		review.setApprovedAt(Util.zonedNow());
+
+		providerRepository.getEntityManager().persist(review);
 
 		return Response.ok().build();
 	}

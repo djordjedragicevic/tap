@@ -11,8 +11,6 @@ export const strings = {
 	"Sign in": "Sign in",
 	"OK": "OK",
 	"Cancel": "Cancel",
-	"Yes": "Yes",
-	"No": "No",
 	"Quit": "Quit",
 
 	"Appearance": "Appearance",
@@ -117,5 +115,13 @@ export const strings = {
 	"Latest": "Latest",
 	"The best": "The best",
 	"Worst": "Worst",
-	"Appointment time": "Appointment time"
+	"Appointment time": "Appointment time",
+	"Add detailed review": "Add detailed review",
+	"Detailed review": "Detailed review",
+	"Submit review": "Submit review",
+	"Approved": "Approved",
+	"Pending approval": "Pending approval",
+	"Cancelation reason": "Cancelation reason",
+	"Withdrawing reason": "Withdrawing reason",
+	"Rate it": "Rate it"
 };

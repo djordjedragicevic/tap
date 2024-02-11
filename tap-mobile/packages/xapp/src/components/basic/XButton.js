@@ -4,6 +4,7 @@ import { Theme } from "../../style/themes";
 import XText from "./XText";
 import { useColor, useThemedStyle } from "../../style/ThemeContext";
 import { AntDesign } from "@expo/vector-icons";
+import XIcon from "./XIcon";
 
 const XButton = ({
 	title,
@@ -42,7 +43,13 @@ const XButton = ({
 	}, primary, secondary);
 
 	const getTextColor = () => {
-		if (primary || color)
+		if (outline && primary)
+			return 'primary'
+		if (outline && secondary)
+			return 'secondary'
+		else if (colorName)
+			return colorName
+		else if (primary || secondary || color)
 			return 'textLight';
 		else
 			return 'textPrimary';
@@ -64,13 +71,13 @@ const XButton = ({
 		<TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.button, dinStyle, style]}>
 			{!!iconLeft &&
 				<View style={styles.iconLeft}>
-					{typeof iconLeft === 'string' ? <AntDesign name={iconLeft} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
+					<XIcon icon={iconLeft} size={small ? 15 : 17} color={iconColor} />
 				</View>
 			}
 			{React.isValidElement(title) ? title : (!!title && <XText style={[styles.text, textStyle]} secondary>{title}</XText>)}
 			{!!iconRight &&
 				<View style={styles.iconRight}>
-					{typeof iconRight === 'string' ? <AntDesign name={iconRight} color={iconColor} size={17} /> : iconRight(iconColor, 17)}
+					<XIcon icon={iconLeft} size={small ? 15 : 17} color={iconColor} />
 				</View>
 			}
 			{children}
@@ -97,9 +104,7 @@ const createStyle = (theme, params, primary, secondary) => {
 
 	const textStyle = {
 		color: theme.colors.textPrimary,
-		fontSize: undefined,
-		textAlign: 'center',
-		fontWeight: 600
+		textAlign: 'center'
 	};
 
 	if (params.flex)
@@ -147,13 +152,25 @@ const createStyle = (theme, params, primary, secondary) => {
 		textStyle.color = params.textColor;
 
 	if (params.outline) {
-		btnStyle.borderWidth = 1;
+		btnStyle.borderWidth = Theme.values.borderWidth;
 		btnStyle.borderColor = theme.colors.borderColor;
 		textStyle.color = theme.colors.textSecondary;
 		btnStyle.backgroundColor = 'transparent';
-		if (params.color) {
+		if (primary) {
+			textStyle.color = theme.colors.primary;
+			btnStyle.borderColor = theme.colors.primary;
+		}
+		else if (secondary) {
+			textStyle.color = theme.colors.secondary;
+			btnStyle.borderColor = theme.colors.secondary;
+		}
+		else if (params.color) {
 			btnStyle.borderColor = params.color;
 			textStyle.color = params.color;
+		}
+		else if (params.colorName) {
+			btnStyle.borderColor = theme.colors[params.colorName];
+			textStyle.color = theme.colors[params.colorName];
 		}
 	}
 
@@ -162,15 +179,13 @@ const createStyle = (theme, params, primary, secondary) => {
 		text: textStyle,
 		iconRight: {
 			alignContent: 'center',
-			justifyContent: 'center',
 			marginStart: 5,
-			marginEnd: -10
+			justifyContent: 'center'
 		},
 		iconLeft: {
 			alignContent: 'center',
 			justifyContent: 'center',
-			marginEnd: 5,
-			//marginStart: -10
+			marginEnd: 5
 		}
 	});
 };

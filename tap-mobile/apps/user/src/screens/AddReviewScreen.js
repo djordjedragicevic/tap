@@ -10,16 +10,17 @@ import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { Http } from 'xapp/src/common/Http';
 import { emptyFn } from "xapp/src/common/utils";
 import Footer from "../components/Footer";
+import XSection from "xapp/src/components/basic/XSection";
 
 const AddReviewScreen = ({ navigation, route }) => {
 
 	const [selectedMark, setSelectedMark] = useState(0);
 	const [comment, setComment] = useState('');
 	const t = useTranslation();
-	const providerId = route.params.providerId;
+	const appId = route.params.appId;
 
 	const submintReview = () => {
-		Http.post(`/provider/${providerId}/review/add`, {
+		Http.post(`/appointment/${appId}/review/add`, {
 			mark: selectedMark,
 			comment: comment
 		})
@@ -28,75 +29,58 @@ const AddReviewScreen = ({ navigation, route }) => {
 	};
 
 	return (
-		<XScreen rowGap={25} Footer={<Footer>
-			<XButton
-				title={t('Submit')}
-				disabled={!selectedMark}
-				style={{ flex: 1 }}
-				primary
-				onPress={submintReview}
-			/>
-		</Footer>
-		}>
-
-			<View style={styles.starCnt}>
-				<XText>{t('Overall raiting')}  <XText bold>{selectedMark || '-'}</XText></XText>
+		<XScreen rowGap={20}>
+			<XSection
+				outline
+				title={t('Overall raiting') + (selectedMark ? ' ' + selectedMark : '')}
+			>
 				<XMarkStars
 					mark={selectedMark}
+					style={styles.starCnt}
 					showChip={false}
 					starSize={36}
 					starStyle={styles.star}
 					onStarPress={setSelectedMark}
 				/>
-			</View>
+			</XSection>
 
-			<XSeparator />
-
-			<View style={styles.commentCnt}>
-				<View style={styles.commentTextCnt}>
-					<XText>{t('Add detailed review')}</XText>
-				</View>
+			<XSection
+				title={t('Detailed review')}
+				styleContent={{ padding: 0 }}
+			>
 				<XTextInput
 					outline
-					fieldStyle={styles.commentFieldStyle}
-					fieldContainerStyle={styles.commentFieldCntStyle}
+					textarea
 					value={comment}
-					multiline
 					clearable
 					onClear={() => setComment('')}
 					onChangeText={setComment}
 				/>
-			</View>
+			</XSection>
 
-		</XScreen>
+			<XButton
+				primary
+				title={t('Submit review')}
+				disabled={!selectedMark}
+				onPress={submintReview}
+			/>
+
+		</XScreen >
 	);
 };
 
 const styles = StyleSheet.create({
-	starCnt: {
-		rowGap: 20,
-		alignItems: 'center',
-		height: 140,
-		justifyContent: 'center'
-	},
 	star: {
 		paddingVertical: 10,
 		paddingHorizontal: 5,
-	},
-	commentCnt: {
-		paddingHorizontal: 20,
-		rowGap: 20
-	},
-	commentFieldStyle: {
 		flex: 1,
-		textAlignVertical: 'top',
-		//paddingVertical: 10
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
-	commentTextCnt: {
-		alignSelf: 'center'
-	},
-	commentFieldCntStyle: {
-		height: 100
+	starCnt: {
+		maxWidth: 450,
+		alignSelf: 'center',
+		paddingVertical: 10
 	}
 });
 

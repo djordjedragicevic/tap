@@ -87,44 +87,6 @@ public class ProviderService {
 		return Response.ok(providerRepository.getReviews(pId, sortBy, sortKey)).build();
 	}
 
-	@POST
-	@Path("/{id}/review/add")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Transactional
-	@Public
-	@Secured({Role.USER})
-	public Response addProviderReview(
-			@PathParam("id") int pId,
-			@Context SecurityContext sC,
-			ReviewDto reviewDto
-	) {
-
-		Review review = new Review();
-
-		Provider p = providerRepository.getSingleActiveEntityById(Provider.class, pId);
-		review.setProvider(p);
-
-		int uId = Security.getUserId(sC);
-		User u = providerRepository.getSingleActiveEntityById(User.class, uId);
-		review.setUser(u);
-
-		review.setMark(reviewDto.getMark());
-
-		if (reviewDto.getComment() != null && !reviewDto.getComment().isEmpty())
-			review.setComment(reviewDto.getComment());
-
-		review.setCreatedAt(Util.zonedNow());
-
-		//TODO MUST BE DELETED!!!
-		User aU = providerRepository.getSingleActiveEntityById(User.class, 1);
-		review.setUser2(aU);
-		review.setApprovedAt(Util.zonedNow());
-
-		providerRepository.getEntityManager().persist(review);
-
-		return Response.ok().build();
-	}
-
 	@GET
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)

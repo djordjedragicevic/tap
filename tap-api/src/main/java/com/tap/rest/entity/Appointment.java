@@ -70,6 +70,10 @@ public class Appointment implements Serializable {
 
     @OneToMany(mappedBy="appointment")
 	@JsonbTransient
+	private List<Review> reviewList; 
+
+    @OneToMany(mappedBy="appointment")
+	@JsonbTransient
 	private List<StatusHistory> statushistoryList; 
 
 	public Appointment() {
@@ -181,6 +185,13 @@ public class Appointment implements Serializable {
 	
 	public void setUser2(User user2) {
 		this.user2 = user2;
+	}
+	public List<Review> getReviewList() {
+		return this.reviewList;
+	}
+	
+	public void setReviewList(List<Review> reviewList) {
+		this.reviewList = reviewList;
 	}
 	public List<StatusHistory> getStatushistoryList() {
 		return this.statushistoryList;

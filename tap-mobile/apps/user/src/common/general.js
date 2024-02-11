@@ -20,11 +20,3 @@ export const handleUnauth = () => {
 
 	]);
 };
-
-export const STATUS_COLOR = {
-	WAITING: Theme.vars.yellow,
-	ACCEPTED: Theme.vars.green,
-	REJECTED: Theme.vars.red,
-	DROPPED: Theme.vars.gray,
-	CANCELED: Theme.vars.brown
-};

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Http } from "xapp/src/common/Http";
-import { APP_STATUS, APP_STATUS_ICON } from "xapp/src/common/general";
+import { APP_STATUS, APP_STATUS_COLOR, APP_STATUS_ICON } from "xapp/src/common/general";
 import { DateUtils, emptyFn } from "xapp/src/common/utils";
 import XScreen from "xapp/src/components/XScreen";
 import XButton from "xapp/src/components/basic/XButton";
@@ -10,79 +10,96 @@ import XSeparator from "xapp/src/components/basic/XSeparator";
 import XTextInput from "xapp/src/components/basic/XTextInput";
 import AppointmentInfo from "../components/AppointmentInfo";
 import XAlert from "xapp/src/components/basic/XAlert";
-import { useColor } from "xapp/src/style/ThemeContext";
-import { STATUS_COLOR } from "../common/general";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
 import XText from "xapp/src/components/basic/XText";
 import XSection from "xapp/src/components/basic/XSection";
 import utils from "../common/utils";
+import XMarkStars from "xapp/src/components/XMarkStars";
+import Footer from "../components/Footer";
+import XChip from "xapp/src/components/basic/XChip";
 
-const ChangeStatusSection = ({ status, appointmentId, navigation }) => {
+const Review = ({
+	selectedMark,
+	setSelectedMark,
+	reviewComment,
+	setReviewComment,
+	editable,
+	reviewCommentApproved
+}) => {
+
 	const t = useTranslation();
-	const [comment, setComment] = useState('');
 
-	const changeStatus = (newStatus) => {
+	return (
+		<>
+			<XSeparator margin={10} style={{ marginBottom: 10, marginTop: 20 }} />
+			<XSection
+				title={t('Overall raiting') + (selectedMark ? ' ' + selectedMark : '')}
+				outline
+				style={{ paddingHorizontal: 5 }}
+				titleRight={
+					!editable && <XChip
+						color={reviewCommentApproved ? Theme.vars.green : Theme.vars.orange}
+						icon={reviewCommentApproved ? 'check' : 'hourglass'}
+						text={t(reviewCommentApproved ? 'Approved' : 'Pending approval')}
+					/>
+				}
+			>
+				<XMarkStars
+					mark={selectedMark}
+					showChip={false}
+					style={styles.starCnt}
+					starSize={36}
+					starStyle={styles.star}
+					onStarPress={editable ? setSelectedMark : null}
+				/>
+			</XSection>
 
-		XAlert.askEdit(() => {
-			Http.post(`/appointment/${appointmentId}/edit-status`, { appointmentstatus: { name: newStatus }, statusComment: comment })
-				.then(() => navigation.goBack())
-				.catch(emptyFn);
-		})
-	};
-
-	const btnData = useMemo(() => {
-		if (status === APP_STATUS.ACCEPTED) {
-			return {
-				title: 'Cancel',
-				color: Theme.vars.red,
-				onPress: () => changeStatus(APP_STATUS.CANCELED)
+			{(editable || reviewComment) &&
+				<XSection
+					title={t('Detailed review')}
+					transparent
+				>
+					<XTextInput
+						outline
+						textarea
+						value={reviewComment}
+						editable={editable}
+						clearable
+						onClear={() => setReviewComment('')}
+						onChangeText={setReviewComment}
+					/>
+				</XSection>
 			}
-		}
-		else if (status === APP_STATUS.WAITING) {
-			return {
-				title: 'Withdraw',
-				color: Theme.vars.red,
-				onPress: () => changeStatus(APP_STATUS.DROPPED)
-			}
-		}
+		</>
+	);
+};
 
-	}, [status, comment]);
-
-
-	if (!btnData)
-		return null;
-
+const ChangeStatus = ({
+	statusComment,
+	setStatusComment,
+	title
+}) => {
 	return (
 		<>
 			<XSeparator margin={10} style={{ marginBottom: 10, marginTop: 20 }} />
 
 			<XSection
-				title={t('Comment')}
+				title={title}
 				transparent
 			>
 				<XTextInput
+					value={statusComment}
+					textarea
 					outline
-					fieldStyle={{ flex: 1, textAlignVertical: 'top', paddingVertical: 10 }}
-					fieldContainerStyle={{ height: 80 }}
-					value={comment}
-					multiline
 					clearable
 					onClear={() => setComment('')}
-					onChangeText={setComment}
-				/>
-
-				<XButton
-					style={{ marginTop: 10 }}
-					colorName={btnData.color}
-					secondary
-					title={t(btnData.title)}
-					onPress={btnData.onPress}
+					onChangeText={setStatusComment}
 				/>
 			</XSection>
 		</>
 	)
-};
+}
 
 
 const AppointmentScreen = ({ navigation, route }) => {
@@ -90,23 +107,93 @@ const AppointmentScreen = ({ navigation, route }) => {
 	const id = route.params.id;
 	const t = useTranslation();
 
-	const [data, setData] = useState({ services: [{ id: -1 }] });
-	const statusColor = useColor(STATUS_COLOR[data.status]);
+	const [data, setData] = useState({});
+	const [markEdiatable, setMarkEdiatable] = useState(false);
 
 	useEffect(() => {
 		Http.get(`/appointment/${id}`)
-			.then(setData)
+			.then(data => {
+				setData({ ...data, _isHistory: utils.isHistoryServices(data.start) });
+				setMarkEdiatable(!data.mark);
+			})
 			.catch(emptyFn);
 	}, []);
 
-	console.log(utils.isHistoryServices(data?.start));
 
-	if (!data)
-		return null;
+	const changeStatus = () => {
+		XAlert.askEdit(() => {
+			const newStatus = data.status === APP_STATUS.ACCEPTED ? APP_STATUS.CANCELED : APP_STATUS.DROPPED;
+			Http.post(`/appointment/${id}/edit-status`, {
+				appointmentstatus: { name: newStatus },
+				statusComment: data.statusComment
+			})
+				.then(() => navigation.goBack())
+				.catch(emptyFn);
+		})
+	};
+
+	const submintReview = () => {
+		XAlert.askEdit(() => {
+			Http.post(`/appointment/${id}/review/add`, {
+				mark: data.mark,
+				comment: data.reviewComment
+			})
+				.then(() => navigation.goBack())
+				.catch(emptyFn);
+		})
+	};
+
+
+	const getActionCmp = () => {
+		if (data._isHistory && data.status === APP_STATUS.ACCEPTED && markEdiatable) {
+			return <Review
+				selectedMark={data.mark}
+				setSelectedMark={mark => setData(old => ({ ...old, mark }))}
+				reviewComment={data.reviewComment}
+				setReviewComment={reviewComment => setData(old => ({ ...old, reviewComment }))}
+				editable={markEdiatable}
+				reviewCommentApproved={!!data.reviewApprovedAt}
+			/>
+		}
+		else if (!data._isHistory && (data.status === APP_STATUS.ACCEPTED || data.status === APP_STATUS.WAITING)) {
+			return <ChangeStatus
+				statusComment={data.statusComment}
+				setStatusComment={statusComment => setData(old => ({ ...old, statusComment }))}
+				title={t(data.status === APP_STATUS.WAITING ? 'Withdrawing reason' : 'Cancelation reason')}
+			/>
+		}
+	};
+
+	const getFooterCmp = () => {
+		if (data._isHistory && data.status === APP_STATUS.ACCEPTED && markEdiatable) {
+			return <Footer>
+				<XButton
+					title={t('Submit review')}
+					disabled={!data.mark}
+					style={{ flex: 1 }}
+					primary
+					onPress={submintReview}
+				/>
+			</Footer>
+		}
+		else if (!data._isHistory && (data.status === APP_STATUS.ACCEPTED || data.status === APP_STATUS.WAITING)) {
+			return <Footer>
+				<XButton
+					style={{ flex: 1 }}
+					colorName={Theme.vars.red}
+					secondary
+					title={t(data.status === APP_STATUS.WAITING ? 'Withdraw' : 'Cancel')}
+					onPress={changeStatus}
+				/>
+			</Footer>
+		}
+	};
 
 	return (
-		<XScreen scroll>
-
+		<XScreen
+			scroll
+		//Footer={getFooterCmp()}
+		>
 			<AppointmentInfo
 				providerName={data.providerName}
 				providerType={data.providerType}
@@ -125,42 +212,81 @@ const AppointmentScreen = ({ navigation, route }) => {
 					note: data.serviceNote
 				}]}
 				extraFields={
-					<XFieldContainer
-						iconLeftSize={24}
-						iconLeft={APP_STATUS_ICON[data.status]}
-						iconLeftColor={statusColor}
-					>
-						<View>
-							<XText secondary>{t('Status')}</XText>
-							<XText bold color={statusColor}>{t(data.status)}</XText>
-						</View>
-						{
-							data.statusComment &&
-							<View style={{ marginTop: 8 }}>
-								<XText secondary>{data.statusComment}</XText>
+					<>
+						<XFieldContainer
+							iconLeftSize={24}
+							iconLeft={APP_STATUS_ICON[data.status]}
+							iconLeftColorName={APP_STATUS_COLOR[data.status]}
+						>
+							<View>
+								<XText secondary>{t('Status')}</XText>
+								<XText bold colorName={APP_STATUS_COLOR[data.status]}>{t(data.status)}</XText>
 							</View>
+							{
+								data.statusComment &&
+								<View style={{ marginTop: 8 }}>
+									<XText secondary>{data.statusComment}</XText>
+								</View>
+							}
+
+						</XFieldContainer>
+
+						{!!data.mark &&
+							<XFieldContainer
+								iconLeftSize={26}
+								iconLeft='staro'
+							>
+								<View style={{ flexDirection: 'row' }}>
+									<View style={{ rowGap: 5 }}>
+										<XText secondary>{t('Review')}</XText>
+										<XMarkStars mark={data.mark} />
+									</View>
+									<View style={{ flexDirection: 'row', justifyContent: 'flex-end', flex: 1, alignItems: 'flex-end' }}>
+										<XChip
+											color={data.reviewApprovedAt ? Theme.vars.green : Theme.vars.orange}
+											icon={data.reviewApprovedAt ? 'check' : 'hourglass'}
+											text={t(data.reviewApprovedAt ? 'Approved' : 'Pending approval')}
+										/>
+									</View>
+								</View>
+								{
+									data.reviewComment &&
+									<View style={{ marginTop: 8 }}>
+										<XText secondary>{data.reviewComment}</XText>
+									</View>
+								}
+							</XFieldContainer>
 						}
-
-					</XFieldContainer>
-
+					</>
 				}
 			/>
 
-
-
-			{
-				utils.isHistoryServices(data?.start) ?
-					null
-					:
-					<ChangeStatusSection
-						status={data.status}
-						appointmentId={id}
-						navigation={navigation}
-					/>
-			}
+			{/* {getActionCmp()} */}
 
 		</XScreen>
 	);
-}
+};
+
+const styles = StyleSheet.create({
+	star: {
+		paddingVertical: 10,
+		paddingHorizontal: 5,
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	starCnt: {
+		maxWidth: 450,
+		//backgroundColor: 'white',
+		alignSelf: 'center'
+	},
+	commentFieldStyle: {
+		flex: 1,
+		textAlignVertical: 'top'
+	},
+	commentFieldCntStyle: {
+		height: 100
+	}
+});
 
 export default AppointmentScreen;

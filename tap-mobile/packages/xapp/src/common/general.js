@@ -1,3 +1,5 @@
+import { Theme } from "../style/themes";
+
 export const groupServices = (sers) => {
 
 	if (!sers)
@@ -60,4 +62,12 @@ export const APP_STATUS_ICON = {
 	REJECTED: 'closecircle',
 	CANCELED: 'exception1',
 	DROPPED: 'arrowdown'
+};
+
+export const APP_STATUS_COLOR = {
+	WAITING: Theme.vars.orange,
+	ACCEPTED: Theme.vars.green,
+	REJECTED: Theme.vars.red,
+	DROPPED: Theme.vars.gray,
+	CANCELED: Theme.vars.brown
 };

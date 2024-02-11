@@ -23,5 +23,6 @@ Appointment {
   service : Service { @LinkByFK(fk_appointment_service1) };
   user : User { @LinkByFK(fk_appointment_user1) };
   user2 : User { @LinkByFK(fk_appointment_user2) };
+  reviewList : Review[];
   statushistoryList : StatusHistory[];
 }

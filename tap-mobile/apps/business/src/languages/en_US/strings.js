@@ -3,14 +3,14 @@ export const strings = {
 	"Settings": "Settings",
 	"Cancel": "Cancel",
 	"OK": "OK",
-	
+
 	"Sing In": "Sing In",
 	"Sing Up": "Sing Up",
 	"Log out": "Log out",
 	"Username or email": "Username or email",
 	"Password": "Password",
 	"Delete": "Delete",
-	
+
 	"Break": "Break",
 	"Don't have an account?": "Don't have an account?",
 	"Reserved time": "Reserved time",
@@ -32,8 +32,6 @@ export const strings = {
 	"Appointment": "Appointment",
 	"Appointment - manually entered": "Appointment - manually entered",
 	"Add time period": "Add time period",
-	"Yes": "Yes",
-	"No": "No",
 	"Period": "Period",
 	"Create appointment": "Create appointment",
 	"Create time period": "Kreiraj vremenski period",

@@ -17,6 +17,8 @@ const XTextInput = React.forwardRef((
 		clearable = false,
 		value,
 		onClear,
+		textarea = false,
+		multiline,
 		...rest
 	},
 	ref) => {
@@ -46,7 +48,7 @@ const XTextInput = React.forwardRef((
 			<XFieldContainer
 				focused={focused}
 				outline={outline}
-				style={fieldContainerStyle}
+				style={[textarea && styles.textAreaCommentFieldCntStyle, fieldContainerStyle]}
 				disabled={disabled}
 				iconRight={clearable && !!value && focused ? 'close' : undefined}
 				iconRightColor={tSecondary}
@@ -56,8 +58,9 @@ const XTextInput = React.forwardRef((
 				<TextInput
 					ref={ref}
 					{...rest}
+					multiline={textarea || multiline}
 					value={value}
-					style={[styles.field, fieldStyle]}
+					style={[styles.field, textarea && styles.textAreaCommentFieldStyle, fieldStyle]}
 					editable={editable && !disabled}
 					onFocus={onFocus}
 					onBlur={onBlur}
@@ -78,6 +81,13 @@ const createStyle = (theme, font, focused) => StyleSheet.create({
 	field: {
 		fontFamily: font,
 		color: theme.colors.textPrimary
+	},
+	textAreaCommentFieldStyle: {
+		flex: 1,
+		textAlignVertical: 'top'
+	},
+	textAreaCommentFieldCntStyle: {
+		height: 100
 	}
 });
 
