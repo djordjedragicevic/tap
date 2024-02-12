@@ -11,7 +11,6 @@ import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import XSection from "xapp/src/components/basic/XSection";
 import XText from "xapp/src/components/basic/XText";
 import { useDateCode, useTranslation } from "xapp/src/i18n/I18nContext";
-import { useStore } from "xapp/src/store/store";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 

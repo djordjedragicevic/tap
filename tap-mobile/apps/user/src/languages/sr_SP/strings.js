@@ -121,5 +121,8 @@ export const strings = {
 	"Pending approval": "Čeka odobrenje",
 	"Cancelation reason": "Razlog otkazivanja",
 	"Withdrawing reason": "Razlog odustajanja",
-	"Rate it": "Ocijenite"
+	"Rate it": "Ocijenite",
+	"For service": "Za uslugu",
+	"No reviews": "Nema recenzija",
+	"From history": "Iz istorije"
 };

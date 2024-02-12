@@ -195,6 +195,7 @@ const AppointmentScreen = ({ navigation, route }) => {
 		//Footer={getFooterCmp()}
 		>
 			<AppointmentInfo
+				isHistory={data._isHistory}
 				providerName={data.providerName}
 				providerType={data.providerType}
 				providerAddress={data.providerAddress}

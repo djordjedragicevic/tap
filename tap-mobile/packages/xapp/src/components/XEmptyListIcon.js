@@ -4,13 +4,13 @@ import XText from "./basic/XText";
 import { useColor } from "../style/ThemeContext";
 import { useTranslation } from "../i18n/I18nContext";
 
-const XEmptyListIcon = ({ text }) => {
+const XEmptyListIcon = ({ text, iconSize = 64 }) => {
 	const iconColor = useColor('textTertiary');
 	const t = useTranslation();
 	return (
 		<View style={styles.constainer}>
 			<View style={styles.inner}>
-				<XIcon color={iconColor} icon='scan1' size={64} />
+				<XIcon color={iconColor} icon='scan1' size={iconSize} />
 				{text && <XText secondary size={16}>{text === true ? t("No items") : text}</XText>}
 			</View>
 		</View>

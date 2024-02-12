@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useState, memo } from 'react';
-import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { FlatList, View, StyleSheet } from 'react-native';
 import { Http } from 'xapp/src/common/Http';
 import { emptyFn } from 'xapp/src/common/utils';
 import XMarkStars from 'xapp/src/components/XMarkStars';
 import XText from 'xapp/src/components/basic/XText';
 import XSeparator from 'xapp/src/components/basic/XSeparator';
-import { usePrimaryColor, useThemedStyle } from 'xapp/src/style/ThemeContext';
+import { usePrimaryColor } from 'xapp/src/style/ThemeContext';
 import I18nT from 'xapp/src/i18n/i18n';
 import { useTranslation } from 'xapp/src/i18n/I18nContext';
-import { ADD_REVIEW_SCREEN } from '../../navigators/routes';
-import { useIsUserLogged } from '../../store/concreteStores';
 import XSelector from 'xapp/src/components/basic/XSelector';
+import XEmptyListIcon from "xapp/src/components/XEmptyListIcon";
 
 const calculateTimeAgo = (data) => {
 	const now = Date.now();
@@ -39,26 +38,23 @@ const calculateTimeAgo = (data) => {
 	return data;
 };
 
-const Review = ({ mark, comment, username, timeAgo }) => {
+const Review = memo(({ mark, comment, username, timeAgo, service }) => {
+	const t = useTranslation();
 	return (
-		<View style={{ padding: 10 }}>
-			<View
-				style={{
-					borderWidth: 0,
-					flexDirection: 'row',
-					justifyContent: 'space-between'
-				}}>
-				<View style={{ flex: 1, marginEnd: 10, marginBottom: 5 }}>
-					<XText bold oneLine size={15}>{username}</XText>
+		<View style={styles.reviewCnt}>
+			<View style={styles.reviewTitle}>
+				<View style={{ flex: 1, marginEnd: 10 }}>
+					<XText bold oneLine>{username}</XText>
 				</View>
 				<XText size={13} tertiary>{timeAgo}</XText>
 			</View>
 
-			{comment && <XText style={{ paddingHorizontal: 5 }} secondary>{comment}</XText>}
-			<XMarkStars style={{ marginTop: 15 }} mark={mark} />
+			<XText tertiary>{t('For service')} - {service}</XText>
+			{comment && <XText style>{comment}</XText>}
+			<XMarkStars mark={mark} />
 		</View>
 	)
-};
+});
 
 const SORT_BY = [
 	{ id: 1, title: 'Latest', sortField: 'createdAt', sortKey: 'DESC' },
@@ -66,10 +62,8 @@ const SORT_BY = [
 	{ id: 3, title: 'Worst', sortField: 'mark', sortKey: 'ASC' }
 ];
 
-const ReviewsHeader = ({ navigation, providerId, sortedBy, setSortedBy }) => {
+const ReviewsHeader = ({ sortedBy, setSortedBy }) => {
 	const t = useTranslation();
-	const styles = useThemedStyle(styleCreator);
-	const isLogged = useIsUserLogged();
 	const pColor = usePrimaryColor();
 
 	return (
@@ -95,31 +89,28 @@ const ReviewsHeader = ({ navigation, providerId, sortedBy, setSortedBy }) => {
 				outline={true}
 				flexCenter={false}
 			/>
-
-			{isLogged &&
-				<TouchableOpacity onPress={() => navigation.navigate(ADD_REVIEW_SCREEN, { providerId })}>
-					<XText icon='edit' colorPrimary size={13}>{t('Add review')}</XText>
-				</TouchableOpacity>
-			}
 		</View>
 	);
 };
 
 const TabReviews = ({ providerId, navigation, reload }) => {
-	const styles = useThemedStyle(styleCreator);
-
-	const [reviews, setReviews] = useState([]);
+	const [reviews, setReviews] = useState();
 	const [loading, setLoading] = useState(true);
 	const [count, setCount] = useState(1);
 	const [sortedBy, setSortedBy] = useState(SORT_BY[0]);
+	const [isEmpty, setIsEmpty] = useState(false);
+	const t = useTranslation();
 
 	useEffect(() => {
 		setLoading(true);
 		let finish = true;
 		Http.get(`/provider/${providerId}/review/list`, { sortBy: sortedBy.sortField, sortKey: sortedBy.sortKey })
 			.then((resp) => {
-				if (finish)
+				if (finish) {
 					setReviews(calculateTimeAgo(resp));
+					if (!resp?.length)
+						setIsEmpty(true);
+				}
 			})
 			.catch(emptyFn)
 			.finally(() => setLoading(false));
@@ -132,6 +123,7 @@ const TabReviews = ({ providerId, navigation, reload }) => {
 		comment={item.comment}
 		username={item.username}
 		timeAgo={item.timeAgo}
+		service={item.service}
 	/>, []);
 
 	return (
@@ -142,43 +134,55 @@ const TabReviews = ({ providerId, navigation, reload }) => {
 				sortedBy={sortedBy}
 				setSortedBy={setSortedBy}
 			/>
+			<XSeparator />
 
-			<FlatList
-				data={reviews}
-				ItemSeparatorComponent={< XSeparator />}
-				renderItem={renderItem}
-				refreshing={loading}
-				onRefresh={() => setCount(old => old + 1)}
-				contentContainerStyle={styles.listCntStyle}
-			/>
+			{
+				isEmpty ?
+					<XEmptyListIcon text={t('No reviews')} iconSize={40} />
+					:
+					<FlatList
+						data={reviews}
+						ItemSeparatorComponent={<XSeparator />}
+						renderItem={renderItem}
+						refreshing={loading}
+						onRefresh={() => setCount(old => old + 1)}
+						contentContainerStyle={styles.listCntStyle}
+					/>
+			}
 		</>
 	);
 };
 
-const styleCreator = (theme) => {
-	return StyleSheet.create({
-		listCntStyle: {
-			paddingHorizontal: 10
-		},
-		header: {
-			paddingHorizontal: 10,
-			paddingVertical: 12,
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-			alignItems: 'center'
-		},
-		selectorField: {
-			padding: 3,
-			minHeight: 25
-		},
-		selectorFieldTitle: {
-			marginEnd: 10
-		},
-		selectorFieldIcon: {
-			paddingHorizontal: 0,
-			paddingVertical: 0
-		}
-	})
-};
+const styles = StyleSheet.create({
+	listCntStyle: {
+		paddingHorizontal: 10
+	},
+	header: {
+		paddingHorizontal: 10,
+		paddingVertical: 12,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	selectorField: {
+		padding: 3,
+		minHeight: 25
+	},
+	selectorFieldTitle: {
+		marginEnd: 8
+	},
+	selectorFieldIcon: {
+		paddingHorizontal: 0,
+		paddingVertical: 0,
+		marginEnd: 3
+	},
+	reviewCnt: {
+		padding: 10,
+		rowGap: 5
+	},
+	reviewTitle: {
+		flexDirection: 'row'
+	}
+});
 
 export default memo(TabReviews);

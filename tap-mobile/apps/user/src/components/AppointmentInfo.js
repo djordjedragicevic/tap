@@ -7,6 +7,9 @@ import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
 import XChip from "xapp/src/components/basic/XChip";
 import XText from "xapp/src/components/basic/XText";
 import { View, StyleSheet } from "react-native";
+import { Theme } from "xapp/src/style/themes";
+import { MaterialIcons } from '@expo/vector-icons';
+import { useColor } from "xapp/src/style/ThemeContext";
 
 const AppointmentInfo = ({
 	providerName,
@@ -17,7 +20,8 @@ const AppointmentInfo = ({
 	timeFrom,
 	timeTo,
 	services,
-	extraFields
+	extraFields,
+	isHistory
 }) => {
 
 	const dCode = useDateCode();
@@ -30,9 +34,14 @@ const AppointmentInfo = ({
 		year: 'numeric'
 	});
 
+	const cGray = useColor('gray');
+
 	return (
 		<XSection
 			title={t('Appointment review')}
+			titleRight={isHistory ?
+				<XChip text={t('From history')} textProps={{ tertiary: true }} />
+				: null}
 			styleContent={{ rowGap: 5 }}
 			style={{ padding: 0 }}
 			styleTitle={{ alignItems: 'center' }}

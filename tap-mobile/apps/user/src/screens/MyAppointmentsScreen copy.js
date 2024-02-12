@@ -15,8 +15,8 @@ import XSeparator from "xapp/src/components/basic/XSeparator";
 import XEmptyListIcon from "xapp/src/components/XEmptyListIcon";
 import XIcon from "xapp/src/components/basic/XIcon";
 import XChip from "xapp/src/components/basic/XChip";
-import { ADD_REVIEW_SCREEN, APPOINTMENT_SCREEN, CANCEL_APPOINTMENT_SCREEN } from "../navigators/routes";
-import { APP_STATUS, APP_STATUS_COLOR } from "xapp/src/common/general";
+import { ADD_REVIEW_SCREEN, APPOINTMENT_SCREEN } from "../navigators/routes";
+import { APP_STATUS, APP_STATUS_COLOR, APP_STATUS_ICON } from "xapp/src/common/general";
 import XAvatar from "xapp/src/components/basic/XAvatar";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -66,7 +66,9 @@ const ServiceRow = ({ item, navigation }) => {
 			style={{
 				flexDirection: 'row',
 				alignItems: 'center',
-				minHeight: 37
+				minHeight: 37,
+				borderWidth: 0,
+				opacity: item.status === APP_STATUS.DROPPED || item.status === APP_STATUS.CANCELED ? 1 : 1
 			}}
 			onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
 		>
@@ -88,7 +90,8 @@ const ServiceRow = ({ item, navigation }) => {
 			<XIcon icon='right' size={12} color={pColor} />
 
 		</TouchableOpacity>
-	);
+
+	)
 };
 
 
@@ -133,7 +136,8 @@ const Appointment = ({ item, navigation }) => {
 
 	const styles = useThemedStyle(styleCreator);
 	const t = useTranslation();
-	const [pColor, cRed, cRedLight, statusColor, hIconColor, cGray] = useColor(['primary', 'red', 'redLight', APP_STATUS_COLOR[item.status], 'textTertiary', 'gray'])
+	const hIconColor = useColor('textTertiary');
+	const [pColor, cRed] = useColor(['primary', 'red'])
 	const hIcon = useCallback((props) => {
 		return item._isHistory && <FontAwesome5 name="history" {...props} color={hIconColor} />;
 	}, [item._isHistory, hIconColor]);
@@ -144,12 +148,16 @@ const Appointment = ({ item, navigation }) => {
 			onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
 		>
 			<View style={[styles.appHeader]}>
-				<XText bold tertiary={!!item._isHistory}>{item._date} - {item._from}</XText>
-				<View style={[styles.statusCnt, { backgroundColor: item._isHistory ? cGray : statusColor }]}>
-					<View style={styles.triangle} />
-					<XText light size={13}>{t(item.status)}</XText>
-				</View>
+				<XText icon={hIcon} bold>{item._date} - {item._from}</XText>
+				<XChip
+					color={APP_STATUS_COLOR[item.status]}
+					text={t(item.status)}
+					textProps={{ bold: false }}
+					icon={APP_STATUS_ICON[item.status]}
+				/>
 			</View>
+
+			<XSeparator />
 
 			<View style={styles.appMiddle}>
 				<XAvatar
@@ -167,44 +175,34 @@ const Appointment = ({ item, navigation }) => {
 
 			<View style={[styles.appFooter]}>
 
+				{/* <XButtonIcon
+					icon={'star'}
+					outline
+				/> */}
+
 				{(item._isHistory && item.status === APP_STATUS.ACCEPTED && !item.mark) &&
 					<XButton
 						title={t('Rate it')}
 						iconLeft={'star'}
-						uppercase={false}
-						primary
-						outline
-						small
+						textColor={pColor}
 						onPress={() => navigation.navigate(ADD_REVIEW_SCREEN, { appId: item.id })}
 					/>
-					// <XButtonIcon
-					// 	icon='star'
-					// 	size={30}
-					// 	outline
-					// 	color={pColor}
-					// 	onPress={() => navigation.navigate(ADD_REVIEW_SCREEN, { appId: item.id })}
-					// />
 				}
 				{(!item._isHistory && (item.status === APP_STATUS.ACCEPTED || item.status === APP_STATUS.WAITING)) &&
 					<XButton
 						title={t(item.status === APP_STATUS.WAITING ? 'Withdraw' : 'Cancel')}
-						uppercase={false}
-						outline
-						iconLeft={item.status === APP_STATUS.WAITING ? 'arrowdown' : 'close'}
-						small
-						colorName={Theme.vars.red}
-						onPress={() => navigation.navigate(CANCEL_APPOINTMENT_SCREEN, { appId: item.id, status: item.status })}
+						iconLeft={'close'}
+						textColor={cRed}
 					/>
 				}
 				<XButtonIcon
 					icon='arrowsalt'
 					size={30}
-					outline
 					color={pColor}
 					onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
 				/>
-
 			</View>
+
 		</Pressable>
 	);
 };
@@ -224,6 +222,8 @@ const MyAppointmentsScreen = ({ navigation }) => {
 
 	const dateCode = useDateCode();
 	const t = useTranslation();
+	//const [data, refresh, refreshing] = useHTTPGetOnFocus(useFocusEffect, '/appointment/my-appointments', null, false, arrangeData);
+
 
 	const loadApps = useCallback(() => {
 		setLoading(true);
@@ -271,8 +271,8 @@ const MyAppointmentsScreen = ({ navigation }) => {
 						keyExtractor={(item) => item[0].id}
 						style={{ flex: 1 }}
 						contentContainerStyle={{
-							rowGap: 15,
-							padding: 15
+							rowGap: 10,
+							padding: Theme.values.mainPaddingHorizontal
 						}}
 						refreshing={loading}
 						onRefresh={() => setRefresh(old => old + 1)}
@@ -281,6 +281,7 @@ const MyAppointmentsScreen = ({ navigation }) => {
 					<XEmptyListIcon text={t('No appointments')} />
 				: null
 			}
+
 		</XScreen>
 	)
 };
@@ -292,7 +293,7 @@ const styleCreator = (theme) => StyleSheet.create({
 		backgroundColor: theme.colors.backgroundElement
 	},
 	appHeader: {
-		paddingStart: 10,
+		paddingHorizontal: 10,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
@@ -309,29 +310,13 @@ const styleCreator = (theme) => StyleSheet.create({
 		paddingVertical: 10,
 		justifyContent: 'flex-end',
 		alignItems: 'center',
-		columnGap: 10
+		//height: 45,
+		columnGap: 5
 	},
 	gropedServicesContainer: {
 		rowGap: 5,
 		paddingHorizontal: 10,
 		paddingVertical: 10
-	},
-	triangle: {
-		width: 0,
-		height: 0,
-		marginEnd: 15,
-		borderTopWidth: 13,
-		borderTopColor: 'transparent',
-		borderBottomWidth: 13,
-		borderBottomColor: 'transparent',
-		borderLeftWidth: 13,
-		borderLeftColor: theme.colors.backgroundElement
-	},
-	statusCnt: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		height: 26,
-		paddingEnd: 15
 	}
 })
 

@@ -18,6 +18,7 @@ public class ProviderRepository extends CommonRepository {
 		String[] fields = new String[]{
 				"r.id", "r.mark", "r.comment",
 				"r.user.username AS username",
+				"r.appointment.service.name AS service",
 				"r.createdAt"
 		};
 
