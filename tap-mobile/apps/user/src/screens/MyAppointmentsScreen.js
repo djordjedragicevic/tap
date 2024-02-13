@@ -14,12 +14,12 @@ import XImage from "xapp/src/components/basic/XImage";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XEmptyListIcon from "xapp/src/components/XEmptyListIcon";
 import XIcon from "xapp/src/components/basic/XIcon";
-import XChip from "xapp/src/components/basic/XChip";
 import { ADD_REVIEW_SCREEN, APPOINTMENT_SCREEN, CANCEL_APPOINTMENT_SCREEN } from "../navigators/routes";
 import { APP_STATUS, APP_STATUS_COLOR } from "xapp/src/common/general";
 import XAvatar from "xapp/src/components/basic/XAvatar";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import { FontAwesome5 } from '@expo/vector-icons';
+import XTag from "xapp/src/components/basic/XTag";
 
 const arrangeData = (data, dateCode, grouped, filter) => {
 
@@ -145,10 +145,12 @@ const Appointment = ({ item, navigation }) => {
 		>
 			<View style={[styles.appHeader]}>
 				<XText bold tertiary={!!item._isHistory}>{item._date} - {item._from}</XText>
-				<View style={[styles.statusCnt, { backgroundColor: item._isHistory ? cGray : statusColor }]}>
-					<View style={styles.triangle} />
-					<XText light size={13}>{t(item.status)}</XText>
-				</View>
+
+				<XTag
+					bgColor={item._isHistory ? cGray : statusColor}
+					text={t(item.status)}
+				/>
+
 			</View>
 
 			<View style={styles.appMiddle}>
@@ -212,7 +214,7 @@ const Appointment = ({ item, navigation }) => {
 const FILTER = {
 	COMING: 'coming',
 	HISTORY: 'history'
-}
+};
 
 const MyAppointmentsScreen = ({ navigation }) => {
 

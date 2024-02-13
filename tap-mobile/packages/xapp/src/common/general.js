@@ -65,7 +65,7 @@ export const APP_STATUS_ICON = {
 };
 
 export const APP_STATUS_COLOR = {
-	WAITING: Theme.vars.orange,
+	WAITING: Theme.vars.yellow,
 	ACCEPTED: Theme.vars.green,
 	REJECTED: Theme.vars.red,
 	DROPPED: Theme.vars.gray,

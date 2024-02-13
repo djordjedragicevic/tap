@@ -7,9 +7,6 @@ import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
 import XChip from "xapp/src/components/basic/XChip";
 import XText from "xapp/src/components/basic/XText";
 import { View, StyleSheet } from "react-native";
-import { Theme } from "xapp/src/style/themes";
-import { MaterialIcons } from '@expo/vector-icons';
-import { useColor } from "xapp/src/style/ThemeContext";
 
 const AppointmentInfo = ({
 	providerName,
@@ -33,8 +30,6 @@ const AppointmentInfo = ({
 		day: '2-digit',
 		year: 'numeric'
 	});
-
-	const cGray = useColor('gray');
 
 	return (
 		<XSection
