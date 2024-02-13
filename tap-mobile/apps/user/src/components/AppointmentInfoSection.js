@@ -7,36 +7,37 @@ import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
 import XChip from "xapp/src/components/basic/XChip";
 import XText from "xapp/src/components/basic/XText";
 import { View, StyleSheet } from "react-native";
+import { APP_STATUS_COLOR, APP_STATUS_ICON } from "xapp/src/common/general";
+import XMarkStars from "xapp/src/components/XMarkStars";
+import { Theme } from "xapp/src/style/themes";
 
-const AppointmentInfo = ({
-	providerName,
-	providerType,
-	providerAddress,
-	providerCity,
-	date,
-	timeFrom,
-	timeTo,
-	services,
-	extraFields,
-	isHistory
-}) => {
+const generateAppTime = (data, dCode) => {
+	if (!data.start)
+		return '';
+
+	return new Date(data.start).toLocaleDateString(dCode, { month: 'short', day: '2-digit', year: 'numeric' })
+		+ ' '
+		+ DateUtils.getTimeFromDateTimeString(data.start)
+		+ '-'
+		+ DateUtils.getTimeFromDateTimeString(data.end);
+};
+
+const AppointmentInfoSection = ({ data = {
+	providerName: '',
+	providerType: '',
+	providerAddress: '',
+	providerCity: '',
+	services: [],
+	_isHistory: false
+} }) => {
 
 	const dCode = useDateCode();
 	const t = useTranslation();
-	const priceSum = services.map(s => s.price).reduce((acc, v) => acc + v, 0);
-
-	const dateF = new Date(date).toLocaleDateString(dCode, {
-		month: 'short',
-		day: '2-digit',
-		year: 'numeric'
-	});
 
 	return (
 		<XSection
 			title={t('Appointment review')}
-			titleRight={isHistory ?
-				<XChip text={t('From history')} textProps={{ tertiary: true }} />
-				: null}
+			titleRight={data._isHistory ? <XChip text={t('From history')} textProps={{ tertiary: true }} /> : null}
 			styleContent={{ rowGap: 5 }}
 			style={{ padding: 0 }}
 			styleTitle={{ alignItems: 'center' }}
@@ -50,7 +51,7 @@ const AppointmentInfo = ({
 				iconLeftSize={24}
 				titleParams={{ secondary: true }}
 				title={'Davalac usluga'}
-				value={providerName + ' - ' + providerType}
+				value={data.providerName + ' - ' + data.providerType}
 				valueParams={{ bold: true }}
 			/>
 			<XSelectField
@@ -61,7 +62,7 @@ const AppointmentInfo = ({
 				iconLeftSize={24}
 				titleParams={{ secondary: true }}
 				title={t('Address')}
-				value={providerAddress + ', ' + providerCity}
+				value={data.providerAddress + ', ' + data.providerCity}
 				valueParams={{ bold: true }}
 			/>
 			<XSelectField
@@ -72,10 +73,10 @@ const AppointmentInfo = ({
 				iconLeftSize={24}
 				title={t('Appointment time')}
 				titleParams={{ secondary: true }}
-				value={dateF + ' ' + timeFrom + '-' + timeTo}
+				value={generateAppTime(data, dCode)}
 				valueParams={{ bold: true }}
 			/>
-			{services.map((s) => (
+			{data.services?.map((s) => (
 				<XFieldContainer
 					key={s.id}
 					iconLeft='tago'
@@ -117,15 +118,62 @@ const AppointmentInfo = ({
 				iconLeftSize={24}
 				iconRight={null}
 				iconLeft={(params) => (<FontAwesome name="money" {...params} />)}
-				title={t(services?.length > 1 ? 'Price Sum' : 'Price')}
+				title={t(data.services?.length > 1 ? 'Price Sum' : 'Price')}
 				titleParams={{ secondary: true }}
-				value={CurrencyUtils.convert(priceSum)}
+				value={CurrencyUtils.convert(data.services?.map(s => s.price).reduce((acc, v) => acc + v, 0))}
 				valueParams={{ bold: true }}
 			/>
+			{
+				data.status != null &&
+				<XFieldContainer
+					iconLeftSize={24}
+					iconLeft={APP_STATUS_ICON[data.status]}
+					iconLeftColorName={APP_STATUS_COLOR[data.status]}
+				>
+					<View>
+						<XText secondary>{t('Status')}</XText>
+						<XText bold colorName={APP_STATUS_COLOR[data.status]}>{t(data.status)}</XText>
+					</View>
+					{
+						data.statusComment &&
+						<View style={{ marginTop: 8 }}>
+							<XText secondary>{data.statusComment}</XText>
+						</View>
+					}
 
-			{extraFields}
+				</XFieldContainer>
+			}
+
+			{
+				!!data.mark &&
+				<XFieldContainer
+					iconLeftSize={26}
+					iconLeft='staro'
+				>
+					<View style={{ flexDirection: 'row' }}>
+						<View style={{ rowGap: 5 }}>
+							<XText secondary>{t('Review')}</XText>
+							<XMarkStars mark={data.mark} />
+						</View>
+						<View style={{ flexDirection: 'row', justifyContent: 'flex-end', flex: 1, alignItems: 'flex-end' }}>
+							<XChip
+								color={data.reviewApprovedAt ? Theme.vars.green : Theme.vars.orange}
+								icon={data.reviewApprovedAt ? 'check' : 'hourglass'}
+								text={t(data.reviewApprovedAt ? 'Approved' : 'Pending approval')}
+							/>
+						</View>
+					</View>
+					{
+						data.reviewComment &&
+						<View style={{ marginTop: 8 }}>
+							<XText secondary>{data.reviewComment}</XText>
+						</View>
+					}
+				</XFieldContainer>
+			}
+
 		</XSection>
-	)
+	);
 };
 
 const styles = StyleSheet.create({
@@ -140,4 +188,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default AppointmentInfo;
+export default AppointmentInfoSection;

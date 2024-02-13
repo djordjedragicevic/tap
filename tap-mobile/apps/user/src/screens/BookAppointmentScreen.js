@@ -6,16 +6,21 @@ import { Http } from "xapp/src/common/Http";
 import { storeDispatch, useStore } from "xapp/src/store/store";
 import { MAIN_TAB_MY_APPOINTMENTS } from "../navigators/routes";
 import Footer from "../components/Footer";
-import AppointmentInfo from "../components/AppointmentInfo";
+import AppointmentInfoSection from "../components/AppointmentInfoSection";
 import { DateUtils } from "xapp/src/common/utils";
 
-const calculateTimeTo = (app) => {
-	return DateUtils.getTimeFromDateTime(new Date(
+const calculateEnd = (app) => {
+	return DateUtils.dateToString(new Date(
 		new Date(app.date + 'T' + app.services[app.services.length - 1].time).getTime()
 		+
 		(app.services[app.services.length - 1].service.duration * 60 * 1000)
 	));
 };
+
+const calculateStart = (app) => {
+	return DateUtils.dateToString(new Date(app.date + 'T' + app.services[0].time));
+};
+
 
 const BookAppointmentScreen = ({ navigation, route }) => {
 	const t = useTranslation();
@@ -50,23 +55,24 @@ const BookAppointmentScreen = ({ navigation, route }) => {
 					/>
 				</Footer>
 			)}>
-			<AppointmentInfo
-				providerName={provider.name}
-				providerType={provider.type}
-				providerAddress={provider.address}
-				providerCity={provider.city}
-				timeFrom={app.services[0].time}
-				timeTo={calculateTimeTo(app)}
-				date={app.date}
-				services={app.services.map(s => ({
-					id: s.service.id,
-					name: s.service.name,
-					price: s.service.price,
-					employeeName: s.employee.name,
-					duration: s.service.duration,
-					note: s.service.note,
-					start: s.time
-				}))}
+			<AppointmentInfoSection
+				data={{
+					providerName: provider.name,
+					providerType: provider.type,
+					providerAddress: provider.address,
+					providerCity: provider.city,
+					start: calculateStart(app),
+					end: calculateEnd(app),
+					services: app.services.map(s => ({
+						id: s.service.id,
+						name: s.service.name,
+						price: s.service.price,
+						employeeName: s.employee.name,
+						duration: s.service.duration,
+						note: s.service.note,
+						start: s.time
+					}))
+				}}
 			/>
 		</XScreen>
 	);
