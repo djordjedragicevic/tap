@@ -26,7 +26,6 @@ const AppointmentInfoSection = ({ data = {
 	providerName: '',
 	providerType: '',
 	providerAddress: '',
-	providerCity: '',
 	services: [],
 	_isHistory: false
 } }) => {
@@ -62,7 +61,7 @@ const AppointmentInfoSection = ({ data = {
 				iconLeftSize={24}
 				titleParams={{ secondary: true }}
 				title={t('Address')}
-				value={data.providerAddress + ', ' + data.providerCity}
+				value={data.providerAddress}
 				valueParams={{ bold: true }}
 			/>
 			<XSelectField

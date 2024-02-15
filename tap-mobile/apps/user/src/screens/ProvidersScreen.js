@@ -67,7 +67,7 @@ const ProvidersScreen = ({ navigation }) => {
 					<XSeparator style={{ marginVertical: 10 }} />
 
 					<XText icon='enviroment' secondary style={{ marginStart: 6 }}>
-						{item.address1 + ', ' + item.city}
+						{item.address1}
 					</XText>
 
 

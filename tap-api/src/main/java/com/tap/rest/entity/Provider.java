@@ -34,26 +34,17 @@ public class Provider implements Serializable {
     @Column(name="image_path", length=128)
 	private String imagePath;
 
-    @Column(name="id_number", nullable=false, length=32)
+    @Column(name="id_number", length=32)
 	private String idNumber;
 
     @Column(name="legal_entity", nullable=false)
 	private byte legalEntity;
 
-    @Column(name="approved", nullable=false)
-	private byte approved;
-
-    @Column(name="approved_date")
-	private LocalDateTime approvedDate;
+    @Column(name="approved_at")
+	private LocalDateTime approvedAt;
 
     @Column(name="approved_by")
 	private Integer approvedBy;
-
-    @Column(name="mark")
-	private Float mark;
-
-    @Column(name="review_count")
-	private Integer reviewCount;
 
     @Column(name="active", nullable=false)
 	private byte active;
@@ -147,20 +138,12 @@ public class Provider implements Serializable {
 		return this.legalEntity;
 	}
 
-	public void setApproved( byte approved ) {
-		this.approved = approved;
+	public void setApprovedAt( LocalDateTime approvedAt ) {
+		this.approvedAt = approvedAt;
 	}
 
-	public byte getApproved() {
-		return this.approved;
-	}
-
-	public void setApprovedDate( LocalDateTime approvedDate ) {
-		this.approvedDate = approvedDate;
-	}
-
-	public LocalDateTime getApprovedDate() {
-		return this.approvedDate;
+	public LocalDateTime getApprovedAt() {
+		return this.approvedAt;
 	}
 
 	public void setApprovedBy( Integer approvedBy ) {
@@ -169,22 +152,6 @@ public class Provider implements Serializable {
 
 	public Integer getApprovedBy() {
 		return this.approvedBy;
-	}
-
-	public void setMark( Float mark ) {
-		this.mark = mark;
-	}
-
-	public Float getMark() {
-		return this.mark;
-	}
-
-	public void setReviewCount( Integer reviewCount ) {
-		this.reviewCount = reviewCount;
-	}
-
-	public Integer getReviewCount() {
-		return this.reviewCount;
 	}
 
 	public void setActive( byte active ) {

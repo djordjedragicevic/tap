@@ -41,7 +41,6 @@ public class ProviderRepository extends CommonRepository {
 				"p.id", "p.name", "p.imagePath AS mainImg", "p.legalEntity",
 				"p.providertype.name AS providerType",
 				"p.address.address1 AS address1",
-				"p.address.city.name AS city",
 				"ROUND(AVG(r.mark), 1) AS mark",
 				"COUNT(r.id) AS reviewCount"
 		};
@@ -55,7 +54,9 @@ public class ProviderRepository extends CommonRepository {
 				AND p.providertype.active = 1
 				AND p.address.city.id = :cityId
 				AND p.address.city.active = 1
+				AND p.approvedAt IS NOT NULL
 				GROUP BY p.id
+				ORDER BY p.id
 				""";
 
 		List<Object[]> dbRes = em.createQuery(String.format(qS, String.join(",", fields)), Object[].class)
@@ -71,7 +72,6 @@ public class ProviderRepository extends CommonRepository {
 				"p.id", "p.name", "p.phone", "p.description", "p.imagePath AS mainImg",
 				"p.providertype.name AS providerType",
 				"p.address.address1 AS address", "p.address.latitude AS lat", "p.address.longitude AS lon",
-				"p.address.city.name AS city",
 				"p.address.city.country.name AS country", "p.address.city.country.code AS countryCode",
 				"ROUND(AVG(r.mark), 1) AS mark",
 				"COUNT(r.id) AS reviewCount"
@@ -110,9 +110,13 @@ public class ProviderRepository extends CommonRepository {
 				g.name,
 				c.id,
 				c.name
-				FROM Service s LEFT JOIN s.group g LEFT JOIN s.category c
+				FROM Service s
+				LEFT JOIN s.group g LEFT JOIN s.category c
+				LEFT JOIN ServiceEmployee se ON s = se.service
 				WHERE s.active = 1
 				AND s.provider.id = :pId
+				AND se.id IS NOT NULL
+				GROUP BY s.id
 				ORDER BY c.id, g.id
 				""";
 

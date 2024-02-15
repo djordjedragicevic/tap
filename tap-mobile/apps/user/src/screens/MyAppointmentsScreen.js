@@ -118,7 +118,7 @@ const AppointmentGroup = ({ item, navigation }) => {
 				/>
 				<View style={{ justifyContent: 'space-evenly' }}>
 					<XText icon='isv' bold>{item[0].provider.name} - {item[0].provider.type}</XText>
-					<XText icon='enviroment' secondary>{item[0].provider.address1}, {item[0].provider.city}</XText>
+					<XText icon='enviroment' secondary>{item[0].provider.address1}</XText>
 				</View>
 			</View>
 
@@ -162,7 +162,7 @@ const Appointment = ({ item, navigation }) => {
 				/>
 				<View style={{ justifyContent: 'space-evenly', flex: 1, paddingHorizontal: 10, paddingEnd: 15 }}>
 					<XText oneLine icon='isv' bold>{item.provider.name}</XText>
-					<XText oneLine icon='enviroment' secondary>{item.provider.address1}, {item.provider.city}</XText>
+					<XText oneLine icon='enviroment' secondary>{item.provider.address1}</XText>
 					<XText oneLine icon='tag' secondary>{item.service.name}</XText>
 				</View>
 			</View>

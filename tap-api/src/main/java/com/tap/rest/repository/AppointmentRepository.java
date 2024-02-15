@@ -22,92 +22,6 @@ import java.util.*;
 
 @ApplicationScoped
 public class AppointmentRepository extends CommonRepository {
-	@Transactional
-	public boolean cancelAppointments(List<Long> aIds) {
-		List<Appointment> apps = this.getAppointmentsById(aIds);
-
-		if (apps.size() != aIds.size())
-			return false;
-
-		for (Appointment a : apps)
-			if (a.getAppointmentstatus().getName().equals(Statics.A_STATUS_REJECTED))
-				return false;
-
-
-		AppointmentStatus status = getAppointmentStatus(Statics.A_STATUS_CANCELED);
-		for (Appointment a : apps)
-			a.setAppointmentstatus(status);
-
-		em.flush();
-
-		return true;
-	}
-
-	@Transactional
-	public boolean rebookAppointments(List<Long> aIds) {
-		List<Appointment> apps = this.getAppointmentsById(aIds);
-		if (apps.size() != aIds.size())
-			return false;
-
-		Integer pId = apps.get(0).getEmployee().getProvider().getId();
-		for (Appointment a : apps)
-			if (!this.isFreeTime(pId, List.of(a.getEmployee().getId()), a.getStart(), a.getEnd()))
-				return false;
-
-
-		AppointmentStatus status = getAppointmentStatus(Statics.A_STATUS_WAITING);
-		for (Appointment a : apps)
-			a.setAppointmentstatus(status);
-
-		em.flush();
-
-		return true;
-	}
-
-	@Transactional
-	public boolean saveAppointment(FreeAppointment app, int userId) {
-
-		List<Integer> eIds = app.getServices().stream().mapToInt(s -> s.getEmployee().getId()).boxed().toList();
-		LocalDateTime from = LocalDateTime.of(app.getDate(), app.getServices().get(0).getTime());
-		LocalDateTime to = from.plusMinutes(app.getDurationSum());
-
-		boolean isFree = isFreeTime(app.getProviderId(), eIds, from, to);
-
-		if (isFree) {
-			AppointmentStatus aS = getAppointmentStatus(Statics.A_STATUS_WAITING);
-			User u = em.find(User.class, userId);
-			app.getServices().sort(Comparator.comparing(FreeAppointment.Service::getTime));
-
-			for (FreeAppointment.Service ser : app.getServices()) {
-				Appointment fApp = new Appointment();
-				Service s = em.find(Service.class, ser.getService().getId());
-				Employee e = em.find(Employee.class, ser.getEmployee().getId());
-				LocalDateTime start = LocalDateTime.of(app.getDate(), ser.getTime());
-				LocalDateTime end = start.plusMinutes(ser.getService().getDuration());
-				PeriodType pT = getSingleEntityBy(PeriodType.class, Map.of("name", Statics.PT_APP_BY_USER, "active", 1));
-
-				System.out.println(app.getDate() + "  ---  " + end);
-
-				fApp.setStart(start);
-				fApp.setEnd(end);
-				fApp.setPeriodtype(pT);
-				fApp.setAppointmentstatus(aS);
-				fApp.setEmployee(e);
-				fApp.setService(s);
-				fApp.setUser(u);
-				fApp.setUser2(u);
-				fApp.setCreatedAt(LocalDateTime.now(Util.zone()));
-				if (app.getServices().size() > 1)
-					fApp.setJoinId(ser.getJoinId());
-
-				em.persist(fApp);
-			}
-
-			return true;
-		}
-		return false;
-	}
-
 	public List<AppointmentDtoSimple> getAppointmentsAtDayWAStatus(List<Integer> eIds, LocalDate date) {
 		return this.getAppointmentsAtDayWAStatus(
 				eIds,
@@ -136,16 +50,13 @@ public class AppointmentRepository extends CommonRepository {
 				s.id, s.name, s.duration, s.price, s.note,
 				e.id, e.name,
 				p.id AS pId, p.name, p.imagePath, pT.name,
-				add.address1,
-				c.name, c.postCode
+				p.address.address1
 				FROM Appointment a
 				JOIN a.service s
 				JOIN a.appointmentstatus status
 				JOIN a.employee e
 				JOIN e.user u
 				JOIN e.provider p
-				JOIN p.address add
-				JOIN add.city c
 				JOIN p.providertype pT
 				LEFT JOIN Review r ON a = r.appointment
 				WHERE a.user.id = :uId
@@ -179,9 +90,7 @@ public class AppointmentRepository extends CommonRepository {
 				"provider.name",
 				"provider.imagePath",
 				"provider.type",
-				"provider.address1",
-				"provider.city",
-				"provider.postCode"
+				"provider.address1"
 		));
 	}
 
@@ -204,7 +113,6 @@ public class AppointmentRepository extends CommonRepository {
 				"a.employee.provider.name AS providerName",
 				"a.employee.provider.providertype.name AS providerType",
 				"a.employee.provider.address.address1 AS providerAddress",
-				"a.employee.provider.address.city.name AS providerCity",
 
 				"a.user.id AS userId",
 

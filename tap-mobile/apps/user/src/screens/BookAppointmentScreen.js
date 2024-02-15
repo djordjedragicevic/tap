@@ -60,7 +60,6 @@ const BookAppointmentScreen = ({ navigation, route }) => {
 					providerName: provider.name,
 					providerType: provider.type,
 					providerAddress: provider.address,
-					providerCity: provider.city,
 					start: calculateStart(app),
 					end: calculateEnd(app),
 					services: app.services.map(s => ({

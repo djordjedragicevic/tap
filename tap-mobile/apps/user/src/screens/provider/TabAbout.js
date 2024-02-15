@@ -74,7 +74,7 @@ const TabAbout = ({ data, navigation }) => {
 
 			<XSection title={t('Address')}>
 				<View style={styles.infoCont}>
-					<XText icon={'enviroment'}>{data.about.address}, {data.about.city}</XText>
+					<XText icon={'enviroment'}>{data.about.address}</XText>
 
 					{!!data?.about?.phone && <XText icon={'phone'}>{data.about.phone}</XText>}
 					{
