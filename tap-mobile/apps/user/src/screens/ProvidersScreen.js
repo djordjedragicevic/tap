@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, ImageBackground, StyleSheet, View } from "react-native";
 import { useHTTPGet } from "xapp/src/common/Http";
 import XText from "xapp/src/components/basic/XText";
 import XImage from "xapp/src/components/basic/XImage";
@@ -35,16 +35,12 @@ const ProvidersScreen = ({ navigation }) => {
 				<View style={{ height: 150 }}>
 					<View style={{ flex: 1 }}>
 						{
-							item.mainImg ?
-								<XImage
-									imgPath={item.mainImg?.split(',')[0]}
-									contentFit='cover'
-									style={{ flex: 1 }}
-								/>
-								:
-								<View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-									<HairSalon height={100} width={150} />
-								</View>
+							!!item.mainImg &&
+							<XImage
+								imgPath={item.mainImg?.split(',')[0]}
+								contentFit='cover'
+								style={{ flex: 1 }}
+							/>
 						}
 					</View>
 				</View>
@@ -66,7 +62,11 @@ const ProvidersScreen = ({ navigation }) => {
 
 					<XSeparator style={{ marginVertical: 10 }} />
 
-					<XText icon='enviroment' secondary style={{ marginStart: 6 }}>
+					<XText
+						icon='enviroment'
+						secondary
+						oneLine
+					>
 						{item.address1}
 					</XText>
 

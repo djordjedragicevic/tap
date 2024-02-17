@@ -23,6 +23,7 @@ export const Theme = {
 		grayLight: 'grayLight',
 		brown: 'brown',
 		brownLight: 'brown',
+		black: 'black',
 
 		primary: 'primary',
 		primaryLight: 'primaryLight',
@@ -63,6 +64,8 @@ export const Theme = {
 			textLight: 'white',
 
 			borderColor: 'hsl(0, 0%, 85%)',
+
+			black: 'hsl(0, 0%, 0%)',
 
 			gray: 'hsl(0, 0%, 60%)',
 			grayLight: 'hsl(0, 0%, 90%)',
@@ -107,6 +110,8 @@ export const Theme = {
 			textLight: 'white',
 
 			borderColor: 'hsl(0, 0%, 25%)',
+
+			black: 'hsl(0, 0%, 0%)',
 
 			gray: 'hsl(0, 0%, 60%)',
 			grayLight: 'hsl(0, 0%, 25%)',

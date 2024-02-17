@@ -36,7 +36,7 @@ public class ProviderRepository extends CommonRepository {
 		return Util.convertToListOfMap(dbReps, fields, "r");
 	}
 
-	public Object getProviders(long cityId) {
+	public Object getProviders() {
 		String[] fields = new String[]{
 				"p.id", "p.name", "p.imagePath AS mainImg", "p.legalEntity",
 				"p.providertype.name AS providerType",
@@ -52,15 +52,12 @@ public class ProviderRepository extends CommonRepository {
 				LEFT JOIN Review r ON p = r.provider
 				WHERE p.active = 1
 				AND p.providertype.active = 1
-				AND p.address.city.id = :cityId
-				AND p.address.city.active = 1
 				AND p.approvedAt IS NOT NULL
 				GROUP BY p.id
 				ORDER BY p.id
 				""";
 
 		List<Object[]> dbRes = em.createQuery(String.format(qS, String.join(",", fields)), Object[].class)
-				.setParameter("cityId", cityId)
 				.getResultList();
 
 		return Util.convertToListOfMap(dbRes, fields, "p");
@@ -115,7 +112,6 @@ public class ProviderRepository extends CommonRepository {
 				LEFT JOIN ServiceEmployee se ON s = se.service
 				WHERE s.active = 1
 				AND s.provider.id = :pId
-				AND se.id IS NOT NULL
 				GROUP BY s.id
 				ORDER BY c.id, g.id
 				""";
@@ -137,43 +133,6 @@ public class ProviderRepository extends CommonRepository {
 				"c_name"
 		);
 	}
-
-//	public List<Map<String, Object>> getProviderServices(long pId) {
-//		String query = """
-//				SELECT
-//				s.id,
-//				s.name,
-//				s.duration,
-//				s.durationTo,
-//				s.price,
-//				s.note,
-//				g.id,
-//				g.name,
-//				c.id,
-//				c.name
-//				FROM Service s LEFT JOIN s.group g LEFT JOIN s.category c
-//				WHERE s.active = 1
-//				AND s.provider.id = :pId
-//				ORDER BY c.id, g.id
-//				""";
-//
-//		List<Object[]> dbRes = em.createQuery(query, Object[].class)
-//				.setParameter("pId", pId)
-//				.getResultList();
-//
-//		return Util.convertToListOfMap(dbRes,
-//				"id",
-//				"name",
-//				"duration",
-//				"durationTo",
-//				"price",
-//				"note",
-//				"g_id",
-//				"g_name",
-//				"c_id",
-//				"c_name"
-//		);
-//	}
 
 	public List<EmployeeDto> getProviderEmployeesDto(int pId) {
 		String query = """
@@ -242,13 +201,16 @@ public class ProviderRepository extends CommonRepository {
 
 	public List<Map<String, Object>> getProviderWorkPeriods(int pId) {
 		String query = """
-				SELECT wi FROM WorkInfo wi WHERE
-				wi.provider.id = :pId
+				SELECT wi FROM WorkInfo wi
+				WHERE wi.provider.id = :pId
+				AND wi.periodtype.name = :periodName
+				AND wi.periodtype.active = 1
 				ORDER BY wi.day, wi.startTime
 				""";
 
 		List<WorkInfo> wPs = em.createQuery(query, WorkInfo.class)
 				.setParameter("pId", pId)
+				.setParameter("periodName", Statics.PT_WI_PROVIDER_WORK)
 				.getResultList();
 
 		List<Map<String, Object>> resp = new ArrayList<>();

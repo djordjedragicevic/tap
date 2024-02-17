@@ -81,7 +81,6 @@ const TabServices = ({
 	setSelected,
 	servicesRaw,
 }) => {
-	console.log("TAP SERVICES");
 
 	const [selectedCatIdx, setSelectedCatIdx] = useState(0);
 

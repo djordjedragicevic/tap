@@ -72,7 +72,7 @@ const TabAbout = ({ data, navigation }) => {
 				</XSection>
 			}
 
-			<XSection title={t('Address')}>
+			<XSection title={t('Info')}>
 				<View style={styles.infoCont}>
 					<XText icon={'enviroment'}>{data.about.address}</XText>
 
@@ -94,28 +94,30 @@ const TabAbout = ({ data, navigation }) => {
 				</View>
 			</XSection>
 
-			<XSection title={t('Our team')}>
-				<ScrollView
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={styles.teamCont}
-				>
-					{data.employees.map(e => {
-						return (
-							<View key={e.id} style={styles.avatarCont}>
-								<XAvatar
-									size={50}
-									outline
-									round
-									imgPath={e.imagePath}
-									initials={e.name.substring(0, 1).toUpperCase()}
-								/>
-								<XText colorPrimary>{e.name}</XText>
-							</View>
-						)
-					})}
-				</ScrollView>
-			</XSection>
+			{data?.employees?.length > 0 &&
+				<XSection title={t('Our team')}>
+					<ScrollView
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						contentContainerStyle={styles.teamCont}
+					>
+						{data.employees.map(e => {
+							return (
+								<View key={e.id} style={styles.avatarCont}>
+									<XAvatar
+										size={50}
+										outline
+										round
+										imgPath={e.imagePath}
+										initials={e.name.substring(0, 1).toUpperCase()}
+									/>
+									<XText colorPrimary>{e.name}</XText>
+								</View>
+							)
+						})}
+					</ScrollView>
+				</XSection>
+			}
 
 			<XSection title={t('Working hours')}>
 				<View>

@@ -91,9 +91,9 @@ public class ProviderService {
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
-	public Object getProviders(@QueryParam("cId") long cityId) {
+	public Object getProviders() {
 
-		return providerRepository.getProviders(cityId);
+		return providerRepository.getProviders();
 	}
 
 

@@ -76,16 +76,12 @@ const ProviderScreen = ({ navigation, route }) => {
 		<>
 			<View style={{ height: HEADER_IMAGE_HEIGHT }}>
 				{
-					data?.about.mainImg ?
-						<XImage
-							imgPath={data.about.mainImg}
-							style={styles.headerImage}
-							contentFit="cover"
-						/>
-						:
-						<View style={styles.headerPlaceHolderImg}>
-							<HairSalon height={150} width={150} />
-						</View>
+					!!data?.about.mainImg &&
+					<XImage
+						imgPath={data.about.mainImg}
+						style={styles.headerImage}
+						contentFit="cover"
+					/>
 				}
 				<XHeaderButtonBackAbsolute navigation={navigation} />
 
@@ -107,7 +103,8 @@ const ProviderScreen = ({ navigation, route }) => {
 			<View style={styles.content}>
 
 				<View style={styles.titleCnt}>
-					<XText oneLine bold size={18}>{data?.about.name} - {data?.about.providerType}</XText>
+					<XText center bold size={20}>{data?.about.name}</XText>
+					<XText secondary size={16}> {data?.about.providerType}</XText>
 				</View>
 
 				<XTabView
@@ -195,10 +192,14 @@ const styleCreator = (theme) => StyleSheet.create({
 		borderColor: theme.colors.borderColor
 	},
 	titleCnt: {
-		height: 50,
-		justifyContent: 'center',
 		alignItems: 'center',
-		paddingTop: CHIP_MARK_TOP_MARGIN
+		justifyContent: 'center',
+		//flexDirection: 'row',
+		//flexWrap: 'wrap',
+		paddingHorizontal: 15,
+		//backgroundColor: theme.colors.primaryLight,
+		paddingTop: CHIP_MARK_TOP_MARGIN + 10,
+		paddingBottom: 5
 	},
 	footerServCnt: {
 		flex: 1,

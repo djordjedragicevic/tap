@@ -33,6 +33,7 @@ const XText = ({
 	bold,
 	icon,
 	rightIcon,
+	center,
 	ellipsizeMode = 'tail',
 	numberOfLines = 0,
 	adjustsFontSizeToFit = false,
@@ -59,7 +60,8 @@ const XText = ({
 		italic,
 		size,
 		color,
-		colorName: colorName || textColor
+		colorName: colorName || textColor,
+		center
 	});
 	const pColor = usePrimaryColor();
 
@@ -71,9 +73,8 @@ const XText = ({
 		return (
 			<View style={styles.container}>
 				{!!icon && <XIcon icon={icon} size={18} color={pColor} />}
-				<Text style={[styles.text, style]} adjustsFontSizeToFit={adjustsFontSizeToFit} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
+				<Text style={[styles.text, styles.textInCnt, style]} adjustsFontSizeToFit={adjustsFontSizeToFit} ellipsizeMode={oneLine ? 'tail' : ellipsizeMode} numberOfLines={oneLine ? 1 : numberOfLines} {...rest}>{children}</Text>
 				{!!rightIcon && <XIcon icon={rightIcon} size={18} color={pColor} />}
-
 			</View>
 		);
 };
@@ -88,7 +89,7 @@ XText.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme, appFont, { weight, italic, size, color, colorName }) => {
+const createStyle = (theme, appFont, { weight, italic, size, color, colorName, center }) => {
 	const style = {
 		color: color || theme.colors[colorName]
 	};
@@ -105,8 +106,14 @@ const createStyle = (theme, appFont, { weight, italic, size, color, colorName })
 	if (size)
 		style.fontSize = size;
 
+	if (center)
+		style.textAlign = 'center';
+
 	return StyleSheet.create({
 		text: style,
+		textInCnt: {
+			flex: 1
+		},
 		container: {
 			flexDirection: 'row',
 			alignItems: 'center',

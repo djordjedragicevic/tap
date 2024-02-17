@@ -126,5 +126,6 @@ export const strings = {
 	"Rate it": "Rate it",
 	"For service": "For service",
 	"No reviews": "No reviews",
-	"From history": "From history"
+	"From history": "From history",
+	"Info": "Info"
 };

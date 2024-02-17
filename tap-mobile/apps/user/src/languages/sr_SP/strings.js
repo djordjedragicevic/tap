@@ -124,5 +124,6 @@ export const strings = {
 	"Rate it": "Ocijenite",
 	"For service": "Za uslugu",
 	"No reviews": "Nema recenzija",
-	"From history": "Iz istorije"
+	"From history": "Iz istorije",
+	"Info": "Info"
 };
