@@ -127,5 +127,8 @@ export const strings = {
 	"For service": "For service",
 	"No reviews": "No reviews",
 	"From history": "From history",
-	"Info": "Info"
+	"Info": "Info",
+	"Currently no offers": "Currently no offers",
+	"offer": "offer",
+	"offers": "Offers"
 };

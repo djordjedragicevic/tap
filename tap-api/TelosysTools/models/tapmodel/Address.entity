@@ -3,8 +3,8 @@
 Address {
   // attributes
   id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
-  street : string { @DbName(street) @DbType("VARCHAR(128)") @NotNull @NotEmpty @Size(128) @MaxLen(128) };
-  number : string { @DbName(number) @DbType("VARCHAR(8)") @NotNull @NotEmpty @Size(8) @MaxLen(8) };
+  street : string { @DbName(street) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
+  number : string { @DbName(number) @DbType("VARCHAR(8)") @Size(8) @MaxLen(8) };
   longitude : float { @DbName(longitude) @DbType(FLOAT) };
   latitude : float { @DbName(latitude) @DbType(FLOAT) };
   flatNumber : string { @DbName(flat_number) @DbType("VARCHAR(8)") @Size(8) @MaxLen(8) };

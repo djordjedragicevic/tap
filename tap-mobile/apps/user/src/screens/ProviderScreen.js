@@ -75,14 +75,13 @@ const ProviderScreen = ({ navigation, route }) => {
 	return (
 		<>
 			<View style={{ height: HEADER_IMAGE_HEIGHT }}>
-				{
-					!!data?.about.mainImg &&
-					<XImage
-						imgPath={data.about.mainImg}
-						style={styles.headerImage}
-						contentFit="cover"
-					/>
-				}
+
+				<XImage
+					imgPath={data?.about.mainImg || data?.about.providerTypeImage}
+					style={styles.headerImage}
+					contentFit="cover"
+				/>
+
 				<XHeaderButtonBackAbsolute navigation={navigation} />
 
 				<XButtonIcon

@@ -5,7 +5,8 @@ ProviderType {
   id : short { @Id @AutoIncremented @DbName(id) @DbType(SMALLINT UNSIGNED) @NotNull @NotEmpty };
   name : string { @DbName(name) @DbType("VARCHAR(64)") @NotNull @NotEmpty @Size(64) @MaxLen(64) };
   description : string { @DbName(description) @DbType("VARCHAR(512)") @Size(512) @MaxLen(512) };
-  active : boolean { @DbName(active) @DbType(BIT) @DbDefaultValue(1) @NotNull @NotEmpty };
+  imagePath : string { @DbName(image_path) @DbType("VARCHAR(128)") @Size(128) @MaxLen(128) };
+  active : boolean { @DbName(active) @DbType(BIT) @DbDefaultValue(0) @NotNull @NotEmpty };
   // links
   providerList : Provider[];
 }

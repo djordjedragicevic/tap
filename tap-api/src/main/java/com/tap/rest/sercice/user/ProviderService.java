@@ -53,7 +53,7 @@ public class ProviderService {
 
 		Map<String, Object> resp = new HashMap<>();
 		boolean noFilters = getAbout == null && getEmployees == null && getWPs == null && getServices == null;
-		
+
 		try {
 			if (noFilters || (getAbout != null && getAbout == 1))
 				resp.put("about", providerRepository.getProviderData(id));
@@ -91,9 +91,18 @@ public class ProviderService {
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
-	public Object getProviders() {
+	public Object getProviders(@QueryParam("tId") Integer typeId) {
 
-		return providerRepository.getProviders();
+		return providerRepository.getProviders(typeId);
+	}
+
+	@GET
+	@Path("/type-list")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Public
+	public Response getProvidersTypes() {
+
+		return Response.ok(providerRepository.getProviderTypes()).build();
 	}
 
 

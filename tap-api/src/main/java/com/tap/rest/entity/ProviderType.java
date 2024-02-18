@@ -27,6 +27,9 @@ public class ProviderType implements Serializable {
     @Column(name="description", length=512)
 	private String description;
 
+    @Column(name="image_path", length=128)
+	private String imagePath;
+
     @Column(name="active", nullable=false)
 	private boolean active;
 
@@ -61,6 +64,14 @@ public class ProviderType implements Serializable {
 
 	public String getDescription() {
 		return this.description;
+	}
+
+	public void setImagePath( String imagePath ) {
+		this.imagePath = imagePath;
+	}
+
+	public String getImagePath() {
+		return this.imagePath;
 	}
 
 	public void setActive( boolean active ) {

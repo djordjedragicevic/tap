@@ -21,10 +21,10 @@ public class Address implements Serializable {
     @Column(name="id", nullable=false)
 	private int id;
 
-    @Column(name="street", nullable=false, length=128)
+    @Column(name="street", length=128)
 	private String street;
 
-    @Column(name="number", nullable=false, length=8)
+    @Column(name="number", length=8)
 	private String number;
 
     @Column(name="longitude")

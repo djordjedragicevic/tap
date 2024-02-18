@@ -6,6 +6,7 @@ public class ProviderTypeDto {
 	private Short id;
 	private String name;
 	private String description;
+	private String imagePath;
 	public ProviderTypeDto() {}
 
 	public ProviderTypeDto setId( Short id ) {
@@ -33,6 +34,15 @@ public class ProviderTypeDto {
 
 	public String getDescription() {
 		return this.description;
+	}
+
+	public ProviderTypeDto setImagePath( String imagePath ) {
+		this.imagePath = imagePath;
+		return this;
+	}
+
+	public String getImagePath() {
+		return this.imagePath;
 	}
 
 }

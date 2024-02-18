@@ -125,5 +125,8 @@ export const strings = {
 	"For service": "Za uslugu",
 	"No reviews": "Nema recenzija",
 	"From history": "Iz istorije",
-	"Info": "Info"
+	"Info": "Info",
+	"Currently no offers": "Trenutno nema ponuđača",
+	"offer": "ponuđač",
+	"offers": "ponuđača"
 };

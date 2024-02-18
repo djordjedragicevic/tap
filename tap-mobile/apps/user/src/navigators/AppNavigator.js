@@ -16,7 +16,8 @@ import {
 	MAP_SCREEN,
 	APPOINTMENT_SCREEN,
 	ADD_REVIEW_SCREEN,
-	CANCEL_APPOINTMENT_SCREEN
+	CANCEL_APPOINTMENT_SCREEN,
+	PROVIDERS_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
@@ -42,6 +43,7 @@ import { useHeaderBackButton } from 'xapp/src/common/hooks';
 import AppointmentScreen from '../screens/AppointmentScreen';
 import AddReviewScreen from '../screens/AddReviewScreen';
 import CancelAppointmentScreen from '../screens/CancelAppointmentScreen';
+import ProviderTypesScreen from '../screens/ProviderTypesScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -73,7 +75,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 			/>
 			<BottomTab.Screen
 				name={MAIN_TAB_FIND}
-				component={ProvidersScreen}
+				component={ProviderTypesScreen}
 				options={{
 					title: t("Find"),
 					tabBarIcon: (props) => <AntDesign name="search1" {...props} color={props.focused ? colorPrimary : colorTextLight} />
@@ -177,6 +179,13 @@ const AppNavigator = ({ }) => {
 				}}
 				name={MAP_SCREEN}
 				component={MapScreen}
+			/>
+			<Stack.Screen
+				options={{
+					//headerShown: false
+				}}
+				name={PROVIDERS_SCREEN}
+				component={ProvidersScreen}
 			/>
 
 			{

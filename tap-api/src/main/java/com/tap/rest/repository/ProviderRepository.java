@@ -36,10 +36,10 @@ public class ProviderRepository extends CommonRepository {
 		return Util.convertToListOfMap(dbReps, fields, "r");
 	}
 
-	public Object getProviders() {
+	public List<Map<String, Object>> getProviders(Integer typeId) {
 		String[] fields = new String[]{
 				"p.id", "p.name", "p.imagePath AS mainImg", "p.legalEntity",
-				"p.providertype.name AS providerType",
+				"p.providertype.name AS providerType", "p.providertype.imagePath AS providerTypeImage",
 				"p.address.address1 AS address1",
 				"ROUND(AVG(r.mark), 1) AS mark",
 				"COUNT(r.id) AS reviewCount"
@@ -52,22 +52,45 @@ public class ProviderRepository extends CommonRepository {
 				LEFT JOIN Review r ON p = r.provider
 				WHERE p.active = 1
 				AND p.providertype.active = 1
+				AND p.providertype.id = :pId
 				AND p.approvedAt IS NOT NULL
 				GROUP BY p.id
 				ORDER BY p.id
 				""";
 
 		List<Object[]> dbRes = em.createQuery(String.format(qS, String.join(",", fields)), Object[].class)
+				.setParameter("pId", typeId)
 				.getResultList();
 
 		return Util.convertToListOfMap(dbRes, fields, "p");
 
 	}
 
+	public List<Map<String, Object>> getProviderTypes() {
+		String[] fields = new String[]{
+				"pt.id", "pt.name", "pt.imagePath",
+				"COUNT(p) AS providerCount"
+		};
+
+		String query = """
+				SELECT %s
+				FROM ProviderType pt
+				LEFT JOIN Provider p ON pt = p.providertype
+				WHERE pt.active = 1
+				GROUP BY pt.id
+				ORDER BY providerCount DESC
+				""";
+
+		List<Object[]> dbResp = em.createQuery(String.format(query, String.join(",", fields)), Object[].class)
+				.getResultList();
+
+		return Util.convertToListOfMap(dbResp, fields, "pt");
+	}
+
 	public Map<String, Object> getProviderData(int id) {
 		String[] fields = new String[]{
 				"p.id", "p.name", "p.phone", "p.description", "p.imagePath AS mainImg",
-				"p.providertype.name AS providerType",
+				"p.providertype.name AS providerType","p.providertype.imagePath AS providerTypeImage",
 				"p.address.address1 AS address", "p.address.latitude AS lat", "p.address.longitude AS lon",
 				"p.address.city.country.name AS country", "p.address.city.country.code AS countryCode",
 				"ROUND(AVG(r.mark), 1) AS mark",

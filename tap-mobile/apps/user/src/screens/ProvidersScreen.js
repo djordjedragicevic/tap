@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { FlatList, ImageBackground, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useHTTPGet } from "xapp/src/common/Http";
 import XText from "xapp/src/components/basic/XText";
 import XImage from "xapp/src/components/basic/XImage";
@@ -7,14 +7,13 @@ import XScreen from "xapp/src/components/XScreen";
 import { PROVIDER_SCREEN } from "../navigators/routes";
 import XSection from "xapp/src/components/basic/XSection";
 import { Theme } from "xapp/src/style/themes";
-import HairSalon from "../components/svg/HairSalon";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XMarkStars from "xapp/src/components/XMarkStars";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 
-const ProvidersScreen = ({ navigation }) => {
+const ProvidersScreen = ({ navigation, route }) => {
 
-	const [providers, refresh, refreshing] = useHTTPGet('/provider/list', { cId: 1 }, []);
+	const [providers, refresh, refreshing] = useHTTPGet('/provider/list', { tId: route.params.typeId }, []);
 	const styles = useThemedStyle(styleCreator);
 
 	const renderCompany = useCallback(({ item, index }) => {
@@ -27,21 +26,19 @@ const ProvidersScreen = ({ navigation }) => {
 						providerType: item.providerType,
 						mark: item.mark,
 						reviewCount: item.reviewCount,
-						mainImg: item.mainImg
+						mainImg: item.mainImg,
+						providerTypeImage: item.providerTypeImage
 					}
 				})}
 				styleContent={styles.sectionContainer}
 			>
 				<View style={{ height: 150 }}>
 					<View style={{ flex: 1 }}>
-						{
-							!!item.mainImg &&
-							<XImage
-								imgPath={item.mainImg?.split(',')[0]}
-								contentFit='cover'
-								style={{ flex: 1 }}
-							/>
-						}
+						<XImage
+							imgPath={item?.mainImg?.split(',')[0] || item.providerTypeImage}
+							contentFit='cover'
+							style={{ flex: 1 }}
+						/>
 					</View>
 				</View>
 
