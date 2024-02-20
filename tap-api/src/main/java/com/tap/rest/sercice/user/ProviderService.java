@@ -97,7 +97,7 @@ public class ProviderService {
 				providerByServicesIds.add(s.providerId());
 				ServiceSearchResultDto sResult = psMap.computeIfAbsent(s.providerId(), k -> new ServiceSearchResultDto());
 				sResult.setCount(sResult.getCount() + 1);
-				if (sResult.getServices().size() < 1)
+				//if (sResult.getServices().size() < 1)
 					sResult.getServices().add(s);
 			}
 		}
