@@ -52,7 +52,7 @@ const XFieldContainer = ({
 		>
 			{
 				!!iconLeft &&
-				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.icon, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }, iconLeftStyle]} onPress={onIconLeftPress}>
+				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.iconLeft, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }, iconLeftStyle]} onPress={onIconLeftPress}>
 					<XIcon icon={iconLeft} size={iconLeftSize} color={iconLeftColor || styles.iconColor || iLColor} />
 				</IconLeftCmp>
 			}
@@ -64,7 +64,7 @@ const XFieldContainer = ({
 			</CenterCmp>
 			{
 				!!iconRight &&
-				<IconRightCmp disabled={iconRightDisabled} style={[styles.icon, { opacity: iconRightDisabled ? Theme.values.disabledOpacity : 1 }, iconRightStyle]} onPress={onIconRightPress}>
+				<IconRightCmp disabled={iconRightDisabled} style={[styles.iconRight, { opacity: iconRightDisabled ? Theme.values.disabledOpacity : 1 }, iconRightStyle]} onPress={onIconRightPress}>
 					<XIcon icon={iconRight} size={iconRightSize} color={iconRightColor || styles.iconColor} />
 				</IconRightCmp>
 			}
@@ -85,8 +85,13 @@ const createStyle = (theme, outline, focused, flex, flexCenter, blurIconColor) =
 			paddingVertical: 5,
 			flex: flex ? 1 : undefined
 		},
-		icon: {
-			paddingHorizontal: 8,
+		iconLeft: {
+			paddingStart: 8,
+			alignItems: 'center',
+			justifyContent: 'center'
+		},
+		iconRight: {
+			paddingEnd: 8,
 			alignItems: 'center',
 			justifyContent: 'center'
 		},

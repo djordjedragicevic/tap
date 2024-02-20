@@ -115,6 +115,7 @@ const createStyle = (theme, appFont, { weight, italic, size, color, colorName, c
 			flex: 1
 		},
 		container: {
+			flex: 1,
 			flexDirection: 'row',
 			alignItems: 'center',
 			columnGap: 5

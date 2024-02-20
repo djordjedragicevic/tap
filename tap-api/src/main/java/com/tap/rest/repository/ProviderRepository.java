@@ -3,13 +3,17 @@ package com.tap.rest.repository;
 import com.tap.common.Statics;
 import com.tap.common.Util;
 import com.tap.rest.dto.*;
+import com.tap.rest.dtor.ProviderSearchResultDto;
+import com.tap.rest.dtor.ServiceForSearchDto;
 import com.tap.rest.dtor.ServiceWithEmployeesDto;
 import com.tap.rest.entity.*;
+import com.tap.rest.sercice.user.ProviderService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.TypedQuery;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class ProviderRepository extends CommonRepository {
@@ -36,14 +40,15 @@ public class ProviderRepository extends CommonRepository {
 		return Util.convertToListOfMap(dbReps, fields, "r");
 	}
 
-	public List<Map<String, Object>> getProviders(Integer typeId, String searchTerm) {
-		String[] fields = new String[]{
-				"p.id", "p.name", "p.imagePath AS mainImg", "p.legalEntity",
-				"p.providertype.name AS providerType", "p.providertype.imagePath AS providerTypeImage",
-				"p.address.address1 AS address1",
-				"ROUND(AVG(r.mark), 1) AS mark",
-				"COUNT(r.id) AS reviewCount"
-		};
+	public List<ProviderSearchResultDto> searchFilterProviders(String searchTerm, Set<Integer> includePIds) {
+
+		String select =
+				"new com.tap.rest.dtor.ProviderSearchResultDto(" +
+				"p.id, p.name,p.imagePath,p.legalEntity," +
+				"p.providertype.name, p.providertype.imagePath," +
+				"p.address.address1," +
+				"ROUND(AVG(r.mark), 1)," +
+				"COUNT(r.id))";
 
 		String qS = """
 				SELECT
@@ -55,29 +60,38 @@ public class ProviderRepository extends CommonRepository {
 				AND p.approvedAt IS NOT NULL
 				%s
 				GROUP BY p.id
-				ORDER BY p.id
 				""";
 
 
-		HashMap<String, Object> filter = new LinkedHashMap<>();
-		String filterString = "";
+		HashMap<String, Object> fSParams = new LinkedHashMap<>();
+
+		List<String> ands1 = new ArrayList<>();
+		//OR
+		List<String> ands2 = new ArrayList<>();
 
 		if (searchTerm != null && !searchTerm.isEmpty()) {
-			filterString += " AND p.name LIKE :term ";
-			filter.put("term", "%" + searchTerm + "%");
+			ands1.add("p.name LIKE :searchTerm");
+			fSParams.put("searchTerm", "%" + searchTerm + "%");
 		}
-//		else {
-//			if (typeId != null) {
-//				filterString += " AND p.providertype.id = :typeId";
-//				filter.put("typeId", typeId);
-//			}
-//		}
+
+		if (includePIds != null && !includePIds.isEmpty()) {
+			ands2.add("p.id IN :pIds");
+			fSParams.put("pIds", includePIds);
+		}
 
 
-		TypedQuery<Object[]> dbQuery = em.createQuery(String.format(qS, String.join(",", fields), filterString), Object[].class);
-		filter.forEach(dbQuery::setParameter);
+		List<String> ands = Stream.of(ands1, ands2)
+				.filter(a -> !a.isEmpty())
+				.map(and -> "(" + String.join(" AND ", and) + ")")
+				.toList();
 
-		return Util.convertToListOfMap(dbQuery.getResultList(), fields, "p");
+		String sFString = ands.isEmpty() ? "" : " AND (" + String.join(" OR ", ands) + ")";
+
+		TypedQuery<ProviderSearchResultDto> dbQuery = em.createQuery(String.format(qS, select, sFString), ProviderSearchResultDto.class);
+
+		fSParams.forEach(dbQuery::setParameter);
+
+		return dbQuery.getResultList();
 
 	}
 
@@ -340,6 +354,18 @@ public class ProviderRepository extends CommonRepository {
 		return em.createQuery(query, Service.class)
 				.setParameter("pId", pId)
 				.setParameter("sIds", sIds)
+				.getResultList();
+	}
+
+	public List<ServiceForSearchDto> searchProviderServicesByServiceName(String term) {
+		String query = """
+				SELECT new com.tap.rest.dtor.ServiceForSearchDto(s.id, s.name, s.provider.id) FROM Service s
+				WHERE s.active = 1
+				AND s.name LIKE :term
+				""";
+
+		return em.createQuery(query, ServiceForSearchDto.class)
+				.setParameter("term", "%" + term + "%")
 				.getResultList();
 	}
 

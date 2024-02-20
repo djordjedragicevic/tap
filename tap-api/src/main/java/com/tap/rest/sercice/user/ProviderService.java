@@ -1,29 +1,21 @@
 package com.tap.rest.sercice.user;
 
-import com.tap.common.Util;
-import com.tap.rest.dto.EmployeeDto;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
-import com.tap.rest.dto.ReviewDto;
-import com.tap.rest.entity.Provider;
-import com.tap.rest.entity.Review;
-import com.tap.rest.entity.User;
+import com.tap.rest.dtor.ProviderSearchResultDto;
+import com.tap.rest.dtor.ServiceForSearchDto;
+import com.tap.rest.dtor.ServiceSearchResultDto;
 import com.tap.rest.repository.ProviderRepository;
 import com.tap.security.Public;
-import com.tap.security.Role;
-import com.tap.security.Secured;
-import com.tap.security.Security;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Path("/provider")
 @RequestScoped
@@ -96,9 +88,32 @@ public class ProviderService {
 			@QueryParam("term") String term
 	) {
 
-		System.out.println(term);
+		Set<Integer> providerByServicesIds = new HashSet<>();
+		Map<Integer, ServiceSearchResultDto> psMap = new LinkedHashMap<>();
 
-		return providerRepository.getProviders(typeId, term);
+		if (term != null && !term.trim().isEmpty()) {
+			List<ServiceForSearchDto> services = providerRepository.searchProviderServicesByServiceName(term);
+			for (ServiceForSearchDto s : services) {
+				providerByServicesIds.add(s.providerId());
+				ServiceSearchResultDto sResult = psMap.computeIfAbsent(s.providerId(), k -> new ServiceSearchResultDto());
+				sResult.setCount(sResult.getCount() + 1);
+				if (sResult.getServices().size() < 1)
+					sResult.getServices().add(s);
+			}
+		}
+
+		List<ProviderSearchResultDto> providers = providerRepository.searchFilterProviders(term, providerByServicesIds);
+		ServiceSearchResultDto tmpSR;
+		if (!psMap.isEmpty()) {
+			for (ProviderSearchResultDto p : providers) {
+				tmpSR = psMap.get(p.getId());
+				if (tmpSR != null && tmpSR.getCount() > 0) {
+					p.setServiceResult(tmpSR);
+				}
+			}
+		}
+
+		return providers;
 	}
 
 	@GET

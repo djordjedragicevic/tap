@@ -20,6 +20,7 @@ const XTextInput = React.forwardRef((
 		textarea = false,
 		multiline,
 		iconLeft,
+		iconLeftStyle,
 		blurIconColor,
 		...rest
 	},
@@ -56,6 +57,7 @@ const XTextInput = React.forwardRef((
 				iconRight={clearable && !!value && focused ? 'close' : undefined}
 				iconRightColor={tSecondary}
 				iconRightDisabled={!value}
+				iconLeftStyle={iconLeftStyle}
 				onIconRightPress={onClear}
 				blurIconColor={blurIconColor}
 			>

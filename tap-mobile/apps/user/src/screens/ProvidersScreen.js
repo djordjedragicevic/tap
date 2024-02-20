@@ -9,19 +9,36 @@ import XSection from "xapp/src/components/basic/XSection";
 import { Theme } from "xapp/src/style/themes";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XMarkStars from "xapp/src/components/XMarkStars";
-import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
-import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
+import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import XTextInput from "xapp/src/components/basic/XTextInput";
 import XIcon from "xapp/src/components/basic/XIcon";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { emptyFn } from "xapp/src/common/utils";
+import XChip from "xapp/src/components/basic/XChip";
 
 const isEqual = (oldProps, newProps) => {
 	return oldProps.id === newProps.id;
+};
+
+const XTextTermHighlight = ({ original, term, ...rest }) => {
+
+
+	//if (!term)
+	return <XText {...rest}>{original}</XText>
+
+	// const startIdx = original.indexOf(term);
+	// const endIdx = startIdx + term.length;
+	// const [leftPart, rightPart] = original.split(term);
+
+
+	// return (
+	// 	<XText {...rest}>{leftPart}<XText bold colorPrimary>{term}</XText>{rightPart}</XText>
+	// )
 }
 
-const ProviderCard = memo(({ item, onPress }) => {
+const ProviderCard = memo(({ item, onPress, searchTerm }) => {
 	const styles = useThemedStyle(styleCreator);
+
 	return (
 		<XSection
 			onPress={onPress}
@@ -41,9 +58,10 @@ const ProviderCard = memo(({ item, onPress }) => {
 
 				<View style={{ marginBottom: 5, flexDirection: 'row' }}>
 					<View style={{ flex: 1 }}>
-						<XText style={styles.title} bold>
+						<XTextTermHighlight original={item.name} term={searchTerm} bold style={styles.title} />
+						{/* <XText style={styles.title} bold>
 							{item.name}
-						</XText>
+						</XText> */}
 						<XText secondary style={styles.titleType}>
 							{item.providerType}
 						</XText>
@@ -61,6 +79,23 @@ const ProviderCard = memo(({ item, onPress }) => {
 				>
 					{item.address}
 				</XText>
+
+
+				{item.serviceResult &&
+					<View style={{}}>
+						<XSeparator style={{ marginVertical: 10 }} />
+						<View style={{ rowGap: 5, flex: 1 }}>
+							<View style={{ flex: 1, gap: 5, flexDirection: 'row', flexWrap: 'wrap' }}>
+								{item.serviceResult.services.map(s => (
+									<XChip color={Theme.vars.purple} outline key={s.id} text={s.name} icon={'tag'} />
+								))}
+								{item.serviceResult.services.length < item.serviceResult.count &&
+									<XChip text={'+' + (item.serviceResult.count - item.serviceResult.services.length)} />
+								}
+							</View>
+						</View>
+					</View>
+				}
 
 
 				{/* <View style={{ padding: 10, alignItems: 'flex-end', justifyContent: 'center' }}>
@@ -81,7 +116,7 @@ const ProviderCard = memo(({ item, onPress }) => {
 						}
 					</View> */}
 			</View>
-		</XSection>
+		</XSection >
 	)
 });
 
@@ -151,6 +186,7 @@ const ProvidersScreen = ({ navigation, route }) => {
 	useEffect(() => {
 		loadProviders(filter);
 	}, [filter]);
+
 	useEffect(() => {
 		return () => setFilter({});
 	}, []);
@@ -158,6 +194,7 @@ const ProvidersScreen = ({ navigation, route }) => {
 	const styles = useThemedStyle(styleCreator);
 
 	const renderCompany = useCallback(({ item }) => {
+
 		const it = {
 			id: item.id,
 			name: item.name,
@@ -166,15 +203,17 @@ const ProvidersScreen = ({ navigation, route }) => {
 			reviewCount: item.reviewCount,
 			mainImg: item.mainImg,
 			address: item.address1,
-			providerTypeImage: item.providerTypeImage
+			providerTypeImage: item.providerTypeImage,
+			serviceResult: item.serviceResult
 		};
 		return (
 			<ProviderCard
 				item={it}
+				searchTerm={filter.term}
 				onPress={() => navigation.navigate(PROVIDER_SCREEN, { item: { ...it } })}
 			/>
 		)
-	}, [navigation]);
+	}, [navigation, filter.term]);
 
 
 	const onSearch = (term) => {
