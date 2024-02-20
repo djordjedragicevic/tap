@@ -59,7 +59,7 @@ export const Theme = {
 			backgroundElement: 'white',
 
 			textPrimary: 'hsl(0, 0%, 15%)',
-			textSecondary: 'hsl(0, 0%, 35%)',
+			textSecondary: 'hsl(0, 0%, 40%)',
 			textTertiary: 'hsl(0, 0%, 70%)',
 			textLight: 'white',
 
@@ -99,12 +99,12 @@ export const Theme = {
 		colors: {
 			primary: 'hsl(195, 100%, 50%)', //'deepskyblue'
 			primaryLight: 'hsl(195, 100%, 13%)',
-			secondary: 'hsl(208, 90%, 16%)',
+			secondary: 'hsl(208, 90%, 18%)',
 			background: 'black',
 			backgroundElement: 'hsl(0, 0%, 10%)',
 
 			textPrimary: 'hsl(0, 0%, 95%)',  //white wariant
-			textSecondary: 'hsl(0, 0%, 75%)',//white wariant
+			textSecondary: 'hsl(0, 0%, 70%)',//white wariant
 			textTertiary: 'hsl(0, 0%, 40%)', //white wariant
 			//textLight: '#f2f2f3',
 			textLight: 'white',

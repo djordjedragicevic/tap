@@ -91,9 +91,14 @@ public class ProviderService {
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
-	public Object getProviders(@QueryParam("tId") Integer typeId) {
+	public Object getProviders(
+			@QueryParam("tid") Integer typeId,
+			@QueryParam("term") String term
+	) {
 
-		return providerRepository.getProviders(typeId);
+		System.out.println(term);
+
+		return providerRepository.getProviders(typeId, term);
 	}
 
 	@GET

@@ -182,7 +182,7 @@ const AppNavigator = ({ }) => {
 			/>
 			<Stack.Screen
 				options={{
-					//headerShown: false
+					headerShown: false
 				}}
 				name={PROVIDERS_SCREEN}
 				component={ProvidersScreen}

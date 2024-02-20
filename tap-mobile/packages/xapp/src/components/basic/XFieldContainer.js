@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useColor, useThemedStyle } from "../../style/ThemeContext";
 import XMask from "./XMask";
 import { Theme } from "../../style/themes";
-import { AntDesign } from "@expo/vector-icons";
+import XIcon from "./XIcon";
 
 const XFieldContainer = ({
 	iconRight = false,
@@ -19,6 +19,7 @@ const XFieldContainer = ({
 	iconRightSize = 18,
 	iconRightStyle = {},
 	iconLeftStyle = {},
+	blurIconColor,
 	style = {},
 	styleCenterContainer = {},
 	disabled = false,
@@ -32,7 +33,7 @@ const XFieldContainer = ({
 	flexCenter = true
 }) => {
 
-	const styles = useThemedStyle(createStyle, outline, focused, flex, flexCenter);
+	const styles = useThemedStyle(createStyle, outline, focused, flex, flexCenter, blurIconColor);
 	const RootCmp = onPress && !disabled ? TouchableOpacity : View;
 	const IconRightCmp = onIconRightPress ? TouchableOpacity : View;
 	const IconLeftCmp = onIconLeftPress ? TouchableOpacity : View;
@@ -52,11 +53,7 @@ const XFieldContainer = ({
 			{
 				!!iconLeft &&
 				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.icon, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }, iconLeftStyle]} onPress={onIconLeftPress}>
-					{typeof iconLeft === 'string' ?
-						<AntDesign name={iconLeft} size={iconLeftSize} color={iconLeftColor || iLColor || styles.iconColor} />
-						:
-						iconLeft({ size: iconLeftSize, color: iconLeftColor || styles.iconColor || iLColor })
-					}
+					<XIcon icon={iconLeft} size={iconLeftSize} color={iconLeftColor || styles.iconColor || iLColor} />
 				</IconLeftCmp>
 			}
 			<CenterCmp style={[styles.centerContainer, styleCenterContainer]} onPress={() => {
@@ -68,11 +65,7 @@ const XFieldContainer = ({
 			{
 				!!iconRight &&
 				<IconRightCmp disabled={iconRightDisabled} style={[styles.icon, { opacity: iconRightDisabled ? Theme.values.disabledOpacity : 1 }, iconRightStyle]} onPress={onIconRightPress}>
-					{typeof iconRight === 'string' ?
-						<AntDesign name={iconRight} size={iconRightSize} color={iconRightColor || styles.iconColor} />
-						:
-						iconRight({ size: iconRightSize, color: iconRightColor || styles.iconColor })
-					}
+					<XIcon icon={iconRight} size={iconRightSize} color={iconRightColor || styles.iconColor} />
 				</IconRightCmp>
 			}
 			{disabled && <XMask />}
@@ -80,7 +73,7 @@ const XFieldContainer = ({
 	);
 };
 
-const createStyle = (theme, outline, focused, flex, flexCenter) => {
+const createStyle = (theme, outline, focused, flex, flexCenter, blurIconColor) => {
 	return StyleSheet.create({
 		container: {
 			borderRadius: Theme.values.borderRadius,
@@ -102,8 +95,8 @@ const createStyle = (theme, outline, focused, flex, flexCenter) => {
 			paddingHorizontal: 8,
 			justifyContent: 'center'
 		},
-		iconColor: theme.colors.primary,
-		iconRightColor: theme.colors.textSecondary
+		iconColor: focused || !blurIconColor ? theme.colors.primary : theme.colors.textTertiary,
+		iconRightColor: theme.colors.textTertiary
 	})
 };
 

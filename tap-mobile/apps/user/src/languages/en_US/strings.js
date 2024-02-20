@@ -130,5 +130,6 @@ export const strings = {
 	"Info": "Info",
 	"Currently no offers": "Currently no offers",
 	"offer": "offer",
-	"offers": "Offers"
+	"offers": "Offers",
+	"Name of provider or service": "Name of provider or service"
 };

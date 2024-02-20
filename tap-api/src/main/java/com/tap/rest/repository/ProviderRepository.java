@@ -36,7 +36,7 @@ public class ProviderRepository extends CommonRepository {
 		return Util.convertToListOfMap(dbReps, fields, "r");
 	}
 
-	public List<Map<String, Object>> getProviders(Integer typeId) {
+	public List<Map<String, Object>> getProviders(Integer typeId, String searchTerm) {
 		String[] fields = new String[]{
 				"p.id", "p.name", "p.imagePath AS mainImg", "p.legalEntity",
 				"p.providertype.name AS providerType", "p.providertype.imagePath AS providerTypeImage",
@@ -52,17 +52,32 @@ public class ProviderRepository extends CommonRepository {
 				LEFT JOIN Review r ON p = r.provider
 				WHERE p.active = 1
 				AND p.providertype.active = 1
-				AND p.providertype.id = :pId
 				AND p.approvedAt IS NOT NULL
+				%s
 				GROUP BY p.id
 				ORDER BY p.id
 				""";
 
-		List<Object[]> dbRes = em.createQuery(String.format(qS, String.join(",", fields)), Object[].class)
-				.setParameter("pId", typeId)
-				.getResultList();
 
-		return Util.convertToListOfMap(dbRes, fields, "p");
+		HashMap<String, Object> filter = new LinkedHashMap<>();
+		String filterString = "";
+
+		if (searchTerm != null && !searchTerm.isEmpty()) {
+			filterString += " AND p.name LIKE :term ";
+			filter.put("term", "%" + searchTerm + "%");
+		}
+//		else {
+//			if (typeId != null) {
+//				filterString += " AND p.providertype.id = :typeId";
+//				filter.put("typeId", typeId);
+//			}
+//		}
+
+
+		TypedQuery<Object[]> dbQuery = em.createQuery(String.format(qS, String.join(",", fields), filterString), Object[].class);
+		filter.forEach(dbQuery::setParameter);
+
+		return Util.convertToListOfMap(dbQuery.getResultList(), fields, "p");
 
 	}
 
@@ -90,7 +105,7 @@ public class ProviderRepository extends CommonRepository {
 	public Map<String, Object> getProviderData(int id) {
 		String[] fields = new String[]{
 				"p.id", "p.name", "p.phone", "p.description", "p.imagePath AS mainImg",
-				"p.providertype.name AS providerType","p.providertype.imagePath AS providerTypeImage",
+				"p.providertype.name AS providerType", "p.providertype.imagePath AS providerTypeImage",
 				"p.address.address1 AS address", "p.address.latitude AS lat", "p.address.longitude AS lon",
 				"p.address.city.country.name AS country", "p.address.city.country.code AS countryCode",
 				"ROUND(AVG(r.mark), 1) AS mark",

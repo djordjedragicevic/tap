@@ -19,14 +19,16 @@ const XTextInput = React.forwardRef((
 		onClear,
 		textarea = false,
 		multiline,
+		iconLeft,
+		blurIconColor,
 		...rest
 	},
 	ref) => {
 
 	const [focused, setFocused] = useState(false);
 	const appFont = useStore(state => state.app.font);
-	const styles = useThemedStyle(createStyle, appFont, focused);
-	const tSecondary = useColor('textSecondary');
+	const styles = useThemedStyle(createStyle, appFont, focused, blurIconColor);
+	const [tSecondary, tTertiary] = useColor(['textSecondary', 'textTertiary']);
 
 	const onFocus = useCallback(() => {
 		rest.onFocus?.();
@@ -47,6 +49,7 @@ const XTextInput = React.forwardRef((
 			}
 			<XFieldContainer
 				focused={focused}
+				iconLeft={iconLeft}
 				outline={outline}
 				style={[textarea && styles.textAreaCommentFieldCntStyle, fieldContainerStyle]}
 				disabled={disabled}
@@ -54,11 +57,13 @@ const XTextInput = React.forwardRef((
 				iconRightColor={tSecondary}
 				iconRightDisabled={!value}
 				onIconRightPress={onClear}
+				blurIconColor={blurIconColor}
 			>
 				<TextInput
 					ref={ref}
 					{...rest}
 					multiline={textarea || multiline}
+					placeholderTextColor={tTertiary}
 					value={value}
 					style={[styles.field, textarea && styles.textAreaCommentFieldStyle, fieldStyle]}
 					editable={editable && !disabled}
