@@ -129,5 +129,6 @@ export const strings = {
 	"Currently no offers": "Trenutno nema ponuđača",
 	"offer": "ponuđač",
 	"offers": "ponuđača",
-	"Name of provider or service": "Naziv ponuđača ili usluge"
+	"Name of provider or service": "Naziv ponuđača ili usluge",
+	"Found services": "Pronađeni servisi"
 };

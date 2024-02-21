@@ -22,8 +22,11 @@ public class Service implements Serializable {
     @Column(name="id", nullable=false)
 	private int id;
 
-    @Column(name="name", length=256)
+    @Column(name="name", nullable=false, length=256)
 	private String name;
+
+    @Column(name="search_name", nullable=false, length=256)
+	private String searchName;
 
     @Column(name="note", length=256)
 	private String note;
@@ -85,6 +88,14 @@ public class Service implements Serializable {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public void setSearchName( String searchName ) {
+		this.searchName = searchName;
+	}
+
+	public String getSearchName() {
+		return this.searchName;
 	}
 
 	public void setNote( String note ) {

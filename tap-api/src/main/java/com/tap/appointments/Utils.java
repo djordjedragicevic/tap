@@ -2,6 +2,7 @@ package com.tap.appointments;
 
 import com.tap.common.TimePeriod;
 import com.tap.common.Util;
+
 import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,6 +82,19 @@ public class Utils {
 
 	public static String generateJoinId(LocalDateTime dT, Integer pId, List<Integer> sIds) {
 		return dT.atZone(Util.zone()).toEpochSecond() + "S" + sIds.stream().map(String::valueOf).collect(Collectors.joining("_")) + "P" + pId;
+	}
+
+	public static String formatSearchString(String str) {
+		String fs = str;
+		fs = fs.replace("Š", "S");
+		fs = fs.replace("š", "s");
+		fs = fs.replace("Č", "C");
+		fs = fs.replace("č", "c");
+		fs = fs.replace("Ć", "C");
+		fs = fs.replace("ć", "c");
+		fs = fs.replace("Đ", "Dj");
+		fs = fs.replace("đ", "dj");
+		return fs;
 	}
 
 	private static LocalDateTime convertToRealDT(LocalDate atDate, String repeatType, LocalDateTime repeatDateTime) {

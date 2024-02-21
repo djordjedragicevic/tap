@@ -25,6 +25,9 @@ public class Provider implements Serializable {
     @Column(name="name", nullable=false, length=64)
 	private String name;
 
+    @Column(name="search_name", nullable=false, length=64)
+	private String searchName;
+
     @Column(name="description", length=512)
 	private String description;
 
@@ -96,6 +99,14 @@ public class Provider implements Serializable {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public void setSearchName( String searchName ) {
+		this.searchName = searchName;
+	}
+
+	public String getSearchName() {
+		return this.searchName;
 	}
 
 	public void setDescription( String description ) {

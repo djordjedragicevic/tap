@@ -3,6 +3,7 @@ package com.tap.rest.dtor;
 public class ProviderSearchResultDto {
 	private final Integer id;
 	private final String name;
+	private final String searchName;
 	private final String mainImg;
 	private final Byte legalEntity;
 
@@ -18,13 +19,14 @@ public class ProviderSearchResultDto {
 	private ServiceSearchResultDto serviceResult;
 
 	public ProviderSearchResultDto(
-			Integer id, String name, String mainImg, Byte legalEntity,
+			Integer id, String name, String searchName, String mainImg, Byte legalEntity,
 			String providerType, String providerTypeImage,
 			String address1,
 			Double mark, Long reviewCount) {
 
 		this.id = id;
 		this.name = name;
+		this.searchName = searchName;
 		this.mainImg = mainImg;
 		this.legalEntity = legalEntity;
 		this.providerType = providerType;
@@ -40,6 +42,9 @@ public class ProviderSearchResultDto {
 
 	public String getName() {
 		return name;
+	}
+	public String getSearchName() {
+		return searchName;
 	}
 
 	public String getMainImg() {

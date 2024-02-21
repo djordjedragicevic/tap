@@ -4,7 +4,8 @@ Service {
   // attributes
   id : int { @Id @AutoIncremented @DbName(id) @DbType(INT UNSIGNED) @NotNull @NotEmpty };
   providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_provider_service_provider1, Provider.id) };
-  name : string { @DbName(name) @DbType("VARCHAR(256)") @Size(256) @MaxLen(256) };
+  name : string { @DbName(name) @DbType("VARCHAR(256)") @NotNull @NotEmpty @Size(256) @MaxLen(256) };
+  searchName : string { @DbName(search_name) @DbType("VARCHAR(256)") @NotNull @NotEmpty @Size(256) @MaxLen(256) };
   note : string { @DbName(note) @DbType("VARCHAR(256)") @Size(256) @MaxLen(256) };
   groupId : int { @DbName(group_id) @DbType(INT UNSIGNED) @FK(fk_provider_service_group1, Group.id) };
   categoryId : int { @DbName(category_id) @DbType(INT UNSIGNED) @FK(fk_provider_service_category1, Category.id) };

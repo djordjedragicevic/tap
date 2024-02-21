@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 public class ProviderDto {	
 	private Integer id;
 	private String name;
+	private String searchName;
 	private String description;
 	private String phone;
 	private String imagePath;
@@ -33,6 +34,15 @@ public class ProviderDto {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public ProviderDto setSearchName( String searchName ) {
+		this.searchName = searchName;
+		return this;
+	}
+
+	public String getSearchName() {
+		return this.searchName;
 	}
 
 	public ProviderDto setDescription( String description ) {

@@ -15,26 +15,12 @@ import XIcon from "xapp/src/components/basic/XIcon";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { emptyFn } from "xapp/src/common/utils";
 import XChip from "xapp/src/components/basic/XChip";
+import XTextTermHighlight from "xapp/src/components/basic/XTextTermHighlight";
 
 const isEqual = (oldProps, newProps) => {
 	return oldProps.id === newProps.id;
 };
 
-const XTextTermHighlight = ({ original, term, ...rest }) => {
-
-
-	//if (!term)
-	return <XText {...rest}>{original}</XText>
-
-	// const startIdx = original.indexOf(term);
-	// const endIdx = startIdx + term.length;
-	// const [leftPart, rightPart] = original.split(term);
-
-
-	// return (
-	// 	<XText {...rest}>{leftPart}<XText bold colorPrimary>{term}</XText>{rightPart}</XText>
-	// )
-}
 
 const ProviderCard = memo(({ item, onPress, searchTerm }) => {
 	const styles = useThemedStyle(styleCreator);
@@ -56,67 +42,49 @@ const ProviderCard = memo(({ item, onPress, searchTerm }) => {
 
 			<View style={{ flex: 1, padding: 10 }}>
 
-				<View style={{ marginBottom: 5, flexDirection: 'row' }}>
-					<View style={{ flex: 1 }}>
-						<XTextTermHighlight original={item.name} term={searchTerm} bold style={styles.title} />
-						{/* <XText style={styles.title} bold>
-							{item.name}
-						</XText> */}
-						<XText secondary style={styles.titleType}>
-							{item.providerType}
-						</XText>
-					</View>
+				<View style={{ marginBottom: 5, flex: 1 }}>
+					<XTextTermHighlight
+						bold
+						size={18}
+						term={searchTerm}
+						searchString={item.searchName}
+					>
+						{item.name}
+					</XTextTermHighlight>
+					<XText secondary oneLine>{item.providerType}</XText>
+					<XText secondary oneLine>{item.address}</XText>
 				</View>
 
 				<XMarkStars mark={item.mark} reviewCount={item.reviewCount} />
 
-				<XSeparator style={{ marginVertical: 10 }} />
-
-				<XText
-					icon='enviroment'
-					secondary
-					oneLine
-				>
-					{item.address}
-				</XText>
-
+				{/* <XSeparator style={{ marginVertical: 10 }} /> */}
 
 				{item.serviceResult &&
-					<View style={{}}>
+					<View>
 						<XSeparator style={{ marginVertical: 10 }} />
-						<View style={{ rowGap: 5, flex: 1 }}>
+						<View>
 							<View style={{ flex: 1, gap: 5, flexDirection: 'row', flexWrap: 'wrap' }}>
 								{item.serviceResult.services.map(s => (
-									<XChip color={Theme.vars.purple} outline key={s.id} text={s.name} icon={'tag'} />
+									<XChip color={Theme.vars.purple} outline key={s.id} icon={'tag'}>
+										<XTextTermHighlight
+											key={s.id}
+											term={searchTerm}
+											searchString={s.searchName}
+											colorName={Theme.vars.purple}
+										>
+											{s.name}
+										</XTextTermHighlight>
+									</XChip>
 								))}
 								{item.serviceResult.services.length < item.serviceResult.count &&
-									<XChip text={'+' + (item.serviceResult.count - item.serviceResult.services.length)} />
+									<XChip color={Theme.vars.purple} text={'+' + (item.serviceResult.count - item.serviceResult.services.length)} />
 								}
 							</View>
 						</View>
 					</View>
 				}
-
-
-				{/* <View style={{ padding: 10, alignItems: 'flex-end', justifyContent: 'center' }}>
-						{
-							index % 2 > 0 ?
-								<>
-									<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-										<View style={{ width: 10, height: 10, borderRadius: 50, backgroundColor: 'hsl(120, 100%, 80%)', marginEnd: 5 }} />
-										<XText style={{ alignSelf: 'flex-end', fontWeight: '500' }}>{'Otvoreno'}<XText secondary style={{ fontStyle: 'italic', fontSize: 13 }}>{' - danas do 16:00h'}</XText></XText>
-									</View>
-
-								</>
-								:
-								<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-									<View style={{ width: 10, height: 10, borderRadius: 50, backgroundColor: 'red', marginEnd: 5 }} />
-									<XText style={{ alignSelf: 'flex-end', fontWeight: '500' }}>{'Zatvoreno'}<XText secondary style={{ fontStyle: 'italic', fontSize: 13 }}>{' - otvara sutra u 8:00h'}</XText></XText>
-								</View>
-						}
-					</View> */}
 			</View>
-		</XSection >
+		</XSection>
 	)
 });
 
@@ -204,7 +172,8 @@ const ProvidersScreen = ({ navigation, route }) => {
 			mainImg: item.mainImg,
 			address: item.address1,
 			providerTypeImage: item.providerTypeImage,
-			serviceResult: item.serviceResult
+			serviceResult: item.serviceResult,
+			searchName: item.searchName
 		};
 		return (
 			<ProviderCard
@@ -258,7 +227,7 @@ const styleCreator = (theme) => StyleSheet.create({
 	},
 
 	searchCnt: {
-		height: 50,
+		height: 48,
 		flexDirection: 'row',
 		margin: 10,
 		borderTopRightRadius: Theme.values.borderRadius,

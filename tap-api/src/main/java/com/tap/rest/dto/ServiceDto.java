@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 public class ServiceDto {	
 	private Integer id;
 	private String name;
+	private String searchName;
 	private String note;
 	private BigDecimal price;
 	private BigDecimal priceTo;
@@ -33,6 +34,15 @@ public class ServiceDto {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public ServiceDto setSearchName( String searchName ) {
+		this.searchName = searchName;
+		return this;
+	}
+
+	public String getSearchName() {
+		return this.searchName;
 	}
 
 	public ServiceDto setNote( String note ) {

@@ -1,5 +1,7 @@
 package com.tap.rest.sercice.user;
 
+import com.tap.appointments.Utils;
+import com.tap.common.Util;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.rest.dtor.ProviderSearchResultDto;
@@ -83,26 +85,27 @@ public class ProviderService {
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
-	public Object getProviders(
+	public List<ProviderSearchResultDto> getProviders(
 			@QueryParam("tid") Integer typeId,
-			@QueryParam("term") String term
+			@QueryParam("term") String searchTerm
 	) {
 
 		Set<Integer> providerByServicesIds = new HashSet<>();
 		Map<Integer, ServiceSearchResultDto> psMap = new LinkedHashMap<>();
 
-		if (term != null && !term.trim().isEmpty()) {
-			List<ServiceForSearchDto> services = providerRepository.searchProviderServicesByServiceName(term);
+		if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+			searchTerm = Utils.formatSearchString(searchTerm);
+			List<ServiceForSearchDto> services = providerRepository.searchProviderServicesByName(searchTerm);
 			for (ServiceForSearchDto s : services) {
 				providerByServicesIds.add(s.providerId());
 				ServiceSearchResultDto sResult = psMap.computeIfAbsent(s.providerId(), k -> new ServiceSearchResultDto());
 				sResult.setCount(sResult.getCount() + 1);
-				//if (sResult.getServices().size() < 1)
+				if (sResult.getServices().size() < 3)
 					sResult.getServices().add(s);
 			}
 		}
 
-		List<ProviderSearchResultDto> providers = providerRepository.searchFilterProviders(term, providerByServicesIds);
+		List<ProviderSearchResultDto> providers = providerRepository.searchFilterProviders(searchTerm, providerByServicesIds);
 		ServiceSearchResultDto tmpSR;
 		if (!psMap.isEmpty()) {
 			for (ProviderSearchResultDto p : providers) {

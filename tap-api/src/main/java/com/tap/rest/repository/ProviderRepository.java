@@ -42,17 +42,14 @@ public class ProviderRepository extends CommonRepository {
 
 	public List<ProviderSearchResultDto> searchFilterProviders(String searchTerm, Set<Integer> includePIds) {
 
-		String select =
-				"new com.tap.rest.dtor.ProviderSearchResultDto(" +
-				"p.id, p.name,p.imagePath,p.legalEntity," +
-				"p.providertype.name, p.providertype.imagePath," +
-				"p.address.address1," +
-				"ROUND(AVG(r.mark), 1)," +
-				"COUNT(r.id))";
-
 		String qS = """
-				SELECT
-				%s
+				SELECT new com.tap.rest.dtor.ProviderSearchResultDto(
+				p.id, p.name,p.searchName, p.imagePath,p.legalEntity,
+				p.providertype.name, p.providertype.imagePath,
+				p.address.address1,
+				ROUND(AVG(r.mark), 1),
+				COUNT(r.id))
+				
 				FROM Provider p
 				LEFT JOIN Review r ON p = r.provider
 				WHERE p.active = 1
@@ -70,7 +67,7 @@ public class ProviderRepository extends CommonRepository {
 		List<String> ands2 = new ArrayList<>();
 
 		if (searchTerm != null && !searchTerm.isEmpty()) {
-			ands1.add("p.name LIKE :searchTerm");
+			ands1.add("p.searchName LIKE :searchTerm");
 			fSParams.put("searchTerm", "%" + searchTerm + "%");
 		}
 
@@ -87,7 +84,7 @@ public class ProviderRepository extends CommonRepository {
 
 		String sFString = ands.isEmpty() ? "" : " AND (" + String.join(" OR ", ands) + ")";
 
-		TypedQuery<ProviderSearchResultDto> dbQuery = em.createQuery(String.format(qS, select, sFString), ProviderSearchResultDto.class);
+		TypedQuery<ProviderSearchResultDto> dbQuery = em.createQuery(String.format(qS, sFString), ProviderSearchResultDto.class);
 
 		fSParams.forEach(dbQuery::setParameter);
 
@@ -357,11 +354,11 @@ public class ProviderRepository extends CommonRepository {
 				.getResultList();
 	}
 
-	public List<ServiceForSearchDto> searchProviderServicesByServiceName(String term) {
+	public List<ServiceForSearchDto> searchProviderServicesByName(String term) {
 		String query = """
-				SELECT new com.tap.rest.dtor.ServiceForSearchDto(s.id, s.name, s.provider.id) FROM Service s
+				SELECT new com.tap.rest.dtor.ServiceForSearchDto(s.id, s.name, s.searchName, s.provider.id) FROM Service s
 				WHERE s.active = 1
-				AND s.name LIKE :term
+				AND s.searchName LIKE :term
 				""";
 
 		return em.createQuery(query, ServiceForSearchDto.class)
