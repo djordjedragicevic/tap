@@ -22,14 +22,14 @@ export const handleUnauth = () => {
 };
 
 export const PROVIDER_ICON = {
-	barber: require('../assets/icons/barber.png'),
-	beauty_salon: require('../assets/icons/beauty_salon.png'),
-	car_check: require('../assets/icons/car_check.png'),
-	english_class: require('../assets/icons/english_class.png'),
-	fitness: require('../assets/icons/fitness.png'),
-	guitar: require('../assets/icons/guitar.png'),
-	makeup: require('../assets/icons/makeup.png'),
-	massage: require('../assets/icons/massage.png'),
-	math: require('../assets/icons/math.png'),
-	nails: require('../assets/icons/nails.png')
+	barber: require('../assets/svg/barber.svg'),
+	beauty_salon: require('../assets/svg/beauty_salon.svg'),
+	car_check: require('../assets/svg/car_check1.svg'),
+	english_class: require('../assets/svg/english_class.svg'),
+	fitness: require('../assets/svg/fitness1.svg'),
+	guitar: require('../assets/svg/guitar.svg'),
+	makeup: require('../assets/svg/makeup.svg'),
+	massage: require('../assets/svg/massage.svg'),
+	math: require('../assets/svg/math.svg'),
+	nails: require('../assets/svg/nails.svg')
 };

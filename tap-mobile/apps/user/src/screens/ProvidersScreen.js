@@ -141,8 +141,8 @@ const ProvidersScreen = ({ navigation, route }) => {
 					:
 					<View style={{ borderWidth: 0, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 						<XImage
-							style={{ width: 150, height: 150, opacity: 0.7, alightSelf: 'center' }}
-							source={require('../assets/icons/search1.png')}
+							style={{ width: 100, height: 100, opacity: 0.5, alightSelf: 'center' }}
+							source={require('../assets/svg/search5.svg')}
 						/>
 					</View>
 			}
