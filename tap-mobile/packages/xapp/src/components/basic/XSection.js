@@ -10,6 +10,7 @@ const XSection = ({
 	children,
 	style,
 	disabled,
+	flat,
 	onPress,
 	disabledOpacity,
 	styleContent,
@@ -18,7 +19,7 @@ const XSection = ({
 	titleRight = null
 }) => {
 
-	const styles = useThemedStyle(createStyle, transparent, !!title);
+	const styles = useThemedStyle(createStyle, transparent, !!title, flat);
 
 	const RootCmp = onPress instanceof Function ? TouchableOpacity : View;
 
@@ -44,7 +45,7 @@ XSection.defaultProps = {
 	disabledOpacity: 0.5
 };
 
-const createStyle = (theme, transparent, hasTitle) => StyleSheet.create({
+const createStyle = (theme, transparent, hasTitle, flat) => StyleSheet.create({
 	title: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
@@ -53,7 +54,7 @@ const createStyle = (theme, transparent, hasTitle) => StyleSheet.create({
 		paddingVertical: 3
 	},
 	content: {
-		padding: 6,
+		padding: flat ? 0 : 6,
 		backgroundColor: transparent ? 'transparent' : theme.colors.backgroundElement,
 		borderRadius: Theme.values.borderRadius
 		// borderTopEndRadius: hasTitle ? 0 : Theme.values.borderRadius,

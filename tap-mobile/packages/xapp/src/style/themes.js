@@ -39,7 +39,7 @@ export const Theme = {
 
 	values: {
 		mainPaddingHorizontal: 8,
-		borderRadius: 5,
+		borderRadius: 8,
 		borderWidth: 1,
 		disabledOpacity: 0.3,
 

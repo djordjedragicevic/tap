@@ -63,19 +63,20 @@ const MainBottomTabNavigator = ({ navigation }) => {
 					borderTopRightRadius: 10
 				}
 			}}
-			initialRouteName={MAIN_TAB_FIND}
+			initialRouteName={MAIN_TAB_HOME}
 		>
 			<BottomTab.Screen
 				name={MAIN_TAB_HOME}
 				component={HomeScreen}
 				options={{
+					headerShown: false,
 					title: t("Home"),
 					tabBarIcon: (props) => <AntDesign name="home" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}
 			/>
 			<BottomTab.Screen
 				name={MAIN_TAB_FIND}
-				component={ProviderTypesScreen}
+				component={ProvidersScreen}
 				options={{
 					title: t("Find"),
 					tabBarIcon: (props) => <AntDesign name="search1" {...props} color={props.focused ? colorPrimary : colorTextLight} />
@@ -180,13 +181,13 @@ const AppNavigator = ({ }) => {
 				name={MAP_SCREEN}
 				component={MapScreen}
 			/>
-			<Stack.Screen
+			{/* <Stack.Screen
 				options={{
 					headerShown: false
 				}}
 				name={PROVIDERS_SCREEN}
 				component={ProvidersScreen}
-			/>
+			/> */}
 
 			{
 				logged &&

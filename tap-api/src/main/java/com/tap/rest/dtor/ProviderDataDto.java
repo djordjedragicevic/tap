@@ -1,6 +1,6 @@
 package com.tap.rest.dtor;
 
-public class ProviderSearchResultDto {
+public class ProviderDataDto {
 	private final Integer id;
 	private final String name;
 	private final String searchName;
@@ -18,7 +18,7 @@ public class ProviderSearchResultDto {
 
 	private ServiceSearchResultDto serviceResult;
 
-	public ProviderSearchResultDto(
+	public ProviderDataDto(
 			Integer id, String name, String searchName, String mainImg, Byte legalEntity,
 			String providerType, String providerTypeImage,
 			String address1,

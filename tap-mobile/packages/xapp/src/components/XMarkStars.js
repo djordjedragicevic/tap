@@ -38,7 +38,7 @@ const XMarkStars = ({
 					</Pressable>
 				))}
 			</View>
-			{reviewCount != null && <XText secondary>({reviewCount + ' ' + t('reviews')})</XText>}
+			{!!reviewCount && <XText secondary>({reviewCount + ' ' + t('reviews')}) </XText>}
 		</View>
 	)
 };

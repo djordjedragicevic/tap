@@ -11,8 +11,8 @@ const formatSearchString = (str) => {
 	fs = fs.replace('ć', 'c');
 	fs = fs.replace('Č', 'C');
 	fs = fs.replace('č', 'c');
-	fs = fs.replace('Đ', 'Dj');
-	fs = fs.replace('đ', 'dj');
+	fs = fs.replace('Đ', 'D');
+	fs = fs.replace('đ', 'd');
 
 	return fs;
 };
@@ -21,7 +21,7 @@ const XTextTermHighlight = ({ children, term, searchString, ...rest }) => {
 
 	if (term) {
 		const fTerm = searchString ? formatSearchString(term) : term;
-		const startIdx = (searchString || children).toLowerCase().indexOf(fTerm.toLowerCase());
+		let startIdx = (searchString || children).toLowerCase().indexOf(fTerm.toLowerCase());
 
 		if (startIdx > -1) {
 			const endIdx = startIdx + term.length;

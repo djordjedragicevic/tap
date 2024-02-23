@@ -132,5 +132,6 @@ export const strings = {
 	"offer": "offer",
 	"offers": "Offers",
 	"Name of provider or service": "Name of provider or service",
-	"Found services": "Found services"
+	"Found services": "Found services",
+	"No services": "No services"
 };

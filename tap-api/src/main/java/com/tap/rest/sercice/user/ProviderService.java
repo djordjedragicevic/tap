@@ -1,10 +1,9 @@
 package com.tap.rest.sercice.user;
 
 import com.tap.appointments.Utils;
-import com.tap.common.Util;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
-import com.tap.rest.dtor.ProviderSearchResultDto;
+import com.tap.rest.dtor.ProviderDataDto;
 import com.tap.rest.dtor.ServiceForSearchDto;
 import com.tap.rest.dtor.ServiceSearchResultDto;
 import com.tap.rest.repository.ProviderRepository;
@@ -16,8 +15,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Path("/provider")
 @RequestScoped
@@ -85,7 +82,7 @@ public class ProviderService {
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
-	public List<ProviderSearchResultDto> getProviders(
+	public List<ProviderDataDto> getProviders(
 			@QueryParam("tid") Integer typeId,
 			@QueryParam("term") String searchTerm
 	) {
@@ -105,10 +102,10 @@ public class ProviderService {
 			}
 		}
 
-		List<ProviderSearchResultDto> providers = providerRepository.searchFilterProviders(searchTerm, providerByServicesIds);
+		List<ProviderDataDto> providers = providerRepository.getProviders(searchTerm, providerByServicesIds);
 		ServiceSearchResultDto tmpSR;
 		if (!psMap.isEmpty()) {
-			for (ProviderSearchResultDto p : providers) {
+			for (ProviderDataDto p : providers) {
 				tmpSR = psMap.get(p.getId());
 				if (tmpSR != null && tmpSR.getCount() > 0) {
 					p.setServiceResult(tmpSR);
@@ -117,6 +114,15 @@ public class ProviderService {
 		}
 
 		return providers;
+	}
+
+	@GET
+	@Path("/prominent-list")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Public
+	public Response getProminentProviders() {
+
+		return Response.ok(providerRepository.getProminentProviders()).build();
 	}
 
 	@GET

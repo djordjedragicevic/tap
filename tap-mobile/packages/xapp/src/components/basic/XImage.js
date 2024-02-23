@@ -3,12 +3,13 @@ import { Http } from "../../common/Http";
 
 const XImage = (params) => {
 
-	if (!params.imgPath)
+	if (!params.imgPath && !params.source)
 		return null;
 
 	return (
 		<Image
-			source={{ uri: !params.local ? `${Http.getAPI()}/asset/download?lct=${encodeURIComponent(params.imgPath)}` : params.imgPath }}
+			src={params.src}
+			source={params.source || { uri: !params.local ? `${Http.getAPI()}/asset/download?lct=${encodeURIComponent(params.imgPath)}` : params.imgPath }}
 			cachePolicy='memory-disk'
 			{...params}
 		/>

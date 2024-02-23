@@ -92,8 +92,8 @@ public class Utils {
 		fs = fs.replace("č", "c");
 		fs = fs.replace("Ć", "C");
 		fs = fs.replace("ć", "c");
-		fs = fs.replace("Đ", "Dj");
-		fs = fs.replace("đ", "dj");
+		fs = fs.replace("Đ", "D");
+		fs = fs.replace("đ", "d");
 		return fs;
 	}
 

@@ -8,6 +8,7 @@ import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { groupServices } from "xapp/src/common/general";
 import { CurrencyUtils } from "xapp/src/common/utils";
+import XEmptyListIcon from "xapp/src/components/XEmptyListIcon";
 
 const areSIEqual = (oldProps, newProps) => {
 	return oldProps.id === newProps.id && oldProps.isSelected === newProps.isSelected;
@@ -85,10 +86,12 @@ const TabServices = ({
 	const [selectedCatIdx, setSelectedCatIdx] = useState(0);
 
 	const styles = useThemedStyle(styleCreator);
+	const t = useTranslation();
 
-	const services = useMemo(() => groupServices(servicesRaw), [servicesRaw]);
-
-	const hasCats = services?.categoryList.length > 1;
+	const services = useMemo(() => {
+		if (Array.isArray(servicesRaw) && servicesRaw.length > 0)
+			return groupServices(servicesRaw);
+	}, [servicesRaw]);
 
 	const onItemPress = useCallback((item) => {
 		const selectedIndex = selected.findIndex(s => s.id === item.id);
@@ -142,14 +145,14 @@ const TabServices = ({
 		)
 	}, [setSelectedCatIdx, selectedCatIdx]);
 
-	if (!services)
-		return null;
 
+	if (!services)
+		return <XEmptyListIcon text={t('No services')} iconSize={40} />
 
 	return (
 		<View style={{ flex: 1 }}>
 			{
-				hasCats &&
+				services?.categoryList.length > 1 &&
 				<XToolbarContainer
 					items={services?.categoryList || []}
 					onItemRender={onCategoryRender}

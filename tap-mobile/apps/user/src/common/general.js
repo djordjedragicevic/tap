@@ -20,3 +20,16 @@ export const handleUnauth = () => {
 
 	]);
 };
+
+export const PROVIDER_ICON = {
+	barber: require('../assets/icons/barber.png'),
+	beauty_salon: require('../assets/icons/beauty_salon.png'),
+	car_check: require('../assets/icons/car_check.png'),
+	english_class: require('../assets/icons/english_class.png'),
+	fitness: require('../assets/icons/fitness.png'),
+	guitar: require('../assets/icons/guitar.png'),
+	makeup: require('../assets/icons/makeup.png'),
+	massage: require('../assets/icons/massage.png'),
+	math: require('../assets/icons/math.png'),
+	nails: require('../assets/icons/nails.png')
+};

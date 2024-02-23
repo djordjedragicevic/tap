@@ -3,11 +3,10 @@ package com.tap.rest.repository;
 import com.tap.common.Statics;
 import com.tap.common.Util;
 import com.tap.rest.dto.*;
-import com.tap.rest.dtor.ProviderSearchResultDto;
+import com.tap.rest.dtor.ProviderDataDto;
 import com.tap.rest.dtor.ServiceForSearchDto;
 import com.tap.rest.dtor.ServiceWithEmployeesDto;
 import com.tap.rest.entity.*;
-import com.tap.rest.sercice.user.ProviderService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.TypedQuery;
 
@@ -40,16 +39,23 @@ public class ProviderRepository extends CommonRepository {
 		return Util.convertToListOfMap(dbReps, fields, "r");
 	}
 
-	public List<ProviderSearchResultDto> searchFilterProviders(String searchTerm, Set<Integer> includePIds) {
+	public List<ProviderDataDto> getProviders(String searchTerm, Set<Integer> includePIds) {
+		return getProviders(searchTerm, includePIds, null);
+	}
+
+	public List<ProviderDataDto> getProminentProviders() {
+		return getProviders(null, null, 10);
+	}
+
+	public List<ProviderDataDto> getProviders(String searchTerm, Set<Integer> includePIds, Integer limit) {
 
 		String qS = """
-				SELECT new com.tap.rest.dtor.ProviderSearchResultDto(
+				SELECT new com.tap.rest.dtor.ProviderDataDto(
 				p.id, p.name,p.searchName, p.imagePath,p.legalEntity,
 				p.providertype.name, p.providertype.imagePath,
 				p.address.address1,
 				ROUND(AVG(r.mark), 1),
 				COUNT(r.id))
-				
 				FROM Provider p
 				LEFT JOIN Review r ON p = r.provider
 				WHERE p.active = 1
@@ -83,8 +89,11 @@ public class ProviderRepository extends CommonRepository {
 				.toList();
 
 		String sFString = ands.isEmpty() ? "" : " AND (" + String.join(" OR ", ands) + ")";
+		String formattedQuery = String.format(qS, sFString);
 
-		TypedQuery<ProviderSearchResultDto> dbQuery = em.createQuery(String.format(qS, sFString), ProviderSearchResultDto.class);
+		TypedQuery<ProviderDataDto> dbQuery = em.createQuery(formattedQuery, ProviderDataDto.class);
+		if(limit != null && limit > 0)
+			dbQuery.setMaxResults(limit);
 
 		fSParams.forEach(dbQuery::setParameter);
 
