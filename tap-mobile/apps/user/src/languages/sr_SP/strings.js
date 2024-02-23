@@ -131,5 +131,9 @@ export const strings = {
 	"offers": "ponuđača",
 	"Name of provider or service": "Naziv ponuđača ili usluge",
 	"Found services": "Pronađeni servisi",
-	"No services": "Nema usluga"
+	"No services": "Nema usluga",
+	"Hello {:user}": "Pozdrav {:user}",
+	"Find service or provider": "Pronađi servis ili ponuđača",
+	"Categories": "Kategorije",
+	"Prominent": "Istaknuto"
 };

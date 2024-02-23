@@ -39,6 +39,7 @@ export const userStore = (initD = {}) => {
 		lastName: '',
 		username: '',
 		email: '',
+		displayName: '',
 		phone: '',
 		initials: '',
 		imgPath: '',
@@ -54,7 +55,8 @@ export const userStore = (initD = {}) => {
 					...userStore,
 					...userData,
 					isLogged: true,
-					initials: getInitials(userData.firstName, userData.lastName, userData.username, userData.email)
+					initials: getInitials(userData.firstName, userData.lastName, userData.username, userData.email),
+					displayName: userData.firstName || userData.username
 				};
 
 				if (!newData.state)

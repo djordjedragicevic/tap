@@ -3,17 +3,21 @@ import XText from "xapp/src/components/basic/XText";
 import { FlatList, Image, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import XImage from "xapp/src/components/basic/XImage";
 import { Theme } from "xapp/src/style/themes";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Http } from "xapp/src/common/Http";
 import { emptyFn } from "xapp/src/common/utils";
 import { PROVIDER_ICON } from "../common/general";
 import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
+import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import XAvatar from "xapp/src/components/basic/XAvatar";
 import XSection from "xapp/src/components/basic/XSection";
 import ProviderCard from "../components/ProviderCard";
-import { MAIN_TAB_FIND, PROVIDER_SCREEN } from "../navigators/routes";
+import { LOGIN_SCREEN, MAIN_TAB_FIND, MANAGE_ACCOUNT_SCREEN, PROVIDER_SCREEN } from "../navigators/routes";
+import { useIsUserLogged } from '../store/concreteStores';
+import XIcon from "xapp/src/components/basic/XIcon";
+import { useStore } from "xapp/src/store/store";
 
 
 const categoryPlaceholders = [
@@ -31,11 +35,19 @@ const HomeScreen = ({ navigation }) => {
 	const [providerTypes, setProviderTypes] = useState(categoryPlaceholders);
 	const [prominentProviders, setProminentProviders] = useState([]);
 
+	const imgPath = useStore(gS => gS.user.imgPath);
+	const initials = useStore(gS => gS.user.initials);
+	const displayName = useStore(gS => gS.user.displayName);
+	const userLogged = useIsUserLogged();
 
 	const styles = useThemedStyle(styleCreator);
 	const t = useTranslation();
+
 	const { width } = useWindowDimensions();
 
+	const onUserPress = useCallback(() => {
+		navigation.navigate(userLogged ? MANAGE_ACCOUNT_SCREEN : LOGIN_SCREEN);
+	}, [navigation, userLogged])
 
 	useEffect(() => {
 		Http.get('/provider/type-list')
@@ -60,29 +72,48 @@ const HomeScreen = ({ navigation }) => {
 				borderBottomEndRadius: 150,
 				borderBottomStartRadius: 150
 			}}>
-				<View style={{ flexDirection: 'row', columnGap: 10, alignItems: 'center' }}>
-					<XAvatar size={50} initials={"AA"} outline round />
-					<XText size={20} style={{ flex: 1 }} light oneLine>Dobar dan Djordje</XText>
-				</View>
+				<Pressable
+					onPress={onUserPress}
+					style={{
+						flexDirection: 'row',
+						columnGap: 10,
+						margin: 5,
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}
+				>
+					{
+						userLogged ?
+							<>
+								<XAvatar size={50} initials={initials} imgPath={imgPath} outline round />
+								<XText size={20} style={{ flex: 1 }} light oneLine>{t('Hello {:user}', { user: displayName })}</XText>
+							</>
+							:
+							<>
+								<XButtonIcon onPress={onUserPress} icon='user' size={50} primary style={{ borderRadius: 100 }} />
+								<XText flex={false} icon rightIcon={'arrowright'} size={20} light>{t('Sign in')}</XText>
+							</>
+					}
+				</Pressable>
+
 				<XFieldContainer
-					onPress={() => navigation.navigate(MAIN_TAB_FIND)}
+					onPress={() => navigation.navigate(MAIN_TAB_FIND, { focusSearch: true })}
 					outline
 					iconLeft='search1'
 					iconLeftColor={Theme.Light.colors.textTertiary}
 					iconRightColor={Theme.Light.colors.textTertiary}
-					style={{ borderRadius: 15, margin: 25 }}
+					style={{ borderRadius: 15, maxWidth: 270, marginTop: 16 }}
 				>
-					<XText style={{ textAlign: 'center' }} >Pronađite uslugu ili ponudjaca</XText>
+					<XText style={{ textAlign: 'center' }}>{t('Find service or provider')}</XText>
 				</XFieldContainer>
 			</View>
 
 
-
 			<View
-				style={{ marginTop: -75, height: 210 }}
+				style={{ marginTop: -75, minHeight: 190 }}
 			>
 				<View style={{ paddingTop: 5, paddingBottom: 15, paddingStart: 15 }}>
-					<XText size={16} light>Kategorije</XText>
+					<XText size={16} light>{t('Categories')}</XText>
 				</View>
 
 				<FlatList
@@ -104,14 +135,11 @@ const HomeScreen = ({ navigation }) => {
 									style={styles.categoryCnt}>
 									<XImage
 										source={PROVIDER_ICON[item.imagePath.split('/').pop().split('.')[0]]}
-										//contentFit='scale-down'
 										style={{
-											// height: 40,
-											// width: 40,
 											flex: 1,
 											opacity: item.providerCount ? 1 : 0.3
-											//borderWidth: 1
-										}} />
+										}}
+									/>
 								</View>
 								<XText
 									size={13}
@@ -127,10 +155,30 @@ const HomeScreen = ({ navigation }) => {
 			</View>
 
 			<View style={{ padding: 10, paddingStart: 15 }}>
-				<XText size={16}>Istaknuto</XText>
+				<XText size={16}>{t('Prominent')}</XText>
+			</View>
+			<FlatList
+				horizontal
+				data={prominentProviders}
+				contentContainerStyle={{ gap: 10, paddingHorizontal: 10 }}
+				showsHorizontalScrollIndicator={false}
+				renderItem={({ item }) => {
+					return (
+						<ProviderCard
+							item={item}
+							style={{ flex: 1, minWidth: width - (width / 3) }}
+							onPress={(itemData) => navigation.navigate(PROVIDER_SCREEN, { item: itemData })}
+						/>
+					)
+				}}
+			/>
+
+			{/* <View style={{ padding: 10, paddingStart: 15 }}>
+				<XText size={16}>{t('Prominent')}</XText>
 			</View>
 
-			{/* <View
+
+			<View
 				style={{ paddingHorizontal: 5, flexDirection: 'row', flexWrap: 'wrap', flex: 1 }}>
 				{
 					prominentProviders?.map(item => {
@@ -152,21 +200,6 @@ const HomeScreen = ({ navigation }) => {
 				}
 			</View> */}
 
-			<FlatList
-				horizontal
-				data={prominentProviders}
-				contentContainerStyle={{ gap: 5, paddingHorizontal: 10 }}
-				showsHorizontalScrollIndicator={false}
-				renderItem={({ item }) => {
-					return (
-						<ProviderCard
-							item={item}
-							style={{ flex: 1 }}
-							onPress={(itemData) => navigation.navigate(PROVIDER_SCREEN, { item: itemData })}
-						/>
-					)
-				}}
-			/>
 
 		</XScreen >
 	);

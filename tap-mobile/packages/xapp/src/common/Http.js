@@ -122,7 +122,7 @@ export class Http {
 		if (qParams && validate) {
 			const tmpQP = {};
 			for (const [k, v] of Object.entries(qParams))
-				if (v !== undefined)
+				if (v !== undefined && v !== '')
 					tmpQP[k] = v;
 			qParams = tmpQP;
 		}

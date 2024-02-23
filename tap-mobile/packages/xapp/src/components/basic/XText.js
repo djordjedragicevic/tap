@@ -34,6 +34,7 @@ const XText = ({
 	icon,
 	rightIcon,
 	center,
+	flex = true,
 	ellipsizeMode = 'tail',
 	numberOfLines = 0,
 	adjustsFontSizeToFit = false,
@@ -62,7 +63,7 @@ const XText = ({
 		color,
 		colorName: colorName || textColor,
 		center
-	});
+	}, flex);
 	const pColor = usePrimaryColor();
 
 	if (!icon && !rightIcon)
@@ -89,7 +90,7 @@ XText.defaultProps = {
 	style: {}
 };
 
-const createStyle = (theme, appFont, { weight, italic, size, color, colorName, center }) => {
+const createStyle = (theme, appFont, { weight, italic, size, color, colorName, center }, flex) => {
 	const style = {
 		color: color || theme.colors[colorName]
 	};
@@ -112,7 +113,7 @@ const createStyle = (theme, appFont, { weight, italic, size, color, colorName, c
 	return StyleSheet.create({
 		text: style,
 		textInCnt: {
-			flex: 1
+			flex: flex ? 1 : 0,
 		},
 		container: {
 			flex: 1,
