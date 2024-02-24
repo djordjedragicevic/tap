@@ -1,5 +1,6 @@
 package com.tap.rest.repository;
 
+import com.tap.common.Filter;
 import com.tap.common.Statics;
 import com.tap.common.Util;
 import com.tap.rest.dto.*;
@@ -40,20 +41,21 @@ public class ProviderRepository extends CommonRepository {
 	}
 
 	public List<ProviderDataDto> getProviders(String searchTerm, Set<Integer> includePIds) {
-		return getProviders(searchTerm, includePIds, null);
+		return getProviders(searchTerm, includePIds, null, null);
 	}
 
 	public List<ProviderDataDto> getProminentProviders() {
-		return getProviders(null, null, 10);
+		return getProviders(null, null, null, 10);
 	}
 
-	public List<ProviderDataDto> getProviders(String searchTerm, Set<Integer> includePIds, Integer limit) {
+	public List<ProviderDataDto> getProviders(String searchTerm, Set<Integer> includePIds, List<Filter> filters, Integer limit) {
 
 		String qS = """
 				SELECT new com.tap.rest.dtor.ProviderDataDto(
 				p.id, p.name,p.searchName, p.imagePath,p.legalEntity,
 				p.providertype.name, p.providertype.imagePath,
 				p.address.address1,
+				p.address.city.name,
 				ROUND(AVG(r.mark), 1),
 				COUNT(r.id))
 				FROM Provider p
@@ -77,6 +79,14 @@ public class ProviderRepository extends CommonRepository {
 			fSParams.put("searchTerm", "%" + searchTerm + "%");
 		}
 
+		if (filters != null && !filters.isEmpty()) {
+			filters.forEach(f -> {
+						ands1.add(f.getSqlSelector());
+						fSParams.put(f.getName(), f.getValue());
+					}
+			);
+		}
+
 		if (includePIds != null && !includePIds.isEmpty()) {
 			ands2.add("p.id IN :pIds");
 			fSParams.put("pIds", includePIds);
@@ -92,7 +102,7 @@ public class ProviderRepository extends CommonRepository {
 		String formattedQuery = String.format(qS, sFString);
 
 		TypedQuery<ProviderDataDto> dbQuery = em.createQuery(formattedQuery, ProviderDataDto.class);
-		if(limit != null && limit > 0)
+		if (limit != null && limit > 0)
 			dbQuery.setMaxResults(limit);
 
 		fSParams.forEach(dbQuery::setParameter);

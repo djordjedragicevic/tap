@@ -11,7 +11,7 @@ public class ProviderDataDto {
 	private final String providerTypeImage;
 
 	private final String address1;
-
+	private final String city;
 	private final Double mark;
 
 	private final Long reviewCount;
@@ -22,6 +22,7 @@ public class ProviderDataDto {
 			Integer id, String name, String searchName, String mainImg, Byte legalEntity,
 			String providerType, String providerTypeImage,
 			String address1,
+			String city,
 			Double mark, Long reviewCount) {
 
 		this.id = id;
@@ -32,6 +33,7 @@ public class ProviderDataDto {
 		this.providerType = providerType;
 		this.providerTypeImage = providerTypeImage;
 		this.address1 = address1;
+		this.city = city;
 		this.mark = mark;
 		this.reviewCount = reviewCount;
 	}
@@ -43,6 +45,7 @@ public class ProviderDataDto {
 	public String getName() {
 		return name;
 	}
+
 	public String getSearchName() {
 		return searchName;
 	}
@@ -65,6 +68,10 @@ public class ProviderDataDto {
 
 	public String getAddress1() {
 		return address1;
+	}
+
+	public String getCity() {
+		return city;
 	}
 
 	public Double getMark() {

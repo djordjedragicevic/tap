@@ -109,7 +109,7 @@ export const Theme = {
 			//textLight: '#f2f2f3',
 			textLight: 'white',
 
-			borderColor: 'hsl(0, 0%, 25%)',
+			borderColor: 'hsl(0, 0%, 18%)',
 
 			black: 'hsl(0, 0%, 0%)',
 

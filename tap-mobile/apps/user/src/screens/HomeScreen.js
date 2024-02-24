@@ -3,7 +3,7 @@ import XText from "xapp/src/components/basic/XText";
 import { FlatList, Image, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import XImage from "xapp/src/components/basic/XImage";
 import { Theme } from "xapp/src/style/themes";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Http } from "xapp/src/common/Http";
@@ -12,13 +12,10 @@ import { PROVIDER_ICON } from "../common/general";
 import XFieldContainer from "xapp/src/components/basic/XFieldContainer";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
 import XAvatar from "xapp/src/components/basic/XAvatar";
-import XSection from "xapp/src/components/basic/XSection";
 import ProviderCard from "../components/ProviderCard";
 import { LOGIN_SCREEN, MAIN_TAB_FIND, MANAGE_ACCOUNT_SCREEN, PROVIDER_SCREEN } from "../navigators/routes";
 import { useIsUserLogged } from '../store/concreteStores';
-import XIcon from "xapp/src/components/basic/XIcon";
 import { useStore } from "xapp/src/store/store";
-
 
 const categoryPlaceholders = [
 	{ id: 'ph1', imagePath: '' },
@@ -43,15 +40,16 @@ const HomeScreen = ({ navigation }) => {
 	const styles = useThemedStyle(styleCreator);
 	const t = useTranslation();
 
-	const { width } = useWindowDimensions();
-
 	const onUserPress = useCallback(() => {
 		navigation.navigate(userLogged ? MANAGE_ACCOUNT_SCREEN : LOGIN_SCREEN);
 	}, [navigation, userLogged])
 
 	useEffect(() => {
 		Http.get('/provider/type-list')
-			.then(setProviderTypes)
+			.then(resp => {
+				resp.forEach(r => r.iconName = r.imagePath.split('/').pop().split('.')[0]);
+				setProviderTypes(resp);
+			})
 			.catch(emptyFn);
 
 		Http.get('/provider/prominent-list')
@@ -86,12 +84,12 @@ const HomeScreen = ({ navigation }) => {
 						userLogged ?
 							<>
 								<XAvatar size={50} initials={initials} imgPath={imgPath} outline round />
-								<XText size={20} style={{ flex: 1 }} light oneLine>{t('Hello {:user}', { user: displayName })}</XText>
+								<XText size={18} style={{ flex: 1 }} light oneLine>{t('Hello {:user}', { user: displayName })}</XText>
 							</>
 							:
 							<>
 								<XButtonIcon onPress={onUserPress} icon='user' size={50} primary style={{ borderRadius: 100 }} />
-								<XText flex={false} icon rightIcon={'arrowright'} size={20} light>{t('Sign in')}</XText>
+								<XText flex={false} icon size={18} light>{t('Sign in')}</XText>
 							</>
 					}
 				</Pressable>
@@ -124,29 +122,42 @@ const HomeScreen = ({ navigation }) => {
 					renderItem={({ item }) => {
 						return (
 							<Pressable
+								disabled={!item.providerCount}
 								style={{
 									alignItems: 'center',
 									width: 100,
 									rowGap: 5,
 								}}
-								onPress={() => navigation.navigate(MAIN_TAB_FIND)}
+								onPress={() => navigation.navigate(MAIN_TAB_FIND, { filter: { pt: item.id } })}
 							>
 								<View
 									style={styles.categoryCnt}>
 									<XImage
-										source={PROVIDER_ICON[item.imagePath.split('/').pop().split('.')[0]]}
+										source={PROVIDER_ICON[item.iconName]}
 										style={{
 											flex: 1,
-											opacity: item.providerCount ? 1 : 0.3
+											opacity: item.providerCount ? 1 : 0.2
 										}}
 									/>
+									<View style={{
+										position: 'absolute',
+										top: 0,
+										right: 0,
+										width: 18,
+										height: 18,
+										alignItems: 'center',
+										justifyContent: 'center',
+										borderRadius: 3
+									}}>
+										<XText secondary size={11}>{item.providerCount}</XText>
+									</View>
 								</View>
 								<XText
 									size={13}
 									adjustsFontSizeToFit
 									style={{ textAlign: 'center', flex: 1 }}
 								>
-									{item.name} ({item.providerCount})
+									{item.name}
 								</XText>
 							</Pressable>
 						)
@@ -155,7 +166,7 @@ const HomeScreen = ({ navigation }) => {
 			</View>
 
 			<View style={{ padding: 10, paddingStart: 15 }}>
-				<XText size={16}>{t('Prominent')}</XText>
+				<XText size={16}>{t('Popular')}</XText>
 			</View>
 			<FlatList
 				horizontal
@@ -166,14 +177,16 @@ const HomeScreen = ({ navigation }) => {
 					return (
 						<ProviderCard
 							item={item}
-							style={{ flex: 1, minWidth: width - (width / 3) }}
+							address1={null}
+							style={{ minWidth: 220 }}
 							onPress={(itemData) => navigation.navigate(PROVIDER_SCREEN, { item: itemData })}
 						/>
 					)
 				}}
 			/>
 
-			{/* <View style={{ padding: 10, paddingStart: 15 }}>
+
+			<View style={{ padding: 10, paddingStart: 15 }}>
 				<XText size={16}>{t('Prominent')}</XText>
 			</View>
 
@@ -185,20 +198,19 @@ const HomeScreen = ({ navigation }) => {
 						return (
 							<View
 								key={item.id}
-								style={{ width: '50%', padding: 5 }}
+								style={{ width: '100%', padding: 5 }}
 							>
 								<ProviderCard
 									item={item}
-									style={{
-										flex: 1
-									}}
+									address1={null}
+									style={{ flex: 1 }}
 									onPress={(itemData) => navigation.navigate(PROVIDER_SCREEN, { item: itemData })}
 								/>
 							</View>
 						)
 					})
 				}
-			</View> */}
+			</View>
 
 
 		</XScreen >

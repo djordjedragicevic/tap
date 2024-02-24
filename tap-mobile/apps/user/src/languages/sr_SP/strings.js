@@ -135,5 +135,6 @@ export const strings = {
 	"Hello {:user}": "Pozdrav {:user}",
 	"Find service or provider": "Pronađi servis ili ponuđača",
 	"Categories": "Kategorije",
-	"Prominent": "Istaknuto"
+	"Prominent": "Istaknuto",
+	"Popular": "Popularno"
 };

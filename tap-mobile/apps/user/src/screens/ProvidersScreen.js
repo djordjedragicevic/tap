@@ -10,8 +10,8 @@ import XIcon from "xapp/src/components/basic/XIcon";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { emptyFn } from "xapp/src/common/utils";
 import ProviderCard from "../components/ProviderCard";
-import { useFocusEffect } from "@react-navigation/native";
 import XImage from "xapp/src/components/basic/XImage";
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const SearchAndFilterProviders = ({ onSearch = emptyFn, searchRef, searchTerm }) => {
@@ -37,7 +37,6 @@ const SearchAndFilterProviders = ({ onSearch = emptyFn, searchRef, searchTerm })
 				placeholder={t('Name of provider or service')}
 				clearable
 				style={styles.searchInput}
-				fieldContainerStyle={styles.searchInputContainer}
 				fieldStyle={styles.searchInputField}
 			/>
 			<View
@@ -79,11 +78,16 @@ const ProvidersScreen = ({ navigation, route }) => {
 			loadProviders(filter);
 	}, [filter]);
 
-	// useFocusEffect(useCallback(() => {
-	// 	return () => {
-	// 		setFilter(null);
-	// 	}
-	// }, []));
+	useFocusEffect(useCallback(() => {
+
+		console.log("FOCUS", route.params?.filter);
+		if (route.params?.filter)
+			setFilter({ ...route.params.filter })
+
+		return () => {
+			//setFilter(null);
+		}
+	}, [route?.params?.filter]));
 
 
 	useEffect(() => {
@@ -159,19 +163,15 @@ const styleCreator = (theme) => StyleSheet.create({
 
 	searchCnt: {
 		flexDirection: 'row',
-		margin: 10,
-		borderTopRightRadius: Theme.values.borderRadius,
-		borderBottomRightRadius: Theme.values.borderRadius,
-		borderColor: theme.colors.borderColor,
+		gap: 15,
+		padding: 15,
+		//borderTopRightRadius: Theme.values.borderRadius,
+		//borderBottomRightRadius: Theme.values.borderRadius,
+		//borderColor: theme.colors.borderColor,
 		overflow: 'hidden'
 	},
 	searchInput: {
 		flex: 1
-	},
-	searchInputContainer: {
-		borderRightWidth: 0,
-		borderTopRightRadius: 0,
-		borderBottomRightRadius: 0
 	},
 	searchInputField: {
 		fontSize: 14
@@ -179,7 +179,8 @@ const styleCreator = (theme) => StyleSheet.create({
 	searchFilterCnt: {
 		backgroundColor: theme.colors.secondary,
 		flex: 1,
-		maxWidth: 80,
+		borderRadius: Theme.values.borderRadius,
+		maxWidth: 60,
 		alignItems: 'center',
 		justifyContent: 'center'
 	}

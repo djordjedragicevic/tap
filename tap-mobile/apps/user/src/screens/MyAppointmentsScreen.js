@@ -179,13 +179,6 @@ const Appointment = ({ item, navigation }) => {
 						small
 						onPress={() => navigation.navigate(ADD_REVIEW_SCREEN, { appId: item.id })}
 					/>
-					// <XButtonIcon
-					// 	icon='star'
-					// 	size={30}
-					// 	outline
-					// 	color={pColor}
-					// 	onPress={() => navigation.navigate(ADD_REVIEW_SCREEN, { appId: item.id })}
-					// />
 				}
 				{(!item._isHistory && (item.status === APP_STATUS.ACCEPTED || item.status === APP_STATUS.WAITING)) &&
 					<XButton
@@ -194,6 +187,7 @@ const Appointment = ({ item, navigation }) => {
 						outline
 						iconLeft={item.status === APP_STATUS.WAITING ? 'arrowdown' : 'close'}
 						small
+						backgroundColor={Theme.opacity(Theme.Dark.colors.red, 0.5)}
 						colorName={Theme.vars.red}
 						onPress={() => navigation.navigate(CANCEL_APPOINTMENT_SCREEN, { appId: item.id, status: item.status })}
 					/>

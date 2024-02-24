@@ -138,7 +138,7 @@ const TabReviews = ({ providerId, navigation, reload }) => {
 
 			{
 				isEmpty ?
-					<XEmptyListIcon text={t('No reviews')} iconSize={40} />
+					<XEmptyListIcon text={t('No reviews')} iconSize={64} />
 					:
 					<FlatList
 						data={reviews}

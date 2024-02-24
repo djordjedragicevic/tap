@@ -147,7 +147,7 @@ const TabServices = ({
 
 
 	if (!services)
-		return <XEmptyListIcon text={t('No services')} iconSize={40} />
+		return <XEmptyListIcon text={t('No services')} iconSize={64} />
 
 	return (
 		<View style={{ flex: 1 }}>

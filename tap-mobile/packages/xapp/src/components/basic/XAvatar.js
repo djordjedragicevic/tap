@@ -6,6 +6,8 @@ import XImage from "./XImage";
 
 const XAvatar = ({
 	size = 30,
+	width,
+	height,
 	color,
 	style,
 	imgPath,
@@ -19,8 +21,8 @@ const XAvatar = ({
 
 	return (
 		<View
-			width={size}
-			height={size}
+			width={width || size}
+			height={height || size}
 			style={[styles.avatar, style]}
 		>
 			{imgPath ?

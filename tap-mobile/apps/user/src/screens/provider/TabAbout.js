@@ -34,7 +34,7 @@ const mapWorkPeriods = (workPeriods) => {
 
 const isOpened = (day, values) => {
 	const d = new Date();
-	const isDay = d.getDay() === parseInt(day);
+	const isDay = (d.getDay() || 7) === parseInt(day);
 	let isWorking = false;
 	const current = d.getHours() + ':' + d.getMinutes();
 

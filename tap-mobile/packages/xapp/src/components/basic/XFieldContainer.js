@@ -53,7 +53,7 @@ const XFieldContainer = ({
 			{
 				!!iconLeft &&
 				<IconLeftCmp disabled={iconLeftDisabled} style={[styles.iconLeft, { opacity: iconLeftDisabled ? Theme.values.disabledOpacity : 1 }, iconLeftStyle]} onPress={onIconLeftPress}>
-					<XIcon icon={iconLeft} size={iconLeftSize} color={iconLeftColor || styles.iconColor || iLColor} />
+					<XIcon icon={iconLeft} size={iconLeftSize} color={iconLeftColor || iLColor || styles.iconColor} />
 				</IconLeftCmp>
 			}
 			<CenterCmp style={[styles.centerContainer, styleCenterContainer]} onPress={() => {

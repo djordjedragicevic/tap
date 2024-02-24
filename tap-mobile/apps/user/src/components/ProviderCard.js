@@ -27,6 +27,7 @@ const ProviderCard = ({
 	reviewCount = item?.reviewCount,
 	searchName = item?.searchName,
 	serviceResult = item?.serviceResult,
+	city = item?.city,
 
 	imageHeight = 150,
 	onPress = emptyFn,
@@ -58,11 +59,14 @@ const ProviderCard = ({
 						size={18}
 						term={searchTerm}
 						searchString={searchName}
+						adjustsFontSizeToFit
+						oneLine
 					>
 						{name}
 					</XTextTermHighlight>
 					{!!providerType && <XText secondary oneLine>{providerType}</XText>}
 					{!!address1 && <XText secondary oneLine>{address1}</XText>}
+					{!!city && <XText secondary oneLine>{city}</XText>}
 					<XMarkStars mark={mark} reviewCount={reviewCount} />
 				</View>
 

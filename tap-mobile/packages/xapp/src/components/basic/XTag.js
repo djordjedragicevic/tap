@@ -29,7 +29,7 @@ const styleCreator = (theme, bgColor) => StyleSheet.create({
 		alignItems: 'center',
 		height: 26,
 		paddingEnd: 18,
-		marginEnd: -3,
+		marginEnd: -4,
 		borderTopEndRadius: 3,
 		borderBottomEndRadius: 3,
 		backgroundColor: bgColor || theme.colors.primary

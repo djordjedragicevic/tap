@@ -137,5 +137,6 @@ export const strings = {
 	"Hello {:user}": "Hello {:user}",
 	"Find service or provider": "Find service or provider",
 	"Categories": "Categories",
-	"Prominent": "Prominent"
+	"Prominent": "Prominent",
+	"Popular": "Popular"
 };

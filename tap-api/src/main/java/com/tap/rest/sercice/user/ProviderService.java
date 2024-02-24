@@ -1,6 +1,7 @@
 package com.tap.rest.sercice.user;
 
 import com.tap.appointments.Utils;
+import com.tap.common.Filter;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.rest.dtor.ProviderDataDto;
@@ -83,12 +84,16 @@ public class ProviderService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Public
 	public List<ProviderDataDto> getProviders(
-			@QueryParam("tid") Integer typeId,
+			@QueryParam("pt") Integer typeId,
 			@QueryParam("term") String searchTerm
 	) {
 
 		Set<Integer> providerByServicesIds = new HashSet<>();
 		Map<Integer, ServiceSearchResultDto> psMap = new LinkedHashMap<>();
+
+		List<Filter> filters = new ArrayList<>();
+		if(typeId != null)
+			filters.add(new Filter("typeId", typeId, "p.providertype.id = :typeId"));
 
 		if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 			searchTerm = Utils.formatSearchString(searchTerm);
@@ -102,7 +107,7 @@ public class ProviderService {
 			}
 		}
 
-		List<ProviderDataDto> providers = providerRepository.getProviders(searchTerm, providerByServicesIds);
+		List<ProviderDataDto> providers = providerRepository.getProviders(searchTerm, providerByServicesIds, filters, null);
 		ServiceSearchResultDto tmpSR;
 		if (!psMap.isEmpty()) {
 			for (ProviderDataDto p : providers) {
