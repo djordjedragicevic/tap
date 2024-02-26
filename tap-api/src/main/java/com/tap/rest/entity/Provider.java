@@ -61,6 +61,10 @@ public class Provider implements Serializable {
 	@JsonbTransient
 	private List<Employee> employeeList; 
 
+    @OneToMany(mappedBy="provider")
+	@JsonbTransient
+	private List<FavoriteProvider> favoriteproviderList; 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="address_id", referencedColumnName="id")
 	private Address address; 
@@ -186,6 +190,13 @@ public class Provider implements Serializable {
 	
 	public void setEmployeeList(List<Employee> employeeList) {
 		this.employeeList = employeeList;
+	}
+	public List<FavoriteProvider> getFavoriteproviderList() {
+		return this.favoriteproviderList;
+	}
+	
+	public void setFavoriteproviderList(List<FavoriteProvider> favoriteproviderList) {
+		this.favoriteproviderList = favoriteproviderList;
 	}
 	public Address getAddress() {
 		return this.address;

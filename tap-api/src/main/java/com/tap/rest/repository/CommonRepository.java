@@ -3,6 +3,7 @@ package com.tap.rest.repository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
@@ -51,11 +52,7 @@ public class CommonRepository {
 	}
 
 	public <T> T getSingleEntityBy(Class<T> ec, Object... params) {
-		Map<String, Object> paramsMap = new LinkedHashMap<>();
-		for (int i = 0, s = params.length; i < s; i += 2)
-			paramsMap.put(params[i].toString(), params[i + 1]);
-
-		return this.createQuery(ec, paramsMap).getSingleResult();
+		return this.createQuery(ec, params).getSingleResult();
 	}
 
 	public <T> List<T> getEntityListByIds(Class<T> ec, List<?> ids) {
@@ -73,6 +70,14 @@ public class CommonRepository {
 
 	public <T> T getEntityBy(Class<T> ec, Object... params) {
 		return createQuery(ec, params).getSingleResult();
+	}
+
+	public <T> T getNullableEntityBy(Class<T> ec, Object... params) {
+		try {
+			return createQuery(ec, params).getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 
@@ -103,27 +108,20 @@ public class CommonRepository {
 	}
 
 	private <T> TypedQuery<T> createQuery(Class<T> ec, Object... params) {
-		List<Object> paramValues = new ArrayList<>();
 
-		StringBuilder query = new StringBuilder(String.format("""
-				SELECT c FROM %s c
-				WHERE c.%s = :val1
-				""", ec.getSimpleName(), params[0]));
-
-		paramValues.add(params[1]);
-
-		if (params.length > 2) {
-			int vCount = 2;
-			for (int i = 2, s = params.length; i < s - 1; i += 2) {
-				query.append(String.format(" AND c.%s = val%s", vCount++, params[i].toString()));
-				paramValues.add(params[i + 1]);
-			}
+		List<String> sqlParts = new ArrayList<>();
+		Map<String, Object> sqlParams = new HashMap<>();
+		for (int i = 0, s = params.length; i < s; i += 2) {
+			sqlParts.add("c." + params[i].toString() + " = :val" + i);
+			sqlParams.put("val" + i, params[i + 1]);
 		}
 
-		TypedQuery<T> q = em.createQuery(query.toString(), ec);
-		int pCount = 1;
-		for (Object p : paramValues)
-			q.setParameter("val" + pCount++, p);
+		String query = "SELECT c FROM %s c WHERE %s";
+		String ands = String.join(" AND ", sqlParts);
+
+		TypedQuery<T> q = em.createQuery(String.format(query, ec.getSimpleName(), ands), ec);
+		for (Map.Entry<String, Object> en : sqlParams.entrySet())
+			q.setParameter(en.getKey(), en.getValue());
 
 		return q;
 	}

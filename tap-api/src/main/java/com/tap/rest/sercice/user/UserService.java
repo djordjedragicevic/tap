@@ -4,14 +4,13 @@ import com.tap.common.FSAsset;
 import com.tap.common.Mail;
 import com.tap.common.Util;
 import com.tap.rest.dto.UserDto;
-import com.tap.rest.entity.User;
-import com.tap.rest.entity.UserRole;
-import com.tap.rest.entity.UserVerification;
+import com.tap.rest.entity.*;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
 import com.tap.rest.sercice.Controller;
 import com.tap.rest.repository.UserRepository;
 import com.tap.security.*;
+import com.tap.security.Role;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.json.*;
@@ -34,6 +33,7 @@ public class UserService {
 	public UserService() {
 
 	}
+
 	@Inject
 	public UserService(UserRepository userRepository, Controller controller) {
 		this.userRepository = userRepository;
@@ -127,12 +127,24 @@ public class UserService {
 	@Secured({Role.USER})
 	public Response getUserDataByToken(@Context SecurityContext securityContext) {
 
-		String userId = securityContext.getUserPrincipal().getName();
-		Map<String, Object> userData = null;
-		if (userId != null && !userId.isEmpty())
-			userData = userRepository.getUserData(Integer.parseInt(userId));
+		int userId = Security.getUserId(securityContext);
 
-		return Response.ok(userData).build();
+		Map<String, Object> resp = new HashMap<>();
+		User u = userRepository.getSingleActiveEntityById(User.class, userId);
+
+		resp.put("id", u.getId());
+		resp.put("username", u.getUsername());
+		resp.put("email", u.getEmail());
+		resp.put("phone", u.getPhone());
+		resp.put("imgPath", u.getImgpath());
+		resp.put("firstName", u.getFirstName());
+		resp.put("lastName", u.getLastName());
+		resp.put("state", u.getUserstate());
+
+		resp.put("roles", userRepository.getRoles(userId).stream().map(com.tap.rest.entity.Role::getName).toList());
+		resp.put("favoriteProviders", userRepository.getFavoriteProviderIds(userId));
+
+		return Response.ok(resp).build();
 	}
 
 	@Path("/profile")
@@ -193,5 +205,53 @@ public class UserService {
 		userRepository.updateState(userId, userState);
 	}
 
+	@Path("/favorite-provider")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	@Transactional
+	public Response addFavoriteProvider(
+			@Context SecurityContext sC,
+			Integer pId
+	) {
+
+		int userId = Security.getUserId(sC);
+		FavoriteProvider fP = userRepository.getNullableEntityBy(FavoriteProvider.class, "user.id", userId, "provider.id", pId);
+		if (fP == null) {
+			User u = userRepository.getSingleActiveEntityById(User.class, userId);
+			Provider p = userRepository.getSingleActiveEntityById(Provider.class, pId);
+			fP = new FavoriteProvider();
+			fP.setUser(u);
+			fP.setProvider(p);
+			userRepository.getEntityManager().persist(fP);
+			userRepository.getEntityManager().flush();
+		}
+
+		List<Integer> fPs = userRepository.getFavoriteProviderIds(userId);
+
+		return Response.ok(fPs).build();
+	}
+
+	@Path("/favorite-provider")
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	@Transactional
+	public Response removeFavoriteProvider(
+			@Context SecurityContext sC,
+			Integer pId
+	) {
+
+		int userId = Security.getUserId(sC);
+		FavoriteProvider fP = userRepository.getNullableEntityBy(FavoriteProvider.class, "user.id", userId, "provider.id", pId);
+		if (fP != null) {
+			userRepository.getEntityManager().remove(fP);
+			userRepository.getEntityManager().flush();
+		}
+
+		List<Integer> fPs = userRepository.getFavoriteProviderIds(userId);
+
+		return Response.ok(fPs).build();
+	}
 
 }

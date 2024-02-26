@@ -18,6 +18,7 @@ Provider {
   // links
   customperiodList : CustomPeriod[];
   employeeList : Employee[];
+  favoriteproviderList : FavoriteProvider[];
   address : Address { @LinkByFK(fk_provider_address1) };
   providertype : ProviderType { @LinkByFK(fk_provider_provider_type) };
   reviewList : Review[];

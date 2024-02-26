@@ -21,7 +21,7 @@ const calculateTimeAgo = (data) => {
 		if (time < 60) {
 			r.timeAgo = I18nT.t('timesAgo', { time: Math.ceil(time).toString(), measure: I18nT.t('tgMin') });
 		}
-		else if ((time = time / 60) < 60) {
+		else if ((time = time / 60) < 24) {
 			r.timeAgo = I18nT.t('timesAgo', { time: Math.ceil(time).toString(), measure: I18nT.t('tgHour') });
 		}
 		else if ((time = time / 24) < 27) {

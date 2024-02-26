@@ -39,9 +39,7 @@ export const userStore = (initD = {}) => {
 
 	const initData = {
 		isLogged: false,
-		state: {
-			favoriteProviders: []
-		},
+		state: {},
 		firstName: '',
 		lastName: '',
 		username: '',
@@ -51,6 +49,7 @@ export const userStore = (initD = {}) => {
 		initials: '',
 		imgPath: '',
 		roles: [],
+		favoriteProviders: [],
 		...initD
 	};
 
@@ -69,9 +68,6 @@ export const userStore = (initD = {}) => {
 				if (!newData.state)
 					newData.state = {};
 
-				if (newData.state.favoriteProviders)
-					newData.state.favoriteProviders = JSON.parse(newData.state.favoriteProviders);
-
 				return newData;
 			},
 			'user.log_out': () => {
@@ -85,25 +81,31 @@ export const userStore = (initD = {}) => {
 					isLogged
 				}
 			},
-			'user.favorite_add': (userStore, providerId) => {
-				const newFav = userStore.state.favoriteProviders ? [...userStore.state.favoriteProviders, providerId] : [providerId];
+			'user.set_favoriteProviders': (userStore, fps) => {
 				return {
 					...userStore,
-					state: {
-						...userStore.state,
-						favoriteProviders: newFav
-					}
-				}
-			},
-			'user.favorite_remove': (userStore, providerId) => {
-				return {
-					...userStore,
-					state: {
-						...userStore.state,
-						favoriteProviders: userStore.state.favoriteProviders.filter(pId => pId !== providerId)
-					}
+					favoriteProviders: fps
 				}
 			}
+			// 'user.favorite_add': (userStore, providerId) => {
+			// 	const newFav = userStore.state.favoriteProviders ? [...userStore.state.favoriteProviders, providerId] : [providerId];
+			// 	return {
+			// 		...userStore,
+			// 		state: {
+			// 			...userStore.state,
+			// 			favoriteProviders: newFav
+			// 		}
+			// 	}
+			// },
+			// 'user.favorite_remove': (userStore, providerId) => {
+			// 	return {
+			// 		...userStore,
+			// 		state: {
+			// 			...userStore.state,
+			// 			favoriteProviders: userStore.state.favoriteProviders.filter(pId => pId !== providerId)
+			// 		}
+			// 	}
+			// }
 		},
 		initData: { ...initData }
 	}

@@ -75,6 +75,10 @@ public class User implements Serializable {
 	@JsonbTransient
 	private List<Employee> employeeList; 
 
+    @OneToMany(mappedBy="user")
+	@JsonbTransient
+	private List<FavoriteProvider> favoriteproviderList; 
+
     @OneToMany()
 	@JsonbTransient
 	private List<Review> reviewList; 
@@ -238,6 +242,13 @@ public class User implements Serializable {
 	
 	public void setEmployeeList(List<Employee> employeeList) {
 		this.employeeList = employeeList;
+	}
+	public List<FavoriteProvider> getFavoriteproviderList() {
+		return this.favoriteproviderList;
+	}
+	
+	public void setFavoriteproviderList(List<FavoriteProvider> favoriteproviderList) {
+		this.favoriteproviderList = favoriteproviderList;
 	}
 	public List<Review> getReviewList() {
 		return this.reviewList;

@@ -22,6 +22,7 @@ User {
   appointmentList2 : Appointment[];
   customperiodList : CustomPeriod[];
   employeeList : Employee[];
+  favoriteproviderList : FavoriteProvider[];
   reviewList : Review[];
   reviewList2 : Review[];
   tokenList : Token[];

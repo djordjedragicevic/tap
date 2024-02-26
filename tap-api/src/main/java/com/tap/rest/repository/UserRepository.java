@@ -20,6 +20,8 @@ public class UserRepository extends CommonRepository {
 		Map<String, Object> resp = new LinkedHashMap<>();
 
 		User u = em.find(User.class, userId);
+
+
 		if (u != null && u.getActive() == 1) {
 			resp.put("id", u.getId());
 			resp.put("username", u.getUsername());
@@ -98,6 +100,12 @@ public class UserRepository extends CommonRepository {
 	public List<Role> getRoles(int userId) {
 
 		return em.createQuery("SELECT r FROM Role r INNER JOIN UserRole uR ON r = uR.role WHERE uR.user.id = :uId", Role.class)
+				.setParameter("uId", userId)
+				.getResultList();
+	}
+
+	public List<Integer> getFavoriteProviderIds(int userId) {
+		return em.createQuery("SELECT f.provider.id FROM FavoriteProvider f WHERE f.user.id = :uId", Integer.class)
 				.setParameter("uId", userId)
 				.getResultList();
 	}

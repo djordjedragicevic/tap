@@ -49,7 +49,7 @@ const ProviderScreen = ({ navigation, route }) => {
 
 	const userLoged = useIsUserLogged();
 
-	const fProviders = useStore(st => st.user.state.favoriteProviders);
+	const fProviders = useStore(st => st.user.favoriteProviders);
 	const isFavorite = fProviders && fProviders.indexOf(providerId) > -1;
 
 	const bookBtnRightIcon = useCallback((color, size) => <AntDesign color={color} size={size} name="arrowright" />, []);
@@ -64,10 +64,10 @@ const ProviderScreen = ({ navigation, route }) => {
 	useFocusEffect(loadData);
 
 	const onFPress = () => {
-		const newFavs = isFavorite ? fProviders.filter(pId => pId !== providerId) : [...(fProviders || []), providerId];
 		setFavoriteDisabled(true);
-		Http.post(`/user/state`, { favoriteProviders: newFavs })
-			.then(() => storeDispatch(`user.favorite_${!isFavorite ? 'add' : 'remove'}`, providerId))
+
+		Http[isFavorite ? 'delete' : 'post']('/user/favorite-provider', providerId)
+			.then((fPs) => storeDispatch('user.set_favoriteProviders', fPs))
 			.catch(emptyFn)
 			.finally(() => setFavoriteDisabled(false));
 	};
