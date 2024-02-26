@@ -15,7 +15,7 @@ import XAvatar from "xapp/src/components/basic/XAvatar";
 import ProviderCard from "../components/ProviderCard";
 import { LOGIN_SCREEN, MAIN_TAB_FIND, MANAGE_ACCOUNT_SCREEN, PROVIDER_SCREEN } from "../navigators/routes";
 import { useIsUserLogged } from '../store/concreteStores';
-import { useStore } from "xapp/src/store/store";
+import { storeDispatch, useStore } from "xapp/src/store/store";
 
 const categoryPlaceholders = [
 	{ id: 'ph1', imagePath: '' },
@@ -29,7 +29,7 @@ const categoryPlaceholders = [
 
 const HomeScreen = ({ navigation }) => {
 
-	const [providerTypes, setProviderTypes] = useState(categoryPlaceholders);
+	const providerTypes = useStore(gS => gS.app.providerTypes);
 	const [prominentProviders, setProminentProviders] = useState([]);
 
 	const imgPath = useStore(gS => gS.user.imgPath);
@@ -48,7 +48,7 @@ const HomeScreen = ({ navigation }) => {
 		Http.get('/provider/type-list')
 			.then(resp => {
 				resp.forEach(r => r.iconName = r.imagePath.split('/').pop().split('.')[0]);
-				setProviderTypes(resp);
+				storeDispatch('app.set_providerTypes', resp);
 			})
 			.catch(emptyFn);
 
@@ -189,8 +189,6 @@ const HomeScreen = ({ navigation }) => {
 			<View style={{ padding: 10, paddingStart: 15 }}>
 				<XText size={16}>{t('Prominent')}</XText>
 			</View>
-
-
 			<View
 				style={{ paddingHorizontal: 5, flexDirection: 'row', flexWrap: 'wrap', flex: 1 }}>
 				{

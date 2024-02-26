@@ -78,6 +78,7 @@ const MainBottomTabNavigator = ({ navigation }) => {
 				name={MAIN_TAB_FIND}
 				component={ProvidersScreen}
 				options={{
+					lazy: false,
 					title: t("Find"),
 					tabBarIcon: (props) => <AntDesign name="search1" {...props} color={props.focused ? colorPrimary : colorTextLight} />
 				}}

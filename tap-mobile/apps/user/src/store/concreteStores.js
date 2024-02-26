@@ -16,13 +16,20 @@ export const appStore = (initD = {}) => ({
 				maskShown: shown,
 				maskText: shown ? maskText : ''
 			}
-		}
+		},
+		'app.set_providerTypes': (appStore, pT = []) => {
+			return {
+				...appStore,
+				providerTypes: pT
+			}
+		},
 	},
 	initData: {
 		httpLoading: false,
 		font: '',
 		maskShown: false,
 		maskText: '',
+		providerTypes: [],
 		...initD
 	}
 });
