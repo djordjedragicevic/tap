@@ -138,5 +138,7 @@ export const strings = {
 	"Find service or provider": "Find service or provider",
 	"Categories": "Categories",
 	"Prominent": "Prominent",
-	"Popular": "Popular"
+	"Popular": "Popular",
+	"Delete favorite_MSG": "Are you surre you want to remove provider {:pName} from favorete list",
+	"No favorites": "No favorites"
 };

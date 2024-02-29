@@ -43,6 +43,9 @@ public class ProviderRepository extends CommonRepository {
 	public List<ProviderDataDto> getProviders(String searchTerm, Set<Integer> includePIds) {
 		return getProviders(searchTerm, includePIds, null, null);
 	}
+	public List<ProviderDataDto> getProviders(String searchTerm, List<Filter> filters) {
+		return getProviders(searchTerm, null, filters, null);
+	}
 
 	public List<ProviderDataDto> getProminentProviders() {
 		return getProviders(null, null, null, 10);

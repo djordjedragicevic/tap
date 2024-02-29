@@ -29,6 +29,7 @@ class XAlert {
 	static showYesNo(title, msg, btns) {
 		XAlert.show(title, msg, btns, XAlert.YESNO);
 	}
+	
 
 	static askEdit(cb) {
 		XAlert.showYesNo(I18nT.t("Edit item"), I18nT.t("Edit item_MSG"), [

@@ -3,7 +3,7 @@ import XText from "./basic/XText";
 import { useTranslation } from "../i18n/I18nContext";
 import XImage from "./basic/XImage";
 
-const XEmptyListIcon = ({ text, iconSize = 120 }) => {
+const XEmptyListIcon = ({ text, iconSize = 100 }) => {
 	const t = useTranslation();
 	return (
 		<View style={styles.constainer}>

@@ -8,12 +8,18 @@ import com.tap.rest.dtor.ProviderDataDto;
 import com.tap.rest.dtor.ServiceForSearchDto;
 import com.tap.rest.dtor.ServiceSearchResultDto;
 import com.tap.rest.repository.ProviderRepository;
+import com.tap.rest.repository.UserRepository;
 import com.tap.security.Public;
+import com.tap.security.Role;
+import com.tap.security.Secured;
+import com.tap.security.Security;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import java.util.*;
 
@@ -21,14 +27,16 @@ import java.util.*;
 @RequestScoped
 public class ProviderService {
 	private ProviderRepository providerRepository;
+	private UserRepository userRepository;
 
 	public ProviderService() {
 
 	}
 
 	@Inject
-	public ProviderService(ProviderRepository providerRepository) {
+	public ProviderService(ProviderRepository providerRepository, UserRepository userRepository) {
 		this.providerRepository = providerRepository;
+		this.userRepository = userRepository;
 	}
 
 	@GET
@@ -92,7 +100,7 @@ public class ProviderService {
 		Map<Integer, ServiceSearchResultDto> psMap = new LinkedHashMap<>();
 
 		List<Filter> filters = new ArrayList<>();
-		if(typeId != null)
+		if (typeId != null)
 			filters.add(new Filter("typeId", typeId, "p.providertype.id = :typeId"));
 
 		if (searchTerm != null && !searchTerm.trim().isEmpty()) {
@@ -137,6 +145,21 @@ public class ProviderService {
 	public Response getProvidersTypes() {
 
 		return Response.ok(providerRepository.getProviderTypes()).build();
+	}
+
+	@GET
+	@Path("/favorite-list")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	public Response getFavoriteProviders(@Context SecurityContext sC) {
+
+		int userId = Security.getUserId(sC);
+		List<Integer> fPs = userRepository.getFavoriteProviderIds(userId);
+		List<ProviderDataDto> providers = new ArrayList<>();
+		if(fPs != null && !fPs.isEmpty())
+			providers  = providerRepository.getProviders(null, new HashSet<>(fPs));
+
+		return Response.ok(providers).build();
 	}
 
 

@@ -7,7 +7,8 @@ import XImage from "xapp/src/components/basic/XImage";
 import XSeparator from "xapp/src/components/basic/XSeparator";
 import XText from "xapp/src/components/basic/XText";
 import XTextTermHighlight from "xapp/src/components/basic/XTextTermHighlight";
-import { useThemedStyle } from "xapp/src/style/ThemeContext";
+import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
+import { useColor, useThemedStyle } from "xapp/src/style/ThemeContext";
 import { Theme } from "xapp/src/style/themes";
 
 const isEqual = (newValues, oldValues) => {
@@ -32,12 +33,20 @@ const ProviderCard = ({
 	imageHeight = 150,
 	onPress = emptyFn,
 	searchTerm,
-	style
+	style,
+	isFavorite,
+	onFavoritePress = emptyFn
 }) => {
+
 	const styles = useThemedStyle(styleCreator);
+	const [pColor, sColor] = useColor(['primary', 'secondary']);
 
 	const onPressHandle = () => {
 		onPress({ id, name, providerType, address1, mainImg, reviewCount })
+	};
+
+	const onFavoritePressHandle = () => {
+		onFavoritePress(isFavorite)
 	};
 
 	return (
@@ -50,6 +59,20 @@ const ProviderCard = ({
 					imgPath={mainImg?.split(',')[0]}
 					style={{ flex: 1 }}
 				/>
+
+				{
+					isFavorite != null ?
+						<XButtonIcon
+							icon={isFavorite ? 'heart' : 'hearto'}
+							color={pColor}
+							backgroundColor={sColor}
+							onPress={onFavoritePressHandle}
+							style={styles.headerButtonRight}
+							bgOpacity={0.6}
+						/>
+						:
+						null
+				}
 			</View>
 
 			<View style={{ padding: 10, paddingTop: 5 }}>
@@ -106,6 +129,11 @@ const styleCreator = (theme) => StyleSheet.create({
 		borderColor: theme.colors.borderColor,
 		backgroundColor: theme.colors.backgroundElement,
 		overflow: 'hidden',
+	},
+	headerButtonRight: {
+		position: 'absolute',
+		end: 8,
+		top: 8
 	}
 });
 
