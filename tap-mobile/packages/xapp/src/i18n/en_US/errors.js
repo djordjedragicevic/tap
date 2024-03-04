@@ -34,5 +34,9 @@ export const errors = {
 	SIGN_IN_1: {
 		title: 'Sign In error',
 		message: 'Invalide username/email or password'
+	},
+	UCP_1: {
+		title: 'Change password error',
+		message: 'Password is not changed, error happened'
 	}
 }

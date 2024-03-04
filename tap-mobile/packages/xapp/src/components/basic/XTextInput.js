@@ -16,7 +16,8 @@ const XTextInput = React.forwardRef((
 		disabled,
 		clearable = false,
 		value,
-		onClear,
+		onChangeText,
+		onClear = () => onChangeText(''),
 		textarea = false,
 		multiline,
 		iconLeft,
@@ -64,6 +65,7 @@ const XTextInput = React.forwardRef((
 				<TextInput
 					ref={ref}
 					{...rest}
+					onChangeText={onChangeText}
 					multiline={textarea || multiline}
 					placeholderTextColor={tTertiary}
 					value={value}

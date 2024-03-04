@@ -32,5 +32,11 @@ export const strings = {
 	"Service": "Service",
 	"Price": "Price",
 	"Price Sum": "Price Sum",
-	"Status": "Status"
+	"Status": "Status",
+	"Change password": "Change password",
+	"Old password": "Old password",
+	"New password": "New password",
+	"Change password_BTN": "Change password",
+	"Repeat new password": "Repeat new password",
+	"Changing password": "Changing password"
 };

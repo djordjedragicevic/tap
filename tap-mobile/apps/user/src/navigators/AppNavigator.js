@@ -17,7 +17,8 @@ import {
 	APPOINTMENT_SCREEN,
 	ADD_REVIEW_SCREEN,
 	CANCEL_APPOINTMENT_SCREEN,
-	PROVIDERS_SCREEN
+	PROVIDERS_SCREEN,
+	CHANGE_PASSWORD_SCREEN
 } from './routes';
 import ProvidersScreen from '../screens/ProvidersScreen';
 import ProviderScreen from '../screens/ProviderScreen';
@@ -44,6 +45,7 @@ import AppointmentScreen from '../screens/AppointmentScreen';
 import AddReviewScreen from '../screens/AddReviewScreen';
 import CancelAppointmentScreen from '../screens/CancelAppointmentScreen';
 import ProviderTypesScreen from '../screens/ProviderTypesScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -240,6 +242,13 @@ const AppNavigator = ({ }) => {
 						component={CancelAppointmentScreen}
 						options={{
 							title: t('Status')
+						}}
+					/>
+					<Stack.Screen
+						name={CHANGE_PASSWORD_SCREEN}
+						component={ChangePasswordScreen}
+						options={{
+							title: t('Change password')
 						}}
 					/>
 				</>

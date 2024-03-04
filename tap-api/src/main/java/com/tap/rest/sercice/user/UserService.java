@@ -4,6 +4,7 @@ import com.tap.common.FSAsset;
 import com.tap.common.Mail;
 import com.tap.common.Util;
 import com.tap.rest.dto.UserDto;
+import com.tap.rest.dtor.ChangePassword;
 import com.tap.rest.entity.*;
 import com.tap.exception.ErrID;
 import com.tap.exception.TAPException;
@@ -11,6 +12,7 @@ import com.tap.rest.sercice.Controller;
 import com.tap.rest.repository.UserRepository;
 import com.tap.security.*;
 import com.tap.security.Role;
+import com.tap.security.Token;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.json.*;
@@ -20,6 +22,8 @@ import jakarta.ws.rs.core.*;
 import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -52,6 +56,16 @@ public class UserService {
 	) {
 		String t = controller.login(credentials, bearer, List.of(Role.USER));
 		return Response.ok(Map.of("token", t)).build();
+	}
+
+	@POST
+	@Secured({Role.USER})
+	@Path("/logout")
+	@Transactional
+	public Response logout(@HeaderParam(HttpHeaders.AUTHORIZATION) String bearer) {
+		Token token = new Token(bearer);
+		controller.logout(token);
+		return Response.ok().build();
 	}
 
 	@Path("/create-account")
@@ -252,6 +266,50 @@ public class UserService {
 		List<Integer> fPs = userRepository.getFavoriteProviderIds(userId);
 
 		return Response.ok(fPs).build();
+	}
+
+	@Path("/change-password")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Secured({Role.USER})
+	@Transactional
+	public Response changePassword(@Context SecurityContext sC, ChangePassword changePassword) {
+
+		if (changePassword.oldPassword() == null || changePassword.oldPassword().isEmpty()
+			|| changePassword.newPassword() == null || changePassword.newPassword().isEmpty()
+			|| changePassword.repeatPassword() == null || changePassword.repeatPassword().isEmpty()
+			|| !changePassword.newPassword().equals(changePassword.repeatPassword())
+			|| changePassword.newPassword().length() < 4
+		) {
+			throw new TAPException(ErrID.UCP_1);
+		}
+
+		int userId = Security.getUserId(sC);
+		User user = userRepository.getSingleActiveEntityById(User.class, userId);
+
+		String userPass = user.getPassword();
+		String userSalt = user.getSalt();
+
+		String oldEncrypted = "";
+		try {
+			oldEncrypted = Security.encryptPassword(changePassword.oldPassword(), userSalt);
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+			throw new TAPException(ErrID.UCP_1);
+		}
+		if (!oldEncrypted.equals(userPass))
+			throw new TAPException(ErrID.UCP_1);
+
+		try {
+			String newSalt = Util.getRandomString(16, true);
+			String newEncrypted = Security.encryptPassword(changePassword.newPassword(), newSalt);
+			user.setPassword(newEncrypted);
+			user.setSalt(newSalt);
+			userRepository.getEntityManager().flush();
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+			throw new TAPException(ErrID.UCP_1);
+		}
+
+		return Response.ok().build();
 	}
 
 }

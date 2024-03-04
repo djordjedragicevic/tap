@@ -32,5 +32,11 @@ export const strings = {
 	"Service": "Usluga",
 	"Price": "Cijena",
 	"Price Sum": "Ukupna cijena",
-	"Status": "Status"
+	"Status": "Status",
+	"Change password": "Promjena lozinke",
+	"Change password_BTN": "Promjenite lozinku",
+	"Old password": "Trenutna lozinka",
+	"New password": "Nova lozinka",
+	"Repeat new password": "Ponovite novu lozinku",
+	"Changing password": "Promjena lozinke"
 };

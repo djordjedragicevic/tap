@@ -27,5 +27,9 @@ export const errors = {
 	SIGN_IN_1: {
 		title: 'Greška pri prijavi',
 		message: 'Neispravano korisničko ime/email ili lozinka'
+	},
+	UCP_1: {
+		title: 'Promjena lozinke',
+		message: 'Došlo je do greške pri promjeni lozinke, lozinka nije promjenjena'
 	}
 }

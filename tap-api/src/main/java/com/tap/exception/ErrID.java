@@ -25,6 +25,7 @@ public enum ErrID {
 	INV_EMAIL_1,
 
 	U_APP_ST_1, //Change appointment status
+	UCP_1, //Change password
 
 
 	//Accept appointment

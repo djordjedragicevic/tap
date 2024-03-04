@@ -1,7 +1,7 @@
 import XScreen from "xapp/src/components/XScreen";
 import XButton from "xapp/src/components/basic/XButton";
 import XButtonIcon from "xapp/src/components/basic/XButtonIcon";
-import { LOGIN_SCREEN, FAVORITE_PROVIDERS_SCREEN, MANAGE_ACCOUNT_SCREEN } from "../navigators/routes";
+import { LOGIN_SCREEN, FAVORITE_PROVIDERS_SCREEN, MANAGE_ACCOUNT_SCREEN, CHANGE_PASSWORD_SCREEN } from "../navigators/routes";
 import { useContext, useMemo } from "react";
 import { Http } from "xapp/src/common/Http";
 import { storeDispatch, useStore } from "xapp/src/store/store";
@@ -41,7 +41,7 @@ const UserSettingsScreen = ({ navigation }) => {
 	const selectedLang = LANGS.find(l => l.id === lng.id) || 0;
 
 	const doLogout = () => {
-		Http.setToken('');
+		Http.removeToken();
 		storeDispatch('user.log_out');
 	};
 
@@ -97,6 +97,12 @@ const UserSettingsScreen = ({ navigation }) => {
 								iconLeft='user'
 								iconRight='right'
 								onPress={() => navigation.navigate(MANAGE_ACCOUNT_SCREEN)}
+							/>
+							<XSelectField
+								title={t('Change password')}
+								iconLeft='key'
+								iconRight='right'
+								onPress={() => navigation.navigate(CHANGE_PASSWORD_SCREEN)}
 							/>
 							<XSelectField
 								title={t('Saved providers')}
