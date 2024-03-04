@@ -35,10 +35,11 @@ const ProviderCard = ({
 	searchTerm,
 	style,
 	isFavorite,
-	onFavoritePress = emptyFn
+	onFavoritePress = emptyFn,
+	horizontalOriented = false
 }) => {
 
-	const styles = useThemedStyle(styleCreator);
+	const styles = useThemedStyle(styleCreator, horizontalOriented, imageHeight);
 	const [pColor, sColor] = useColor(['primary', 'secondary']);
 
 	const onPressHandle = () => {
@@ -54,7 +55,7 @@ const ProviderCard = ({
 			onPress={onPressHandle}
 			style={[styles.card, style]}
 		>
-			<View style={{ height: imageHeight }}>
+			<View style={styles.image}>
 				<XImage
 					imgPath={mainImg?.split(',')[0]}
 					style={{ flex: 1 }}
@@ -122,13 +123,18 @@ const ProviderCard = ({
 	)
 };
 
-const styleCreator = (theme) => StyleSheet.create({
+const styleCreator = (theme, horizontalOriented, imageHeight) => StyleSheet.create({
 	card: {
 		borderRadius: Theme.values.borderRadius,
 		borderWidth: Theme.values.borderWidth,
 		borderColor: theme.colors.borderColor,
 		backgroundColor: theme.colors.backgroundElement,
 		overflow: 'hidden',
+		flexDirection: horizontalOriented ? 'row' : 'column'
+	},
+	image: {
+		height: horizontalOriented ? undefined : imageHeight,
+		width: horizontalOriented ? imageHeight : undefined
 	},
 	headerButtonRight: {
 		position: 'absolute',

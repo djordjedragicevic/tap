@@ -21,15 +21,18 @@ const FavoritesScreen = ({ navigation }) => {
 		return (
 			<ProviderCard
 				item={item}
-				isFavorite
-				onFavoritePress={() => {
-					Http.delete('/user/favorite-provider', item.id)
-						.then((fPs) => {
-							storeDispatch('user.set_favoriteProviders', fPs);
-							refreshFn();
-						})
-						.catch(emptyFn)
-				}}
+				horizontalOriented
+				imageHeight={120}
+				address1={''}
+				// isFavorite
+				// onFavoritePress={() => {
+				// 	Http.delete('/user/favorite-provider', item.id)
+				// 		.then((fPs) => {
+				// 			storeDispatch('user.set_favoriteProviders', fPs);
+				// 			refreshFn();
+				// 		})
+				// 		.catch(emptyFn)
+				// }}
 				onPress={() => {
 					navigation.navigate(PROVIDER_SCREEN, { item })
 				}}
@@ -50,7 +53,7 @@ const FavoritesScreen = ({ navigation }) => {
 							contentContainerStyle={styles.list}
 						/>
 						:
-						<XEmptyListIcon text={t("No favorites")}/>
+						<XEmptyListIcon text={t("No favorites")} />
 
 					:
 					null
@@ -61,7 +64,8 @@ const FavoritesScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
 	list: {
-		padding: Theme.values.mainPaddingHorizontal
+		padding: Theme.values.mainPaddingHorizontal,
+		rowGap: 10
 	}
 });
 
