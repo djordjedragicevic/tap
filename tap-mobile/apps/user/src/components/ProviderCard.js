@@ -30,13 +30,13 @@ const ProviderCard = ({
 	serviceResult = item?.serviceResult,
 	city = item?.city,
 
-	imageHeight = 150,
 	onPress = emptyFn,
 	searchTerm,
 	style,
 	isFavorite,
 	onFavoritePress = emptyFn,
-	horizontalOriented = false
+	horizontalOriented = false,
+	imageHeight = horizontalOriented ? 120 : 160,
 }) => {
 
 	const styles = useThemedStyle(styleCreator, horizontalOriented, imageHeight);
@@ -65,7 +65,7 @@ const ProviderCard = ({
 					isFavorite != null ?
 						<XButtonIcon
 							icon={isFavorite ? 'heart' : 'hearto'}
-							color={pColor}
+							iconColor={pColor}
 							backgroundColor={sColor}
 							onPress={onFavoritePressHandle}
 							style={styles.headerButtonRight}

@@ -7,9 +7,11 @@ import { Http } from 'xapp/src/common/Http';
 import { emptyFn } from "xapp/src/common/utils";
 import { storeDispatch } from "xapp/src/store/store";
 import { View } from "react-native";
+import XHeaderButtonBackAbsolute from "xapp/src/components/XHeaderButtonBackAbsolute";
+import { Theme } from "xapp/src/style/themes";
 
 
-const ChangePasswordScreen = () => {
+const ChangePasswordScreen = ({ navigation }) => {
 
 	const [oldPassword, setOldPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
@@ -34,38 +36,43 @@ const ChangePasswordScreen = () => {
 
 	return (
 		<XScreen
-			rowGap={10}
-			flat
-			style={{ padding: 30 }}
+			bigTitle={t('Change password')}
 		>
-			<XTextInput
-				title={t('Old password')}
-				value={oldPassword}
-				onChangeText={setOldPassword}
-				outline
-				secureTextEntry
+			<XHeaderButtonBackAbsolute
+				navigation={navigation}
+				bgOpacity={0}
+				iconColorName={Theme.vars.textSecondary}
 			/>
-			<XTextInput
-				title={t('New password')}
-				value={newPassword}
-				onChangeText={setNewPassword}
-				outline
-				secureTextEntry
-			/>
-			<XTextInput
-				title={t('Repeat new password')}
-				value={repeatNewPassword}
-				onChangeText={setRepeatNewPassword}
-				outline
-				secureTextEntry
-			/>
-			<XButton
-				style={{ marginTop: 20 }}
-				primary
-				disabled={!oldPassword || !newPassword || !repeatNewPassword || newPassword !== repeatNewPassword}
-				title={t('Change password_BTN')}
-				onPress={changePassword}
-			/>
+			<View style={{ rowGap: 10, paddingHorizontal: 30 }}>
+				<XTextInput
+					title={t('Old password')}
+					value={oldPassword}
+					onChangeText={setOldPassword}
+					outline
+					secureTextEntry
+				/>
+				<XTextInput
+					title={t('New password')}
+					value={newPassword}
+					onChangeText={setNewPassword}
+					outline
+					secureTextEntry
+				/>
+				<XTextInput
+					title={t('Repeat new password')}
+					value={repeatNewPassword}
+					onChangeText={setRepeatNewPassword}
+					outline
+					secureTextEntry
+				/>
+				<XButton
+					style={{ marginTop: 30 }}
+					primary
+					disabled={!oldPassword || !newPassword || !repeatNewPassword || newPassword !== repeatNewPassword}
+					title={t('Change password_BTN')}
+					onPress={changePassword}
+				/>
+			</View>
 		</XScreen>
 	);
 };

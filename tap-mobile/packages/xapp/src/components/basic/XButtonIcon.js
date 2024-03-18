@@ -12,6 +12,7 @@ const ButtonIcon = ({
 	colorName,
 	primary,
 	backgroundColor,
+	iconColor,
 	size = 36,
 	disabled = false,
 	standard = false,
@@ -22,11 +23,35 @@ const ButtonIcon = ({
 	...rest
 }) => {
 
-	const [tPColor, pLCorlor, cByName] = useColor(['textPrimary', 'primaryLight', colorName]);
 
-	const iconColor = cByName || color || ((primary || backgroundColor) && pLCorlor) || tPColor;
-	const styles = useThemedStyle(styleCreator, title ? size + 5 : size, backgroundColor, primary, disabled, bgOpacity, outline, iconColor);
+
+	//const [iconColor, primaryColor, colorByName] = useColor([color || colorName || primary ? 'textLight' : 'textSecondary', 'primary', colorName]);
+	//const bgColor = (primary && primaryColor) || color || colorByName;
+
+
+	const [pColor, tLColor, cByName] = useColor(['primary', 'textLight', colorName || Theme.vars.secondary]);
+
+	let bgColor;
+
+	if (primary)
+		bgColor = pColor;
+	else if (backgroundColor)
+		bgColor = backgroundColor;
+	else
+		bgColor = cByName;
+
+	let icColor;
+	if (outline)
+		icColor = bgColor;
+	else if (iconColor)
+		icColor = iconColor;
+	else
+		icColor = tLColor;
+
+	//const iconColor = cByName || color || ((primary || backgroundColor) && pLCorlor) || tPColor;
+	const styles = useThemedStyle(styleCreator, title ? size + 5 : size, disabled, outline, bgColor, bgOpacity);
 	const iconSize = Math.round(size * 0.6);
+
 
 	return (
 		<Pressable
@@ -36,27 +61,23 @@ const ButtonIcon = ({
 			{...rest}
 		>
 			<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-				{!!icon && <XIcon icon={icon} color={iconColor} size={iconSize} />}
-				{!!title && <XText size={10} color={iconColor}>{title}</XText>}
+				{!!icon && <XIcon icon={icon} color={icColor} size={iconSize} />}
+				{!!title && <XText size={10} color={icColor}>{title}</XText>}
 			</View>
 		</Pressable>
 	)
 };
 
-const styleCreator = (theme, size, backgroundColor, primary, disabled, bgOpacity, outline, iconColor) => {
-	let bgColor = theme.colors.backgroundElement;
-	if (backgroundColor)
-		bgColor = backgroundColor;
-	if (primary)
-		bgColor = theme.colors.primary;
+const styleCreator = (theme, size, disabled, outline, bgColor, bgOpacity) => {
 
+	const color = Theme.opacity(bgColor || theme.colors.secondary, bgOpacity);
 
 	return StyleSheet.create({
 		btn: {
 			borderRadius: Theme.values.borderRadius,
-			backgroundColor: outline ? undefined : Theme.opacity(bgColor, bgOpacity),
+			backgroundColor: outline ? undefined : color,
 			borderWidth: outline ? Theme.values.borderWidth : 0,
-			borderColor: iconColor,
+			borderColor: color,
 			width: size,
 			height: size,
 			alignItems: 'center',

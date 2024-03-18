@@ -28,6 +28,7 @@ export const Theme = {
 		primary: 'primary',
 		primaryLight: 'primaryLight',
 		secondary: 'secondary',
+		secondaryLight: 'secondaryLight',
 		background: 'background',
 		backgroundElement: 'backgroundElement',
 
@@ -38,8 +39,8 @@ export const Theme = {
 	},
 
 	values: {
-		mainPaddingHorizontal: 8,
-		borderRadius: 8,
+		mainPaddingHorizontal: 10,
+		borderRadius: 10,
 		borderWidth: 1,
 		disabledOpacity: 0.3,
 
@@ -55,8 +56,9 @@ export const Theme = {
 			primary: 'hsl(195, 100%, 50%)', //'deepskyblue'
 			primaryLight: 'hsl(195, 100%, 97%)',
 			secondary: 'hsl(208, 90%, 16%)',
+			secondaryLight: 'hsl(208, 90%, 97%)',
 			background: 'hsl(0, 0%, 95%)',
-			backgroundElement: 'white',
+			backgroundElement: 'hsl(0, 0%, 100%)',
 
 			textPrimary: 'hsl(0, 0%, 15%)',
 			textSecondary: 'hsl(0, 0%, 40%)',
@@ -66,6 +68,7 @@ export const Theme = {
 			borderColor: 'hsl(0, 0%, 85%)',
 
 			black: 'hsl(0, 0%, 0%)',
+			blackLight: 'hsl(0, 0%, 60%)',
 
 			gray: 'hsl(0, 0%, 60%)',
 			grayLight: 'hsl(0, 0%, 90%)',
@@ -100,6 +103,7 @@ export const Theme = {
 			primary: 'hsl(195, 100%, 50%)', //'deepskyblue'
 			primaryLight: 'hsl(195, 100%, 13%)',
 			secondary: 'hsl(208, 90%, 18%)',
+			secondaryLight: 'hsl(208, 90%, 13%)',
 			background: 'black',
 			backgroundElement: 'hsl(0, 0%, 10%)',
 
@@ -112,6 +116,7 @@ export const Theme = {
 			borderColor: 'hsl(0, 0%, 18%)',
 
 			black: 'hsl(0, 0%, 0%)',
+			blackLight: 'hsl(0, 0%, 60%)',
 
 			gray: 'hsl(0, 0%, 60%)',
 			grayLight: 'hsl(0, 0%, 25%)',

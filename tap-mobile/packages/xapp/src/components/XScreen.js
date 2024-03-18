@@ -48,7 +48,6 @@ const XScreen = ({
 				{!!bigTitle &&
 					<View style={styles.bigTitle}>
 						<XText size={Theme.values.bigTitleSize}>{bigTitle}</XText>
-						{!!bigSubTitle && <XText style={styles.bigSubTitleText}>{bigSubTitle}</XText>}
 					</View>
 				}
 				{children}
@@ -65,13 +64,11 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	bigTitle: {
-		marginTop: 45,
-		justifyContent: 'space-between',
+		height: 100,
+		marginTop: 40,
+		//borderWidth: 1,
+		justifyContent: 'center',
 		alignItems: 'center'
-	},
-	bigSubTitleText: {
-		marginTop: 20,
-		textAlign: 'center'
 	}
 });
 

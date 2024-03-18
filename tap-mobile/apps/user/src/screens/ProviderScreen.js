@@ -87,11 +87,11 @@ const ProviderScreen = ({ navigation, route }) => {
 				<XButtonIcon
 					icon={isFavorite ? 'heart' : 'hearto'}
 					disabled={favoriteDisabled}
-					color={pColor}
+					iconColor={pColor}
 					backgroundColor={sColor}
+					bgOpacity={0.6}
 					onPress={onFPress}
 					style={styles.headerButtonRight}
-					bgOpacity={0.6}
 				/>
 
 				<View style={styles.chipMark}>
@@ -142,7 +142,6 @@ const ProviderScreen = ({ navigation, route }) => {
 				<XButtonIcon
 					disabled={!selectedServices?.length}
 					icon='close'
-					backgroundColor='transparent'
 					onPress={onFooterClear}
 				/>
 

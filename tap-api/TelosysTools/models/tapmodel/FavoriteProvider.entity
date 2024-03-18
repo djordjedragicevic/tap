@@ -2,7 +2,7 @@
 @DbCatalog(tap)
 FavoriteProvider {
   // attributes
-  id : long { @Id @AutoIncremented @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
+  id : long { @Id @DbName(id) @DbType(BIGINT UNSIGNED) @NotNull @NotEmpty };
   providerId : int { @DbName(provider_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_favorite_provider_provider1, Provider.id) };
   userId : int { @DbName(user_id) @DbType(INT UNSIGNED) @NotNull @NotEmpty @FK(fk_favorite_provider_user1, User.id) };
   // links

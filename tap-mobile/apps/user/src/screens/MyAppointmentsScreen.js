@@ -133,7 +133,8 @@ const Appointment = ({ item, navigation }) => {
 
 	const styles = useThemedStyle(styleCreator);
 	const t = useTranslation();
-	const [pColor, cRed, cRedLight, statusColor, hIconColor, cGray] = useColor(['primary', 'red', 'redLight', APP_STATUS_COLOR[item.status], 'textTertiary', 'gray'])
+	const [statusColor, hIconColor, cGray] = useColor([APP_STATUS_COLOR[item.status], 'textTertiary', 'gray'])
+
 	const hIcon = useCallback((props) => {
 		return item._isHistory && <FontAwesome5 name="history" {...props} color={hIconColor} />;
 	}, [item._isHistory, hIconColor]);
@@ -196,7 +197,7 @@ const Appointment = ({ item, navigation }) => {
 					icon='arrowsalt'
 					size={30}
 					outline
-					color={pColor}
+					primary
 					onPress={() => navigation.navigate(APPOINTMENT_SCREEN, { id: item.id })}
 				/>
 

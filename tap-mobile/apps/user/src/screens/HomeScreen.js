@@ -128,7 +128,7 @@ const HomeScreen = ({ navigation }) => {
 									width: 100,
 									rowGap: 5,
 								}}
-								onPress={() => navigation.navigate(MAIN_TAB_FIND, { filter: { pt: item.id } })}
+								onPress={() => navigation.navigate(MAIN_TAB_FIND, { filter: { pt: { id: item.id, name: item.name } } })}
 							>
 								<View
 									style={styles.categoryCnt}>

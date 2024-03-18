@@ -1,5 +1,5 @@
 import XScreen from "xapp/src/components/XScreen";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useThemedStyle } from "xapp/src/style/ThemeContext";
 import { useTranslation } from "xapp/src/i18n/I18nContext";
 import { useState } from "react";
@@ -43,8 +43,6 @@ const CreateAccountScreen = ({ navigation }) => {
 
 	return (
 		<XScreen
-			flat
-			style={styles.screen}
 			bigTitle={t('Sing Up')}
 			loading={loading}
 		>
@@ -53,46 +51,47 @@ const CreateAccountScreen = ({ navigation }) => {
 				bgOpacity={0}
 				iconColorName={Theme.vars.textSecondary}
 			/>
-
-			<XTextInput
-				style={styles.input}
-				value={username}
-				onChangeText={setUsername}
-				disabled={loading}
-				selectTextOnFocus
-				onSubmitEditing={createAccont}
-				outline
-				title={t('Username')}
-			/>
-			<XTextInput
-				style={styles.input}
-				value={email}
-				onChangeText={setEmail}
-				disabled={loading}
-				selectTextOnFocus
-				onSubmitEditing={createAccont}
-				outline
-				title={t('Email')}
-			/>
-			<XTextInput
-				value={password}
-				style={styles.input}
-				onChangeText={setPassword}
-				disabled={loading}
-				selectTextOnFocus
-				onSubmitEditing={createAccont}
-				secureTextEntry
-				textContentType='password'
-				outline
-				title={t('Password')}
-			/>
-			<XButton
-				title={t("Sing Up")}
-				primary
-				style={styles.button}
-				onPress={createAccont}
-				disabled={loading}
-			/>
+			<View style={{ rowGap: 10, paddingHorizontal: 30 }}>
+				<XTextInput
+					style={styles.input}
+					value={username}
+					onChangeText={setUsername}
+					disabled={loading}
+					selectTextOnFocus
+					onSubmitEditing={createAccont}
+					outline
+					title={t('Username')}
+				/>
+				<XTextInput
+					style={styles.input}
+					value={email}
+					onChangeText={setEmail}
+					disabled={loading}
+					selectTextOnFocus
+					onSubmitEditing={createAccont}
+					outline
+					title={t('Email')}
+				/>
+				<XTextInput
+					value={password}
+					style={styles.input}
+					onChangeText={setPassword}
+					disabled={loading}
+					selectTextOnFocus
+					onSubmitEditing={createAccont}
+					secureTextEntry
+					textContentType='password'
+					outline
+					title={t('Password')}
+				/>
+				<XButton
+					title={t("Sing Up")}
+					primary
+					style={styles.button}
+					onPress={createAccont}
+					disabled={loading}
+				/>
+			</View>
 		</XScreen>
 	);
 };

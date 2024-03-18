@@ -248,6 +248,7 @@ const AppNavigator = ({ }) => {
 						name={CHANGE_PASSWORD_SCREEN}
 						component={ChangePasswordScreen}
 						options={{
+							headerShown: false,
 							title: t('Change password')
 						}}
 					/>

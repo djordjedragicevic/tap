@@ -59,9 +59,7 @@ const LoginScreen = ({ navigation }) => {
 
 	return (
 		<XScreen
-			style={styles.screen}
 			loading={loading}
-			flat
 			bigTitle={t('Sing In')}
 		>
 			<XHeaderButtonBackAbsolute
@@ -72,7 +70,7 @@ const LoginScreen = ({ navigation }) => {
 
 			<View style={{
 				rowGap: 10,
-				paddingTop: 20
+				paddingHorizontal: 30
 			}}>
 				<XTextInput
 					style={styles.input}
@@ -101,7 +99,7 @@ const LoginScreen = ({ navigation }) => {
 					primary
 					style={styles.button}
 					onPress={doLogin}
-					disabled={loading}
+					disabled={loading || !username || !password}
 				/>
 
 				<View style={styles.singUpContainer}>
@@ -115,11 +113,6 @@ const LoginScreen = ({ navigation }) => {
 }
 
 const styleCreator = (theme) => StyleSheet.create({
-	screen: {
-		//backgroundColor: theme.colors.backgroundElement,
-		paddingHorizontal: 30,
-		paddingVertical: 5
-	},
 	singUpContainer: {
 		flexDirection: 'row',
 		justifyContent: 'center',

@@ -10,12 +10,12 @@ const XHeaderButtonBackAbsolute = ({
 	iconColorName = Theme.vars.textLight
 }) => {
 
-	const sColor = useColor(bgColorName)
+	const [sColor, iColor] = useColor([bgColorName, iconColorName])
 
 	return (
 		<XButtonIcon
 			icon='arrowleft'
-			colorName={iconColorName}
+			iconColor={iColor}
 			onPress={navigation.goBack}
 			backgroundColor={sColor}
 			style={styles.headerButtonLeft}

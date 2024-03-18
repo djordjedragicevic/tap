@@ -8,7 +8,7 @@ const XEmptyListIcon = ({ text, iconSize = 100 }) => {
 	return (
 		<View style={styles.constainer}>
 			<View style={styles.inner}>
-				<XImage source={require('../assets/svg/empty.svg')} style={{ width: iconSize, height: iconSize, opacity: 0.8 }} />
+				<XImage source={require('../assets/svg/empty.svg')} style={{ width: iconSize, height: iconSize, opacity: 0.4 }} />
 				{text && <XText secondary size={16}>{text === true ? t("No items") : text}</XText>}
 			</View>
 		</View>
