@@ -218,6 +218,8 @@ const MyAppointmentsScreen = ({ navigation }) => {
 	const [loading, setLoading] = useState(false);
 	const [apps, setApps] = useState();
 	const [grouped, setGrouped] = useState(false);
+	const styles = useThemedStyle(styleCreator);
+
 
 	const dateCode = useDateCode();
 	const t = useTranslation();
@@ -246,19 +248,16 @@ const MyAppointmentsScreen = ({ navigation }) => {
 
 	return (
 		<XScreen loading={loading} flat>
-			<XSegmentedButton
-				options={[
-					{ id: 1, text: t('Upcoming'), value: FILTER.COMING },
-					{ id: 2, text: t('History'), value: FILTER.HISTORY }
-				]}
-				onSelect={(o) => setFilter(o.value)}
-				style={{
-					borderRadius: 0,
-					borderEndWidth: 0,
-					borderStartWidth: 0
-				}}
-				initialIndex={0}
-			/>
+			<View style={styles.subHeaderCnt}>
+				<XSegmentedButton
+					options={[
+						{ id: 1, text: t('Upcoming'), value: FILTER.COMING },
+						{ id: 2, text: t('History'), value: FILTER.HISTORY }
+					]}
+					onSelect={(o) => setFilter(o.value)}
+					initialIndex={0}
+				/>
+			</View>
 
 			{apps ?
 				apps.length ?
@@ -330,6 +329,12 @@ const styleCreator = (theme) => StyleSheet.create({
 		alignItems: 'center',
 		height: 26,
 		paddingEnd: 15
+	},
+	subHeaderCnt: {
+		padding: 10,
+		backgroundColor: theme.colors.backgroundElement,
+		borderBottomWidth: Theme.values.borderWidth,
+		borderBottomColor: theme.colors.borderColor
 	}
 })
 

@@ -240,7 +240,6 @@ const ProvidersScreen = ({ navigation, route }) => {
 const styleCreator = (theme) => StyleSheet.create({
 	providerListContent: {
 		padding: 15,
-		//paddingTop: Theme.values.mainPaddingHorizontal,
 		rowGap: 15
 	},
 
@@ -274,14 +273,12 @@ const styleCreator = (theme) => StyleSheet.create({
 	},
 
 	searchCnt: {
-		padding: 15,
+		padding: 10,
 		flexDirection: 'column',
-		gap: 15,
-		margin: 15,
+		gap: 10,
 		backgroundColor: theme.colors.backgroundElement,
-		borderWidth: Theme.values.borderWidth,
-		borderRadius: Theme.values.borderRadius,
-		borderColor: theme.colors.borderColor,
+		borderBottomWidth: Theme.values.borderWidth,
+		borderBottomColor: theme.colors.borderColor,
 		overflow: 'hidden'
 	},
 	searchInput: {

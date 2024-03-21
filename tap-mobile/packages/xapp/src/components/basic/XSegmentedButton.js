@@ -71,7 +71,7 @@ const styleCreator = (theme, selected) => {
 			borderWidth: Theme.values.borderWidth,
 			flexDirection: 'row',
 			height: 40,
-			padding: 4,
+			//padding: 4,
 			borderRadius: Theme.values.borderRadius,
 			backgroundColor: theme.colors.backgroundElement,
 			overflow: 'hidden'
