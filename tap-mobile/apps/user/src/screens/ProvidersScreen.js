@@ -15,8 +15,18 @@ import XImage from "xapp/src/components/basic/XImage";
 import { useFocusEffect } from '@react-navigation/native';
 import { useStore } from "xapp/src/store/store";
 import XChip from "xapp/src/components/basic/XChip";
+import XSection from "xapp/src/components/basic/XSection";
+import XButton from "xapp/src/components/basic/XButton";
+import XText from "xapp/src/components/basic/XText";
 
-const SearchAndFilterProviders = ({ onSearch = emptyFn, searchRef, searchTerm }) => {
+const SearchAndFilterProviders = ({
+	onSearch = emptyFn,
+	setFilter,
+	searchRef,
+	searchTerm,
+	filter,
+	filterLength
+}) => {
 
 	const styles = useThemedStyle(styleCreator);
 	const t = useTranslation();
@@ -28,6 +38,7 @@ const SearchAndFilterProviders = ({ onSearch = emptyFn, searchRef, searchTerm })
 
 	return (
 		<View style={styles.searchCnt}>
+
 			<XTextInput
 				ref={searchRef}
 				iconLeft='search1'
@@ -41,10 +52,35 @@ const SearchAndFilterProviders = ({ onSearch = emptyFn, searchRef, searchTerm })
 				style={styles.searchInput}
 				fieldStyle={styles.searchInputField}
 			/>
-			{/* <View
-				style={styles.searchFilterCnt}>
-				<XIcon icon='filter' colorName='textLight' />
-			</View> */}
+			<View style={{ flexDirection: 'row', gap: 10, flexWrap: 'wrap' }}>
+				<XButton
+					title={t('Filter')}
+					uppercase={false}
+					secondary
+					iconLeft='filter'
+				/>
+
+				{filterLength > 0 ? Object.entries(filter).filter(en => en[1].id > 0).map(([k, v]) => {
+					return (
+						<XChip
+							key={k}
+							color={Theme.vars.secondary}
+							text={v.name}
+							chipHeight={Theme.values.buttonHeight}
+							iconRight={'close'}
+							onIconRightPress={() => setFilter(old => {
+								const newF = { ...old };
+								delete newF.pt;
+								return newF;
+							})}
+						/>
+
+					)
+				})
+					: null
+				}
+
+			</View>
 		</View>
 	)
 };
@@ -85,46 +121,6 @@ const Filters = ({ filterLength, filter, setFilter, disabled }) => {
 	)
 }
 
-// const pCountText = (t, count) => {
-// 	if (!count)
-// 		return t('Currently no offers')
-// 	else if (count === 1)
-// 		return '1 ' + t('offer');
-// 	else
-// 		return count + ' ' + t('offers');
-// };
-
-// const isProviderTypeEqual = (newV, oldV) => newV.id === oldV.id;
-
-// const ProviderTypeThumb = memo(({ item, onPress }) => {
-
-// 	const styles = useThemedStyle(styleCreator);
-// 	const t = useTranslation();
-
-// 	return (
-// 		<Pressable
-// 			style={styles.pTypeItem}
-// 			disabled={!item.providerCount}
-// 			onPress={() => onPress(item)}
-// 		>
-// 			<XImage
-// 				style={item.providerCount ? styles.pTImage : styles.pTImageNoOffers}
-// 				imgPath={item.imagePath}
-// 				textOver={item.text}
-// 			/>
-// 			<View style={styles.pTImageTextCnt}>
-// 				<XText style={styles.pTImageText} adjustsFontSizeToFit size={26} bold light>
-// 					{item.name}
-// 				</XText>
-// 				<XText bold size={14} light >
-// 					{pCountText(t, item.providerCount)}
-// 				</XText>
-// 			</View>
-// 		</Pressable>
-// 	)
-// }, isProviderTypeEqual);
-
-
 const ProvidersScreen = ({ navigation, route }) => {
 
 	const [loading, setLoading] = useState(false);
@@ -132,8 +128,8 @@ const ProvidersScreen = ({ navigation, route }) => {
 	const [filter, setFilter] = useState({ pt: { id: -1, name: '' } });
 	const [searchTerm, setSearchTerm] = useState('');
 	const searchRef = useRef(null);
-	const providerTypes = useStore(gS => gS.app.providerTypes);
 	const filterLength = useMemo(() => Object.values(filter || []).filter(f => f.id > 0).length, [filter]);
+	const t = useTranslation();
 
 	const loadProviders = useCallback((filter, searchTerm) => {
 
@@ -203,13 +199,6 @@ const ProvidersScreen = ({ navigation, route }) => {
 		)
 	}, [navigation, searchTerm]);
 
-	// const renderTypes = useCallback(({ item }) => {
-	// 	return <ProviderTypeThumb
-	// 		item={item}
-	// 		onPress={(item) => setFilter(old => ({ ...old, typeId: item.id }))}
-	// 	/>
-	// }, [providerTypes]);
-
 
 	return (
 		<XScreen loading={loading} flat>
@@ -219,20 +208,17 @@ const ProvidersScreen = ({ navigation, route }) => {
 				searchTerm={searchTerm}
 				disabled={loading}
 				searchRef={searchRef}
+				filter={filter}
+				filterLength={filterLength}
+				setFilter={setFilter}
 			/>
-
-			{filterLength > 0 &&
-				<Filters
-					filter={filter}
-					filterLength={filterLength}
-					setFilter={setFilter}
-					disabled={!!searchTerm}
-				/>
-			}
 
 			{
 				providers ?
 					<FlatList
+						// ListHeaderComponent={<View style={{ padding: 20 }}>
+						// 	<XText size={18}>{t('Providers')}</XText>
+						// </View>}
 						contentContainerStyle={styles.providerListContent}
 						data={providers}
 						renderItem={renderCompany}
@@ -240,11 +226,6 @@ const ProvidersScreen = ({ navigation, route }) => {
 						onRefresh={loadProviders}
 					/>
 					:
-					// <FlatList
-					// 	contentContainerStyle={styles.providerListContent}
-					// 	data={providerTypes}
-					// 	renderItem={renderTypes}
-					// />
 					<View style={{ borderWidth: 0, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 						<XImage
 							style={{ width: 100, height: 100, opacity: 0.5, alightSelf: 'center' }}
@@ -258,9 +239,9 @@ const ProvidersScreen = ({ navigation, route }) => {
 
 const styleCreator = (theme) => StyleSheet.create({
 	providerListContent: {
-		paddingHorizontal: Theme.values.mainPaddingHorizontal,
+		padding: 15,
 		//paddingTop: Theme.values.mainPaddingHorizontal,
-		rowGap: Theme.values.mainPaddingHorizontal
+		rowGap: 15
 	},
 
 	pTypeItem: {
@@ -293,13 +274,18 @@ const styleCreator = (theme) => StyleSheet.create({
 	},
 
 	searchCnt: {
-		flexDirection: 'row',
-		gap: 10,
-		margin: Theme.values.mainPaddingHorizontal,
+		padding: 15,
+		flexDirection: 'column',
+		gap: 15,
+		margin: 15,
+		backgroundColor: theme.colors.backgroundElement,
+		borderWidth: Theme.values.borderWidth,
+		borderRadius: Theme.values.borderRadius,
+		borderColor: theme.colors.borderColor,
 		overflow: 'hidden'
 	},
 	searchInput: {
-		flex: 1
+		//flex: 1
 	},
 	searchInputField: {
 		fontSize: 14
@@ -308,7 +294,7 @@ const styleCreator = (theme) => StyleSheet.create({
 		backgroundColor: theme.colors.secondary,
 		flex: 1,
 		borderRadius: Theme.values.borderRadius,
-		maxWidth: 60,
+		maxWidth: 50,
 		alignItems: 'center',
 		justifyContent: 'center'
 	},
@@ -319,6 +305,9 @@ const styleCreator = (theme) => StyleSheet.create({
 		flexDirection: 'row',
 		gap: 10,
 		flexWrap: 'wrap'
+	},
+	filterBtn: {
+		backgroundColor: theme.colors.backgroundElement
 	}
 });
 

@@ -140,5 +140,6 @@ export const strings = {
 	"Prominent": "Prominent",
 	"Popular": "Popular",
 	"Delete favorite_MSG": "Are you surre you want to remove provider {:pName} from favorete list",
-	"No favorites": "No favorites"
+	"No favorites": "No favorites",
+	"Providers": "Providers"
 };

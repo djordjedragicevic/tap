@@ -38,5 +38,6 @@ export const strings = {
 	"Old password": "Trenutna lozinka",
 	"New password": "Nova lozinka",
 	"Repeat new password": "Ponovite novu lozinku",
-	"Changing password": "Promjena lozinke"
+	"Changing password": "Promjena lozinke",
+	"Filter": "Filter"
 };

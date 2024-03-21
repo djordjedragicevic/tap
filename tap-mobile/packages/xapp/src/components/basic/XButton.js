@@ -77,7 +77,7 @@ const XButton = ({
 			{React.isValidElement(title) ? title : (!!title && <XText style={[styles.text, textStyle]} secondary>{title}</XText>)}
 			{!!iconRight &&
 				<View style={styles.iconRight}>
-					<XIcon icon={iconLeft} size={small ? 15 : 17} color={iconColor} />
+					<XIcon icon={iconRight} size={small ? 15 : 17} color={iconColor} />
 				</View>
 			}
 			{children}

@@ -381,6 +381,7 @@ public class ProviderRepository extends CommonRepository {
 				SELECT new com.tap.rest.dtor.ServiceForSearchDto(s.id, s.name, s.searchName, s.provider.id) FROM Service s
 				WHERE s.active = 1
 				AND s.searchName LIKE :term
+				GROUP BY s.name
 				""";
 
 		return em.createQuery(query, ServiceForSearchDto.class)

@@ -55,6 +55,7 @@ const HomeScreen = ({ navigation }) => {
 		Http.get('/provider/prominent-list')
 			.then(setProminentProviders)
 			.catch(emptyFn);
+
 	}, []);
 
 
@@ -165,8 +166,8 @@ const HomeScreen = ({ navigation }) => {
 				/>
 			</View>
 
-			<View style={{ padding: 10, paddingStart: 15 }}>
-				<XText size={16}>{t('Popular')}</XText>
+			<View style={{ padding: 10, paddingStart: 20, marginTop: 10  }}>
+				<XText size={20}>{t('Popular')}</XText>
 			</View>
 			<FlatList
 				horizontal
@@ -178,7 +179,28 @@ const HomeScreen = ({ navigation }) => {
 						<ProviderCard
 							item={item}
 							address1={null}
-							style={{ minWidth: 220 }}
+							style={{ width: 220 }}
+							onPress={(itemData) => navigation.navigate(PROVIDER_SCREEN, { item: itemData })}
+						/>
+					)
+				}}
+			/>
+
+			<View style={{ padding: 10, paddingStart: 20, marginTop: 20 }}>
+				<XText size={20}>{t('Prominent')}</XText>
+			</View>
+			<FlatList
+				horizontal
+				data={prominentProviders.slice().reverse()}
+				contentContainerStyle={{ gap: 10, paddingHorizontal: 10 }}
+				style={{ marginBottom: 20 }}
+				showsHorizontalScrollIndicator={false}
+				renderItem={({ item }) => {
+					return (
+						<ProviderCard
+							item={item}
+							address1={null}
+							style={{ width: 220 }}
 							onPress={(itemData) => navigation.navigate(PROVIDER_SCREEN, { item: itemData })}
 						/>
 					)
@@ -186,7 +208,7 @@ const HomeScreen = ({ navigation }) => {
 			/>
 
 
-			<View style={{ padding: 10, paddingStart: 15 }}>
+			{/* <View style={{ padding: 10, paddingStart: 15 }}>
 				<XText size={16}>{t('Prominent')}</XText>
 			</View>
 			<View
@@ -208,7 +230,7 @@ const HomeScreen = ({ navigation }) => {
 						)
 					})
 				}
-			</View>
+			</View> */}
 
 
 		</XScreen >

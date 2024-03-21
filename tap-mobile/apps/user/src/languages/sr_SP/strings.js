@@ -138,5 +138,6 @@ export const strings = {
 	"Prominent": "Istaknuto",
 	"Popular": "Popularno",
 	"Delete favorite_MSG": "Da li ste sigurni da želite da obrišete davaoca usluga {:pName} iz liste favorita?",
-	"No favorites": "Nema favorita"
+	"No favorites": "Nema favorita",
+	"Providers": "Davaoci usluga"
 };

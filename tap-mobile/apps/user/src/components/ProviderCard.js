@@ -77,7 +77,7 @@ const ProviderCard = ({
 			</View>
 
 			<View style={{ padding: 10, paddingTop: 5 }}>
-				<View style={{ rowGap: 2 }}>
+				<View style={{ rowGap: 4 }}>
 					<XTextTermHighlight
 						bold
 						size={18}
@@ -88,7 +88,7 @@ const ProviderCard = ({
 					>
 						{name}
 					</XTextTermHighlight>
-					{!!providerType && <XText secondary oneLine>{providerType}</XText>}
+					{!!providerType && <XChip outline style={{ alignSelf: 'flex-start' }}><XText secondary oneLine>{providerType}</XText></XChip>}
 					{!!address1 && <XText secondary oneLine>{address1}</XText>}
 					{!!city && <XText secondary oneLine>{city}</XText>}
 					<XMarkStars mark={mark} reviewCount={reviewCount} />
@@ -112,7 +112,7 @@ const ProviderCard = ({
 									</XChip>
 								))}
 								{serviceResult.services.length < serviceResult.count &&
-									<XChip color={Theme.vars.purple} text={'+' + (serviceResult.count - serviceResult.services.length)} />
+									<XChip color={Theme.vars.purple} outline text={'+' + (serviceResult.count - serviceResult.services.length)} />
 								}
 							</View>
 						</View>

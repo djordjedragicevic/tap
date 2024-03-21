@@ -60,7 +60,7 @@ const createStyle = (theme, color, primary, bgOpacity, round, outline, chipHeigh
 			backgroundColor: Theme.opacity(bColor, bgOpacity),
 			borderRadius: round ? 50 : Theme.values.borderRadius,
 			borderWidth: outline ? Theme.values.borderWidth : undefined,
-			borderColor: color,
+			borderColor: color ? theme.colors[color] : theme.colors.borderColor,
 			offset: 'hidden',
 			flexDirection: 'row',
 			opacity: disabled ? 0.5 : 1

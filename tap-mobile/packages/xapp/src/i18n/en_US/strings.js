@@ -38,5 +38,6 @@ export const strings = {
 	"New password": "New password",
 	"Change password_BTN": "Change password",
 	"Repeat new password": "Repeat new password",
-	"Changing password": "Changing password"
+	"Changing password": "Changing password",
+	"Filter": "Filter"
 };

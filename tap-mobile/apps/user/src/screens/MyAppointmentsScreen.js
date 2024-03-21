@@ -286,7 +286,8 @@ const styleCreator = (theme) => StyleSheet.create({
 	appContainer: {
 		borderColor: theme.colors.borderColor,
 		borderRadius: Theme.values.borderRadius,
-		backgroundColor: theme.colors.backgroundElement
+		backgroundColor: theme.colors.backgroundElement,
+		borderWidth: Theme.values.borderWidth
 	},
 	appHeader: {
 		paddingStart: 10,

@@ -39,8 +39,8 @@ export const Theme = {
 	},
 
 	values: {
-		mainPaddingHorizontal: 10,
-		borderRadius: 10,
+		mainPaddingHorizontal: 15,
+		borderRadius: 8,
 		borderWidth: 1,
 		disabledOpacity: 0.3,
 
@@ -55,7 +55,7 @@ export const Theme = {
 		colors: {
 			primary: 'hsl(195, 100%, 50%)', //'deepskyblue'
 			primaryLight: 'hsl(195, 100%, 97%)',
-			secondary: 'hsl(208, 90%, 16%)',
+			secondary: 'hsl(208, 80%, 16%)',
 			secondaryLight: 'hsl(208, 90%, 97%)',
 			background: 'hsl(0, 0%, 95%)',
 			backgroundElement: 'hsl(0, 0%, 100%)',
@@ -103,7 +103,7 @@ export const Theme = {
 			primary: 'hsl(195, 100%, 50%)', //'deepskyblue'
 			primaryLight: 'hsl(195, 100%, 13%)',
 			secondary: 'hsl(208, 90%, 18%)',
-			secondaryLight: 'hsl(208, 90%, 13%)',
+			secondaryLight: 'hsl(208, 50%, 70%)',
 			background: 'black',
 			backgroundElement: 'hsl(0, 0%, 10%)',
 
