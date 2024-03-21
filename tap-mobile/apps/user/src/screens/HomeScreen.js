@@ -64,12 +64,12 @@ const HomeScreen = ({ navigation }) => {
 			<View style={{
 				backgroundColor: Theme.Light.colors.secondary,
 				padding: 10,
-				paddingHorizontal: 60,
+				//paddingHorizontal: 60,
 				alignItems: 'center',
-				height: 220,
-				marginHorizontal: -50,
-				borderBottomEndRadius: 150,
-				borderBottomStartRadius: 150
+				height: 250,
+				//marginHorizontal: -50,
+				//borderBottomEndRadius: 150,
+				//borderBottomStartRadius: 150
 			}}>
 				<Pressable
 					onPress={onUserPress}
@@ -107,9 +107,8 @@ const HomeScreen = ({ navigation }) => {
 				</XFieldContainer>
 			</View>
 
-
 			<View
-				style={{ marginTop: -75, minHeight: 190 }}
+				style={{ marginTop: -95, minHeight: 190 }}
 			>
 				<View style={{ paddingTop: 5, paddingBottom: 15, paddingStart: 15 }}>
 					<XText size={16} light>{t('Categories')}</XText>
@@ -166,7 +165,7 @@ const HomeScreen = ({ navigation }) => {
 				/>
 			</View>
 
-			<View style={{ padding: 10, paddingStart: 20, marginTop: 10  }}>
+			<View style={{ padding: 10, paddingStart: 20, marginTop: 10 }}>
 				<XText size={20}>{t('Popular')}</XText>
 			</View>
 			<FlatList
@@ -179,7 +178,7 @@ const HomeScreen = ({ navigation }) => {
 						<ProviderCard
 							item={item}
 							address1={null}
-							style={{ width: 220 }}
+							style={{ width: 230 }}
 							onPress={(itemData) => navigation.navigate(PROVIDER_SCREEN, { item: itemData })}
 						/>
 					)

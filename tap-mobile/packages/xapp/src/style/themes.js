@@ -57,7 +57,7 @@ export const Theme = {
 			primaryLight: 'hsl(195, 100%, 97%)',
 			secondary: 'hsl(208, 80%, 16%)',
 			secondaryLight: 'hsl(208, 90%, 97%)',
-			background: 'hsl(0, 0%, 95%)',
+			background: 'hsl(0, 0%, 97%)',
 			backgroundElement: 'hsl(0, 0%, 100%)',
 
 			textPrimary: 'hsl(0, 0%, 15%)',
